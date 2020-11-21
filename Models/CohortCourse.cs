@@ -10,19 +10,11 @@ namespace AZLearn.Models
     [Table(nameof(CohortCourse))]
     public class CohortCourse
     {
-        //[Key]
-        //[Column(TypeName = "int(10)")]
-        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        //public int CohortCourseId { get; set; }
-
-        //[Required]
-        //[Column(TypeName = "int(10)")]
-        [Key, Column(Order = 0)]
+        /* Composite Key with CohortId, CourseId */
+        [Key, Column(Order = 0, TypeName = "int(10)")]
         public int CohortId { get; set; }
 
-        //[Required]
-        //[Column(TypeName = "int(10)")]
-        [Key, Column(Order = 1)]
+        [Key, Column(Order = 1, TypeName = "int(10)")]
         public int CourseId { get; set; }
 
         [Required]
@@ -36,11 +28,10 @@ namespace AZLearn.Models
         [Column(TypeName = "boolean")]
         public bool Archive { get; set; } = false;
 
-        //[ForeignKey(nameof(CohortId))]
+        /* Navigation Properties */
         [InverseProperty(nameof(Models.Cohort.CohortCourses))]
         public virtual Cohort Cohort { get; set; }
 
-        //[ForeignKey(nameof(CourseId))]
         [InverseProperty(nameof(Models.Course.CohortCourses))]
         public virtual Course Course { get; set; }
     }
