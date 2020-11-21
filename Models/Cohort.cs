@@ -12,6 +12,8 @@ namespace AZLearn.Models
     {
         public Cohort()
         {
+            /* Initialising the Navigation Properties */
+            Users = new HashSet<User>();
             CohortCourses = new HashSet<CohortCourse>();
         }
         [Key]
@@ -39,14 +41,17 @@ namespace AZLearn.Models
         public DateTime EndDate { get; set; }
 
         [Required]
-        [Column(TypeName = "varchar(30)")]
+        [Column(TypeName = "varchar(50)")]
         public string City { get; set; }
 
         [Column(TypeName = "boolean")]
         public bool Archive { get; set; } = false;
 
+        /*Navigation Properties*/
         [InverseProperty(nameof(Models.CohortCourse.Cohort))]
         public virtual ICollection<CohortCourse> CohortCourses { get; set; }
-        
+
+        [InverseProperty(nameof(Models.User.Cohort))]
+        public virtual ICollection<User> Users { get; set; }
     }
 }
