@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -38,6 +39,6 @@ namespace AZLearn.Models
 
         [ForeignKey(nameof(StudentId))]
         [InverseProperty(nameof(Models.User.Notifications))]
-        public virtual Student Student { get; set; }
+        public virtual User Student { get; set; }
     }
 }

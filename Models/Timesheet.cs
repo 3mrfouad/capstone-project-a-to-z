@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -28,11 +29,11 @@ namespace AZLearn.Models
         public int StudentId { get; set; }
 
         [Required]
-        [Column(TypeName = "float(3,2)")]
+        [Column(TypeName = "float(5,2)")]
         public float SolvingTime { get; set; }
 
-        [Column(TypeName = "float(3,2)")]
-        public float StudyTime { get; set; }
+        [Column(TypeName = "float(5,2)")] 
+        public float StudyTime { get; set; } = 0;
 
         [Column(TypeName = "boolean")]
         public bool Archive { get; set; } = false;
@@ -45,6 +46,6 @@ namespace AZLearn.Models
 
         [ForeignKey(nameof(StudentId))]
         [InverseProperty(nameof(Models.User.Timesheets))]
-        public virtual Student Student { get; set; }
+        public virtual User Student { get; set; }
     }
 }
