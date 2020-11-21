@@ -12,7 +12,7 @@ namespace AZLearn.Models
     {
         public Cohort()
         {
-            /* Initialising the Navigation Properties */
+            /* Initializing the Navigation Properties */
             Users = new HashSet<User>();
             CohortCourses = new HashSet<CohortCourse>();
         }
