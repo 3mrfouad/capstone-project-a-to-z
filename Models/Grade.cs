@@ -5,28 +5,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace sometest.Models
+namespace AZLearn.Models
 {
     [Table(nameof(Grade))]
     public class Grade
     {
-        public Grade()
-        {
-            //Grades = new HashSet<Grade>();
-        }
-        //[Key]
-        //[Column(TypeName = "int(10)")]
-        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        //public int GradeId { get; set; }
-
-        //[Required]
-        //[Column(TypeName = "int(10)")]
-        [Key, Column(Order = 0)]
+        [Key, Column(Order = 0, TypeName = "int(10)")]
         public int RubricId { get; set; }
 
-        //[Required]
-        //[Column(TypeName = "int(10)")]
-        [Key, Column(Order = 1)]
+        [Key, Column(Order = 1, TypeName = "int(10)")]
         public int StudentId { get; set; }
 
         [Required]
@@ -42,11 +29,10 @@ namespace sometest.Models
         [Column(TypeName = "boolean")]
         public bool Archive { get; set; } = false;
 
-        //[ForeignKey(nameof(RubricId))]
+        /* Navigation Properties */
         [InverseProperty(nameof(Models.Rubric.Grades))]
         public virtual Rubric Rubric { get; set; }
 
-        //[ForeignKey(nameof(StudentId))]
         [InverseProperty(nameof(Models.User.Grades))]
         public virtual User Student { get; set; }
     }
