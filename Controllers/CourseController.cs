@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AZLearn.Data;
 using AZLearn.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace AZLearn.Controllers
 {
@@ -18,7 +19,7 @@ namespace AZLearn.Controllers
             var newCourse = new Course()
             {
 
-              //  Create A Course
+              /*  Create a Course*/
                 InstructorId=int.Parse(instructorId),
                 Name=name,
                 Description=description,
@@ -30,7 +31,7 @@ namespace AZLearn.Controllers
             context.SaveChanges();
 
 
-            //Create a Join between Course and Cohort by Creating an object
+            /*Create a Join between Course and Cohort by Creating an object*/
             var newCohortCourse = new CohortCourse()
             {
                 CohortId = int.Parse(cohortId),
@@ -42,13 +43,29 @@ namespace AZLearn.Controllers
 
             context.SaveChanges();
         }
-        /*
-                public void UpdateCourseById(string courseId) { }
+
+        /*Update a Course CourseById:*/
+        public static void UpdateCourseById(string courseId,string instructorId,string name,string description,string durationHrs,string resourcesLink)
+        {
+            var parsedCourseId=int.Parse(courseId);
+            using var context = new AppDbContext();
+            {
+                var course = context.Courses.SingleOrDefault(key => key.CourseId == parsedCourseId);
+
+              course.InstructorId = int.Parse(instructorId);
+              course.Name = name;
+              course.Description = description;
+              course.DurationHrs = float.Parse(durationHrs);
+              course.ResourcesLink = resourcesLink;
+
+            }
+            context.SaveChanges();
+        }
 
 
 
-                public Cohort GetCoursesByCohortId(string cohortId) { }
-        */
+       // public Cohort GetCoursesByCohortId(string cohortId) { }
+
         //public List<Course> GetCoursesByCohortId(string cohortId){}
         //public void ArchiveCourseById(string courseId){}
 

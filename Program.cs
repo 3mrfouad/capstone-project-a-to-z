@@ -15,9 +15,20 @@ namespace AZLearn
     {
         public static void Main(string[] args)
         {
-            CourseController.CreateCourseByCohortId("1", "1","React","React Basics","3","https://reactjs.org/tutorial/tutorial.html", "2020-08-10","2020-08-10" );
 
+            #region Testing Controllers Actions:
 
+            #region Create Course Testing
+            /*CourseController.CreateCourseByCohortId("1", "1","React","React Basics","3","https://reactjs.org/tutorial/tutorial.html", "2020-08-10","2020-08-10" );*/
+            /*Test Passed*/
+            #endregion
+
+            #region Update Course Testing
+            CourseController.UpdateCourseById("3","1","React","React Props","5","https://reactjs.org/tutorial/tutorial.html");
+            /*Test Passed*/
+            #endregion
+
+            #endregion Testing Controllers Action
 
             CreateHostBuilder(args).Build().Run();
         }
