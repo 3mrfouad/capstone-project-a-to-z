@@ -35,7 +35,7 @@ namespace AZLearn.Models
 
         [Required]
         [Column(TypeName = "float(5,2)")]
-        public int DurationHrs { get; set; }
+        public float DurationHrs { get; set; }
 
         [Column(TypeName = "varchar(250)")]
         public string ResourcesLink { get; set; }

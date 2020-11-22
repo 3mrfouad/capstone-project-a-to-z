@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AZLearn.Controllers;
+
 
 namespace AZLearn
 {
@@ -13,6 +15,10 @@ namespace AZLearn
     {
         public static void Main(string[] args)
         {
+            CourseController.CreateCourseByCohortId("1", "1","React","React Basics","3","https://reactjs.org/tutorial/tutorial.html", "2020-08-10","2020-08-10" );
+
+
+
             CreateHostBuilder(args).Build().Run();
         }
 
