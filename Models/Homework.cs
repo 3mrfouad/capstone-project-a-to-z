@@ -33,10 +33,14 @@ namespace AZLearn.Models
 
             [Required]
             [Column(TypeName = "int(10)")]
+            public int CohortId { get; set; } 
+
+            [Required]
+            [Column(TypeName = "int(10)")]
             public int InstructorId { get; set; }
 
             /*General Properties:*/
-        [Required]
+            [Required]
             [Column(TypeName = "boolean")]
             public bool IsAssignment { get; set; } = false;
 
@@ -48,7 +52,7 @@ namespace AZLearn.Models
             public float AvgCompletionTime { get; set; }
 
             /* DateTime is used here since we require time as well to be displayed along with Date E.g: Due at 9:00am on Monday 08/12/2020 */
-        [Required]
+            [Required]
             [Column(TypeName = "datetime")]
             public DateTime? DueDate { get; set; }
 
@@ -69,6 +73,10 @@ namespace AZLearn.Models
             [ForeignKey(nameof(CourseId))]
             [InverseProperty(nameof(Models.Course.Homeworks))]
             public virtual Course Course { get; set; }
+
+            [ForeignKey(nameof(CohortId))]
+            [InverseProperty(nameof(Models.Cohort.Homeworks))]
+            public virtual Cohort Cohort { get; set; }
 
             [ForeignKey(nameof(InstructorId))]
             [InverseProperty(nameof(Models.User.Homeworks))]

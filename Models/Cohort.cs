@@ -53,5 +53,8 @@ namespace AZLearn.Models
 
         [InverseProperty(nameof(Models.User.Cohort))]
         public virtual ICollection<User> Users { get; set; }
+
+        [InverseProperty(nameof(Models.Homework.Cohort))]
+        public virtual ICollection<Homework> Homeworks { get; set; }
     }
 }
