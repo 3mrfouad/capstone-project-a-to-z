@@ -10,15 +10,15 @@ namespace AZLearn.Controllers
 {
     public class UserController :ControllerBase
     {
-        public User GetUserById(string UserId){ }
+        public User GetUserById(string userId){ }
 
-   public void CreateUserByCohortId(string CohortId){
+   public void CreateUserByCohortId(string cohortId){
    }
-   public  List<User> GetStudentsByCohortId(string CohortId){}
-    public void UpdateUserById(string UserId){}
+   public  List<User> GetStudentsByCohortId(string cohortId){}
+    public void UpdateUserById(string userId){}
 
 
-    public void ArchiveUserById(string UserId){}
+    public void ArchiveUserById(string userId){}
 
     }
 }

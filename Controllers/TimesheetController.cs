@@ -9,15 +9,15 @@ namespace AZLearn.Controllers
 {
     public class TimesheetController :ControllerBase
     {
-       public void CreateTimesheetByHomeworkId(string HomeworkId)
+       public void CreateTimesheetByHomeworkId(string homeworkId)
         {
         }
-       public List<Timesheet> GetTimesheets(string HomeworkId){}
+       public List<Timesheet> GetTimesheets(string homeworkId){}
 
 
-       public void UpdateTimesheetById(string TimesheetId){}
+       public void UpdateTimesheetById(string timesheetId){}
 
-      public void ArchiveTimesheetsByHomeworkId(string HomeworkId){}
+      public void ArchiveTimesheetsByHomeworkId(string homeworkId){}
 
     }
 }
