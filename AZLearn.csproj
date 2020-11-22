@@ -23,15 +23,22 @@
 
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <Compile Remove="ClientApp\Models\**" />
     <Content Remove="$(SpaRoot)**" />
+    <Content Remove="ClientApp\Models\**" />
+    <EmbeddedResource Remove="ClientApp\Models\**" />
     <None Remove="$(SpaRoot)**" />
+    <None Remove="ClientApp\Models\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ClientApp\Models\" />
+    <Folder Include="ClientApp\src\actions\" />
     <Folder Include="ClientApp\src\actions\" />
     <Folder Include="ClientApp\src\reducers\" />
+    <Folder Include="ClientApp\src\reducers\" />
+    <Folder Include="Models\" />
+    <Folder Include="Data\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
