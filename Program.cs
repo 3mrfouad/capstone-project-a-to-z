@@ -66,16 +66,16 @@ namespace AZLearn
 
             #region Create Timesheet
 
-            TimesheetController.CreateTimesheetByHomeworkId("1","2","60","40");
+            TimesheetController.CreateTimesheetByHomeworkId("1", "2", "60", "40");
             /*Test Passed*/
 
             #endregion
 
-            #region Update Timesheet
+            #region Update TimesheetById
 
-            /*For testing updated SolvingTime and StudyTime*/
-            /* TimesheetController.UpdateTimesheetByHomeworkId("1","2","50","30");*/
-            /*Test */
+            /*For testing updated SolvingTime and StudyTime for Timesheet id 2*/
+            /*TimesheetController.UpdateTimesheetByTimesheetId("2","50","30");*/
+            /*Test Passed*/
 
             #endregion
 
@@ -86,11 +86,7 @@ namespace AZLearn
                 $"Id:{homework.HomeworkId} Title:{homework.Title} Average Completion Time:{homework.AvgCompletionTime} DueDate:{homework.DueDate} DocumentLink:{homework.DocumentLink} GitHUbCloassroomLink: {homework.GitHubClassRoomLink}");*/
             /*Test Passed*/
 
-
             #endregion
-
-
-
 
             #endregion Testing Controllers Action
 
