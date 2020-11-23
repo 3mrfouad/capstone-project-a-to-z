@@ -22,6 +22,7 @@ namespace AZLearn
             {
                 Debug.WriteLine(gradeSummary.StudentName+ " "+ gradeSummary.TotalMarks + " "+ gradeSummary.MarksInRequirement + " " + gradeSummary.MarksInChallenge + " "+ gradeSummary.TotalTimeSpentOnHomework);
             }
+
             CreateHostBuilder(args).Build().Run();
         }
 
