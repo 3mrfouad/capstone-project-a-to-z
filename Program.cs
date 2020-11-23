@@ -73,7 +73,7 @@ namespace AZLearn
 
             #region Update Timesheet
 
-            /*For testing updated Description and Duration Hours*/
+            /*For testing updated SolvingTime and StudyTime*/
             /* TimesheetController.UpdateTimesheetByHomeworkId("1","2","50","30");*/
             /*Test */
 
