@@ -62,6 +62,23 @@ namespace AZLearn
             /*Test Pass*/
             #endregion
 
+            #region Create Rubrics By Homework Id
+            /*var rubrics = new List<Tuple<string, string, string>>();
+            rubrics.Add( new Tuple<string, string,string>("false", "Do a practice in so and so","1"));
+            rubrics.Add(new Tuple<string, string,string>("true", "Here is more difficult one","2"));
+            RubricController.CreateRubricsByHomeworkId("-2",rubrics);*/
+            /*Test Pass*/
+            #endregion
+
+            #region Update Rubrics By Homework Id
+
+            /*var rubrics = new Dictionary<string, Tuple<string, string, string>>();
+            rubrics.Add("3",new Tuple<string, string, string>("false", "Update, Do a practice per classroom demo", "1"));
+            rubrics.Add("4",new Tuple<string, string, string>("true", "Here is more difficult one to do", "1"));
+            RubricController.UpdateRubricsById(rubrics);*/
+            /*Test Pass*/
+            #endregion
+
             #endregion Testing Controllers' Actions
 
             /*=============================================================================================================================*/
