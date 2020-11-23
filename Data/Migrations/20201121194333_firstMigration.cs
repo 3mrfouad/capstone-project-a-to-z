@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace AZLearn.Data.Migrations
 {
-    public partial class AddCohortIdInHomework : Migration
+    public partial class firstMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -151,7 +151,6 @@ namespace AZLearn.Data.Migrations
                     HomeworkId = table.Column<int>(type: "int(10)", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     CourseId = table.Column<int>(type: "int(10)", nullable: false),
-                    CohortId = table.Column<int>(type: "int(10)", nullable: false),
                     InstructorId = table.Column<int>(type: "int(10)", nullable: false),
                     IsAssignment = table.Column<bool>(type: "boolean", nullable: false),
                     Title = table.Column<string>(type: "varchar(100)", nullable: false)
@@ -171,12 +170,6 @@ namespace AZLearn.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Homework", x => x.HomeworkId);
-                    table.ForeignKey(
-                        name: "FK_Homework_Cohort_CohortId",
-                        column: x => x.CohortId,
-                        principalTable: "Cohort",
-                        principalColumn: "CohortId",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Homework_Course",
                         column: x => x.CourseId,
@@ -333,11 +326,6 @@ namespace AZLearn.Data.Migrations
                 name: "IX_Grade_StudentId",
                 table: "Grade",
                 column: "StudentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Homework_CohortId",
-                table: "Homework",
-                column: "CohortId");
 
             migrationBuilder.CreateIndex(
                 name: "FK_Homework_Course",
