@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using AZLearn.Data;
 using AZLearn.Models;
 using Microsoft.EntityFrameworkCore;
@@ -64,10 +63,9 @@ namespace AZLearn.Controllers
         public static void UpdateGradingByStudentId(string studentId, Dictionary<string, Tuple<string, string>> gradings)
         {
             using var context = new AppDbContext();
-            var grade = new Grade(); ;
             foreach (var (rubricId, (mark, instructorComment)) in gradings)
             {
-                grade = context.Grades.Find(int.Parse(rubricId), int.Parse(studentId));
+                var grade = context.Grades.Find(int.Parse(rubricId), int.Parse(studentId));
                 grade.Mark = int.Parse(mark);
                 grade.InstructorComment = instructorComment;
             }
