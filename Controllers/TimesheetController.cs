@@ -1,6 +1,5 @@
 ﻿using AZLearn.Data;
 using AZLearn.Models;
-using Microsoft.AspNetCore.Mvc;
 
 namespace AZLearn.Controllers
 {
