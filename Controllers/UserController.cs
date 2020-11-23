@@ -28,6 +28,19 @@ namespace AZLearn.Controllers
             }
             return result;
         }
+        /// <summary>
+        /// GetInstructors
+        ///  Description: Controller action that returns list of existing Instructors
+        /// </summary>
+        /// <returns>List of Instructors</returns>
+        public static List<User> GetInstructors()
+        {
+            using var context = new AppDbContext();
+            var instructors = context.Users.Where(key=>key.IsInstructor==true).ToList();
+            return instructors ;
+        }
+
+
 
     }
 }

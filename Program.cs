@@ -1,4 +1,5 @@
 using AZLearn.Controllers;
+using AZLearn.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
@@ -60,6 +61,18 @@ namespace AZLearn
             /*var user = UserController.GetUserById("1");
             System.Diagnostics.Debug.WriteLine(
                 $"Id:{user.UserId} Name:{user.Name} Email:{user.Email} ");*/
+            /*Test Passed*/
+
+            #endregion
+
+            #region Get List of All Instructors
+
+            var instructors = UserController.GetInstructors();
+            foreach ( User user in instructors )
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    $"Id:{user.UserId} Instructor Name:{user.Name} Email: {user.Email} Is Instructor:{user.IsInstructor} ");
+            }
             /*Test Passed*/
 
             #endregion
