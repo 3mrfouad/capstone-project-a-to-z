@@ -31,6 +31,18 @@ namespace AZLearn
 
             #endregion
 
+            #region Get List of All Courses
+
+            /*    var courses = CourseController.GetCourses();
+                foreach (Course course in courses)
+                {
+                    System.Diagnostics.Debug.WriteLine(
+                        $"Id:{course.CourseId} Instructor:{course.InstructorId} Name:{course.Name} Description:{course.Description} DurationInHrs:{course.DurationHrs} Resources Link: {course.ResourcesLink} ");
+                }*/
+            /*Test Passed*/
+
+            #endregion
+
             #endregion Testing Controllers Action
 
             CreateHostBuilder(args).Build().Run();

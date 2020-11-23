@@ -104,5 +104,17 @@ namespace AZLearn.Controllers
             context.SaveChanges();
         }
 
+        /// <summary>
+        ///     Get Courses
+        ///     Description: Controller action that returns list of existing courses
+        /// </summary>
+        /// <returns>List  of Courses</returns>
+        public static List<Course> GetCourses()
+        {
+            using var context = new AppDbContext();
+            var courses = context.Courses.ToList();
+            return courses;
+        }
+
     }
 }
