@@ -8,24 +8,26 @@ using AZLearn.Models;
 
 namespace AZLearn.Controllers
 {
-    public class RubricController :ControllerBase
+    public class RubricController : ControllerBase
     {
-        public static void CreateRubricsByHomeworkId(string homeworkId, string isChallenge, string criteria, string weight)
+        public static void CreateRubricsByHomeworkId(string homeworkId, List<Tuple<string, string, string>> rubrics)
         {
             using var context = new AppDbContext();
-            context.Add(new Rubric()
+            foreach (var (isChallenge, criteria, weight) in rubrics)
             {
-                HomeworkId = int.Parse(homeworkId),
-                IsChallenge = bool.Parse(isChallenge),
-                Criteria = criteria,
-                Weight = int.Parse(weight)
-
-            });
+                context.Rubrics.Add(new Rubric()
+                {
+                    HomeworkId = int.Parse(homeworkId),
+                    IsChallenge = bool.Parse(isChallenge),
+                    Criteria = criteria,
+                    Weight = int.Parse(weight)
+                });
+            }
             context.SaveChanges();
         }
 
 
-        public static void UpdateRubricById(Dictionary<string, Tuple<string, string,string>> rubrics)
+        public static void UpdateRubricsById(Dictionary<string, Tuple<string, string, string>> rubrics)
         {
             using var context = new AppDbContext();
             foreach (var (rubricId, (isChallenge, criteria, weight)) in rubrics)
