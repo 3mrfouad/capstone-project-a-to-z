@@ -58,10 +58,10 @@ namespace AZLearn
             #endregion
 
             #region Update Grading by Student Id (overalload #1)
-            var grading = new Dictionary<string,string>();
+            /*var grading = new Dictionary<string,string>();
             grading.Add("-1", "Thanks Instructor");
             grading.Add("-2", "Thanks Instructor");
-            GradeController.UpdateGradingByStudentId("-1", grading);
+            GradeController.UpdateGradingByStudentId("-1", grading);*/
             /*Test Pass*/
             #endregion
 
