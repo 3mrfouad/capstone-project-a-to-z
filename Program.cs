@@ -16,13 +16,6 @@ namespace AZLearn
     {
         public static void Main(string[] args)
         {
-            /* Test GetGradeSummaryForInstructor Action method from Grade Controller */
-            var gradeSummaryList = GradeController.GetGradeSummaryForInstructor("1", "1");
-            foreach (var gradeSummary in gradeSummaryList)
-            {
-                Debug.WriteLine(gradeSummary.StudentName+ " "+ gradeSummary.TotalMarks + " "+ gradeSummary.MarksInRequirement + " " + gradeSummary.MarksInChallenge + " "+ gradeSummary.TotalTimeSpentOnHomework);
-            }
-
             CreateHostBuilder(args).Build().Run();
         }
 
