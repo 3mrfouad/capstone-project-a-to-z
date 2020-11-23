@@ -71,6 +71,26 @@ namespace AZLearn
 
             #endregion
 
+            #region Update Timesheet
+
+            /*For testing updated Description and Duration Hours*/
+            /* TimesheetController.UpdateTimesheetByHomeworkId("1","2","50","30");*/
+            /*Test */
+
+            #endregion
+
+            #region GetHomeworkById
+
+            /*var homework = HomeworkController.GetHomeworkById("1");
+            System.Diagnostics.Debug.WriteLine(
+                $"Id:{homework.HomeworkId} Title:{homework.Title} Average Completion Time:{homework.AvgCompletionTime} DueDate:{homework.DueDate} DocumentLink:{homework.DocumentLink} GitHUbCloassroomLink: {homework.GitHubClassRoomLink}");*/
+            /*Test Passed*/
+
+
+            #endregion
+
+
+
 
             #endregion Testing Controllers Action
 

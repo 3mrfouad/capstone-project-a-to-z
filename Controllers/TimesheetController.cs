@@ -34,8 +34,32 @@ namespace AZLearn.Controllers
             context.SaveChanges();
 
         }
-        /*    public List<Timesheet> GetTimesheets(string homeworkId)
-            {
-            }*/
+
+
+        /// <summary>
+        /// Update Time-sheet by HomeworkId
+        ///     Description: Controller action that updates existing time-sheet by homeworkId
+        ///     It expects below parameters, and would populate the time-sheet by given homework id in the database.
+        ///     Assumption:
+        ///     The frontend view would populate the time-sheet information first through API call
+        ///     User will edit as needed
+        ///     Frontend will send update API call to backend with all keys to update database
+        /// </summary>
+        /// <param name="homeworkId"></param>
+        /// <param name="studentId"></param>
+        /// <param name="solvingTime"></param>
+        /// <param name="studyTime"></param>
+        public static void UpdateTimesheetByHomeworkId(string homeworkId,string studentId,string solvingTime,string studyTime)
+        {
+          
+            using var context = new AppDbContext();
+          //  var timesheet = context.Timesheets.Where(key => key.HomeworkId == parsedHomeworkId);
+          var timesheet = context.Timesheets.Find((int.Parse(homeworkId)));
+                timesheet.HomeworkId = int.Parse(homeworkId);
+                timesheet.StudentId = int.Parse(studentId);
+                timesheet.SolvingTime = float.Parse(solvingTime);
+                timesheet.StudyTime = float.Parse(studyTime);
+                context.SaveChanges();
+        }
     }
 }
