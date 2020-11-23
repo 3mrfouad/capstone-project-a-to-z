@@ -1,13 +1,5 @@
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AZLearn.Controllers;
-
 
 namespace AZLearn
 {
@@ -15,17 +7,28 @@ namespace AZLearn
     {
         public static void Main(string[] args)
         {
+            #region Testing Controllers Actions
 
-            #region Testing Controllers Actions:
+            #region Create Course
 
-            #region Create Course Testing
             /*CourseController.CreateCourseByCohortId("1", "1","React","React Basics","3","https://reactjs.org/tutorial/tutorial.html", "2020-08-10","2020-08-10" );*/
             /*Test Passed*/
+
             #endregion
 
-            #region Update Course Testing
-            CourseController.UpdateCourseById("3","1","React","React Props","5","https://reactjs.org/tutorial/tutorial.html");
+            #region Assign CourseByCohort
+
+            /* CourseController.AddCourseByCohortId("1","4");*/
+            /*Test Passed (Was able to Assign CourseID 4 to Cohort 1 in Course Cohort*/
+
+            #endregion
+
+            #region Update Course
+
+            /*For testing updated Description and Duration Hours*/
+            /*CourseController.UpdateCourseById("3","1","React","React Props","5","https://reactjs.org/tutorial/tutorial.html");*/
             /*Test Passed*/
+
             #endregion
 
             #endregion Testing Controllers Action
@@ -33,11 +36,10 @@ namespace AZLearn
             CreateHostBuilder(args).Build().Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
+        }
     }
 }
