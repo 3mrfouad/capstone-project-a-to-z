@@ -13,32 +13,19 @@ namespace AZLearn.Controllers
     [ApiController]
     public class ApplicationController :ControllerBase
     {
-
-       
-        // EndPoint Testing : application/getcoursesummary
+        /// <summary>
+        /// GetCourseSummary
+        /// Description:The API End Point looks for action GetCoursesByCohortID in CourseController and retrieves the information of all courses based on the Cohort id  from database.
+        /// EndPoint Testing : localhost:xxxxx/application/getcoursesummary?cohortId=1
+        /// /*Test Passed*/
+        /// </summary>
+        /// <param name="cohortId"></param>
+        /// <returns></returns>
         [HttpGet(nameof(GetCourseSummary))]
         public ActionResult< List< Course>> GetCourseSummary(string cohortId)
         {
             var coursesList= CourseController.GetCoursesByCohortId(cohortId);
             return coursesList;
-        }
-
-        //Method 2 : Passing Userid as well  /*check with atinder why we had user id  for CourseSummary*/
-        /// <summary>
-        /// GetCourseSummary
-        /// Description:The API End Point looks for action GetCoursesByCohortID and GetUserByID and retrieves the information of all courses and users from database.
-        /// EndPoint Testing : localhost:xxxxx/application/getcourse_summary?cohortId=1&userId=2
-        /// /*Test Passed*/
-        /// </summary>
-        /// <param name="cohortId"></param>
-        /// <param name="userId"></param>
-        /// <returns>It returns af list of courses and Users </returns>
-        [HttpGet(nameof(GetCourse_Summary))]
-        public ActionResult<Tuple<List<Course>,User>> GetCourse_Summary(string cohortId,string userId)
-        {
-            var coursesList = CourseController.GetCoursesByCohortId(cohortId);
-            var user = UserController.GetUserById(userId);
-            return new Tuple<List<Course>,User>(coursesList,user);
         }
 
         /// <summary>
@@ -48,7 +35,7 @@ namespace AZLearn.Controllers
         /// /*Test Passed*/
         /// </summary>
         /// <returns>The API End Point returns list of all Courses in database.Tested successfully in Postman</returns>
-        [HttpGet("GetCourses")]
+        [HttpGet(nameof(GetCourses))]
         public ActionResult<List<Course>>GetCourses()
         {
             return CourseController.GetCourses();
@@ -62,7 +49,7 @@ namespace AZLearn.Controllers
         /// <param name="cohortId"></param>
         /// <param name="courseId"></param>
         /// <returns>The End Point returns the Course according to the specified cohort id </returns>
-        [HttpPost("AssignCourseByCohortId")]
+        [HttpPost(nameof(AssignCourseByCohortId))]
         public ActionResult<Course> AssignCourseByCohortId(string cohortId,string courseId)
         {
             ActionResult<Course> result;
@@ -88,7 +75,7 @@ namespace AZLearn.Controllers
         /// <param name="solvingTime"></param>
         /// <param name="studyTime"></param>
         /// <returns>The End Point returns Success Message and Updates the Timesheet according to parameters specified </returns>
-        [HttpPatch("UpdateTimesheetById")]
+        [HttpPatch(nameof(UpdateTimesheetById))]
         public ActionResult UpdateTimesheetById(string timesheetId,string solvingTime,string studyTime)
         {
             ActionResult result;
@@ -103,6 +90,43 @@ namespace AZLearn.Controllers
             }
             return result;
         }
+
+
+        /// <summary>
+        ///CreateCourseByCohortId
+        /// Description:The API End Point looks for action CreateCourseByCohortId in CourseController and creates the course information on database with specified parameters as defined below.
+        ///  EndPoint Testing : localhost:xxxxx/application/CreateCourseByCohortId?cohortId=2&instructorId=1&name=PHP&description=Basics of PHP&durationHrs=5&resourcesLink=www.php.com&startDate=2020-10-04&endDate=2020-10-15
+        /// Test Passed
+        /// </summary>
+        /// <param name="cohortId"></param>
+        /// <param name="instructorId"></param>
+        /// <param name="name"></param>
+        /// <param name="description"></param>
+        /// <param name="durationHrs"></param>
+        /// <param name="resourcesLink"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <returns></returns>
+        [HttpPost(nameof(CreateCourseByCohortId))]
+        public ActionResult CreateCourseByCohortId
+            (string cohortId,string instructorId,string name,string description,
+            string durationHrs,string resourcesLink,string startDate,string endDate)
+        {
+            ActionResult result;
+            try
+            {
+                CourseController.CreateCourseByCohortId(cohortId,instructorId, name,description,
+            durationHrs, resourcesLink,startDate,endDate);
+                result=StatusCode(200,"Success Message");
+            }
+            catch
+            {
+                result=StatusCode(403,"Error Message");
+            }
+            return result;
+        }
+
+
 
 
 
