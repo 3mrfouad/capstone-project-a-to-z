@@ -1,9 +1,8 @@
 ﻿using AZLearn.Data;
 using AZLearn.Models;
-
 namespace AZLearn.Controllers
 {
-    public class TimesheetController : Controller
+    public class TimesheetController : ControllerBase
     {
         /// <summary>
         ///     CreateTimesheetByHomeworkId
@@ -42,7 +41,7 @@ namespace AZLearn.Controllers
         /// <param name="timesheetId"></param>
         /// <param name="solvingTime"></param>
         /// <param name="studyTime"></param>
-        public static void UpdateTimesheetByTimesheetId(string timesheetId, string solvingTime, string studyTime)
+        public static void UpdateTimesheetById(string timesheetId, string solvingTime, string studyTime)
         {
             var parsedTimesheetId = int.Parse(timesheetId);
             using var context = new AppDbContext();
@@ -50,6 +49,23 @@ namespace AZLearn.Controllers
             timesheet.SolvingTime = float.Parse(solvingTime);
             timesheet.StudyTime = float.Parse(studyTime);
             context.SaveChanges();
+        }
+
+        /// <summary>
+        /// This Action returns timesheet of a specified student for a specified Homework.
+        /// </summary>
+        /// <param name="homeworkId">Homework Id</param>
+        /// <param name="studentId">Student Id</param>
+        /// <returns></returns>
+        public static Timesheet GetTimesheetByHomeworkId(string homeworkId, string studentId)
+        {
+            int parsedHomeworkId = int.Parse(homeworkId);
+            int parsedStudentId = int.Parse(studentId);
+
+            using var context = new AppDbContext();
+            Timesheet timesheet = context.Timesheets.SingleOrDefault(key =>
+                key.HomeworkId == parsedHomeworkId && key.StudentId == parsedStudentId);
+            return timesheet;
         }
     }
 }
