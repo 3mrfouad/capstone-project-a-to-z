@@ -41,6 +41,7 @@ namespace AZLearn.Controllers
 
         /// <summary>
         ///     GetTimesheetForStudent
+        ///     Request Type: GET
         ///     This End point takes in Homework Id from link clicked, Student Id from global store and return associated timesheet record.
         /// </summary>
         /// <param name="homeworkId"></param>
@@ -65,6 +66,32 @@ namespace AZLearn.Controllers
                 };
             }
             return timesheet;
+        }
+
+        /// <summary>
+        ///     CreateTimesheetByHomeworkId
+        ///     Request Type: POST
+        ///     Ths Endpoint takes in the below parameters and create a Timesheet record in the DB.
+        /// </summary>
+        /// <param name="homeworkId"></param>
+        /// <param name="studentId"></param>
+        /// <param name="solvingTime"></param>
+        /// <param name="studyTime"></param>
+        /// <returns>Success/Error message</returns>
+        [HttpPost("Timesheet")]
+        public ActionResult CreateTimesheetByHomeworkId(string homeworkId, string studentId, string solvingTime, string studyTime)
+        {
+            ActionResult result;
+            try
+            {
+                TimesheetController.CreateTimesheetByHomeworkId(homeworkId, studentId, solvingTime, studyTime);
+                result = StatusCode(200, "Success Message");
+            }
+            catch
+            {
+                result = StatusCode(403, "Error Message");
+            }
+            return result;
         }
     }
 }
