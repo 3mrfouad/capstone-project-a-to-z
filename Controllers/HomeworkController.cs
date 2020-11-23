@@ -11,7 +11,8 @@ namespace AZLearn.Controllers
     public class HomeworkController : Controller
     {
         /// <summary>
-        /// This action takes in Course Id and Cohort Id and returns List of Homeworks for specified course under the specified Cohort Id
+        ///     GetHomeworksByCourseId
+        ///     This action takes in Course Id and Cohort Id and returns List of Homeworks for specified course under the specified Cohort Id
         /// </summary>
         /// <param name="courseId">Course Id</param>
         /// <param name="cohortId">Cohort Id</param>
@@ -30,7 +31,8 @@ namespace AZLearn.Controllers
         }
 
         /// <summary>
-        /// This Action creates a new Homework for a specified Course under a specified Cohort and adds it to DB
+        ///     CreateHomeworkByCourseId
+        ///     This Action creates a new Homework for a specified Course under a specified Cohort and adds it to DB
         /// </summary>
         /// <param name="courseId">Course Id</param>
         /// <param name="instructorId">Instructor Id</param>
@@ -74,7 +76,8 @@ namespace AZLearn.Controllers
         }
 
         /// <summary>
-        /// This Action updates an existing Homework and saves the changes in DB.
+        ///     UpdateHomeworkById
+        ///     This Action updates an existing Homework and saves the changes in DB.
         /// </summary>
         /// <param name="homeworkId">Homework Id</param>
         /// <param name="courseId">Course Id</param>

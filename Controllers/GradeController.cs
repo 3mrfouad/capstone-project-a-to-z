@@ -58,8 +58,8 @@ namespace AZLearn.Controllers
         }
 
         /// <summary>
-        /// GetGradesByStudentId
-        /// This Action takes in Student Id and Homework Id and returns List of Grades associated to that student in the specified Homework.
+        ///     GetGradesByStudentId
+        ///     This Action takes in Student Id and Homework Id and returns List of Grades associated to that student in the specified Homework.
         /// </summary>
         /// <param name="studentId">Student Id</param>
         /// <param name="homeworkId">Homework Id</param>
@@ -76,9 +76,10 @@ namespace AZLearn.Controllers
         }
 
         /// <summary>
-        /// This action returns List of custom objects of data (related to a Homework and grades for all students in specified cohort) required in Grade Summary Screen for instructor.
-        /// The screen needs data as per the following Format:
-        /// Student Name, Total Marks, Marks Obtained in all requirements/ Total Requirement Marks, Marks obtained in all challenges/ Total Challenge Marks
+        ///     GetGradeSummaryForInstructor
+        ///     This action returns List of custom objects of data (related to a Homework and grades for all students in specified cohort) required in Grade Summary Screen for instructor.
+        ///     The screen needs data as per the following Format:
+        ///     Student Name, Total Marks, Marks Obtained in all requirements/ Total Requirement Marks, Marks obtained in all challenges/ Total Challenge Marks
         /// </summary>
         /// <param name="cohortId">Cohort Id</param>
         /// <param name="homeworkId">Homework Id</param>
@@ -139,8 +140,5 @@ namespace AZLearn.Controllers
             }
             return gradeSummaries;
         }
-
-
-
     }
 }

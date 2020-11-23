@@ -13,7 +13,8 @@ namespace AZLearn.Controllers
     public class UserController :ControllerBase
     {
         /// <summary>
-        /// This Action takes in Cohort id and returns List of students enrolled in that Cohort.
+        ///     GetStudentsByCohortId
+        ///     This Action takes in Cohort id and returns List of students enrolled in that Cohort.
         /// </summary>
         /// <param name="cohortId">Cohort Id</param>
         /// <returns>List of students enrolled in specified Cohort</returns>
