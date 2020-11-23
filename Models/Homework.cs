@@ -48,7 +48,7 @@ namespace AZLearn.Models
             [Column(TypeName = "varchar(100)")]
             public string Title { get; set; }
 
-            [Column(TypeName = "float(5,2)")]
+            [Column(TypeName = "float(5,2)")] 
             public float AvgCompletionTime { get; set; }
 
             /* DateTime is used here since we require time as well to be displayed along with Date E.g: Due at 9:00am on Monday 08/12/2020 */

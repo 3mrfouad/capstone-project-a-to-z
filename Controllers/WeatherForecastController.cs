@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AZLearn.Models;
 
 namespace AZLearn.Controllers
 {
@@ -34,6 +35,12 @@ namespace AZLearn.Controllers
                 Summary = Summaries[rng.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+
+        [HttpGet("All")]
+        public ActionResult<List<Homework>> AllHomeworks_GET()
+        {
+            return Ok(HomeworkController.GetHomeworksByCourseId("1", "1"));
         }
     }
 }

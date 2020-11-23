@@ -9,11 +9,6 @@ namespace AZLearn.Controllers
 {
     public class NotificationController :ControllerBase
     {
-        public void CreateNotificationByHomeworkId(string StudentId){}
-       
-        public List<Notification> GetNotifications(string StudentId) { }
 
-
-        public void ArchiveNotificationsByStudentId(string StudentId) { }
     }
 }
