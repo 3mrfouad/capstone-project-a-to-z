@@ -1,3 +1,4 @@
+using AZLearn.Controllers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
@@ -56,12 +57,20 @@ namespace AZLearn
 
             #region Get User
 
-            /* var user = UserController.GetUserById("1");
-                        System.Diagnostics.Debug.WriteLine(
-                            $"Id:{user.UserId} Name:{user.Name} Email:{user.Email} ");*/
+            /*var user = UserController.GetUserById("1");
+            System.Diagnostics.Debug.WriteLine(
+                $"Id:{user.UserId} Name:{user.Name} Email:{user.Email} ");*/
             /*Test Passed*/
 
             #endregion
+
+            #region Create Timesheet
+
+            TimesheetController.CreateTimesheetByHomeworkId("1","2","60","40");
+            /*Test Passed*/
+
+            #endregion
+
 
             #endregion Testing Controllers Action
 

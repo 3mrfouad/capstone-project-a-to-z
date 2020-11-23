@@ -76,6 +76,7 @@ namespace AZLearn.Controllers
         /// <summary>
         ///     Update a Course CourseById
         ///     Description: Controller action that updates existing course by courseId
+        ///     It expects below parameters, and would populate the course by cohort id in the database.
         ///     Assumption:
         ///     The frontend view would populate the course information first through API call
         ///     User will edit as needed
@@ -119,6 +120,7 @@ namespace AZLearn.Controllers
         /// <summary>
         ///     GetCoursesByCohortId
         ///     Description: Controller action that returns list of existing coursesByCohortId
+        ///     It expects below parameters, and would populate the course by cohort id in the database.
         /// </summary>
         /// <param name="cohortId"></param>
         /// <returns>List of Courses by Cohort Id</returns>
