@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AZLearn.Data;
 using AZLearn.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace AZLearn.Controllers
 {
@@ -18,6 +19,19 @@ namespace AZLearn.Controllers
         public void GetGradeByRubricId(string rubricId)
         {
         }
+        /*public static List<Grade> GetGradesByStudentId(string studentId, string homeworkId)
+        {
+            using var context = new AppDbContext();
+            return context.Grades.Include("Rubric.Homework")
+                .Where(key => key.Rubric.HomeworkId == int.Parse(homeworkId) && key.StudentId == int.Parse(studentId))
+                .ToList();
+        }
+        public static List<Homework> GetHomeworksByCourseId(string courseId, string cohortId)
+        {
+            using AppDbContext context = new AppDbContext();
+            return context.Homeworks
+                .Where(key => key.CourseId == int.Parse(courseId) && key.CohortId == int.Parse(cohortId)).ToList();
+        }*/
         /// <summary>
         ///     CreateGradingByStudentId
         ///     Description: Controller action that creates new gradings for a student
