@@ -17,7 +17,7 @@ namespace AZLearn
         public static void Main(string[] args)
         {
             var timesheet = TimesheetController.GetTimesheetByHomeworkId("1", "3");
-            Debug.WriteLine(timesheet.SolvingTime + " "+ timesheet.StudyTime);
+            Debug.WriteLine(timesheet.SolvingTime + "  "+ timesheet.StudyTime);
             CreateHostBuilder(args).Build().Run();
         }
 
