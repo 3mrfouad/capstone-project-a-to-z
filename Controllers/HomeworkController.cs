@@ -62,9 +62,12 @@ namespace AZLearn.Controllers
                     InstructorId = parsedInstructorId,
                     CohortId = parsedCohortId,
                     IsAssignment = parsedIsAssignment,
+                    Title = title,
                     AvgCompletionTime = parsedAvgCompletionTime,
                     DueDate = parsedDuedate,
-                    ReleaseDate = parsedReleasedate
+                    ReleaseDate = parsedReleasedate,
+                    DocumentLink = documentLink,
+                    GitHubClassRoomLink = gitHubClassRoomLink
                 };
                 context.Homeworks.Add(newHomework);
                 context.SaveChanges();

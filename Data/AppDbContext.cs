@@ -113,6 +113,9 @@ namespace AZLearn.Data
                 entity.HasIndex(e => e.InstructorId)
                     .HasName("FK_Homework_Instructor");
 
+                entity.HasIndex(e => e.CohortId)
+                    .HasName("FK_Homework_Cohort");
+
                 entity.HasOne(thisEntity => thisEntity.Course)
                     .WithMany(parent => parent.Homeworks)
                     .HasForeignKey(thisEntity => thisEntity.CourseId)
@@ -124,6 +127,12 @@ namespace AZLearn.Data
                     .HasForeignKey(thisEntity => thisEntity.InstructorId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_Homework_Instructor");
+
+                entity.HasOne(thisEntity => thisEntity.Cohort)
+                    .WithMany(parent => parent.Homeworks)
+                    .HasForeignKey(thisEntity => thisEntity.CohortId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("FK_Homework_Cohort");
 
             });
 
