@@ -83,16 +83,12 @@ namespace AZLearn.Controllers
                     //In case there are no challenges, we will show 0/0 for challenges' marks
                     if (marksByGroup.Length == 1)
                     {
-                        gradeSummary = new GradeSummaryTypeForInstructor($"{total}",
-                            $"{marksByGroup[0]}/{rubricWeightByGroup[0]}", $"0/{rubricWeightByGroup[1]}", totalTimeSpentOnHomework,
-                            studentName);
+                        marksByGroup[1] = 0;
                     }
-                    else
-                    {
-                        gradeSummary = new GradeSummaryTypeForInstructor($"{total}",
-                            $"{marksByGroup[0]}/{rubricWeightByGroup[0]}",
-                            $"{marksByGroup[1]}/{rubricWeightByGroup[1]}", totalTimeSpentOnHomework, studentName);
-                    }
+
+                    gradeSummary = new GradeSummaryTypeForInstructor($"{total}",
+                        $"{marksByGroup[0]}/{rubricWeightByGroup[0]}",
+                        $"{marksByGroup[1]}/{rubricWeightByGroup[1]}", totalTimeSpentOnHomework, studentName);
                 }
                 gradeSummaries.Add(gradeSummary);
             }
