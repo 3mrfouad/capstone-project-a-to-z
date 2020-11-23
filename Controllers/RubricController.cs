@@ -22,8 +22,8 @@ namespace AZLearn.Controllers
             using var context = new AppDbContext();
             rubrics = context.Rubrics.Where(key => key.HomeworkId == parsedHomeworkId).ToList();
             return rubrics;
-        }
-        public static void CreateRubricsByHomeworkId(string homeworkId, List<Tuple<string, string, string>> rubrics)
+        } 
+public static void CreateRubricsByHomeworkId(string homeworkId, List<Tuple<string, string, string>> rubrics)
         {
             using var context = new AppDbContext();
             foreach (var (isChallenge, criteria, weight) in rubrics)
