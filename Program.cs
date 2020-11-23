@@ -54,6 +54,14 @@ namespace AZLearn
 
             #endregion
 
+            #region Get User
+
+            /* var user = UserController.GetUserById("1");
+                        System.Diagnostics.Debug.WriteLine(
+                            $"Id:{user.UserId} Name:{user.Name} Email:{user.Email} ");*/
+            /*Test Passed*/
+
+            #endregion
 
             #endregion Testing Controllers Action
 
