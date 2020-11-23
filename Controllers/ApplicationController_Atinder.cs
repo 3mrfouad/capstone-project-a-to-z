@@ -26,5 +26,45 @@ namespace AZLearn.Controllers
             return HomeworkController.GetHomeworksByCourseId(courseId, cohortId);
         }
 
+        /// <summary>
+        ///     GetHomeworkForStudent
+        ///     Request Type: GET
+        ///     This End point takes in Homework Id from link clicked and return homework record associated with that Id.
+        /// </summary>
+        /// <param name="homeworkId"></param>
+        /// <returns>Single homework record</returns>
+        [HttpGet("Homework")]
+        public ActionResult<Homework> GetHomeworkForStudent(string homeworkId)
+        {
+            return HomeworkController.GetHomeworkById(homeworkId);
+        }
+
+        /// <summary>
+        ///     GetTimesheetForStudent
+        ///     This End point takes in Homework Id from link clicked, Student Id from global store and return associated timesheet record.
+        /// </summary>
+        /// <param name="homeworkId"></param>
+        /// <param name="studentId"></param>
+        /// <returns>Single timesheet record</returns>
+        [HttpGet("Timesheet")]
+        public ActionResult<Timesheet> GetTimesheetForStudent(string homeworkId, string studentId)
+        {
+            var timesheet = TimesheetController.GetTimesheetByHomeworkId(homeworkId, studentId);
+            if (timesheet == null)
+            {
+                int parsedHomeworkId = int.Parse(homeworkId);
+                int parsedStudentId = int.Parse(studentId);
+                timesheet = new Timesheet()
+                {
+                    TimesheetId = 0,
+                    HomeworkId = parsedHomeworkId,
+                    StudentId = parsedStudentId,
+                    SolvingTime = 0,
+                    StudyTime = 0,
+                    Archive = false
+                };
+            }
+            return timesheet;
+        }
     }
 }
