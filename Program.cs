@@ -16,8 +16,12 @@ namespace AZLearn
     {
         public static void Main(string[] args)
         {
-            var timesheet = TimesheetController.GetTimesheetByHomeworkId("1", "3");
-            Debug.WriteLine(timesheet.SolvingTime + "  "+ timesheet.StudyTime);
+            /* Test GetGradeSummaryForInstructor Action method from Grade Controller */
+            var gradeSummaryList = GradeController.GetGradeSummaryForInstructor("1", "1");
+            foreach (var gradeSummary in gradeSummaryList)
+            {
+                Debug.WriteLine(gradeSummary.StudentName+ " "+ gradeSummary.TotalMarks + " "+ gradeSummary.MarksInRequirement + " " + gradeSummary.MarksInChallenge + " "+ gradeSummary.TotalTimeSpentOnHomework);
+            }
             CreateHostBuilder(args).Build().Run();
         }
 

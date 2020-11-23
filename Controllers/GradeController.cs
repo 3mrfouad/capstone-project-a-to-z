@@ -42,8 +42,10 @@ namespace AZLearn.Controllers
             string homeworkId)
         {
             List<GradeSummaryTypeForInstructor> gradeSummaries = new List<GradeSummaryTypeForInstructor>();
+
             using var context = new AppDbContext();
             var studentsByCohort = UserController.GetStudentsByCohortId(cohortId);
+
             //rubricWeightByGroup is an array with first element- total weight of requirements, second element- total weight of challenges for a specified Homework
             var rubricWeightByGroup = RubricController.GetRubricsByHomeworkId(homeworkId)
                 .GroupBy(key => key.IsChallenge).Select(key => key.Sum(s => s.Weight)).ToArray();
@@ -56,15 +58,21 @@ namespace AZLearn.Controllers
             //Loop to get GradeSummary for all students in a Cohort
             foreach (var student in studentsByCohort)
             {
-                var studentName = student.Name;
-                var gradesOfStudent = GetGradesByStudentId($"{student.UserId}", homeworkId);
+                string totalTimeSpentOnHomework;
                 GradeSummaryTypeForInstructor gradeSummary;
-                
+                var studentName = student.Name;
+                var timesheet = TimesheetController.GetTimesheetByHomeworkId(homeworkId, $"{student.UserId}");
+                if (timesheet == null)
+                    totalTimeSpentOnHomework = " ";
+                else
+                    totalTimeSpentOnHomework = (timesheet.SolvingTime + timesheet.StudyTime).ToString();
+
+                var gradesOfStudent = GetGradesByStudentId($"{student.UserId}", homeworkId);
                 //If grades do not exist for that student (in case Instructor has not added/marked grades for that student)- show empty string for grades 
                 if (gradesOfStudent.Count == 0)
                 {
                     gradeSummary = new GradeSummaryTypeForInstructor(" ", $" /{rubricWeightByGroup[0]}",
-                        $" /{rubricWeightByGroup[1]}", studentName);
+                        $" /{rubricWeightByGroup[1]}", totalTimeSpentOnHomework, studentName);
                 }
                 else
                 {
@@ -76,14 +84,14 @@ namespace AZLearn.Controllers
                     if (marksByGroup.Length == 1)
                     {
                         gradeSummary = new GradeSummaryTypeForInstructor($"{total}",
-                            $"{marksByGroup[0]}/{rubricWeightByGroup[0]}", $"0/{rubricWeightByGroup[1]}",
+                            $"{marksByGroup[0]}/{rubricWeightByGroup[0]}", $"0/{rubricWeightByGroup[1]}", totalTimeSpentOnHomework,
                             studentName);
                     }
                     else
                     {
                         gradeSummary = new GradeSummaryTypeForInstructor($"{total}",
                             $"{marksByGroup[0]}/{rubricWeightByGroup[0]}",
-                            $"{marksByGroup[1]}/{rubricWeightByGroup[1]}", studentName);
+                            $"{marksByGroup[1]}/{rubricWeightByGroup[1]}", totalTimeSpentOnHomework, studentName);
                     }
                 }
                 gradeSummaries.Add(gradeSummary);
