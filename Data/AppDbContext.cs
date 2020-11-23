@@ -133,7 +133,6 @@ namespace AZLearn.Data
                     .HasForeignKey(thisEntity => thisEntity.CohortId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_Homework_Cohort");
-
             });
 
             modelBuilder.Entity<Rubric>(entity =>

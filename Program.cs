@@ -16,9 +16,6 @@ namespace AZLearn
     {
         public static void Main(string[] args)
         {
-            /*Testing CreateHomeworkByCourseId*/
-            HomeworkController.CreateHomeworkByCourseId("1","1","1","true","To-Do App using PHP", "5", "2020/11/23", "2020/11/20", "http://googledrive", "http://githublink");
-
             CreateHostBuilder(args).Build().Run();
         }
 
