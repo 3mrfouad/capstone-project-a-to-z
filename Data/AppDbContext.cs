@@ -90,6 +90,7 @@ namespace AZLearn.Data
             {
                 /* Creating Composite Key with CohortId, CourseId  */
                 entity.HasKey(e => new {e.CohortId, e.CourseId});
+
             });
            
             modelBuilder.Entity<Homework>(entity =>
