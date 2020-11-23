@@ -8,7 +8,7 @@ using AZLearn.Models;
 
 namespace AZLearn.Controllers
 {
-    public class HomeworkController :Controller
+    public class HomeworkController : Controller
     {
         /// <summary>
         /// This action takes in Course Id and Cohort Id and returns List of Homeworks for specified course under the specified Cohort Id
@@ -17,14 +17,6 @@ namespace AZLearn.Controllers
         /// <param name="cohortId">Cohort Id</param>
         /// <returns>List of Homeworks for specified course under the specified Cohort Id</returns>
         public static List<Homework> GetHomeworksByCourseId(string courseId, string cohortId)
-        /// <summary>
-        /// GetHomeworkById
-        /// Description: Controller action that gets Homework information by the associated HomeworkId
-        /// It expects below parameters, and would populate the user information according to the parameter specified
-        /// </summary>
-        /// <param name="homeworkId"></param>
-        /// <returns>It returns the Homework Information based on the homework id </returns>
-        public static Homework GetHomeworkById(string homeworkId)
         {
             List<Homework> homeworks;
             int parsedCohortId = int.Parse(cohortId);
@@ -121,14 +113,24 @@ namespace AZLearn.Controllers
             homework.ReleaseDate = parsedReleasedate;
             homework.DocumentLink = documentLink;
             homework.GitHubClassRoomLink = gitHubClassRoomLink;
-              
+
             context.SaveChanges();
         }
+        /// <summary>
+        /// GetHomeworkById
+        /// Description: Controller action that gets Homework information by the associated HomeworkId
+        /// It expects below parameters, and would populate the user information according to the parameter specified
+        /// </summary>
+        /// <param name="homeworkId"></param>
+        /// <returns>It returns the Homework Information based on the homework id </returns>
+        public static Homework GetHomeworkById(string homeworkId)
+
+        {
             Homework result;
             var parsedHomeworkId = int.Parse(homeworkId);
             using var context = new AppDbContext();
             {
-                result=context.Homeworks.Single(key => key.HomeworkId==parsedHomeworkId);
+                result = context.Homeworks.Single(key => key.HomeworkId == parsedHomeworkId);
             }
             return result;
         }
