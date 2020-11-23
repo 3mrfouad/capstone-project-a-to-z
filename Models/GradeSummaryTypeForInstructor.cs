@@ -1,0 +1,23 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Xml.Schema;
+
+namespace AZLearn.Models
+{
+    public class GradeSummaryTypeForInstructor
+    {
+        public GradeSummaryTypeForInstructor(string totalMarks, string marksInRequirement, string marksInChallenge, string studentName)
+        {
+            TotalMarks = totalMarks;
+            MarksInRequirement = marksInRequirement;
+            MarksInChallenge = marksInChallenge;
+            StudentName = studentName;
+        }
+        public string TotalMarks { get; set; }
+        public string MarksInRequirement { get; set; }
+        public string MarksInChallenge { get; set; }
+        public string StudentName { get; set; }
+    }
+}
