@@ -1,7 +1,15 @@
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Net.WebSockets;
+using System.Threading.Tasks;
 using AZLearn.Controllers;
 using AZLearn.Models;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
 
 namespace AZLearn
 {
@@ -9,6 +17,73 @@ namespace AZLearn
     {
         public static void Main(string[] args)
         {
+            #region Testing Controllers' Actions
+
+            #region Create Cohort
+            /*CohortController.CreateCohort("Cohort 4.1", "20", "Edmonton", "Remote","2020-06-04","2020-08-30" );*/
+            /*Test passed*/
+            #endregion
+
+            #region Update Cohort
+            /*CohortController.UpdateCohortById("1", "Cohort 4.2", "40", "Edmonton", "Remote","2020-06-04","2020-08-30" );*/
+            /*Test passed*/
+            #endregion
+
+            #region Get Cohorts
+
+            /*var cohorts = CohortController.GetCohorts();
+            foreach (Cohort cohort in cohorts)
+            {
+                System.Diagnostics.Debug.WriteLine($"Id: {cohort.CohortId}  Mode of Teaching: {cohort.ModeOfTeaching}   Capacity: {cohort.Capacity} Name: {cohort.Name} City: {cohort.City} Start Date: {cohort.StartDate}  End Date: {cohort.EndDate}");
+            }*/
+            /*Test passed*/
+            #endregion
+
+            #region Create Grading by Student Id
+            /*var grading = new Dictionary<string, Tuple<string, string>>();
+            grading.Add("-1", new Tuple<string, string>("1", "Good Job"));
+            grading.Add("-2", new Tuple<string, string>("0", "Bad Job"));
+            GradeController.CreateGradingByStudentId("-1", grading);*/
+            /*Test Pass*/
+            #endregion
+
+            #region Update Grading by Student Id (overalload #1)
+            /*var grading = new Dictionary<string, Tuple<string, string>>();
+            grading.Add("-1", new Tuple<string, string>("1", "ok Job"));
+            grading.Add("-2", new Tuple<string, string>("1", "ok Job"));
+            GradeController.UpdateGradingByStudentId("-1", grading);*/
+            /*Test Pass*/
+            #endregion
+
+            #region Update Grading by Student Id (overalload #2)
+            /*var grading = new Dictionary<string,string>();
+            grading.Add("-1", "Thanks Instructor");
+            grading.Add("-2", "Thanks Instructor");
+            GradeController.UpdateGradingByStudentId("-1", grading);*/
+            /*Test Pass*/
+            #endregion
+
+            #region Create Rubrics By Homework Id
+            /*var rubrics = new List<Tuple<string, string, string>>();
+            rubrics.Add( new Tuple<string, string,string>("false", "Do a practice in so and so","1"));
+            rubrics.Add(new Tuple<string, string,string>("true", "Here is more difficult one","2"));
+            RubricController.CreateRubricsByHomeworkId("-2",rubrics);*/
+            /*Test Pass*/
+            #endregion
+
+            #region Update Rubrics By Homework Id
+
+            /*var rubrics = new Dictionary<string, Tuple<string, string, string>>();
+            rubrics.Add("3",new Tuple<string, string, string>("false", "Update, Do a practice per classroom demo", "1"));
+            rubrics.Add("4",new Tuple<string, string, string>("true", "Here is more difficult one to do", "1"));
+            RubricController.UpdateRubricsById(rubrics);*/
+            /*Test Pass*/
+            #endregion
+
+            #endregion Testing Controllers' Actions
+
+            /*=============================================================================================================================*/
+
             #region Testing Controllers Actions
 
             #region Create Course
