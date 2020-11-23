@@ -116,5 +116,26 @@ namespace AZLearn.Controllers
             return courses;
         }
 
+        /// <summary>
+        ///     GetCoursesByCohortId
+        ///     Description: Controller action that returns list of existing coursesByCohortId
+        /// </summary>
+        /// <param name="cohortId"></param>
+        /// <returns>List of Courses by Cohort Id</returns>
+        public static List<Course> GetCoursesByCohortId(string cohortId)
+        {
+            var parsedCohortId = int.Parse(cohortId);
+            using var context = new AppDbContext();
+            /*Retrieve all list of courses of specific Cohort by Filtering it by CohortId*/
+
+            var coursesListByCohortId =
+                context.Courses.Include(key => key.CohortCourses)
+                    .Where(key => key.CohortCourses
+                        .Any(subKey => subKey.CohortId==parsedCohortId))
+                    .ToList();
+
+            return coursesListByCohortId;
+        }
+
     }
 }

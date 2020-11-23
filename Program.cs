@@ -43,6 +43,18 @@ namespace AZLearn
 
             #endregion
 
+            #region Get Courses By Cohort
+
+            /*  var coursesList = CourseController.GetCoursesByCohortId("1");
+              foreach ( var course in coursesList )
+              {
+                  System.Diagnostics.Debug.WriteLine(
+                      $"Id:{course.CourseId} Instructor:{course.InstructorId} Name:{course.Name} Description:{course.Description} DurationInHrs:{course.DurationHrs} Resources Link: {course.ResourcesLink} ");
+              }*/
+
+            #endregion
+
+
             #endregion Testing Controllers Action
 
             CreateHostBuilder(args).Build().Run();
