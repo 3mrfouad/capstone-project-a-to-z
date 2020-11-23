@@ -45,6 +45,7 @@ namespace AZLearn.Controllers
         /// GetCourses
         /// Description:The API End Point looks for action GetCourses and retrieves the information of all courses from database.
         /// EndPoint Testing : localhost:xxxxx/application/GetCourses
+        /// /*Test Passed*/
         /// </summary>
         /// <returns>The API End Point returns list of all Courses in database.Tested successfully in Postman</returns>
         [HttpGet("GetCourses")]
@@ -52,6 +53,59 @@ namespace AZLearn.Controllers
         {
             return CourseController.GetCourses();
         }
+
+        /// <summary>
+        /// AssignCourseByCohortId  *********TEST FAILED ERROR MESSAGE IN POSTMAN*******
+        /// Description:he API End Point looks for action AssignCourseByCohortId in CourseController and retrieves the information of the course from database according to specified Cohortid.
+        /// EndPoint Testing : localhost:xxxxx/application/AssignCourseByCohortId
+        /// </summary>
+        /// <param name="cohortId"></param>
+        /// <param name="courseId"></param>
+        /// <returns>The End Point returns the Course according to the specified cohort id </returns>
+        [HttpPost("AssignCourseByCohortId")]
+        public ActionResult<Course> AssignCourseByCohortId(string cohortId,string courseId)
+        {
+            ActionResult<Course> result;
+            try
+            {
+                CourseController.AssignCourseByCohortId(cohortId,courseId);
+                result=StatusCode(200,"Success Message");
+            }
+            catch
+            {
+                result=StatusCode(403,"Error Message");
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// UpdateTimesheetById
+        /// Description:The API End Point looks for action UpdateTimesheetById in TimesheetController and updates the information of the timesheet on database as per specified requested edit parameters.
+        /// EndPoint Testing : localhost:xxxxx/application/UpdateTimesheetById
+        /// Test Passed
+        /// </summary>
+        /// <param name="timesheetId"></param>
+        /// <param name="solvingTime"></param>
+        /// <param name="studyTime"></param>
+        /// <returns>The End Point returns Success Message and Updates the Timesheet according to parameters specified </returns>
+        [HttpPatch("UpdateTimesheetById")]
+        public ActionResult UpdateTimesheetById(string timesheetId,string solvingTime,string studyTime)
+        {
+            ActionResult result;
+            try
+            {
+                TimesheetController.UpdateTimesheetById(timesheetId,solvingTime,studyTime);
+                result=StatusCode(200,"Success Message");
+            }
+            catch
+            {
+                result=StatusCode(403,"Error Message");
+            }
+            return result;
+        }
+
+
+
 
 
     }
