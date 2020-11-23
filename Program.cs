@@ -18,8 +18,6 @@ namespace AZLearn
         {
             #region Testing Controllers' Actions
 
-
-
             #region Create Cohort
             /*CohortController.CreateCohort("Cohort 4.1", "20", "Edmonton", "Remote","2020-06-04","2020-08-30" );*/
             /*Test passed*/
@@ -48,7 +46,6 @@ namespace AZLearn
             /*Test Pass*/
             #endregion
 
-
             #region Update Grading by Student Id (overalload #1)
             /*var grading = new Dictionary<string, Tuple<string, string>>();
             grading.Add("-1", new Tuple<string, string>("1", "ok Job"));
@@ -57,7 +54,7 @@ namespace AZLearn
             /*Test Pass*/
             #endregion
 
-            #region Update Grading by Student Id (overalload #1)
+            #region Update Grading by Student Id (overalload #2)
             /*var grading = new Dictionary<string,string>();
             grading.Add("-1", "Thanks Instructor");
             grading.Add("-2", "Thanks Instructor");

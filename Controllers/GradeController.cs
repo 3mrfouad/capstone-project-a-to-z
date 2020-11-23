@@ -19,7 +19,7 @@ namespace AZLearn.Controllers
         public void GetGradeByRubricId(string rubricId)
         {
         }
-        /*public static List<Grade> GetGradesByStudentId(string studentId, string homeworkId)
+        public static List<Grade> GetGradesByStudentId(string studentId, string homeworkId) //GetGradeByRubricId
         {
             using var context = new AppDbContext();
             return context.Grades.Include("Rubric.Homework")
@@ -31,7 +31,7 @@ namespace AZLearn.Controllers
             using AppDbContext context = new AppDbContext();
             return context.Homeworks
                 .Where(key => key.CourseId == int.Parse(courseId) && key.CohortId == int.Parse(cohortId)).ToList();
-        }*/
+        }
         /// <summary>
         ///     CreateGradingByStudentId
         ///     Description: Controller action that creates new gradings for a student
