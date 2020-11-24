@@ -84,8 +84,7 @@ namespace AZLearn.Controllers
         /// <param name="cohortId">Cohort Id</param>
         /// <param name="homeworkId">Homework Id</param>
         /// <returns></returns>
-        public static List<GradeSummaryTypeForInstructor> GetGradeSummaryForInstructor(string cohortId,
-            string homeworkId)
+        public static List<GradeSummaryTypeForInstructor> GetGradeSummaryForInstructor(string cohortId, string homeworkId)
         {
             List<GradeSummaryTypeForInstructor> gradeSummaries = new List<GradeSummaryTypeForInstructor>();
 

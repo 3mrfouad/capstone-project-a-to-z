@@ -10,7 +10,7 @@ namespace AZLearn.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class ApplicationController_Atinder :Controller
+    public class ApplicationController :Controller
     {
         /// <summary>     
         ///     GetHomeworkSummary
@@ -78,7 +78,7 @@ namespace AZLearn.Controllers
         /// <param name="solvingTime"></param>
         /// <param name="studyTime"></param>
         /// <returns>Success/Error message</returns>
-        [HttpPost("Timesheet")]
+        [HttpPost("CreateTimesheet")]
         public ActionResult CreateTimesheetByHomeworkId(string homeworkId, string studentId, string solvingTime, string studyTime)
         {
             ActionResult result;
@@ -92,6 +92,20 @@ namespace AZLearn.Controllers
                 result = StatusCode(403, "Error Message");
             }
             return result;
+        }
+
+        /// <summary>
+        ///     GetGradeSummaryForInstructor
+        ///     Request Type: GET
+        ///     This Endpoint returns Grade Summary and Timesheet Summary for all students in a cohort for a specified Homework.
+        /// </summary>
+        /// <param name="cohortId"></param>
+        /// <param name="homeworkId"></param>
+        /// <returns>custom object contains GradeSummery and Timesheet Summary for all students for a specified Homework</returns>
+        [HttpGet("InstructorGradeSummary")]
+        public ActionResult<List<GradeSummaryTypeForInstructor>> GetGradeSummaryForInstructor(string cohortId, string homeworkId)
+        {
+            return GradeController.GetGradeSummaryForInstructor(cohortId, homeworkId);
         }
     }
 }
