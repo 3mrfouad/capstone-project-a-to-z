@@ -6,6 +6,8 @@ import CourseSummaryStudent from "./components/Student/CourseSummaryStudent/Cour
 import CourseSummaryInstructor from "./components/Instructor/CourseSummaryInstructor/CourseSummaryInstructor";
 import HomeworkSummaryStudent from "./components/Student/HomeworkSummaryStudent/HomeworkSummaryStudent";
 import HomeworkStudent from "./components/Student/HomeworkStudent/HomeworkStudent";
+import SideBar from "./components/shared/SideBar/SideBar";
+import StudentGrades from "./components/Student/StudentGrades/StudentGrades";
 const App = () => {
   return (
     <React.Fragment>
@@ -25,6 +27,8 @@ const App = () => {
             exact
             component={HomeworkStudent}
           />
+          <Route path="/sidebar" exact component={SideBar} />
+          <Route path="/studentgrades" exact component={StudentGrades} />
         </Switch>
       </Router>
     </React.Fragment>
