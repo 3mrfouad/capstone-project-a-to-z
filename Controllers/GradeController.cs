@@ -71,8 +71,8 @@ namespace AZLearn.Controllers
             }            context.SaveChanges();        
         }
         /// <summary>
-        /// GetGradesByStudentId
-        /// This Action takes in Student Id and Homework Id and returns List of Grades associated to that student in the specified Homework.
+        ///     GetGradesByStudentId
+        ///     This Action takes in Student Id and Homework Id and returns List of Grades associated to that student in the specified Homework.
         /// </summary>
         /// <param name="studentId">Student Id</param>
         /// <param name="homeworkId">Homework Id</param>
@@ -88,15 +88,15 @@ namespace AZLearn.Controllers
             return grades;
         }
         /// <summary>
-        /// This action returns List of custom objects of data (related to a Homework and grades for all students in specified cohort) required in Grade Summary Screen for instructor.
-        /// The screen needs data as per the following Format:
-        /// Student Name, Total Marks, Marks Obtained in all requirements/ Total Requirement Marks, Marks obtained in all challenges/ Total Challenge Marks
+        ///     GetGradeSummaryForInstructor
+        ///     This action returns List of custom objects of data (related to a Homework and grades for all students in specified cohort) required in Grade Summary Screen for instructor.
+        ///     The screen needs data as per the following Format:
+        ///     Student Name, Total Marks, Marks Obtained in all requirements/ Total Requirement Marks, Marks obtained in all challenges/ Total Challenge Marks
         /// </summary>
         /// <param name="cohortId">Cohort Id</param>
         /// <param name="homeworkId">Homework Id</param>
         /// <returns></returns>
-        public static List<GradeSummaryTypeForInstructor> GetGradeSummaryForInstructor(string cohortId,
-            string homeworkId)
+        public static List<GradeSummaryTypeForInstructor> GetGradeSummaryForInstructor(string cohortId, string homeworkId)
         {
             List<GradeSummaryTypeForInstructor> gradeSummaries = new List<GradeSummaryTypeForInstructor>();
 
@@ -129,7 +129,7 @@ namespace AZLearn.Controllers
                 if (gradesOfStudent.Count == 0)
                 {
                     gradeSummary = new GradeSummaryTypeForInstructor(" ", $" /{rubricWeightByGroup[0]}",
-                        $" /{rubricWeightByGroup[1]}", totalTimeSpentOnHomework, studentName);
+                        $" /{rubricWeightByGroup[1]}", totalTimeSpentOnHomework, studentName, student.UserId);
                 }
                 else
                 {
@@ -145,7 +145,7 @@ namespace AZLearn.Controllers
 
                     gradeSummary = new GradeSummaryTypeForInstructor($"{total}",
                         $"{marksByGroup[0]}/{rubricWeightByGroup[0]}",
-                        $"{marksByGroup[1]}/{rubricWeightByGroup[1]}", totalTimeSpentOnHomework, studentName);
+                        $"{marksByGroup[1]}/{rubricWeightByGroup[1]}", totalTimeSpentOnHomework, studentName, student.UserId);
                 }
                 gradeSummaries.Add(gradeSummary);
             }
