@@ -37,10 +37,6 @@ namespace AZLearn.Controllers
             .ToArray();
         }
 
-        [HttpGet("All")]
-        public ActionResult<List<Homework>> AllHomeworks_GET()
-        {
-            return Ok(HomeworkController.GetHomeworksByCourseId("1", "1"));
-        }
+       
     }
 }
