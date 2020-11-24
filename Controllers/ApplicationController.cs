@@ -30,11 +30,11 @@ namespace AZLearn.Controllers
 
         /// <summary>
         /// GetCourses
-        /// Description:The API End Point looks for action GetCourses and retrieves the information of all courses from database.
+        /// Description:The API End Point looks for action GetCourses in CourseController and retrieves the information of all courses from database.
         /// EndPoint Testing : localhost:xxxxx/application/GetCourses
-        /// /*Test Passed*/
+        /// Test Passed
         /// </summary>
-        /// <returns>The API End Point returns list of all Courses in database.Tested successfully in Postman</returns>
+        /// <returns>The API End Point returns list of all Courses in database.</returns>
         [HttpGet(nameof(GetCourses))]
         public ActionResult<List<Course>>GetCourses()
         {
@@ -155,6 +155,19 @@ namespace AZLearn.Controllers
                 result=StatusCode(403,"Error Message");
             }
             return result;
+        }
+
+        /// <summary>
+        /// GetCourses
+        /// Description:The API End Point looks for action GetInstructors in UserController and retrieves the information of all instructors from database.
+        /// EndPoint Testing : localhost:xxxxx/application/GetInstructors
+        /// /*Test Passed*/
+        /// </summary>
+        /// <returns>The API End Point returns list of all Instructors in database</returns>
+        [HttpGet(nameof(GetInstructors))]
+        public ActionResult<List<User>> GetInstructors()
+        {
+            return UserController.GetInstructors();
         }
 
 
