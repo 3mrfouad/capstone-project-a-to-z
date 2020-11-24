@@ -1,87 +1,193 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Net;
+using Microsoft.AspNetCore.Mvc;
+using AZLearn.Models;
 
 namespace AZLearn.Controllers
 {
-    public class ApplicationController :Controller
+    [Route("[controller]")]
+    [ApiController]
+    public class ApplicationController : Controller
     {
-        // GET: ApplicationController
-        public ActionResult Index()
-        {
-            return View();
-        }
 
-        // GET: ApplicationController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
+        #region /application/updatestudentfeedback
 
-        // GET: ApplicationController/Create
-        public ActionResult Create()
+        [HttpPatch(nameof(UpdateStudentFeedback))]
+        public ActionResult UpdateStudentFeedback(string studentId, [FromBody] Dictionary<string, string> studentComment)
         {
-            return View();
-        }
-
-        // POST: ApplicationController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
+            ActionResult result;
             try
             {
-                return RedirectToAction(nameof(Index));
+                GradeController.UpdateGradingByStudentId(studentId, studentComment);
+                result = StatusCode(200, "Success Message");
             }
             catch
             {
-                return View();
+                result = StatusCode(403, "Error Message");
             }
+            return result;
         }
 
-        // GET: ApplicationController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
+        #endregion
 
-        // POST: ApplicationController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id,IFormCollection collection)
+        #region /application/creategrading
+
+        [HttpPost(nameof(CreateGrading))]
+        public ActionResult CreateGrading(string studentId,
+            [FromBody] Dictionary<string, Tuple<string, string>> gradings)
         {
+            ActionResult result;
             try
             {
-                return RedirectToAction(nameof(Index));
+                GradeController.CreateGradingByStudentId(studentId, gradings);
+                result = StatusCode(200, "Success Message");
             }
             catch
             {
-                return View();
+                result = StatusCode(403, "Error Message");
             }
+            return result;
         }
 
-        // GET: ApplicationController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
+        #endregion
 
-        // POST: ApplicationController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id,IFormCollection collection)
+        #region /application/updategrading
+
+        [HttpPatch(nameof(UpdateGrading))]
+        public ActionResult UpdateGrading(string studentId,
+            Dictionary<string, Tuple<string, string>> gradings)
         {
+            ActionResult result;
             try
             {
-                return RedirectToAction(nameof(Index));
+                GradeController.UpdateGradingByStudentId(studentId, gradings);
+                result = StatusCode(200, "Success Message");
             }
             catch
             {
-                return View();
+                result = StatusCode(403, "Error Message");
             }
+            return result;
         }
+
+        #endregion
+
+        #region /application/getcohorts
+
+        [HttpGet(nameof(GetCohorts))]
+        public ActionResult<List<Cohort>> GetCohorts()
+        {
+            ActionResult<List<Cohort>> result;
+            try
+            {
+                result = CohortController.GetCohorts();
+            }
+            catch
+            {
+                result = StatusCode(403, "Error Message");
+            }
+            return result;
+        }
+
+        #endregion
+
+        #region /application/createhomework
+
+        [HttpPost(nameof(CreateHomework))]
+        public ActionResult CreateHomework(string courseId, string instructorId, string cohortId,
+            string isAssignment, string title, string avgCompletionTime, string dueDate, string releaseDate,
+            string documentLink, string gitHubClassRoomLink)
+        {
+            ActionResult result;
+            try
+            {
+                HomeworkController.CreateHomeworkByCourseId(courseId, instructorId, cohortId,
+                    isAssignment, title, avgCompletionTime, dueDate, releaseDate,
+                    documentLink, gitHubClassRoomLink);
+                result = StatusCode(200, "Success Message");
+            }
+            catch
+            {
+                result = StatusCode(403, "Error Message");
+            }
+            return result;
+        }
+
+        #endregion
+
+        #region /application/updatehomework
+
+        [HttpPatch(nameof(UpdateHomework))]
+        public ActionResult UpdateHomework(string homeworkId, string courseId, string instructorId, string cohortId,
+            string isAssignment, string title, string avgCompletionTime, string dueDate, string releaseDate,
+            string documentLink, string gitHubClassRoomLink)
+        {
+            ActionResult result;
+            try
+            {
+                HomeworkController.UpdateHomeworkById(homeworkId, courseId, instructorId, cohortId,
+                 isAssignment, title, avgCompletionTime, dueDate, releaseDate,
+                 documentLink, gitHubClassRoomLink);
+                result = StatusCode(200, "Success Message");
+            }
+            catch
+            {
+                result = StatusCode(403, "Error Message");
+            }
+            return result;
+        }
+
+        /*UpdateHomeworkById(string homeworkId, string courseId, string instructorId, string cohortId,
+                    string isAssignment, string title, string avgCompletionTime, string dueDate, string releaseDate,
+                    string documentLink, string gitHubClassRoomLink)*/
+
+        #endregion
+
+        #region /application/createcohort
+
+        [HttpPost(nameof(CreateCohort))]
+        public ActionResult CreateCohort(string name, string capacity, string city,
+            string modeOfTeaching, string startDate, string endDate)
+        {
+            ActionResult result;
+            try
+            {
+                CohortController.CreateCohort( name,  capacity,  city,
+                 modeOfTeaching,  startDate,  endDate);
+                result = StatusCode(200, "Success Message");
+            }
+            catch
+            {
+                result = StatusCode(403, "Error Message");
+            }
+            return result;
+        }
+
+        #endregion
+
+        #region /application/updatecohort
+
+        [HttpPatch(nameof(UpdateCohort))]
+        public ActionResult UpdateCohort(string cohortId, string name, string capacity, string city,
+            string modeOfTeaching, string startDate, string endDate)
+        {
+            ActionResult result;
+            try
+            {
+                CohortController.UpdateCohortById(cohortId,name, capacity, city,
+                 modeOfTeaching, startDate, endDate);
+                result = StatusCode(200, "Success Message");
+            }
+            catch
+            {
+                result = StatusCode(403, "Error Message");
+            }
+            return result;
+        }
+
+
+        #endregion
+
     }
 }
