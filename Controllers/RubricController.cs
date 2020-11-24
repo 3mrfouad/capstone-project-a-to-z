@@ -1,14 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using AZLearn.Data;
 using AZLearn.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AZLearn.Controllers
 {
-    public class RubricController : ControllerBase
+    public class RubricController :ControllerBase
     {
         /// <summary>
         ///     GetRubricsByHomeworkId
@@ -18,43 +17,55 @@ namespace AZLearn.Controllers
         /// <returns>List of Rubrics associated with specified Homework Id</returns>
         public static List<Rubric> GetRubricsByHomeworkId(string homeworkId)
         {
-            int parsedHomeworkId = int.Parse(homeworkId);
-            List<Rubric> rubrics = new List<Rubric>();
+            var parsedHomeworkId = int.Parse(homeworkId);
+            var rubrics = new List<Rubric>();
             using var context = new AppDbContext();
-            rubrics = context.Rubrics.Where(key => key.HomeworkId == parsedHomeworkId).ToList();
+            rubrics=context.Rubrics.Where(key => key.HomeworkId==parsedHomeworkId).ToList();
             return rubrics;
-        } 
-    public static void CreateRubricsByHomeworkId(string homeworkId, List<Tuple<string, string, string>> rubrics)
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="homeworkId"></param>
+        /// <param name="rubrics"></param>
+        public static void CreateRubricsByHomeworkId(string homeworkId,List<Tuple<string,string,string>> rubrics)
         {
             using var context = new AppDbContext();
-            foreach (var (isChallenge, criteria, weight) in rubrics)
+            foreach ( var (isChallenge, criteria, weight) in rubrics )
             {
-                context.Rubrics.Add(new Rubric()
+                int parsedHomeworkId = int.Parse(homeworkId);
+                bool parsedIsChallenge = bool.Parse(isChallenge);
+                int parsedWeight = int.Parse(weight);
+                context.Rubrics.Add(new Rubric
                 {
-                    HomeworkId = int.Parse(homeworkId),
-                    IsChallenge = bool.Parse(isChallenge),
-                    Criteria = criteria,
-                    Weight = int.Parse(weight)
+                    HomeworkId=parsedHomeworkId,
+                    IsChallenge=parsedIsChallenge,
+                    Criteria=criteria,
+                    Weight=parsedWeight
                 });
             }
+
             context.SaveChanges();
         }
-
-
-        public static void UpdateRubricsById(Dictionary<string, Tuple<string, string, string>> rubrics)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rubrics"></param>
+        public static void UpdateRubricsById(Dictionary<string,Tuple<string,string,string>> rubrics)
         {
             using var context = new AppDbContext();
-            foreach (var (rubricId, (isChallenge, criteria, weight)) in rubrics)
+            foreach ( var (rubricId, (isChallenge, criteria, weight)) in rubrics )
             {
-                var rubric = context.Rubrics.Find(int.Parse(rubricId));
-                rubric.IsChallenge = bool.Parse(isChallenge);
-                rubric.Criteria = criteria;
-                rubric.Weight = int.Parse(weight);
+                int parsedRubricId = int.Parse(rubricId);
+                bool parsedIsChallenge = bool.Parse(isChallenge);
+                int parsedWeight = int.Parse(weight);
+                var rubric = context.Rubrics.Find(parsedRubricId);
+                rubric.IsChallenge=parsedIsChallenge;
+                rubric.Criteria=criteria;
+                rubric.Weight=parsedWeight;
             }
+
             context.SaveChanges();
-
-
         }
-
     }
 }

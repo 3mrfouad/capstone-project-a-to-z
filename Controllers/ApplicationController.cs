@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using AZLearn.Models;
+using System.Linq;
+using AZLearn.Models.Exceptions;
 
 namespace AZLearn.Controllers
 {
@@ -83,8 +83,9 @@ namespace AZLearn.Controllers
             try
             {
                 result = CohortController.GetCohorts();
+
             }
-            catch
+            catch (ValidationException e)
             {
                 result = StatusCode(403, "Error Message");
             }
@@ -123,6 +124,7 @@ namespace AZLearn.Controllers
         public ActionResult UpdateHomework(string homeworkId, string courseId, string instructorId, string cohortId,
             string isAssignment, string title, string avgCompletionTime, string dueDate, string releaseDate,
             string documentLink, string gitHubClassRoomLink)
+
         {
             ActionResult result;
             try
@@ -132,7 +134,7 @@ namespace AZLearn.Controllers
                  documentLink, gitHubClassRoomLink);
                 result = StatusCode(200, "Success Message");
             }
-            catch
+            catch (ArgumentException e)
             {
                 result = StatusCode(403, "Error Message");
             }
@@ -150,6 +152,7 @@ namespace AZLearn.Controllers
         [HttpPost(nameof(CreateCohort))]
         public ActionResult CreateCohort(string name, string capacity, string city,
             string modeOfTeaching, string startDate, string endDate)
+
         {
             ActionResult result;
             try
@@ -172,6 +175,7 @@ namespace AZLearn.Controllers
         [HttpPatch(nameof(UpdateCohort))]
         public ActionResult UpdateCohort(string cohortId, string name, string capacity, string city,
             string modeOfTeaching, string startDate, string endDate)
+
         {
             ActionResult result;
             try
@@ -180,7 +184,7 @@ namespace AZLearn.Controllers
                  modeOfTeaching, startDate, endDate);
                 result = StatusCode(200, "Success Message");
             }
-            catch
+            catch (ArgumentException e)
             {
                 result = StatusCode(403, "Error Message");
             }

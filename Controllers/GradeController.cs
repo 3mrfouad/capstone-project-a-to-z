@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using AZLearn.Data;
 using AZLearn.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace AZLearn.Controllers
@@ -16,22 +16,27 @@ namespace AZLearn.Controllers
         ///     It expects below parameters, and would populate the students grades for a specific rubric / homework
         /// </summary>
         /// <param name="studentId">string provided from frontend, and parsed to int to match model property data type</param>
-        /// <param name="gradings">Dictionary with rubricId as key and Tuple as value, the Tuple has two parameters i.e., mark and instructor comment</param>
+        /// <param name="gradings">
+        ///     Dictionary with rubricId as key and Tuple as value, the Tuple has two parameters i.e., mark and
+        ///     instructor comment
+        /// </param>
         public static void CreateGradingByStudentId(string studentId,
             Dictionary<string, Tuple<string, string>> gradings)
         {
             using var context = new AppDbContext();
             foreach (var (rubricId, (mark, instructorComment)) in gradings)
             {
-                context.Grades.Add(new Grade()
+                int parsedRubricId = int.Parse(rubricId);
+                int parsedStudentId = int.Parse(studentId);
+                int parsedMark = int.Parse(mark);
+                context.Grades.Add(new Grade
                 {
-                    RubricId = int.Parse(rubricId),
-                    StudentId = int.Parse(studentId),
-                    Mark = int.Parse(mark),
+                    RubricId = parsedRubricId,
+                    StudentId = parsedStudentId,
+                    Mark = parsedMark,
                     InstructorComment = instructorComment
                 });
             }
-
             context.SaveChanges();
         }
         /// <summary>
@@ -40,19 +45,24 @@ namespace AZLearn.Controllers
         ///     It expects below parameters, and would populate the updated students grades for a specific rubric / homework
         /// </summary>
         /// <param name="studentId">string provided from frontend, and parsed to int to match model property data type</param>
-        /// <param name="gradings">Dictionary with rubricId as key and Tuple as value, the Tuple has two parameters i.e., mark and instructor comment</param>
+        /// <param name="gradings">
+        ///     Dictionary with rubricId as key and Tuple as value, the Tuple has two parameters i.e., mark and
+        ///     instructor comment
+        /// </param>
         public static void UpdateGradingByStudentId(string studentId,
             Dictionary<string, Tuple<string, string>> gradings)
         {
             using var context = new AppDbContext();
             foreach (var (rubricId, (mark, instructorComment)) in gradings)
             {
-                var grade = context.Grades.Find(int.Parse(rubricId), int.Parse(studentId));
-                grade.Mark = int.Parse(mark);
+                int parsedRubricId = int.Parse(rubricId);
+                int parsedStudentId = int.Parse(studentId);
+                int parsedMark = int.Parse(mark);
+                var grade = context.Grades.Find(parsedRubricId, parsedStudentId);
+                grade.Mark = parsedMark;
                 grade.InstructorComment = instructorComment;
             }            context.SaveChanges();        
         }        
-
         /// <summary>
         /// UpdateGradingByStudentId
         ///     Description: Controller action that updates new gradings for a student i.e., student comments
@@ -98,7 +108,7 @@ namespace AZLearn.Controllers
         /// <returns></returns>
         public static List<GradeSummaryTypeForInstructor> GetGradeSummaryForInstructor(string cohortId, string homeworkId)
         {
-            List<GradeSummaryTypeForInstructor> gradeSummaries = new List<GradeSummaryTypeForInstructor>();
+            var gradeSummaries = new List<GradeSummaryTypeForInstructor>();
 
             using var context = new AppDbContext();
             var studentsByCohort = UserController.GetStudentsByCohortId(cohortId);
@@ -108,10 +118,7 @@ namespace AZLearn.Controllers
                 .GroupBy(key => key.IsChallenge).Select(key => key.Sum(s => s.Weight)).ToArray();
 
             //If there are no challenges, then weight of challenge = 0 to avoid NullValueException
-            if (rubricWeightByGroup.Length == 1)
-            {
-                rubricWeightByGroup[1] = 0;
-            }
+            if (rubricWeightByGroup.Length == 1) rubricWeightByGroup[1] = 0;
             //Loop to get GradeSummary for all students in a Cohort
             foreach (var student in studentsByCohort)
             {
@@ -135,20 +142,20 @@ namespace AZLearn.Controllers
                 {
                     var total = gradesOfStudent.Sum(key => key.Mark);
                     //Group marks of student in a homework by requirements and challenges and store them in array
-                    var marksByGroup = gradesOfStudent.GroupBy(key => key.Rubric.IsChallenge).Select(key => key.Sum(s => s.Mark))
+                    var marksByGroup = gradesOfStudent.GroupBy(key => key.Rubric.IsChallenge)
+                        .Select(key => key.Sum(s => s.Mark))
                         .ToArray();
                     //In case there are no challenges, we will show 0/0 for challenges' marks
-                    if (marksByGroup.Length == 1)
-                    {
-                        marksByGroup[1] = 0;
-                    }
+                    if (marksByGroup.Length == 1) marksByGroup[1] = 0;
 
                     gradeSummary = new GradeSummaryTypeForInstructor($"{total}",
                         $"{marksByGroup[0]}/{rubricWeightByGroup[0]}",
                         $"{marksByGroup[1]}/{rubricWeightByGroup[1]}", totalTimeSpentOnHomework, studentName, student.UserId);
                 }
+
                 gradeSummaries.Add(gradeSummary);
             }
+
             return gradeSummaries;
         }
     }

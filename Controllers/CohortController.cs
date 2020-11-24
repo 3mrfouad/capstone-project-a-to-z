@@ -23,15 +23,19 @@ namespace AZLearn.Controllers
         public static void CreateCohort(string name, string capacity, string city,
             string modeOfTeaching, string startDate, string endDate)
         {
+            var parsedStartDate = DateTime.Parse(startDate);
+            var parsedEndDate = DateTime.Parse(endDate);
+            var parsedCapacity = int.Parse(capacity);
+
             using var context = new AppDbContext();
             context.Add(new Cohort
             {
                 Name = name,
-                Capacity = int.Parse(capacity),
+                Capacity = parsedCapacity,
                 City = city,
                 ModeOfTeaching = modeOfTeaching,
-                StartDate = DateTime.Parse(startDate),
-                EndDate = DateTime.Parse(endDate)
+                StartDate = parsedStartDate,
+                EndDate = parsedEndDate
             });
             context.SaveChanges();
         }
@@ -55,14 +59,18 @@ namespace AZLearn.Controllers
         public static void UpdateCohortById(string cohortId, string name, string capacity, string city,
             string modeOfTeaching, string startDate, string endDate)
         {
+            var parsedStartDate = DateTime.Parse(startDate);
+            var parsedEndDate = DateTime.Parse(endDate);
+            var parsedCapacity = int.Parse(capacity);
+
             using var context = new AppDbContext();
             var cohort = context.Cohorts.Find(int.Parse(cohortId));
             cohort.Name = name;
-            cohort.Capacity = int.Parse(capacity);
+            cohort.Capacity = parsedCapacity;
             cohort.City = city;
             cohort.ModeOfTeaching = modeOfTeaching;
-            cohort.StartDate = DateTime.Parse(startDate);
-            cohort.EndDate = DateTime.Parse(endDate);
+            cohort.StartDate = parsedStartDate;
+            cohort.EndDate = parsedEndDate;
             context.SaveChanges();
         }
 
