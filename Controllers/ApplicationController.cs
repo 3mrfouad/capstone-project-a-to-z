@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using AZLearn.Models;
@@ -335,18 +336,23 @@ namespace AZLearn.Controllers
         ///     GetHomeworkForInstructor
         ///     Description:The API End Point looks for action GetHomeworkById in HomeworkController and GetRubricsByHomeworkId in
         ///     RubricController retrieves the information of the Homework with its rubrics from database.
+        ///     https://localhost:xxxxx/application/GetHomeworkForInstructor?homeworkId=-1
         /// </summary>
         /// <param name="homeworkId"></param>
         /// <returns></returns>
         [HttpGet(nameof(GetHomeworkForInstructor))]
-        public ActionResult<Tuple<Homework, List<Rubric>>> GetHomeworkForInstructor(string homeworkId)
+        public ActionResult<Tuple<Homework, List<Rubric>, List<User>, List<Course>>> GetHomeworkForInstructor(string homeworkId)
 
         {
             var homework = HomeworkController.GetHomeworkById(homeworkId);
 
             var rubricsList = RubricController.GetRubricsByHomeworkId(homeworkId);
 
-            return new Tuple<Homework, List<Rubric>>(homework, rubricsList);
+            var coursesList = CourseController.GetCourses();
+
+            var instructorsList = UserController.GetInstructors();
+
+            return new Tuple<Homework, List<Rubric>, List<User>,List<Course>>(homework, rubricsList, instructorsList, coursesList);
         }
 
         /// <summary>
