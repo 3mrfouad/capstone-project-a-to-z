@@ -27,29 +27,17 @@ namespace AZLearn.Controllers
         }
 
         /// <summary>
-        ///     GetHomeworkForStudent
+        ///     GetHomeworkTimesheetForStudent
         ///     Request Type: GET
-        ///     This End point takes in Homework Id from link clicked and return homework record associated with that Id.
-        /// </summary>
-        /// <param name="homeworkId"></param>
-        /// <returns>Single homework record</returns>
-        [HttpGet("Homework")]
-        public ActionResult<Homework> GetHomeworkForStudent(string homeworkId)
-        {
-            return HomeworkController.GetHomeworkById(homeworkId);
-        }
-
-        /// <summary>
-        ///     GetTimesheetForStudent
-        ///     Request Type: GET
-        ///     This End point takes in Homework Id from link clicked, Student Id from global store and return associated timesheet record.
+        ///     This End point takes in Homework Id from link clicked, Student Id from global store and return associated homework record and timesheet record.
         /// </summary>
         /// <param name="homeworkId"></param>
         /// <param name="studentId"></param>
-        /// <returns>Single timesheet record</returns>
-        [HttpGet("Timesheet")]
-        public ActionResult<Timesheet> GetTimesheetForStudent(string homeworkId, string studentId)
+        /// <returns>Tuple of homework record, timesheet record</returns>
+        [HttpGet("HomeworkTimesheet")]
+        public ActionResult<Tuple<Homework, Timesheet>> GetHomeworkTimesheetForStudent(string homeworkId, string studentId)
         {
+            var homework = HomeworkController.GetHomeworkById(homeworkId);
             var timesheet = TimesheetController.GetTimesheetByHomeworkId(homeworkId, studentId);
             if (timesheet == null)
             {
@@ -65,7 +53,7 @@ namespace AZLearn.Controllers
                     Archive = false
                 };
             }
-            return timesheet;
+            return new Tuple<Homework, Timesheet>(homework, timesheet);
         }
 
         /// <summary>
@@ -93,7 +81,7 @@ namespace AZLearn.Controllers
             }
             return result;
         }
-
+        
         /// <summary>
         ///     GetGradeSummaryForInstructor
         ///     Request Type: GET
