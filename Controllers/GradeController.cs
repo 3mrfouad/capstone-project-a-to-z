@@ -34,7 +34,6 @@ namespace AZLearn.Controllers
 
             context.SaveChanges();
         }
-
         /// <summary>
         ///     UpdateGradingByStudentId
         ///     Description: Controller action that updates new gradings for a student i.e., grades and instructor comments
@@ -51,12 +50,26 @@ namespace AZLearn.Controllers
                 var grade = context.Grades.Find(int.Parse(rubricId), int.Parse(studentId));
                 grade.Mark = int.Parse(mark);
                 grade.InstructorComment = instructorComment;
-            }
+            }            context.SaveChanges();        
+        }        
 
-            context.SaveChanges();
-
+        /// <summary>
+        /// UpdateGradingByStudentId
+        ///     Description: Controller action that updates new gradings for a student i.e., student comments
+        ///     It expects below parameters, and would populate the updated student comments for a specific rubric / homework
+        /// </summary>
+        /// <param name="studentId"></param>
+        /// <param name="studentComment">Dictionary with rubricId as key and studentComment as value</param>
+        public static void UpdateGradingByStudentId(string studentId, Dictionary<string, string> studentComment)
+        {
+            using var context = new AppDbContext();
+            var grade = new Grade(); ;
+            foreach (var (rubricId, comment) in studentComment)
+            {
+                grade = context.Grades.Find(int.Parse(rubricId), int.Parse(studentId));
+                grade.StudentComment = comment;
+            }            context.SaveChanges();        
         }
-
         /// <summary>
         /// GetGradesByStudentId
         /// This Action takes in Student Id and Homework Id and returns List of Grades associated to that student in the specified Homework.
@@ -74,7 +87,6 @@ namespace AZLearn.Controllers
                 .ToList();
             return grades;
         }
-
         /// <summary>
         /// This action returns List of custom objects of data (related to a Homework and grades for all students in specified cohort) required in Grade Summary Screen for instructor.
         /// The screen needs data as per the following Format:
@@ -139,8 +151,5 @@ namespace AZLearn.Controllers
             }
             return gradeSummaries;
         }
-
-
-
     }
 }

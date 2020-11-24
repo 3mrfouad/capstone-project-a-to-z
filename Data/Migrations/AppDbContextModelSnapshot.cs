@@ -202,7 +202,8 @@ namespace AZLearn.Data.Migrations
 
                     b.HasKey("HomeworkId");
 
-                    b.HasIndex("CohortId");
+                    b.HasIndex("CohortId")
+                        .HasName("FK_Homework_Cohort");
 
                     b.HasIndex("CourseId")
                         .HasName("FK_Homework_Course");
@@ -441,7 +442,8 @@ namespace AZLearn.Data.Migrations
                     b.HasOne("AZLearn.Models.Cohort", "Cohort")
                         .WithMany("Homeworks")
                         .HasForeignKey("CohortId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK_Homework_Cohort")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("AZLearn.Models.Course", "Course")

@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AZLearn.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201122174646_firstMigration")]
-    partial class firstMigration
+    [Migration("20201124022048_CohortId_Constrain_Migration")]
+    partial class CohortId_Constrain_Migration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -167,6 +167,9 @@ namespace AZLearn.Data.Migrations
                     b.Property<float>("AvgCompletionTime")
                         .HasColumnType("float(5,2)");
 
+                    b.Property<int>("CohortId")
+                        .HasColumnType("int(10)");
+
                     b.Property<int>("CourseId")
                         .HasColumnType("int(10)");
 
@@ -200,6 +203,9 @@ namespace AZLearn.Data.Migrations
                         .HasAnnotation("MySql:Collation", "utf8mb4_general_ci");
 
                     b.HasKey("HomeworkId");
+
+                    b.HasIndex("CohortId")
+                        .HasName("FK_Homework_Cohort");
 
                     b.HasIndex("CourseId")
                         .HasName("FK_Homework_Course");
@@ -435,6 +441,13 @@ namespace AZLearn.Data.Migrations
 
             modelBuilder.Entity("AZLearn.Models.Homework", b =>
                 {
+                    b.HasOne("AZLearn.Models.Cohort", "Cohort")
+                        .WithMany("Homeworks")
+                        .HasForeignKey("CohortId")
+                        .HasConstraintName("FK_Homework_Cohort")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("AZLearn.Models.Course", "Course")
                         .WithMany("Homeworks")
                         .HasForeignKey("CourseId")

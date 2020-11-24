@@ -2,7 +2,7 @@
 
 namespace AZLearn.Data.Migrations
 {
-    public partial class Add_CohortId_to_Homework_Table_Migration : Migration
+    public partial class CohortId_Constrain_Migration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,27 +14,27 @@ namespace AZLearn.Data.Migrations
                 defaultValue: 0);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Homework_CohortId",
+                name: "FK_Homework_Cohort",
                 table: "Homework",
                 column: "CohortId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Homework_Cohort_CohortId",
+                name: "FK_Homework_Cohort",
                 table: "Homework",
                 column: "CohortId",
                 principalTable: "Cohort",
                 principalColumn: "CohortId",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Homework_Cohort_CohortId",
+                name: "FK_Homework_Cohort",
                 table: "Homework");
 
             migrationBuilder.DropIndex(
-                name: "IX_Homework_CohortId",
+                name: "FK_Homework_Cohort",
                 table: "Homework");
 
             migrationBuilder.DropColumn(
