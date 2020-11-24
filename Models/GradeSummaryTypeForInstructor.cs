@@ -11,13 +11,14 @@ namespace AZLearn.Models
     /// </summary>
     public class GradeSummaryTypeForInstructor
     {
-        public GradeSummaryTypeForInstructor(string totalMarks, string marksInRequirement, string marksInChallenge, string totalTimeSpentOnHomework, string studentName)
+        public GradeSummaryTypeForInstructor(string totalMarks, string marksInRequirement, string marksInChallenge, string totalTimeSpentOnHomework, string studentName, int studentId)
         {
             TotalMarks = totalMarks;
             MarksInRequirement = marksInRequirement;
             MarksInChallenge = marksInChallenge;
             TotalTimeSpentOnHomework = totalTimeSpentOnHomework;
             StudentName = studentName;
+            StudentId = studentId;
         }
         public string TotalMarks { get; set; }
         public string MarksInRequirement { get; set; }

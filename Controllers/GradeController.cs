@@ -117,7 +117,7 @@ namespace AZLearn.Controllers
                 if (gradesOfStudent.Count == 0)
                 {
                     gradeSummary = new GradeSummaryTypeForInstructor(" ", $" /{rubricWeightByGroup[0]}",
-                        $" /{rubricWeightByGroup[1]}", totalTimeSpentOnHomework, studentName);
+                        $" /{rubricWeightByGroup[1]}", totalTimeSpentOnHomework, studentName, student.UserId);
                 }
                 else
                 {
@@ -133,7 +133,7 @@ namespace AZLearn.Controllers
 
                     gradeSummary = new GradeSummaryTypeForInstructor($"{total}",
                         $"{marksByGroup[0]}/{rubricWeightByGroup[0]}",
-                        $"{marksByGroup[1]}/{rubricWeightByGroup[1]}", totalTimeSpentOnHomework, studentName);
+                        $"{marksByGroup[1]}/{rubricWeightByGroup[1]}", totalTimeSpentOnHomework, studentName, student.UserId);
                 }
                 gradeSummaries.Add(gradeSummary);
             }
