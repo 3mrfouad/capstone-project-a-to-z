@@ -141,7 +141,7 @@ namespace AZLearn
 
             #region Get List of All Instructors
 
-            /*var instructors = UserController.GetInstructors();
+           /* var instructors = UserController.GetInstructors();
             foreach ( User user in instructors )
             {
                 System.Diagnostics.Debug.WriteLine(
