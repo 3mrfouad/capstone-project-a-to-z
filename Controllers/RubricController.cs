@@ -11,7 +11,8 @@ namespace AZLearn.Controllers
     public class RubricController : ControllerBase
     {
         /// <summary>
-        /// This action takes in Homework Id and returns List of Rubrics associated with that Homework Id
+        ///     GetRubricsByHomeworkId
+        ///     This action takes in Homework Id and returns List of Rubrics associated with that Homework Id
         /// </summary>
         /// <param name="homeworkId">Homework Id</param>
         /// <returns>List of Rubrics associated with specified Homework Id</returns>
@@ -23,7 +24,7 @@ namespace AZLearn.Controllers
             rubrics = context.Rubrics.Where(key => key.HomeworkId == parsedHomeworkId).ToList();
             return rubrics;
         } 
-public static void CreateRubricsByHomeworkId(string homeworkId, List<Tuple<string, string, string>> rubrics)
+    public static void CreateRubricsByHomeworkId(string homeworkId, List<Tuple<string, string, string>> rubrics)
         {
             using var context = new AppDbContext();
             foreach (var (isChallenge, criteria, weight) in rubrics)
