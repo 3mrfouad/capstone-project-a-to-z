@@ -126,6 +126,36 @@ namespace AZLearn.Controllers
             }
             return result;
         }
+        /// <summary>
+        ///  UpdateCourseById
+        /// Description:The API End Point looks for action UpdateCourseById in CourseController and updates the information of the course on database as per specified requested edit parameters.
+        /// EndPoint Testing :localhost:xxxxx/application/UpdateCourseById?courseId=6&instructorId=2&name=REDUX&description=Basics&durationHrs=2&resourcesLink=www.redux.com
+        /// Test Passed
+        /// </summary>
+        /// <param name="courseId"></param>
+        /// <param name="instructorId"></param>
+        /// <param name="name"></param>
+        /// <param name="description"></param>
+        /// <param name="durationHrs"></param>
+        /// <param name="resourcesLink"></param>
+        /// <returns></returns>
+        [HttpPatch(nameof(UpdateCourseById))]
+        public ActionResult UpdateCourseById(string courseId,string instructorId,string name,string description,
+            string durationHrs,string resourcesLink)
+        {
+            ActionResult result;
+            try
+            {
+                CourseController.UpdateCourseById(courseId,instructorId,name, description,
+                durationHrs,resourcesLink);
+                result=StatusCode(200,"Success Message");
+            }
+            catch
+            {
+                result=StatusCode(403,"Error Message");
+            }
+            return result;
+        }
 
 
 
