@@ -28,12 +28,15 @@ namespace AZLearn.Controllers
             using var context = new AppDbContext();
             foreach (var (isChallenge, criteria, weight) in rubrics)
             {
+                int parsedHomeworkId = int.Parse(homeworkId);
+                bool parsedIsChallenge = bool.Parse(isChallenge);
+                int parsedWeight = int.Parse(weight);
                 context.Rubrics.Add(new Rubric()
                 {
-                    HomeworkId = int.Parse(homeworkId),
-                    IsChallenge = bool.Parse(isChallenge),
+                    HomeworkId =parsedHomeworkId,
+                    IsChallenge =parsedIsChallenge,
                     Criteria = criteria,
-                    Weight = int.Parse(weight)
+                    Weight =parsedWeight,
                 });
             }
             context.SaveChanges();
@@ -45,10 +48,13 @@ namespace AZLearn.Controllers
             using var context = new AppDbContext();
             foreach (var (rubricId, (isChallenge, criteria, weight)) in rubrics)
             {
-                var rubric = context.Rubrics.Find(int.Parse(rubricId));
-                rubric.IsChallenge = bool.Parse(isChallenge);
+                int parsedRubricId = int.Parse(rubricId);
+                bool parsedIsChallenge = bool.Parse(isChallenge);
+                int parsedWeight = int.Parse(weight);
+                var rubric = context.Rubrics.Find(parsedRubricId);
+                rubric.IsChallenge=parsedIsChallenge;
                 rubric.Criteria = criteria;
-                rubric.Weight = int.Parse(weight);
+                rubric.Weight =parsedWeight;
             }
             context.SaveChanges();
 
