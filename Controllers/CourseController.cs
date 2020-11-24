@@ -26,25 +26,30 @@ namespace AZLearn.Controllers
         public static void CreateCourseByCohortId(string cohortId, string instructorId, string name, string description,
             string durationHrs, string resourcesLink, string startDate, string endDate)
         {
-          /*  int parsedCohortId;
-            int parsedInstructorId;
-            if ( string.IsNullOrWhiteSpace(cohortId)&&string.IsNullOrWhiteSpace(instructorId) )
-            {
-                throw new ArgumentNullException(nameof(cohortId)+" is null.");
-            }
-            if ( !int.TryParse(cohortId,out parsedCohortId) )
-            {
-                throw new ArgumentException(nameof(cohortId)+" is not valid.",nameof(cohortId));
-            }*/
+            /*  int parsedCohortId;
+              int parsedInstructorId;
+              if ( string.IsNullOrWhiteSpace(cohortId)&&string.IsNullOrWhiteSpace(instructorId) )
+              {
+                  throw new ArgumentNullException(nameof(cohortId)+" is null.");
+              }
+              if ( !int.TryParse(cohortId,out parsedCohortId) )
+              {
+                  throw new ArgumentException(nameof(cohortId)+" is not valid.",nameof(cohortId));
+              }*/
+            var parsedInstructorId = int.Parse(instructorId);
+            var parsedDurationHrs = float.Parse(durationHrs);
+            var parsedCohortId = int.Parse(cohortId);
+            var parsedStartDate = DateTime.Parse(startDate);
+            var parsedEnDateTime = DateTime.Parse(endDate);
 
             using var context = new AppDbContext();
             var newCourse = new Course
             {
                 /*  Create a Course*/
-                InstructorId = int.Parse(instructorId),
+                InstructorId = parsedInstructorId,
                 Name = name,
                 Description = description,
-                DurationHrs = float.Parse(durationHrs),
+                DurationHrs = parsedDurationHrs,
                 ResourcesLink = resourcesLink
             };
 
@@ -52,13 +57,12 @@ namespace AZLearn.Controllers
             context.SaveChanges();
 
             /*Creates a Join between Course and Cohort by Creating an object*/
-
             var newCohortCourse = new CohortCourse
             {
-                CohortId = int.Parse(cohortId),
+                CohortId = parsedCohortId,
                 CourseId = newCourse.CourseId,
-                StartDate = DateTime.Parse(startDate),
-                EndDate = DateTime.Parse(endDate)
+                StartDate = parsedStartDate,
+                EndDate = parsedEnDateTime
             };
             context.CohortCourses.Add(newCohortCourse);
 
@@ -74,11 +78,13 @@ namespace AZLearn.Controllers
         /// <param name="courseId"></param>
         public static void AssignCourseByCohortId(string cohortId, string courseId)
         {
+            var parsedCohortId = int.Parse(cohortId);
+            var parsedCourseId = int.Parse(courseId);
             using var context = new AppDbContext();
             var AddCourseByCohortId = new CohortCourse
             {
-                CohortId = int.Parse(cohortId),
-                CourseId = int.Parse(courseId)
+                CohortId = parsedCohortId,
+                CourseId = parsedCourseId
             };
             context.CohortCourses.Add(AddCourseByCohortId);
             context.SaveChanges();
@@ -103,14 +109,16 @@ namespace AZLearn.Controllers
             string durationHrs, string resourcesLink)
         {
             var parsedCourseId = int.Parse(courseId);
+            var parsedInstructorId = int.Parse(instructorId);
+            var parsedDurationHrs = float.Parse(durationHrs);
             using var context = new AppDbContext();
             {
                 var course = context.Courses.SingleOrDefault(key => key.CourseId == parsedCourseId);
 
-                course.InstructorId = int.Parse(instructorId);
+                course.InstructorId = parsedInstructorId;
                 course.Name = name;
                 course.Description = description;
-                course.DurationHrs = float.Parse(durationHrs);
+                course.DurationHrs = parsedDurationHrs;
                 course.ResourcesLink = resourcesLink;
             }
             context.SaveChanges();
