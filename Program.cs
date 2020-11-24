@@ -142,19 +142,19 @@ namespace AZLearn
 
             #region Get List of All Instructors
 
-            var instructors = UserController.GetInstructors();
+           /* var instructors = UserController.GetInstructors();
             foreach ( User user in instructors )
             {
                 System.Diagnostics.Debug.WriteLine(
                     $"Id:{user.UserId} Instructor Name:{user.Name} Email: {user.Email} Is Instructor:{user.IsInstructor} ");
-            }
+            }*/
             /*Test Passed*/
 
             #endregion
 
             #region Create Timesheet
 
-            TimesheetController.CreateTimesheetByHomeworkId("1", "2", "60", "40");
+            /*TimesheetController.CreateTimesheetByHomeworkId("1", "2", "60", "40");*/
             /*Test Passed*/
 
             #endregion

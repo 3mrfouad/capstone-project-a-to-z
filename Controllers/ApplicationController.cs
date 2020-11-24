@@ -95,5 +95,19 @@ namespace AZLearn.Controllers
         {
             return GradeController.GetGradeSummaryForInstructor(cohortId, homeworkId);
         }
+
+        /// <summary>
+        ///     GetGrades
+        ///     Request Type: GET
+        /// This Endpoint returns Grades of a specified student for a specified course.
+        /// </summary>
+        /// <param name="studentId"></param>
+        /// <param name="homeworkId"></param>
+        /// <returns>Grades for one student for one course</returns>
+        [HttpGet("Grades")]
+        public ActionResult<List<Grade>> GetGrades(string studentId, string homeworkId)
+        {
+            return GradeController.GetGradesByStudentId(studentId, homeworkId);
+        }
     }
 }
