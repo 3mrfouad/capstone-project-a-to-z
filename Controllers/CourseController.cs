@@ -26,6 +26,17 @@ namespace AZLearn.Controllers
         public static void CreateCourseByCohortId(string cohortId, string instructorId, string name, string description,
             string durationHrs, string resourcesLink, string startDate, string endDate)
         {
+          /*  int parsedCohortId;
+            int parsedInstructorId;
+            if ( string.IsNullOrWhiteSpace(cohortId)&&string.IsNullOrWhiteSpace(instructorId) )
+            {
+                throw new ArgumentNullException(nameof(cohortId)+" is null.");
+            }
+            if ( !int.TryParse(cohortId,out parsedCohortId) )
+            {
+                throw new ArgumentException(nameof(cohortId)+" is not valid.",nameof(cohortId));
+            }*/
+
             using var context = new AppDbContext();
             var newCourse = new Course
             {
@@ -128,16 +139,16 @@ namespace AZLearn.Controllers
         {
             var parsedCohortId = int.Parse(cohortId);
             using var context = new AppDbContext();
+
             /*Retrieve all list of courses of specific Cohort by Filtering it by CohortId*/
 
             var coursesListByCohortId =
                 context.Courses.Include(key => key.CohortCourses)
                     .Where(key => key.CohortCourses
-                        .Any(subKey => subKey.CohortId==parsedCohortId))
+                        .Any(subKey => subKey.CohortId == parsedCohortId))
                     .ToList();
 
             return coursesListByCohortId;
         }
-
     }
 }

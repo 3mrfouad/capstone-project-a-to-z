@@ -38,6 +38,7 @@
     <Folder Include="ClientApp\src\reducers\" />
     <Folder Include="ClientApp\src\reducers\" />
     <Folder Include="Data\" />
+    <Folder Include="Models\CodeSnippets\ExceptionSnippets\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

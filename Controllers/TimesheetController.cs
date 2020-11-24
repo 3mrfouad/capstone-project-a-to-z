@@ -19,13 +19,18 @@ namespace AZLearn.Controllers
         public static void CreateTimesheetByHomeworkId(string homeworkId, string studentId, string solvingTime,
             string studyTime)
         {
+            var parsedHomeworkId = int.Parse(homeworkId);
+            var parsedStudentId = int.Parse(studentId);
+            var parsedSolvingTime = float.Parse(solvingTime);
+            var parsedStudyTime = float.Parse(studyTime);
+
             using var context = new AppDbContext();
             var newTimesheet = new Timesheet
             {
-                HomeworkId = int.Parse(homeworkId),
-                StudentId = int.Parse(studentId),
-                SolvingTime = float.Parse(solvingTime),
-                StudyTime = float.Parse(studyTime)
+                HomeworkId = parsedHomeworkId,
+                StudentId = parsedStudentId,
+                SolvingTime = parsedSolvingTime,
+                StudyTime = parsedStudyTime
             };
 
             context.Timesheets.Add(newTimesheet);
@@ -47,26 +52,29 @@ namespace AZLearn.Controllers
         public static void UpdateTimesheetById(string timesheetId, string solvingTime, string studyTime)
         {
             var parsedTimesheetId = int.Parse(timesheetId);
+            var parsedSolvingTime = float.Parse(solvingTime);
+            var parsedStudyTime = float.Parse(studyTime);
+
             using var context = new AppDbContext();
-            var timesheet = context.Timesheets.Find(int.Parse(timesheetId));
-            timesheet.SolvingTime = float.Parse(solvingTime);
-            timesheet.StudyTime = float.Parse(studyTime);
+            var timesheet = context.Timesheets.Find(parsedTimesheetId);
+            timesheet.SolvingTime = parsedSolvingTime;
+            timesheet.StudyTime = parsedStudyTime;
             context.SaveChanges();
         }
 
         /// <summary>
-        /// This Action returns timesheet of a specified student for a specified Homework.
+        ///     This Action returns timesheet of a specified student for a specified Homework.
         /// </summary>
         /// <param name="homeworkId">Homework Id</param>
         /// <param name="studentId">Student Id</param>
         /// <returns></returns>
         public static Timesheet GetTimesheetByHomeworkId(string homeworkId, string studentId)
         {
-            int parsedHomeworkId = int.Parse(homeworkId);
-            int parsedStudentId = int.Parse(studentId);
+            var parsedHomeworkId = int.Parse(homeworkId);
+            var parsedStudentId = int.Parse(studentId);
 
             using var context = new AppDbContext();
-            Timesheet timesheet = context.Timesheets.SingleOrDefault(key =>
+            var timesheet = context.Timesheets.SingleOrDefault(key =>
                 key.HomeworkId == parsedHomeworkId && key.StudentId == parsedStudentId);
             return timesheet;
         }

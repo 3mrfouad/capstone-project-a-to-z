@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using AZLearn.Models;
+using AZLearn.Models.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -42,6 +44,38 @@ namespace AZLearn.Controllers
         }
 
         /// <summary>
+        ///     GetCourses
+        ///     Description:The API End Point looks for action GetInstructors in UserController and retrieves the information of
+        ///     all instructors from database.
+        ///     EndPoint Testing : localhost:xxxxx/application/GetInstructors
+        ///     /*Test Passed*/
+        /// </summary>
+        /// <returns>The API End Point returns list of all Instructors in database</returns>
+        [HttpGet(nameof(GetInstructors))]
+        public ActionResult<List<User>> GetInstructors()
+        {
+            return UserController.GetInstructors();
+        }
+
+        /// <summary>
+        ///     GetHomeworkForInstructor
+        ///     Description:The API End Point looks for action GetHomeworkById in HomeworkController and GetRubricsByHomeworkId in
+        ///     RubricController retrieves the information of the Homework with its rubrics from database.
+        /// </summary>
+        /// <param name="homeworkId"></param>
+        /// <returns></returns>
+        [HttpGet(nameof(GetHomeworkForInstructor))]
+        public ActionResult<Tuple<Homework,List<Rubric>>> GetHomeworkForInstructor(string homeworkId)
+
+        {
+            var homework = HomeworkController.GetHomeworkById(homeworkId);
+
+            var rubricsList = RubricController.GetRubricsByHomeworkId(homeworkId);
+
+            return new Tuple<Homework,List<Rubric>>(homework,rubricsList);
+        }
+
+        /// <summary>
         ///     AssignCourseByCohortId
         ///     Description:The API End Point looks for action AssignCourseByCohortId in CourseController and assigns/creates a
         ///     course according to specified Course id and Cohort id .
@@ -58,14 +92,21 @@ namespace AZLearn.Controllers
             try
             {
                 CourseController.AssignCourseByCohortId(cohortId, courseId);
-                result = StatusCode(200, "Success Message");
+                result = StatusCode(200,"Successfully Assigned Course to Cohort");
             }
-            catch
+            catch ( ValidationException e )
             {
-                result = StatusCode(403, "Error Message");
-            }
+                string error = "Error(s) During Creation: "+
+                               e.ValidationExceptions.Select(x => x.Message)
+                                   .Aggregate((x,y) => x+", "+y);
 
-            return result;
+                result=BadRequest(error);
+            }
+            catch ( Exception e )
+            {
+                result=StatusCode(500,"Unknown error occurred, please try again later."); //Need to add LINK here 
+            }
+            return result; ;
         }
 
         /// <summary>
@@ -86,13 +127,24 @@ namespace AZLearn.Controllers
             try
             {
                 TimesheetController.UpdateTimesheetById(timesheetId, solvingTime, studyTime);
-                result = StatusCode(200, "Success Message");
+                result = StatusCode(200, "Successfully Updated Timesheet");
             }
-            catch
+            catch ( ArgumentNullException e )
             {
-                result = StatusCode(403, "Error Message");
+                result=BadRequest(e.Message);
             }
-
+            catch ( ArgumentException e )
+            {
+                result=BadRequest(e.Message);
+            }
+            catch ( InvalidOperationException e )
+            {
+                result=NotFound(e.Message);
+            }
+            catch ( KeyNotFoundException e )
+            {
+                result=NotFound(e.Message);
+            }
             return result;
         }
 
@@ -124,11 +176,23 @@ namespace AZLearn.Controllers
             {
                 CourseController.CreateCourseByCohortId(cohortId, instructorId, name, description,
                     durationHrs, resourcesLink, startDate, endDate);
-                result = StatusCode(200, "Success Message");
+                result = StatusCode(200, "Successfully Created Course");
             }
-            catch
+            catch ( ArgumentNullException e )
             {
-                result = StatusCode(403, "Error Message");
+                result=BadRequest(e.Message);
+            }
+            catch ( ArgumentException e )
+            {
+                result=BadRequest(e.Message);
+            }
+            catch ( InvalidOperationException e )
+            {
+                result=NotFound(e.Message);
+            }
+            catch ( KeyNotFoundException e )
+            {
+                result=NotFound(e.Message);
             }
 
             return result;
@@ -158,46 +222,27 @@ namespace AZLearn.Controllers
             {
                 CourseController.UpdateCourseById(courseId, instructorId, name, description,
                     durationHrs, resourcesLink);
-                result = StatusCode(200, "Success Message");
+                result = StatusCode(200, "Successfully Updated Course");
             }
-            catch
+            catch ( ArgumentNullException e )
             {
-                result = StatusCode(403, "Error Message");
+                result=BadRequest(e.Message);
+            }
+            catch ( ArgumentException e )
+            {
+                result=BadRequest(e.Message);
+            }
+            catch ( InvalidOperationException e )
+            {
+                result=NotFound(e.Message);
+            }
+            catch ( KeyNotFoundException e )
+            {
+                result=NotFound(e.Message);
             }
 
             return result;
         }
 
-        /// <summary>
-        ///     GetCourses
-        ///     Description:The API End Point looks for action GetInstructors in UserController and retrieves the information of
-        ///     all instructors from database.
-        ///     EndPoint Testing : localhost:xxxxx/application/GetInstructors
-        ///     /*Test Passed*/
-        /// </summary>
-        /// <returns>The API End Point returns list of all Instructors in database</returns>
-        [HttpGet(nameof(GetInstructors))]
-        public ActionResult<List<User>> GetInstructors()
-        {
-            return UserController.GetInstructors();
-        }
-
-        /// <summary>
-        ///     GetHomeworkForInstructor
-        ///     Description:The API End Point looks for action GetHomeworkById in HomeworkController and GetRubricsByHomeworkId in
-        ///     RubricController retrieves the information of the Homework with its rubrics from database.
-        /// </summary>
-        /// <param name="homeworkId"></param>
-        /// <returns></returns>
-        [HttpGet(nameof(GetHomeworkForInstructor))]
-        public ActionResult<Tuple<Homework, List<Rubric>>> GetHomeworkForInstructor(string homeworkId)
-
-        {
-            var homework = HomeworkController.GetHomeworkById(homeworkId);
-
-            var rubricsList = RubricController.GetRubricsByHomeworkId(homeworkId);
-
-            return new Tuple<Homework, List<Rubric>>(homework, rubricsList);
-        }
     }
 }
