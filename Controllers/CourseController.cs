@@ -40,7 +40,7 @@ namespace AZLearn.Controllers
             var parsedDurationHrs = float.Parse(durationHrs);
             var parsedCohortId = int.Parse(cohortId);
             var parsedStartDate = DateTime.Parse(startDate);
-            var parsedEnDateTime = DateTime.Parse(endDate);
+            var parsedEndDate = DateTime.Parse(endDate);
 
             using var context = new AppDbContext();
             var newCourse = new Course
@@ -62,7 +62,7 @@ namespace AZLearn.Controllers
                 CohortId = parsedCohortId,
                 CourseId = newCourse.CourseId,
                 StartDate = parsedStartDate,
-                EndDate = parsedEnDateTime
+                EndDate = parsedEndDate
             };
             context.CohortCourses.Add(newCohortCourse);
 
