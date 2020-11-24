@@ -42,17 +42,18 @@ namespace AZLearn.Controllers
         }
 
         /// <summary>
-        /// AssignCourseByCohortId  *********TEST FAILED ERROR MESSAGE IN POSTMAN*******
-        /// Description:he API End Point looks for action AssignCourseByCohortId in CourseController and retrieves the information of the course from database according to specified Cohortid.
-        /// EndPoint Testing : localhost:xxxxx/application/AssignCourseByCohortId
+        /// AssignCourseByCohortId 
+        /// Description:The API End Point looks for action AssignCourseByCohortId in CourseController and assigns/creates a course according to specified Course id and Cohort id .
+        /// EndPoint Testing : //localhost:xxxxx/application/AssignCourseByCohortId?cohortId=2&courseId=3
+        /// Test Passed
         /// </summary>
         /// <param name="cohortId"></param>
         /// <param name="courseId"></param>
         /// <returns>The End Point returns the Course according to the specified cohort id </returns>
         [HttpPost(nameof(AssignCourseByCohortId))]
-        public ActionResult<Course> AssignCourseByCohortId(string cohortId,string courseId)
+        public ActionResult AssignCourseByCohortId(string cohortId,string courseId)
         {
-            ActionResult<Course> result;
+            ActionResult result;
             try
             {
                 CourseController.AssignCourseByCohortId(cohortId,courseId);
