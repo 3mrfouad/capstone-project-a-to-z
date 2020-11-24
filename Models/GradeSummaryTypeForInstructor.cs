@@ -24,5 +24,6 @@ namespace AZLearn.Models
         public string MarksInChallenge { get; set; }
         public string TotalTimeSpentOnHomework { get; set; }
         public string StudentName { get; set; }
+        public int StudentId { get; set; }
     }
 }
