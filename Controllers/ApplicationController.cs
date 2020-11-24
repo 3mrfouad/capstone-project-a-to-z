@@ -65,14 +65,14 @@ namespace AZLearn.Controllers
         /// <param name="homeworkId"></param>
         /// <returns></returns>
         [HttpGet(nameof(GetHomeworkForInstructor))]
-        public ActionResult<Tuple<Homework,List<Rubric>>> GetHomeworkForInstructor(string homeworkId)
+        public ActionResult<Tuple<Homework, List<Rubric>>> GetHomeworkForInstructor(string homeworkId)
 
         {
             var homework = HomeworkController.GetHomeworkById(homeworkId);
 
             var rubricsList = RubricController.GetRubricsByHomeworkId(homeworkId);
 
-            return new Tuple<Homework,List<Rubric>>(homework,rubricsList);
+            return new Tuple<Homework, List<Rubric>>(homework, rubricsList);
         }
 
         /// <summary>
@@ -92,21 +92,23 @@ namespace AZLearn.Controllers
             try
             {
                 CourseController.AssignCourseByCohortId(cohortId, courseId);
-                result = StatusCode(200,"Successfully Assigned Course to Cohort");
+                result = StatusCode(200, "Successfully Assigned Course to Cohort");
             }
-            catch ( ValidationException e )
+            catch (ValidationException e)
             {
-                string error = "Error(s) During Creation: "+
-                               e.ValidationExceptions.Select(x => x.Message)
-                                   .Aggregate((x,y) => x+", "+y);
+                var error = "Error(s) During Creation: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
 
-                result=BadRequest(error);
+                result = BadRequest(error);
             }
-            catch ( Exception e )
+            catch (Exception e)
             {
-                result=StatusCode(500,"Unknown error occurred, please try again later."); //Need to add LINK here 
+                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
             }
-            return result; ;
+
+            return result;
+            ;
         }
 
         /// <summary>
@@ -129,22 +131,23 @@ namespace AZLearn.Controllers
                 TimesheetController.UpdateTimesheetById(timesheetId, solvingTime, studyTime);
                 result = StatusCode(200, "Successfully Updated Timesheet");
             }
-            catch ( ArgumentNullException e )
+            catch (ArgumentNullException e)
             {
-                result=BadRequest(e.Message);
+                result = BadRequest(e.Message);
             }
-            catch ( ArgumentException e )
+            catch (ArgumentException e)
             {
-                result=BadRequest(e.Message);
+                result = BadRequest(e.Message);
             }
-            catch ( InvalidOperationException e )
+            catch (InvalidOperationException e)
             {
-                result=NotFound(e.Message);
+                result = NotFound(e.Message);
             }
-            catch ( KeyNotFoundException e )
+            catch (KeyNotFoundException e)
             {
-                result=NotFound(e.Message);
+                result = NotFound(e.Message);
             }
+
             return result;
         }
 
@@ -178,21 +181,21 @@ namespace AZLearn.Controllers
                     durationHrs, resourcesLink, startDate, endDate);
                 result = StatusCode(200, "Successfully Created Course");
             }
-            catch ( ArgumentNullException e )
+            catch (ArgumentNullException e)
             {
-                result=BadRequest(e.Message);
+                result = BadRequest(e.Message);
             }
-            catch ( ArgumentException e )
+            catch (ArgumentException e)
             {
-                result=BadRequest(e.Message);
+                result = BadRequest(e.Message);
             }
-            catch ( InvalidOperationException e )
+            catch (InvalidOperationException e)
             {
-                result=NotFound(e.Message);
+                result = NotFound(e.Message);
             }
-            catch ( KeyNotFoundException e )
+            catch (KeyNotFoundException e)
             {
-                result=NotFound(e.Message);
+                result = NotFound(e.Message);
             }
 
             return result;
@@ -224,25 +227,24 @@ namespace AZLearn.Controllers
                     durationHrs, resourcesLink);
                 result = StatusCode(200, "Successfully Updated Course");
             }
-            catch ( ArgumentNullException e )
+            catch (ArgumentNullException e)
             {
-                result=BadRequest(e.Message);
+                result = BadRequest(e.Message);
             }
-            catch ( ArgumentException e )
+            catch (ArgumentException e)
             {
-                result=BadRequest(e.Message);
+                result = BadRequest(e.Message);
             }
-            catch ( InvalidOperationException e )
+            catch (InvalidOperationException e)
             {
-                result=NotFound(e.Message);
+                result = NotFound(e.Message);
             }
-            catch ( KeyNotFoundException e )
+            catch (KeyNotFoundException e)
             {
-                result=NotFound(e.Message);
+                result = NotFound(e.Message);
             }
 
             return result;
         }
-
     }
 }

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AZLearn.Controllers
 {
-    public class CourseController : ControllerBase
+    public class CourseController :ControllerBase
     {
         /// <summary>
         ///     CreateCourseByCohortId
@@ -23,19 +23,9 @@ namespace AZLearn.Controllers
         /// <param name="resourcesLink">string provided from frontend</param>
         /// <param name="startDate">string provided from frontend, and parsed to DateTime to match model property data type</param>
         /// <param name="endDate">string provided from frontend, and parsed to DateTime to match model property data type</param>
-        public static void CreateCourseByCohortId(string cohortId, string instructorId, string name, string description,
-            string durationHrs, string resourcesLink, string startDate, string endDate)
+        public static void CreateCourseByCohortId(string cohortId,string instructorId,string name,string description,
+            string durationHrs,string resourcesLink,string startDate,string endDate)
         {
-            /*  int parsedCohortId;
-              int parsedInstructorId;
-              if ( string.IsNullOrWhiteSpace(cohortId)&&string.IsNullOrWhiteSpace(instructorId) )
-              {
-                  throw new ArgumentNullException(nameof(cohortId)+" is null.");
-              }
-              if ( !int.TryParse(cohortId,out parsedCohortId) )
-              {
-                  throw new ArgumentException(nameof(cohortId)+" is not valid.",nameof(cohortId));
-              }*/
             var parsedInstructorId = int.Parse(instructorId);
             var parsedDurationHrs = float.Parse(durationHrs);
             var parsedCohortId = int.Parse(cohortId);
@@ -46,11 +36,11 @@ namespace AZLearn.Controllers
             var newCourse = new Course
             {
                 /*  Create a Course*/
-                InstructorId = parsedInstructorId,
-                Name = name,
-                Description = description,
-                DurationHrs = parsedDurationHrs,
-                ResourcesLink = resourcesLink
+                InstructorId=parsedInstructorId,
+                Name=name,
+                Description=description,
+                DurationHrs=parsedDurationHrs,
+                ResourcesLink=resourcesLink
             };
 
             context.Courses.Add(newCourse);
@@ -59,10 +49,10 @@ namespace AZLearn.Controllers
             /*Creates a Join between Course and Cohort by Creating an object*/
             var newCohortCourse = new CohortCourse
             {
-                CohortId = parsedCohortId,
-                CourseId = newCourse.CourseId,
-                StartDate = parsedStartDate,
-                EndDate = parsedEndDate
+                CohortId=parsedCohortId,
+                CourseId=newCourse.CourseId,
+                StartDate=parsedStartDate,
+                EndDate=parsedEndDate
             };
             context.CohortCourses.Add(newCohortCourse);
 
@@ -76,15 +66,15 @@ namespace AZLearn.Controllers
         /// </summary>
         /// <param name="cohortId"></param>
         /// <param name="courseId"></param>
-        public static void AssignCourseByCohortId(string cohortId, string courseId)
+        public static void AssignCourseByCohortId(string cohortId,string courseId)
         {
             var parsedCohortId = int.Parse(cohortId);
             var parsedCourseId = int.Parse(courseId);
             using var context = new AppDbContext();
             var AddCourseByCohortId = new CohortCourse
             {
-                CohortId = parsedCohortId,
-                CourseId = parsedCourseId
+                CohortId=parsedCohortId,
+                CourseId=parsedCourseId
             };
             context.CohortCourses.Add(AddCourseByCohortId);
             context.SaveChanges();
@@ -105,21 +95,21 @@ namespace AZLearn.Controllers
         /// <param name="description">string provided from frontend</param>
         /// <param name="durationHrs">>string provided from frontend,, and parsed to float to match model property data type </param>
         /// <param name="resourcesLink">string provided from frontend</param>
-        public static void UpdateCourseById(string courseId, string instructorId, string name, string description,
-            string durationHrs, string resourcesLink)
+        public static void UpdateCourseById(string courseId,string instructorId,string name,string description,
+            string durationHrs,string resourcesLink)
         {
             var parsedCourseId = int.Parse(courseId);
             var parsedInstructorId = int.Parse(instructorId);
             var parsedDurationHrs = float.Parse(durationHrs);
             using var context = new AppDbContext();
             {
-                var course = context.Courses.SingleOrDefault(key => key.CourseId == parsedCourseId);
+                var course = context.Courses.SingleOrDefault(key => key.CourseId==parsedCourseId);
 
-                course.InstructorId = parsedInstructorId;
-                course.Name = name;
-                course.Description = description;
-                course.DurationHrs = parsedDurationHrs;
-                course.ResourcesLink = resourcesLink;
+                course.InstructorId=parsedInstructorId;
+                course.Name=name;
+                course.Description=description;
+                course.DurationHrs=parsedDurationHrs;
+                course.ResourcesLink=resourcesLink;
             }
             context.SaveChanges();
         }
@@ -153,7 +143,7 @@ namespace AZLearn.Controllers
             var coursesListByCohortId =
                 context.Courses.Include(key => key.CohortCourses)
                     .Where(key => key.CohortCourses
-                        .Any(subKey => subKey.CohortId == parsedCohortId))
+                        .Any(subKey => subKey.CohortId==parsedCohortId))
                     .ToList();
 
             return coursesListByCohortId;

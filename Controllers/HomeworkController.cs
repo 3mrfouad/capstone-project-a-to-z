@@ -1,17 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using AZLearn.Data;
 using AZLearn.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AZLearn.Controllers
 {
     public class HomeworkController : Controller
     {
         /// <summary>
-        /// This action takes in Course Id and Cohort Id and returns List of Homeworks for specified course under the specified Cohort Id
+        ///     This action takes in Course Id and Cohort Id and returns List of Homeworks for specified course under the specified
+        ///     Cohort Id
         /// </summary>
         /// <param name="courseId">Course Id</param>
         /// <param name="cohortId">Cohort Id</param>
@@ -19,18 +19,19 @@ namespace AZLearn.Controllers
         public static List<Homework> GetHomeworksByCourseId(string courseId, string cohortId)
         {
             List<Homework> homeworks;
-            int parsedCohortId = int.Parse(cohortId);
-            int parsedCourseId = int.Parse(courseId);
-            using (AppDbContext context = new AppDbContext())
+            var parsedCohortId = int.Parse(cohortId);
+            var parsedCourseId = int.Parse(courseId);
+            using (var context = new AppDbContext())
             {
                 homeworks = context.Homeworks
                     .Where(key => key.CourseId == parsedCourseId && key.CohortId == parsedCohortId).ToList();
             }
+
             return homeworks;
         }
 
         /// <summary>
-        /// This Action creates a new Homework for a specified Course under a specified Cohort and adds it to DB
+        ///     This Action creates a new Homework for a specified Course under a specified Cohort and adds it to DB
         /// </summary>
         /// <param name="courseId">Course Id</param>
         /// <param name="instructorId">Instructor Id</param>
@@ -46,17 +47,17 @@ namespace AZLearn.Controllers
             string isAssignment, string title, string avgCompletionTime, string dueDate, string releaseDate,
             string documentLink, string gitHubClassRoomLink)
         {
-            int parsedCourseId = int.Parse(courseId);
-            int parsedInstructorId = int.Parse(instructorId);
-            int parsedCohortId = int.Parse(cohortId);
-            bool parsedIsAssignment = bool.Parse(isAssignment);
-            float parsedAvgCompletionTime = float.Parse(avgCompletionTime);
-            DateTime parsedDuedate = DateTime.Parse(dueDate);
-            DateTime parsedReleasedate = DateTime.Parse(releaseDate);
+            var parsedCourseId = int.Parse(courseId);
+            var parsedInstructorId = int.Parse(instructorId);
+            var parsedCohortId = int.Parse(cohortId);
+            var parsedIsAssignment = bool.Parse(isAssignment);
+            var parsedAvgCompletionTime = float.Parse(avgCompletionTime);
+            var parsedDuedate = DateTime.Parse(dueDate);
+            var parsedReleasedate = DateTime.Parse(releaseDate);
 
-            using AppDbContext context = new AppDbContext();
+            using var context = new AppDbContext();
 
-            Homework newHomework = new Homework()
+            var newHomework = new Homework
             {
                 CourseId = parsedCourseId,
                 InstructorId = parsedInstructorId,
@@ -74,7 +75,7 @@ namespace AZLearn.Controllers
         }
 
         /// <summary>
-        /// This Action updates an existing Homework and saves the changes in DB.
+        ///     This Action updates an existing Homework and saves the changes in DB.
         /// </summary>
         /// <param name="homeworkId">Homework Id</param>
         /// <param name="courseId">Course Id</param>
@@ -91,16 +92,16 @@ namespace AZLearn.Controllers
             string isAssignment, string title, string avgCompletionTime, string dueDate, string releaseDate,
             string documentLink, string gitHubClassRoomLink)
         {
-            int parsedHomeworkId = int.Parse(homeworkId);
-            int parsedCourseId = int.Parse(courseId);
-            int parsedInstructorId = int.Parse(instructorId);
-            int parsedCohortId = int.Parse(cohortId);
-            bool parsedIsAssignment = bool.Parse(isAssignment);
-            float parsedAvgCompletionTime = float.Parse(avgCompletionTime);
-            DateTime parsedDuedate = DateTime.Parse(dueDate);
-            DateTime parsedReleasedate = DateTime.Parse(releaseDate);
+            var parsedHomeworkId = int.Parse(homeworkId);
+            var parsedCourseId = int.Parse(courseId);
+            var parsedInstructorId = int.Parse(instructorId);
+            var parsedCohortId = int.Parse(cohortId);
+            var parsedIsAssignment = bool.Parse(isAssignment);
+            var parsedAvgCompletionTime = float.Parse(avgCompletionTime);
+            var parsedDuedate = DateTime.Parse(dueDate);
+            var parsedReleasedate = DateTime.Parse(releaseDate);
 
-            using AppDbContext context = new AppDbContext();
+            using var context = new AppDbContext();
 
             var homework = context.Homeworks.SingleOrDefault(key => key.HomeworkId == parsedHomeworkId);
             homework.CourseId = parsedCourseId;
@@ -116,10 +117,11 @@ namespace AZLearn.Controllers
 
             context.SaveChanges();
         }
+
         /// <summary>
-        /// GetHomeworkById
-        /// Description: Controller action that gets Homework information by the associated HomeworkId
-        /// It expects below parameters, and would populate the user information according to the parameter specified
+        ///     GetHomeworkById
+        ///     Description: Controller action that gets Homework information by the associated HomeworkId
+        ///     It expects below parameters, and would populate the user information according to the parameter specified
         /// </summary>
         /// <param name="homeworkId"></param>
         /// <returns>It returns the Homework Information based on the homework id </returns>

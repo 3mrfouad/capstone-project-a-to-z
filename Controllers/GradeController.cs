@@ -26,9 +26,9 @@ namespace AZLearn.Controllers
             using var context = new AppDbContext();
             foreach (var (rubricId, (mark, instructorComment)) in gradings)
             {
-                var parsedRubricId = int.Parse(rubricId);
-                var parsedStudentId = int.Parse(studentId);
-                var parsedMark = int.Parse(mark);
+                int parsedRubricId = int.Parse(rubricId);
+                int parsedStudentId = int.Parse(studentId);
+                int parsedMark = int.Parse(mark);
                 context.Grades.Add(new Grade
                 {
                     RubricId = parsedRubricId,
@@ -57,9 +57,9 @@ namespace AZLearn.Controllers
             using var context = new AppDbContext();
             foreach (var (rubricId, (mark, instructorComment)) in gradings)
             {
-                var parsedRubricId = int.Parse(rubricId);
-                var parsedStudentId = int.Parse(studentId);
-                var parsedMark = int.Parse(mark);
+                int parsedRubricId = int.Parse(rubricId);
+                int parsedStudentId = int.Parse(studentId);
+                int parsedMark = int.Parse(mark);
                 var grade = context.Grades.Find(parsedRubricId, parsedStudentId);
                 grade.Mark = parsedMark;
                 grade.InstructorComment = instructorComment;
@@ -78,8 +78,8 @@ namespace AZLearn.Controllers
         /// <returns>List of Grades associated with specified student for specified Homework</returns>
         public static List<Grade> GetGradesByStudentId(string studentId, string homeworkId)
         {
-            var parsedStudentId = int.Parse(studentId);
-            var parsedHomeworkId = int.Parse(homeworkId);
+            int parsedStudentId = int.Parse(studentId);
+            int parsedHomeworkId = int.Parse(homeworkId);
             using var context = new AppDbContext();
             var grades = context.Grades.Include("Rubric.Homework")
                 .Where(key => key.Rubric.HomeworkId == parsedHomeworkId && key.StudentId == parsedStudentId)

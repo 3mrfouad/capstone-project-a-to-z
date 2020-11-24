@@ -19,10 +19,10 @@ namespace AZLearn.Controllers
         public static void CreateTimesheetByHomeworkId(string homeworkId, string studentId, string solvingTime,
             string studyTime)
         {
-            var parsedHomeworkId = int.Parse(homeworkId);
-            var parsedStudentId = int.Parse(studentId);
-            var parsedSolvingTime = float.Parse(solvingTime);
-            var parsedStudyTime = float.Parse(studyTime);
+            int parsedHomeworkId = int.Parse(homeworkId);
+            int parsedStudentId = int.Parse(studentId);
+            float parsedSolvingTime = float.Parse(solvingTime);
+            float parsedStudyTime = float.Parse(studyTime);
 
             using var context = new AppDbContext();
             var newTimesheet = new Timesheet
@@ -51,9 +51,9 @@ namespace AZLearn.Controllers
         /// <param name="studyTime"></param>
         public static void UpdateTimesheetById(string timesheetId, string solvingTime, string studyTime)
         {
-            var parsedTimesheetId = int.Parse(timesheetId);
-            var parsedSolvingTime = float.Parse(solvingTime);
-            var parsedStudyTime = float.Parse(studyTime);
+            int parsedTimesheetId = int.Parse(timesheetId);
+            float parsedSolvingTime = float.Parse(solvingTime);
+            float parsedStudyTime = float.Parse(studyTime);
 
             using var context = new AppDbContext();
             var timesheet = context.Timesheets.Find(parsedTimesheetId);
@@ -63,15 +63,15 @@ namespace AZLearn.Controllers
         }
 
         /// <summary>
-        ///     This Action returns timesheet of a specified student for a specified Homework.
+        ///     This action returns timesheet of a specified student for a specified Homework.
         /// </summary>
         /// <param name="homeworkId">Homework Id</param>
         /// <param name="studentId">Student Id</param>
         /// <returns></returns>
         public static Timesheet GetTimesheetByHomeworkId(string homeworkId, string studentId)
         {
-            var parsedHomeworkId = int.Parse(homeworkId);
-            var parsedStudentId = int.Parse(studentId);
+            int parsedHomeworkId = int.Parse(homeworkId);
+            int parsedStudentId = int.Parse(studentId);
 
             using var context = new AppDbContext();
             var timesheet = context.Timesheets.SingleOrDefault(key =>

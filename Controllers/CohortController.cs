@@ -25,17 +25,17 @@ namespace AZLearn.Controllers
         {
             var parsedStartDate = DateTime.Parse(startDate);
             var parsedEndDate = DateTime.Parse(endDate);
-            int parsedCapacity = int.Parse(capacity);
+            var parsedCapacity = int.Parse(capacity);
 
             using var context = new AppDbContext();
             context.Add(new Cohort
             {
                 Name = name,
-                Capacity =parsedCapacity,
+                Capacity = parsedCapacity,
                 City = city,
                 ModeOfTeaching = modeOfTeaching,
-                StartDate =parsedStartDate,
-                EndDate =parsedEndDate
+                StartDate = parsedStartDate,
+                EndDate = parsedEndDate
             });
             context.SaveChanges();
         }
@@ -61,16 +61,16 @@ namespace AZLearn.Controllers
         {
             var parsedStartDate = DateTime.Parse(startDate);
             var parsedEndDate = DateTime.Parse(endDate);
-            int parsedCapacity = int.Parse(capacity);
+            var parsedCapacity = int.Parse(capacity);
 
             using var context = new AppDbContext();
             var cohort = context.Cohorts.Find(int.Parse(cohortId));
             cohort.Name = name;
-            cohort.Capacity=parsedCapacity;
+            cohort.Capacity = parsedCapacity;
             cohort.City = city;
             cohort.ModeOfTeaching = modeOfTeaching;
-            cohort.StartDate =parsedStartDate;
-            cohort.EndDate =parsedEndDate;
+            cohort.StartDate = parsedStartDate;
+            cohort.EndDate = parsedEndDate;
             context.SaveChanges();
         }
 
