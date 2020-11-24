@@ -55,11 +55,12 @@ namespace AZLearn.Controllers
         }
 
         /// <summary>
-        /// This Action returns timesheet of a specified student for a specified Homework.
+        ///     GetTimesheetByHomeworkId
+        ///     This Action returns Timesheet of a specified student for a specified Homework.
         /// </summary>
         /// <param name="homeworkId">Homework Id</param>
         /// <param name="studentId">Student Id</param>
-        /// <returns></returns>
+        /// <returns>Record from Timesheet Table</returns>
         public static Timesheet GetTimesheetByHomeworkId(string homeworkId, string studentId)
         {
             int parsedHomeworkId = int.Parse(homeworkId);
