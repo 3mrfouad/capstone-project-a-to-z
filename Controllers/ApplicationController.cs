@@ -194,6 +194,8 @@ namespace AZLearn.Controllers
 
         #endregion
 
+        #region /application/homeworksummary
+
         /// <summary>     
         ///     GetHomeworkSummary
         ///     Request Type: GET
@@ -207,6 +209,10 @@ namespace AZLearn.Controllers
         {
             return HomeworkController.GetHomeworksByCourseId(courseId, cohortId);
         }
+
+        #endregion
+
+        #region /application/homeworktimesheet
 
         /// <summary>
         ///     GetHomeworkTimesheetForStudent
@@ -238,6 +244,10 @@ namespace AZLearn.Controllers
             return new Tuple<Homework, Timesheet>(homework, timesheet);
         }
 
+        #endregion
+
+        #region /application/createtimesheet
+
         /// <summary>
         ///     CreateTimesheetByHomeworkId
         ///     Request Type: POST
@@ -248,6 +258,7 @@ namespace AZLearn.Controllers
         /// <param name="solvingTime"></param>
         /// <param name="studyTime"></param>
         /// <returns>Success/Error message</returns>
+
         [HttpPost("CreateTimesheet")]
         public ActionResult CreateTimesheetByHomeworkId(string homeworkId, string studentId, string solvingTime, string studyTime)
         {
@@ -264,6 +275,10 @@ namespace AZLearn.Controllers
             return result;
         }
 
+        #endregion
+
+        #region /application/InstructorGradeSummary
+
         /// <summary>
         ///     GetGradeSummaryForInstructor
         ///     Request Type: GET
@@ -277,6 +292,10 @@ namespace AZLearn.Controllers
         {
             return GradeController.GetGradeSummaryForInstructor(cohortId, homeworkId);
         }
+
+        #endregion
+
+        #region /application/Grades
 
         /// <summary>
         ///     GetGrades
@@ -292,6 +311,10 @@ namespace AZLearn.Controllers
             return GradeController.GetGradesByStudentId(studentId, homeworkId);
         }
 
+        #endregion
+
+        #region /application/GetCourseSummary
+
         /// <summary>
         ///     GetCourseSummary
         ///     Description:The API End Point looks for action GetCoursesByCohortID in CourseController and retrieves the
@@ -302,11 +325,16 @@ namespace AZLearn.Controllers
         /// <param name="cohortId"></param>
         /// <returns></returns>
         [HttpGet(nameof(GetCourseSummary))]
-        public ActionResult<List<Course>> GetCourseSummary(string cohortId)
+        public ActionResult<List<Course>> GetCourseSummary(string cohortId, string includeInactive)
         {
-            var coursesList = CourseController.GetCoursesByCohortId(cohortId);
+            var coursesList = CourseController.GetCoursesByCohortId(cohortId, includeInactive);
+
             return coursesList;
         }
+
+        #endregion
+
+        #region /application/GetCourses
 
         /// <summary>
         ///     GetCourses
@@ -322,6 +350,10 @@ namespace AZLearn.Controllers
             return CourseController.GetCourses();
         }
 
+        #endregion
+
+        #region /application/GetInstructors
+
         /// <summary>
         ///     GetCourses
         ///     Description:The API End Point looks for action GetInstructors in UserController and retrieves the information of
@@ -335,6 +367,10 @@ namespace AZLearn.Controllers
         {
             return UserController.GetInstructors();
         }
+
+        #endregion
+        
+        #region /application/GetHomeworkForInstructor
 
         /// <summary>
         ///     GetHomeworkForInstructor
@@ -356,8 +392,11 @@ namespace AZLearn.Controllers
 
             var instructorsList = UserController.GetInstructors();
 
-            return new Tuple<Homework, List<Rubric>, List<User>,List<Course>>(homework, rubricsList, instructorsList, coursesList);
+            return new Tuple<Homework, List<Rubric>, List<User>, List<Course>>(homework, rubricsList, instructorsList, coursesList);
         }
+        #endregion
+
+        #region /application/AssignCourseByCohortId
 
         /// <summary>
         ///     AssignCourseByCohortId
@@ -370,13 +409,51 @@ namespace AZLearn.Controllers
         /// <param name="courseId"></param>
         /// <returns>The End Point returns the Course according to the specified cohort id </returns>
         [HttpPost(nameof(AssignCourseByCohortId))]
-        [HttpPost(nameof(AssignCourseByCohortId))]
-        public ActionResult AssignCourseByCohortId(string cohortId, string courseId, string startDate, string endDate)
+        public ActionResult AssignCourseByCohortId(string cohortId, string courseId, string instructorId, string startDate, string endDate, string resourcesLink)
         {
             ActionResult result;
             try
             {
-                CourseController.AssignCourseByCohortId(cohortId, courseId, startDate, endDate);
+                CourseController.AssignCourseByCohortId(cohortId, courseId, instructorId, startDate, endDate, resourcesLink);
+                result = StatusCode(200, "Successfully Assigned Course to Cohort");
+            }
+            catch (ValidationException e)
+            {
+                var error = "Error(s) During Creation: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
+
+                result = BadRequest(error);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+            }
+
+            return result;
+            ;
+        }
+        #endregion
+
+        #region /application/UpdateAssignedCourse
+
+        /// <summary>
+        ///     UpdateAssignedCourse
+        ///     Description:The API End Point looks for action UpdateAssignedCourse in CourseController and update a
+        ///     course according to specified Course id and Cohort id .
+        ///     EndPoint Testing : //localhost:xxxxx/application/UpdateAssignedCourse
+        ///     Test Passed
+        /// </summary>
+        /// <param name="cohortId"></param>
+        /// <param name="courseId"></param>
+        /// <returns> </returns>
+        [HttpPost(nameof(AssignCourseByCohortId))]
+        public ActionResult UpdateAssignedCourse(string cohortId, string courseId, string instructorId, string startDate, string endDate, string resourcesLink)
+        {
+            ActionResult result;
+            try
+            {
+                CourseController.UpdateAssignedCourse(cohortId, courseId, instructorId, startDate, endDate, resourcesLink);
                 result = StatusCode(200, "Successfully Assigned Course to Cohort");
             }
             catch (ValidationException e)
@@ -395,6 +472,10 @@ namespace AZLearn.Controllers
             return result;
             
         }
+        #endregion
+
+        #region /application/updatetimesheebyid
+
 
         /// <summary>
         ///     UpdateTimesheetById
@@ -436,6 +517,9 @@ namespace AZLearn.Controllers
             return result;
         }
 
+        #endregion
+
+        #region /application/createcourse
 
         /// <summary>
         ///     CreateCourseByCohortId
@@ -454,16 +538,16 @@ namespace AZLearn.Controllers
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
         /// <returns></returns>
-        [HttpPost(nameof(CreateCourseByCohortId))]
-        public ActionResult CreateCourseByCohortId
-        (string cohortId, string instructorId, string name, string description,
-            string durationHrs, string resourcesLink, string startDate, string endDate)
+        [HttpPost(nameof(CreateCourse))]
+        public ActionResult CreateCourse
+        (string name, string description,
+            string durationHrs)
         {
             ActionResult result;
             try
             {
-                CourseController.CreateCourseByCohortId(cohortId, instructorId, name, description,
-                    durationHrs, resourcesLink, startDate, endDate);
+                CourseController.CreateCourse(name, description,
+                    durationHrs);
                 result = StatusCode(200, "Successfully Created Course");
             }
             catch (ValidationException e)
@@ -482,6 +566,11 @@ namespace AZLearn.Controllers
             return result;
         }
 
+
+        #endregion
+
+        #region /application/updatecoursebyid
+
         /// <summary>
         ///     UpdateCourseById
         ///     Description:The API End Point looks for action UpdateCourseById in CourseController and updates the information of
@@ -498,14 +587,14 @@ namespace AZLearn.Controllers
         /// <param name="resourcesLink"></param>
         /// <returns></returns>
         [HttpPatch(nameof(UpdateCourseById))]
-        public ActionResult UpdateCourseById(string courseId, string instructorId, string name, string description,
-            string durationHrs, string resourcesLink)
+        public ActionResult UpdateCourseById(string courseId, string name, string description,
+            string durationHrs)
         {
             ActionResult result;
             try
             {
-                CourseController.UpdateCourseById(courseId, instructorId, name, description,
-                    durationHrs, resourcesLink);
+                CourseController.UpdateCourseById(courseId, name, description,
+                    durationHrs);
                 result = StatusCode(200, "Successfully Updated Course");
             }
             catch (ArgumentNullException e)
@@ -528,5 +617,6 @@ namespace AZLearn.Controllers
             return result;
         }
 
+        #endregion
     }
 }
