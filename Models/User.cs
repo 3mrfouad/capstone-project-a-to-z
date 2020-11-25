@@ -10,7 +10,7 @@ namespace AZLearn.Models
         public User()
         {
             /*Constructor to Initialize ICollections defined below*/
-            Courses = new HashSet<Course>();
+            CohortCourses = new HashSet<CohortCourse>();
             Homeworks = new HashSet<Homework>();
             Notifications = new HashSet<Notification>();
             ShoutOutsStudent = new HashSet<ShoutOut>();
@@ -59,8 +59,8 @@ namespace AZLearn.Models
         public virtual Cohort Cohort { get; set; }
 
         /*Creating and inverse property of Course to User*/
-        [InverseProperty(nameof(Models.Course.Instructor))]
-        public virtual ICollection<Course> Courses { get; set; }
+        [InverseProperty(nameof(Models.CohortCourse.Instructor))]
+        public virtual ICollection<CohortCourse> CohortCourses { get; set; }
 
         /*Creating and inverse property of Homework to User*/
         [InverseProperty(nameof(Models.Homework.Instructor))]
