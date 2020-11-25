@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AZLearn.Data;
 using AZLearn.Models;
+using AZLearn.Models.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AZLearn.Controllers
@@ -19,14 +20,53 @@ namespace AZLearn.Controllers
         /// <returns>List of Homeworks for specified course under the specified Cohort Id</returns>
         public static List<Homework> GetHomeworksByCourseId(string courseId, string cohortId)
         {
-            List<Homework> homeworks;
-            var parsedCohortId = int.Parse(cohortId);
-            var parsedCourseId = int.Parse(courseId);
-            using (var context = new AppDbContext())
+            int parsedCohortId = 0;
+            int parsedCourseId = 0;
+
+            #region Validation
+
+            ValidationException exception = new ValidationException();
+
+            courseId = (string.IsNullOrEmpty(courseId) || string.IsNullOrWhiteSpace(courseId)) ? null : courseId.Trim();
+            cohortId = (string.IsNullOrEmpty(cohortId) || string.IsNullOrWhiteSpace(cohortId)) ? null : cohortId.Trim();
+            using var context = new AppDbContext();
+            if (string.IsNullOrWhiteSpace(cohortId))
             {
-                homeworks = context.Homeworks
-                    .Where(key => key.CourseId == parsedCourseId && key.CohortId == parsedCohortId).ToList();
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId), nameof(cohortId) + " is null."));
             }
+            else
+            {
+                if (!int.TryParse(cohortId, out parsedCohortId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
+                }
+                else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
+                }
+            }
+            if (string.IsNullOrWhiteSpace(courseId))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(courseId), nameof(courseId) + " is null."));
+            }
+            else
+            {
+                if (!int.TryParse(courseId, out parsedCourseId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Course Id"));
+                }
+                else if (!context.Users.Any(key => key.UserId == parsedCourseId && key.IsInstructor == true))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Instructor Id does not exist"));
+                }
+            }
+            
+
+            #endregion
+
+            List<Homework> homeworks;
+            homeworks = context.Homeworks
+                .Where(key => key.CourseId == parsedCourseId && key.CohortId == parsedCohortId).ToList();
 
             return homeworks;
         }
