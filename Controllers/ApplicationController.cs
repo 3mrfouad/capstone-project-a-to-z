@@ -318,11 +318,32 @@ namespace AZLearn.Controllers
             try
             {
                 TimesheetController.CreateTimesheetByHomeworkId(homeworkId, studentId, solvingTime, studyTime);
-                result = StatusCode(200, "Success Message");
+                result = StatusCode(200, "Successfully created TimeSheet");
             }
-            catch
+            catch ( InvalidOperationException e )
             {
-                result = StatusCode(403, "Error Message");
+                result=NotFound(e.Message);
+            }
+            catch ( ArgumentNullException e )
+            {
+                result=BadRequest(e.Message);
+            }
+            catch ( ArgumentException e )
+            {
+                result=BadRequest(e.Message);
+            }
+            catch ( ValidationException e )
+            {
+                var error = "Error(s) During Creation: "+
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x,y) => x+", "+y);
+
+                result=BadRequest(error);
+            }
+            catch ( Exception e )
+            {
+                result=StatusCode(500,
+                    "Unknown error occurred while creating a Cohort, please try again later or contact Technical Support Team.");
             }
 
             return result;
