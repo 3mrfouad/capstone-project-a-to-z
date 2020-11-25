@@ -90,7 +90,7 @@ namespace AZLearn.Controllers
                 }
                 else
                 {
-                    if (context.Courses.Any(key => key.Name.ToLower() == name.ToLower() && key.Archive == false))
+                    if (string.IsNullOrEmpty(cohortId) && int.TryParse(cohortId, out parsedCohortId) && (context.Courses.Any(key => key.Name.ToLower() == name.ToLower() && key.Archive == false)))
                     {
                         int matchingCourseId = context.Courses
                             .SingleOrDefault(key => key.Name.ToLower() == name.ToLower() && key.Archive == false).CourseId;
@@ -139,7 +139,7 @@ namespace AZLearn.Controllers
                 {
                     /** Citation
                      *  https://stackoverflow.com/questions/161738/what-is-the-best-regular-expression-to-check-if-a-string-is-a-valid-url
-                     *  Refrenced above source to validate the incoming Resources Link (URL) bafire saving to DB.
+                     *  Referenced above source to validate the incoming Resources Link (URL) bafire saving to DB.
                      */
                     Uri uri;
                     if(!(Uri.TryCreate(resourcesLink, UriKind.Absolute, out uri) && 
