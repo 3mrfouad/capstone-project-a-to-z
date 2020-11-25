@@ -525,7 +525,7 @@ namespace AZLearn.Controllers
             }
 
             return result;
-            ;
+            
         }
         #endregion
 
@@ -605,21 +605,17 @@ namespace AZLearn.Controllers
                     durationHrs);
                 result = StatusCode(200, "Successfully Created Course");
             }
-            catch (ArgumentNullException e)
+            catch (ValidationException e)
             {
-                result = BadRequest(e.Message);
+                var error = "Error(s) During Creation: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
+
+                result = BadRequest(error);
             }
-            catch (ArgumentException e)
+            catch (Exception e)
             {
-                result = BadRequest(e.Message);
-            }
-            catch (InvalidOperationException e)
-            {
-                result = NotFound(e.Message);
-            }
-            catch (KeyNotFoundException e)
-            {
-                result = NotFound(e.Message);
+                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
             }
 
             return result;

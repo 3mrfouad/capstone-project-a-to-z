@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Compression;
 using System.Linq;
 using AZLearn.Data;
 using AZLearn.Models;
+using AZLearn.Models.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,6 +26,48 @@ namespace AZLearn.Controllers
             var parsedDurationHrs = float.Parse(durationHrs);
 
             using var context = new AppDbContext();
+            ValidationException exception = new ValidationException();
+            
+            if (string.IsNullOrWhiteSpace(description))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(description), nameof(description) + " is null."));
+            }
+            else if (description.Length > 250)
+            {
+                exception.ValidationExceptions.Add(new Exception("Course Description can only be 250 characters long."));
+            }
+            if (string.IsNullOrWhiteSpace(durationHrs))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(durationHrs), nameof(durationHrs) + " is null."));
+            }
+            else
+            {
+                if (!float.TryParse(durationHrs, out parsedDurationHrs))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for DurationHrs"));
+                }
+                else if (parsedDurationHrs > 999.99 || parsedDurationHrs < 0)
+                {
+                    exception.ValidationExceptions.Add(new Exception("DurationHrs value should be between 0 & 999.99 inclusive."));
+                }
+            }
+            
+           
+            //Cohort cohortExists = context.Cohorts.Include(key => key.CohortCourses).SingleOrDefault(key => key.CohortId == parsedCohortId);
+           /* if (cohortExists != null)
+            {
+                if (context.Cohorts.Include(key => key.CohortCourses).SingleOrDefault(key => key.CohortId == parsedCohortId).CohortCourses.Any(key => key.Course.Name.ToLower() == name.ToLower()))
+                {
+                    exception.ValidationExceptions.Add(
+                        new Exception("Course with same name already exists for this cohort."));
+                }
+            }*/
+
+           if (exception.ValidationExceptions.Count > 0)
+            {
+                throw exception;
+            }
+
             var newCourse = new Course
             {
                 /*  Create a Course*/
