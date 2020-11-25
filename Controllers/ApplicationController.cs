@@ -343,7 +343,7 @@ namespace AZLearn.Controllers
             catch ( Exception e )
             {
                 result=StatusCode(500,
-                    "Unknown error occurred while creating a Cohort, please try again later or contact Technical Support Team.");
+                    "Unknown error occurred while creating a Timesheet, please try again later or contact Technical Support Team.");
             }
 
             return result;

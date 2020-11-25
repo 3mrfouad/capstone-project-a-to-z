@@ -55,7 +55,7 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Homework Id does not exist"));
                 }
-                //Look for homwork Id thats not archived
+                //Look for homework Id thats not archived
                 else if ( !context.Homeworks.Any(key => key.HomeworkId==parsedHomeworkId && key.Archive==false ))
                 {
                     exception.ValidationExceptions.Add(new Exception("Selected Homework Id is Archived"));
@@ -76,6 +76,13 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("StudentId does not exist"));
                 }
+            }
+                /*To check whether Timesheet for  given Homeworkid and student id already exists */
+
+            if(context.Timesheets.Any(key=>key.StudentId == parsedStudentId && key.HomeworkId== parsedHomeworkId))
+            {
+                exception.ValidationExceptions.Add(new Exception("Timesheet Already Exists for this Homework and student Id,Please check with the coordinator"));
+
             }
 
             if ( string.IsNullOrWhiteSpace(solvingTime) )
