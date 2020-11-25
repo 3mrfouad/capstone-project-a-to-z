@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AZLearn.Data;
 using AZLearn.Models;
+using AZLearn.Models.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,37 +27,187 @@ namespace AZLearn.Controllers
         public static void CreateCourseByCohortId(string cohortId,string instructorId,string name,string description,
             string durationHrs,string resourcesLink,string startDate,string endDate)
         {
-            var parsedInstructorId = int.Parse(instructorId);
-            var parsedDurationHrs = float.Parse(durationHrs);
-            var parsedCohortId = int.Parse(cohortId);
-            var parsedStartDate = DateTime.Parse(startDate);
-            var parsedEndDate = DateTime.Parse(endDate);
+            float parsedDurationHrs =0;
+            int parsedCohortId = 0;
+            int parsedInstructorId =0;
+            DateTime parsedStartDate = new DateTime();
+            DateTime parsedEndDate = new DateTime();
+
+            #region Validation
+            ValidationException exception = new ValidationException();
+            //Combine conditions in if statements and remove from here
+            /*====== Need to implement regex validation for resourcesLink========*/
+            cohortId = (string.IsNullOrEmpty(cohortId) || string.IsNullOrWhiteSpace(cohortId)) ? null : cohortId.Trim();
+            instructorId = (string.IsNullOrEmpty(instructorId) || string.IsNullOrWhiteSpace(instructorId)) ? null : instructorId.Trim();
+            name = (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name)) ? null : name.Trim();
+            description = (string.IsNullOrEmpty(description) || string.IsNullOrWhiteSpace(description)) ? null : description.Trim();
+            durationHrs = (string.IsNullOrEmpty(durationHrs) || string.IsNullOrWhiteSpace(durationHrs)) ? null : durationHrs.Trim();
+            resourcesLink = (string.IsNullOrEmpty(resourcesLink) || string.IsNullOrWhiteSpace(resourcesLink)) ? null : resourcesLink.Trim();
+            startDate = (string.IsNullOrEmpty(startDate) || string.IsNullOrWhiteSpace(startDate)) ? null : startDate.Trim();
+            endDate = (string.IsNullOrEmpty(endDate) || string.IsNullOrWhiteSpace(endDate)) ? null : endDate.Trim();
 
             using var context = new AppDbContext();
-            var newCourse = new Course
+
+            if (cohortId == null)
             {
-                /*  Create a Course*/
-                InstructorId=parsedInstructorId,
-                Name=name,
-                Description=description,
-                DurationHrs=parsedDurationHrs,
-                ResourcesLink=resourcesLink
-            };
-
-            context.Courses.Add(newCourse);
-            context.SaveChanges();
-
-            /*Creates a Join between Course and Cohort by Creating an object*/
-            var newCohortCourse = new CohortCourse
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId), nameof(cohortId) + " is null."));
+            }
+            else
             {
-                CohortId=parsedCohortId,
-                CourseId=newCourse.CourseId,
-                StartDate=parsedStartDate,
-                EndDate=parsedEndDate
-            };
-            context.CohortCourses.Add(newCohortCourse);
+                if (!int.TryParse(cohortId, out parsedCohortId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
+                }
+                else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
+                }
+            }
+            if (string.IsNullOrWhiteSpace(instructorId))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(instructorId), nameof(instructorId) + " is null."));
+            }
+            else
+            {
+                if (!int.TryParse(instructorId, out parsedInstructorId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Instructor Id"));
+                }
+                else if (!context.Users.Any(key => key.UserId == parsedInstructorId && key.IsInstructor == true))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Instructor Id does not exist"));
+                }
+            }
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(name), nameof(name) + " is null."));
+            }
+            else if (name.Length > 50)
+            {
+                exception.ValidationExceptions.Add(new Exception("Course name can only be 50 characters long."));
+            }
+            if (string.IsNullOrWhiteSpace(description))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(description), nameof(description) + " is null."));
+            }
+            else if (description.Length > 250)
+            {
+                exception.ValidationExceptions.Add(new Exception("Course Description can only be 250 characters long."));
+            }
+            if (string.IsNullOrWhiteSpace(durationHrs))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(durationHrs), nameof(durationHrs) + " is null."));
+            }
+            else
+            {
+                if (!float.TryParse(durationHrs, out parsedDurationHrs))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for DurationHrs"));
+                }
+                else if (parsedDurationHrs > 999.99 || parsedDurationHrs < 0)
+                {
+                    exception.ValidationExceptions.Add(new Exception("DurationHrs value should be between 0 & 999.99 inclusive."));
+                }
+            }
+            /*====== Need to implement regex validation for resourcesLink========*/
+            if (string.IsNullOrWhiteSpace(resourcesLink))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(resourcesLink), nameof(resourcesLink) + " is null."));
+            }
+            else if (resourcesLink.Length > 250)
+            {
+                exception.ValidationExceptions.Add(new Exception("ResourcesLink can only be 250 characters long."));
+            }
+            if (string.IsNullOrWhiteSpace(startDate))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(startDate), nameof(startDate) + " is null."));
+            }
+            else
+            {
+                if (!DateTime.TryParse(startDate, out parsedStartDate))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for startDate"));
+                }
+                else if (parsedStartDate < DateTime.Now.Date)
+                {
+                    exception.ValidationExceptions.Add(new Exception("This Course can not have start date in the past."));
+                }
+            }
+            if (string.IsNullOrWhiteSpace(endDate))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(endDate), nameof(endDate) + " is null."));
+            }
+            else
+            {
+                if (!DateTime.TryParse(endDate, out parsedEndDate))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for endDate"));
+                }
+                else if (parsedEndDate < DateTime.Now.Date)
+                {
+                    exception.ValidationExceptions.Add(new Exception("This Course can not have end date in the past."));
+                }
+            }
+            /* Business Logic*/
+            if ((DateTime.TryParse(startDate, out parsedStartDate) && DateTime.TryParse(endDate, out parsedEndDate)))
+            {
+                if (parsedEndDate < parsedStartDate)
+                {
+                    exception.ValidationExceptions.Add(new Exception("End date can not be before Start date."));
+                }
+            }
 
-            context.SaveChanges();
+            var cohortExists = context.Cohorts.Include(key => key.CohortCourses)
+                .SingleOrDefault(key => key.CohortId == parsedCohortId);
+            if(cohortExists != null)
+            {
+                if (cohortExists.CohortCourses.Any(key => key.Course.Name.ToLower() == name.ToLower()))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Course with same name already exists for this cohort."));
+                }
+
+                if (exception.ValidationExceptions.Count > 0)
+                {
+                    throw exception;
+                }
+            }
+
+            #endregion
+
+            #region DB Action Validation
+
+            try
+            {
+                var newCourse = new Course
+                {
+                    /*  Create a Course*/
+                    InstructorId = parsedInstructorId,
+                    Name = name,
+                    Description = description,
+                    DurationHrs = parsedDurationHrs,
+                    ResourcesLink = resourcesLink
+                };
+
+                context.Courses.Add(newCourse);
+                context.SaveChanges();
+                /*Creates a Join between Course and Cohort by Creating an object*/
+                var newCohortCourse = new CohortCourse
+                {
+                    CohortId = parsedCohortId,
+                    CourseId = newCourse.CourseId,
+                    StartDate = parsedStartDate,
+                    EndDate = parsedEndDate
+                };
+                context.CohortCourses.Add(newCohortCourse);
+
+                context.SaveChanges();
+            }
+            catch
+            {
+
+            }
+
+            #endregion
         }
 
         /// <summary>
@@ -66,15 +217,19 @@ namespace AZLearn.Controllers
         /// </summary>
         /// <param name="cohortId"></param>
         /// <param name="courseId"></param>
-        public static void AssignCourseByCohortId(string cohortId,string courseId)
+        public static void AssignCourseByCohortId(string cohortId, string courseId, string startDate, string endDate)
         {
             var parsedCohortId = int.Parse(cohortId);
             var parsedCourseId = int.Parse(courseId);
+            var parsedStartDate = DateTime.Parse(startDate);
+            var parsedEndDate = DateTime.Parse(endDate);
             using var context = new AppDbContext();
             var AddCourseByCohortId = new CohortCourse
             {
-                CohortId=parsedCohortId,
-                CourseId=parsedCourseId
+                CohortId = parsedCohortId,
+                CourseId = parsedCourseId,
+                StartDate = parsedStartDate,
+                EndDate = parsedEndDate
             };
             context.CohortCourses.Add(AddCourseByCohortId);
             context.SaveChanges();

@@ -370,12 +370,13 @@ namespace AZLearn.Controllers
         /// <param name="courseId"></param>
         /// <returns>The End Point returns the Course according to the specified cohort id </returns>
         [HttpPost(nameof(AssignCourseByCohortId))]
-        public ActionResult AssignCourseByCohortId(string cohortId, string courseId)
+        [HttpPost(nameof(AssignCourseByCohortId))]
+        public ActionResult AssignCourseByCohortId(string cohortId, string courseId, string startDate, string endDate)
         {
             ActionResult result;
             try
             {
-                CourseController.AssignCourseByCohortId(cohortId, courseId);
+                CourseController.AssignCourseByCohortId(cohortId, courseId, startDate, endDate);
                 result = StatusCode(200, "Successfully Assigned Course to Cohort");
             }
             catch (ValidationException e)
@@ -392,7 +393,7 @@ namespace AZLearn.Controllers
             }
 
             return result;
-            ;
+            
         }
 
         /// <summary>
@@ -465,21 +466,17 @@ namespace AZLearn.Controllers
                     durationHrs, resourcesLink, startDate, endDate);
                 result = StatusCode(200, "Successfully Created Course");
             }
-            catch (ArgumentNullException e)
+            catch (ValidationException e)
             {
-                result = BadRequest(e.Message);
+                var error = "Error(s) During Creation: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
+
+                result = BadRequest(error);
             }
-            catch (ArgumentException e)
+            catch (Exception e)
             {
-                result = BadRequest(e.Message);
-            }
-            catch (InvalidOperationException e)
-            {
-                result = NotFound(e.Message);
-            }
-            catch (KeyNotFoundException e)
-            {
-                result = NotFound(e.Message);
+                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
             }
 
             return result;
