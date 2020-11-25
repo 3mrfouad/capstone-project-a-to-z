@@ -7,7 +7,12 @@ import CourseSummaryInstructor from "./components/Instructor/CourseSummaryInstru
 import HomeworkSummaryStudent from "./components/Student/HomeworkSummaryStudent/HomeworkSummaryStudent";
 import HomeworkStudent from "./components/Student/HomeworkStudent/HomeworkStudent";
 import SideBar from "./components/shared/SideBar/SideBar";
-import StudentGrades from "./components/Student/StudentGrades/StudentGrades";
+import GradesStudent from "./components/Student/GradesStudent/GradesStudent";
+import CohortCard from "./components/Instructor/CohortCard/CohortCard";
+import CohortSummary from "./components/Instructor/CohortSummary/CohortSummary";
+import CourseCard from "./components/Instructor/CohortCard/CohortCard";
+import GradingSummary from "./components/Instructor/GradingSummary/GradingSummary";
+
 const App = () => {
   return (
     <React.Fragment>
@@ -28,7 +33,10 @@ const App = () => {
             component={HomeworkStudent}
           />
           <Route path="/sidebar" exact component={SideBar} />
-          <Route path="/studentgrades" exact component={StudentGrades} />
+          <Route path="/gradesstudent" exact component={GradesStudent} />
+          <Route path="/cohortcard" exact component={CohortCard} />
+          <Route path="/cohortsummary" exact component={CohortSummary} />
+          <Route path="/gradingsummary" exact component={GradingSummary} />
         </Switch>
       </Router>
     </React.Fragment>

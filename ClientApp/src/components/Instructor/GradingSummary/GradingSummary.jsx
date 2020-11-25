@@ -1,7 +1,7 @@
 import React from "react";
 import { Table, Container, Button } from "react-bootstrap";
 
-const Grades = () => {
+const GradingSummary = () => {
   return (
     <React.Fragment>
       <Container>
@@ -41,4 +41,4 @@ const Grades = () => {
   );
 };
 
-export default Grades;
+export default GradingSummary;
