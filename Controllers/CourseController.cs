@@ -11,51 +11,28 @@ namespace AZLearn.Controllers
     public class CourseController :ControllerBase
     {
         /// <summary>
-        ///     CreateCourseByCohortId
-        ///     Description: Controller action that creates new course by CohortId
+        ///     CreateCourse
+        ///     Description: Controller action that creates new course
         ///     It expects below parameters, and would populate the same as new course in the database
         /// </summary>
-        /// <param name="cohortId"></param>
-        /// <param name="instructorId"></param>
         /// <param name="name">string provided from frontend</param>
         /// <param name="description">string provided from frontend</param>
         /// <param name="durationHrs">string provided from frontend, and parsed to float to match model property data type</param>
-        /// <param name="resourcesLink">string provided from frontend</param>
-        /// <param name="startDate">string provided from frontend, and parsed to DateTime to match model property data type</param>
-        /// <param name="endDate">string provided from frontend, and parsed to DateTime to match model property data type</param>
-        public static void CreateCourseByCohortId(string cohortId,string instructorId,string name,string description,
-            string durationHrs,string resourcesLink,string startDate,string endDate)
+        public static void CreateCourse(string name, string description,
+            string durationHrs)
         {
-            var parsedInstructorId = int.Parse(instructorId);
             var parsedDurationHrs = float.Parse(durationHrs);
-            var parsedCohortId = int.Parse(cohortId);
-            var parsedStartDate = DateTime.Parse(startDate);
-            var parsedEndDate = DateTime.Parse(endDate);
 
             using var context = new AppDbContext();
             var newCourse = new Course
             {
                 /*  Create a Course*/
-                InstructorId=parsedInstructorId,
-                Name=name,
-                Description=description,
-                DurationHrs=parsedDurationHrs,
-                ResourcesLink=resourcesLink
+                Name = name,
+                Description = description,
+                DurationHrs = parsedDurationHrs,
             };
 
             context.Courses.Add(newCourse);
-            context.SaveChanges();
-
-            /*Creates a Join between Course and Cohort by Creating an object*/
-            var newCohortCourse = new CohortCourse
-            {
-                CohortId=parsedCohortId,
-                CourseId=newCourse.CourseId,
-                StartDate=parsedStartDate,
-                EndDate=parsedEndDate
-            };
-            context.CohortCourses.Add(newCohortCourse);
-
             context.SaveChanges();
         }
 
@@ -66,10 +43,11 @@ namespace AZLearn.Controllers
         /// </summary>
         /// <param name="cohortId"></param>
         /// <param name="courseId"></param>
-        public static void AssignCourseByCohortId(string cohortId, string courseId, string startDate, string endDate)
+        public static void AssignCourseByCohortId(string cohortId, string courseId, string instructorId, string startDate, string endDate, string resourcesLink)
         {
             var parsedCohortId = int.Parse(cohortId);
             var parsedCourseId = int.Parse(courseId);
+            var parsedinstructorId = int.Parse(instructorId);
             var parsedStartDate = DateTime.Parse(startDate);
             var parsedEndDate = DateTime.Parse(endDate);
             using var context = new AppDbContext();
@@ -77,11 +55,43 @@ namespace AZLearn.Controllers
             {
                 CohortId = parsedCohortId,
                 CourseId = parsedCourseId,
+                InstructorId = parsedinstructorId,
                 StartDate = parsedStartDate,
-                EndDate = parsedEndDate
+                EndDate = parsedEndDate,
+                ResourcesLink = resourcesLink
             };
             context.CohortCourses.Add(AddCourseByCohortId);
             context.SaveChanges();
+        }
+        /// <summary>
+        /// UpdateAssignedCourse
+        /// Description: This action updates a cohort assigned course details
+        /// </summary>
+        /// <param name="cohortId"></param>
+        /// <param name="courseId"></param>
+        /// <param name="instructorId"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <param name="resourcesLink"></param>
+        public static void UpdateAssignedCourse(string cohortId, string courseId, string instructorId, string startDate, string endDate, string resourcesLink)
+        {
+            var parsedCohortId = int.Parse(cohortId);
+            var parsedCourseId = int.Parse(courseId);
+            var parsedinstructorId = int.Parse(instructorId);
+            var parsedStartDate = DateTime.Parse(startDate);
+            var parsedEndDate = DateTime.Parse(endDate);
+
+            using var context = new AppDbContext();
+            var course = context.CohortCourses.Find(parsedCohortId, parsedCourseId);
+
+            course.CohortId = parsedCohortId;
+            course.CourseId = parsedCourseId;
+            course.InstructorId = parsedinstructorId;
+            course.StartDate = parsedStartDate;
+            course.EndDate = parsedEndDate;
+            course.ResourcesLink = resourcesLink;
+
+           context.SaveChanges();
         }
 
         /// <summary>
@@ -99,21 +109,17 @@ namespace AZLearn.Controllers
         /// <param name="description">string provided from frontend</param>
         /// <param name="durationHrs">>string provided from frontend,, and parsed to float to match model property data type </param>
         /// <param name="resourcesLink">string provided from frontend</param>
-        public static void UpdateCourseById(string courseId,string instructorId,string name,string description,
-            string durationHrs,string resourcesLink)
+        public static void UpdateCourseById(string courseId,string name,string description,
+            string durationHrs)
         {
             var parsedCourseId = int.Parse(courseId);
-            var parsedInstructorId = int.Parse(instructorId);
             var parsedDurationHrs = float.Parse(durationHrs);
             using var context = new AppDbContext();
             {
                 var course = context.Courses.SingleOrDefault(key => key.CourseId==parsedCourseId);
-
-                course.InstructorId=parsedInstructorId;
                 course.Name=name;
                 course.Description=description;
                 course.DurationHrs=parsedDurationHrs;
-                course.ResourcesLink=resourcesLink;
             }
             context.SaveChanges();
         }
@@ -137,19 +143,25 @@ namespace AZLearn.Controllers
         /// </summary>
         /// <param name="cohortId"></param>
         /// <returns>List of Courses by Cohort Id</returns>
-        public static List<Course> GetCoursesByCohortId(string cohortId)
+        public static List<Course> GetCoursesByCohortId(string cohortId, string includeInactive)
         {
             var parsedCohortId = int.Parse(cohortId);
+            var parsedIncludeInactive = bool.Parse(includeInactive);
             using var context = new AppDbContext();
 
             /*Retrieve all list of courses of specific Cohort by Filtering it by CohortId*/
-
+            //includeInactive - false - active courses
+            //includeInactive - true - inactive courses
             var coursesListByCohortId =
-                context.Courses.Include(key => key.CohortCourses)
+                context.Courses.Where(key => key.Archive == parsedIncludeInactive).Include(key => key.CohortCourses)
                     .Where(key => key.CohortCourses
-                        .Any(subKey => subKey.CohortId==parsedCohortId))
-                    .ToList();
+                        .Any(subKey => subKey.CohortId==parsedCohortId)).ToList();
 
+            /* @Amr Fouad, demo on how to get to the instructor name on same above context call
+             foreach (var course in coursesListByCohortId)
+            {
+                var name = course.CohortCourses.Where(key => key.CourseId == course.CourseId).SingleOrDefault().Instructor.Name;
+            }*/
             return coursesListByCohortId;
         }
     }
