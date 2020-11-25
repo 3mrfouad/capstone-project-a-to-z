@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Compression;
 using System.Linq;
 using AZLearn.Data;
 using AZLearn.Models;
@@ -35,8 +36,7 @@ namespace AZLearn.Controllers
 
             #region Validation
             ValidationException exception = new ValidationException();
-            //Combine conditions in if statements and remove from here
-            /*====== Need to implement regex validation for resourcesLink========*/
+            
             cohortId = (string.IsNullOrEmpty(cohortId) || string.IsNullOrWhiteSpace(cohortId)) ? null : cohortId.Trim();
             instructorId = (string.IsNullOrEmpty(instructorId) || string.IsNullOrWhiteSpace(instructorId)) ? null : instructorId.Trim();
             name = (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name)) ? null : name.Trim();
@@ -48,7 +48,7 @@ namespace AZLearn.Controllers
 
             using var context = new AppDbContext();
 
-            if (cohortId == null)
+            if (string.IsNullOrWhiteSpace(cohortId))
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId), nameof(cohortId) + " is null."));
             }
@@ -82,9 +82,25 @@ namespace AZLearn.Controllers
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(name), nameof(name) + " is null."));
             }
-            else if (name.Length > 50)
+            else
             {
-                exception.ValidationExceptions.Add(new Exception("Course name can only be 50 characters long."));
+                if (name.Length > 50)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Course name can only be 50 characters long."));
+                }
+                else
+                {
+                    if (context.Courses.Any(key => key.Name.ToLower() == name.ToLower() && key.Archive == false))
+                    {
+                        int matchingCourseId = context.Courses
+                            .SingleOrDefault(key => key.Name.ToLower() == name.ToLower() && key.Archive == false).CourseId;
+                        if (context.CohortCourses.Any(key =>
+                            key.CohortId == parsedCohortId && key.CourseId == matchingCourseId))
+                        {
+                            exception.ValidationExceptions.Add(new Exception("Course with this name already exists for this cohort "));
+                        }
+                    }
+                }
             }
             if (string.IsNullOrWhiteSpace(description))
             {
@@ -109,15 +125,32 @@ namespace AZLearn.Controllers
                     exception.ValidationExceptions.Add(new Exception("DurationHrs value should be between 0 & 999.99 inclusive."));
                 }
             }
-            /*====== Need to implement regex validation for resourcesLink========*/
             if (string.IsNullOrWhiteSpace(resourcesLink))
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(resourcesLink), nameof(resourcesLink) + " is null."));
             }
-            else if (resourcesLink.Length > 250)
+            else
             {
-                exception.ValidationExceptions.Add(new Exception("ResourcesLink can only be 250 characters long."));
+                if (resourcesLink.Length > 250)
+                {
+                    exception.ValidationExceptions.Add(new Exception("ResourcesLink can only be 250 characters long."));
+                }
+                else
+                {
+                    /** Citation
+                     *  https://stackoverflow.com/questions/161738/what-is-the-best-regular-expression-to-check-if-a-string-is-a-valid-url
+                     *  Refrenced above source to validate the incoming Resources Link (URL) bafire saving to DB.
+                     */
+                    Uri uri;
+                    if(!(Uri.TryCreate(resourcesLink, UriKind.Absolute, out uri) && 
+                       (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps || uri.Scheme == Uri.UriSchemeFtp)))
+                    {
+                        exception.ValidationExceptions.Add(new Exception("ResourcesLink is not valid."));
+                    }
+                    /*End Citation*/
+                }
             }
+                
             if (string.IsNullOrWhiteSpace(startDate))
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(startDate), nameof(startDate) + " is null."));
@@ -157,57 +190,46 @@ namespace AZLearn.Controllers
                 }
             }
 
-            var cohortExists = context.Cohorts.Include(key => key.CohortCourses)
-                .SingleOrDefault(key => key.CohortId == parsedCohortId);
-            if(cohortExists != null)
+            //Cohort cohortExists = context.Cohorts.Include(key => key.CohortCourses).SingleOrDefault(key => key.CohortId == parsedCohortId);
+           /* if (cohortExists != null)
             {
-                if (cohortExists.CohortCourses.Any(key => key.Course.Name.ToLower() == name.ToLower()))
+                if (context.Cohorts.Include(key => key.CohortCourses).SingleOrDefault(key => key.CohortId == parsedCohortId).CohortCourses.Any(key => key.Course.Name.ToLower() == name.ToLower()))
                 {
-                    exception.ValidationExceptions.Add(new Exception("Course with same name already exists for this cohort."));
+                    exception.ValidationExceptions.Add(
+                        new Exception("Course with same name already exists for this cohort."));
                 }
+            }*/
 
-                if (exception.ValidationExceptions.Count > 0)
-                {
-                    throw exception;
-                }
+           if (exception.ValidationExceptions.Count > 0)
+            {
+                throw exception;
             }
 
             #endregion
 
-            #region DB Action Validation
-
-            try
+            var newCourse = new Course
             {
-                var newCourse = new Course
-                {
-                    /*  Create a Course*/
-                    InstructorId = parsedInstructorId,
-                    Name = name,
-                    Description = description,
-                    DurationHrs = parsedDurationHrs,
-                    ResourcesLink = resourcesLink
-                };
+                /*  Create a Course*/
+                InstructorId = parsedInstructorId,
+                Name = name,
+                Description = description,
+                DurationHrs = parsedDurationHrs,
+                ResourcesLink = resourcesLink
+            };
 
-                context.Courses.Add(newCourse);
-                context.SaveChanges();
-                /*Creates a Join between Course and Cohort by Creating an object*/
-                var newCohortCourse = new CohortCourse
-                {
-                    CohortId = parsedCohortId,
-                    CourseId = newCourse.CourseId,
-                    StartDate = parsedStartDate,
-                    EndDate = parsedEndDate
-                };
-                context.CohortCourses.Add(newCohortCourse);
-
-                context.SaveChanges();
-            }
-            catch
+            context.Courses.Add(newCourse);
+            context.SaveChanges();
+            /*Creates a Join between Course and Cohort by Creating an object*/
+            var newCohortCourse = new CohortCourse
             {
+                CohortId = parsedCohortId,
+                CourseId = newCourse.CourseId,
+                StartDate = parsedStartDate,
+                EndDate = parsedEndDate
+            };
+            context.CohortCourses.Add(newCohortCourse);
 
-            }
-
-            #endregion
+            context.SaveChanges();
         }
 
         /// <summary>
