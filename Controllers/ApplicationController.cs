@@ -370,12 +370,12 @@ namespace AZLearn.Controllers
         /// <param name="courseId"></param>
         /// <returns>The End Point returns the Course according to the specified cohort id </returns>
         [HttpPost(nameof(AssignCourseByCohortId))]
-        public ActionResult AssignCourseByCohortId(string cohortId, string courseId)
+        public ActionResult AssignCourseByCohortId(string cohortId, string courseId,string startDate,string endDate)
         {
             ActionResult result;
             try
             {
-                CourseController.AssignCourseByCohortId(cohortId, courseId);
+                CourseController.AssignCourseByCohortId(cohortId, courseId,startDate,endDate);
                 result = StatusCode(200, "Successfully Assigned Course to Cohort");
             }
             catch (ValidationException e)
