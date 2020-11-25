@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
-using AZLearn.Models;
 using System.Linq;
+using AZLearn.Models;
 using AZLearn.Models.Exceptions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AZLearn.Controllers
 {
@@ -11,11 +11,11 @@ namespace AZLearn.Controllers
     [ApiController]
     public class ApplicationController : Controller
     {
-
         #region /application/updatestudentfeedback
 
         [HttpPatch(nameof(UpdateStudentFeedback))]
-        public ActionResult UpdateStudentFeedback(string studentId, [FromBody] Dictionary<string, string> studentComment)
+        public ActionResult UpdateStudentFeedback(string studentId,
+            [FromBody] Dictionary<string, string> studentComment)
         {
             ActionResult result;
             try
@@ -27,6 +27,7 @@ namespace AZLearn.Controllers
             {
                 result = StatusCode(403, "Error Message");
             }
+
             return result;
         }
 
@@ -48,6 +49,7 @@ namespace AZLearn.Controllers
             {
                 result = StatusCode(403, "Error Message");
             }
+
             return result;
         }
 
@@ -69,6 +71,7 @@ namespace AZLearn.Controllers
             {
                 result = StatusCode(403, "Error Message");
             }
+
             return result;
         }
 
@@ -83,12 +86,12 @@ namespace AZLearn.Controllers
             try
             {
                 result = CohortController.GetCohorts();
-
             }
             catch (ValidationException e)
             {
                 result = StatusCode(403, "Error Message");
             }
+
             return result;
         }
 
@@ -113,6 +116,7 @@ namespace AZLearn.Controllers
             {
                 result = StatusCode(403, "Error Message");
             }
+
             return result;
         }
 
@@ -130,14 +134,15 @@ namespace AZLearn.Controllers
             try
             {
                 HomeworkController.UpdateHomeworkById(homeworkId, courseId, instructorId, cohortId,
-                 isAssignment, title, avgCompletionTime, dueDate, releaseDate,
-                 documentLink, gitHubClassRoomLink);
+                    isAssignment, title, avgCompletionTime, dueDate, releaseDate,
+                    documentLink, gitHubClassRoomLink);
                 result = StatusCode(200, "Success Message");
             }
             catch (ArgumentException e)
             {
                 result = StatusCode(403, "Error Message");
             }
+
             return result;
         }
 
@@ -157,34 +162,36 @@ namespace AZLearn.Controllers
             ActionResult result;
             try
             {
-                CohortController.CreateCohort( name,  capacity,  city,
-                 modeOfTeaching,  startDate,  endDate);
+                CohortController.CreateCohort(name, capacity, city,
+                    modeOfTeaching, startDate, endDate);
                 result = StatusCode(200, "Successfully Created the Cohort");
             }
-            catch ( InvalidOperationException e )
+            catch (InvalidOperationException e)
             {
-                result=NotFound(e.Message);
+                result = NotFound(e.Message);
             }
-            catch ( ArgumentNullException e )
+            catch (ArgumentNullException e)
             {
-                result=BadRequest(e.Message);
+                result = BadRequest(e.Message);
             }
-            catch ( ArgumentException e )
+            catch (ArgumentException e)
             {
-                result=BadRequest(e.Message);
+                result = BadRequest(e.Message);
             }
-            catch ( ValidationException e )
+            catch (ValidationException e)
             {
-                var error = "Error(s) During Creation: "+
+                var error = "Error(s) During Creation: " +
                             e.ValidationExceptions.Select(x => x.Message)
-                                .Aggregate((x,y) => x+", "+y);
+                                .Aggregate((x, y) => x + ", " + y);
 
-                result=BadRequest(error);
+                result = BadRequest(error);
             }
-            catch ( Exception e )
+            catch (Exception e)
             {
-                result=StatusCode(500,"Unknown error occurred while creating a Cohort, please try again later or contact Technical Support Team.");
+                result = StatusCode(500,
+                    "Unknown error occurred while creating a Cohort, please try again later or contact Technical Support Team.");
             }
+
             return result;
         }
 
@@ -200,24 +207,45 @@ namespace AZLearn.Controllers
             ActionResult result;
             try
             {
-                CohortController.UpdateCohortById(cohortId,name, capacity, city,
-                 modeOfTeaching, startDate, endDate);
-                result = StatusCode(200, "Success Message");
+                CohortController.UpdateCohortById(cohortId, name, capacity, city,
+                    modeOfTeaching, startDate, endDate);
+                result = StatusCode(200, "Successfully Updated the Cohort details");
+            }
+            catch (InvalidOperationException e)
+            {
+                result = NotFound(e.Message);
+            }
+            catch (ArgumentNullException e)
+            {
+                result = BadRequest(e.Message);
             }
             catch (ArgumentException e)
             {
-                result = StatusCode(403, "Error Message");
+                result = BadRequest(e.Message);
             }
+            catch (ValidationException e)
+            {
+                var error = "Error(s) During Creation: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
+                result = BadRequest(error);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(500,
+                    "Unknown error occurred while creating a Cohort, please try again later or contact Technical Support Team.");
+            }
+
             return result;
         }
 
-
         #endregion
 
-        /// <summary>     
+        /// <summary>
         ///     GetHomeworkSummary
         ///     Request Type: GET
-        ///     This End point takes in Cohort Id and Course Id from global store and return List of homeworks associated with that Course for specified Cohort.
+        ///     This End point takes in Cohort Id and Course Id from global store and return List of homeworks associated with that
+        ///     Course for specified Cohort.
         /// </summary>
         /// <param name="courseId"></param>
         /// <param name="cohortId"></param>
@@ -231,21 +259,23 @@ namespace AZLearn.Controllers
         /// <summary>
         ///     GetHomeworkTimesheetForStudent
         ///     Request Type: GET
-        ///     This End point takes in Homework Id from link clicked, Student Id from global store and return associated homework record and timesheet record.
+        ///     This End point takes in Homework Id from link clicked, Student Id from global store and return associated homework
+        ///     record and timesheet record.
         /// </summary>
         /// <param name="homeworkId"></param>
         /// <param name="studentId"></param>
         /// <returns>Tuple of homework record, timesheet record</returns>
         [HttpGet("HomeworkTimesheet")]
-        public ActionResult<Tuple<Homework, Timesheet>> GetHomeworkTimesheetForStudent(string homeworkId, string studentId)
+        public ActionResult<Tuple<Homework, Timesheet>> GetHomeworkTimesheetForStudent(string homeworkId,
+            string studentId)
         {
             var homework = HomeworkController.GetHomeworkById(homeworkId);
             var timesheet = TimesheetController.GetTimesheetByHomeworkId(homeworkId, studentId);
             if (timesheet == null)
             {
-                int parsedHomeworkId = int.Parse(homeworkId);
-                int parsedStudentId = int.Parse(studentId);
-                timesheet = new Timesheet()
+                var parsedHomeworkId = int.Parse(homeworkId);
+                var parsedStudentId = int.Parse(studentId);
+                timesheet = new Timesheet
                 {
                     TimesheetId = 0,
                     HomeworkId = parsedHomeworkId,
@@ -255,6 +285,7 @@ namespace AZLearn.Controllers
                     Archive = false
                 };
             }
+
             return new Tuple<Homework, Timesheet>(homework, timesheet);
         }
 
@@ -269,7 +300,8 @@ namespace AZLearn.Controllers
         /// <param name="studyTime"></param>
         /// <returns>Success/Error message</returns>
         [HttpPost("CreateTimesheet")]
-        public ActionResult CreateTimesheetByHomeworkId(string homeworkId, string studentId, string solvingTime, string studyTime)
+        public ActionResult CreateTimesheetByHomeworkId(string homeworkId, string studentId, string solvingTime,
+            string studyTime)
         {
             ActionResult result;
             try
@@ -281,6 +313,7 @@ namespace AZLearn.Controllers
             {
                 result = StatusCode(403, "Error Message");
             }
+
             return result;
         }
 
@@ -293,7 +326,8 @@ namespace AZLearn.Controllers
         /// <param name="homeworkId"></param>
         /// <returns>custom object contains GradeSummery and Timesheet Summary for all students for a specified Homework</returns>
         [HttpGet("InstructorGradeSummary")]
-        public ActionResult<List<GradeSummaryTypeForInstructor>> GetGradeSummaryForInstructor(string cohortId, string homeworkId)
+        public ActionResult<List<GradeSummaryTypeForInstructor>> GetGradeSummaryForInstructor(string cohortId,
+            string homeworkId)
         {
             return GradeController.GetGradeSummaryForInstructor(cohortId, homeworkId);
         }
@@ -301,7 +335,7 @@ namespace AZLearn.Controllers
         /// <summary>
         ///     GetGrades
         ///     Request Type: GET
-        /// This Endpoint returns Grades of a specified student for a specified course.
+        ///     This Endpoint returns Grades of a specified student for a specified course.
         /// </summary>
         /// <param name="studentId"></param>
         /// <param name="homeworkId"></param>
@@ -365,7 +399,8 @@ namespace AZLearn.Controllers
         /// <param name="homeworkId"></param>
         /// <returns></returns>
         [HttpGet(nameof(GetHomeworkForInstructor))]
-        public ActionResult<Tuple<Homework, List<Rubric>, List<User>, List<Course>>> GetHomeworkForInstructor(string homeworkId)
+        public ActionResult<Tuple<Homework, List<Rubric>, List<User>, List<Course>>> GetHomeworkForInstructor(
+            string homeworkId)
 
         {
             var homework = HomeworkController.GetHomeworkById(homeworkId);
@@ -376,7 +411,8 @@ namespace AZLearn.Controllers
 
             var instructorsList = UserController.GetInstructors();
 
-            return new Tuple<Homework, List<Rubric>, List<User>,List<Course>>(homework, rubricsList, instructorsList, coursesList);
+            return new Tuple<Homework, List<Rubric>, List<User>, List<Course>>(homework, rubricsList, instructorsList,
+                coursesList);
         }
 
         /// <summary>
@@ -390,12 +426,12 @@ namespace AZLearn.Controllers
         /// <param name="courseId"></param>
         /// <returns>The End Point returns the Course according to the specified cohort id </returns>
         [HttpPost(nameof(AssignCourseByCohortId))]
-        public ActionResult AssignCourseByCohortId(string cohortId, string courseId,string startDate,string endDate)
+        public ActionResult AssignCourseByCohortId(string cohortId, string courseId, string startDate, string endDate)
         {
             ActionResult result;
             try
             {
-                CourseController.AssignCourseByCohortId(cohortId, courseId,startDate,endDate);
+                CourseController.AssignCourseByCohortId(cohortId, courseId, startDate, endDate);
                 result = StatusCode(200, "Successfully Assigned Course to Cohort");
             }
             catch (ValidationException e)
@@ -550,6 +586,5 @@ namespace AZLearn.Controllers
 
             return result;
         }
-
     }
 }
