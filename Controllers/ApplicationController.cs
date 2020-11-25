@@ -159,11 +159,31 @@ namespace AZLearn.Controllers
             {
                 CohortController.CreateCohort( name,  capacity,  city,
                  modeOfTeaching,  startDate,  endDate);
-                result = StatusCode(200, "Success Message");
+                result = StatusCode(200, "Successfully Created the Cohort");
             }
-            catch
+            catch ( InvalidOperationException e )
             {
-                result = StatusCode(403, "Error Message");
+                result=NotFound(e.Message);
+            }
+            catch ( ArgumentNullException e )
+            {
+                result=BadRequest(e.Message);
+            }
+            catch ( ArgumentException e )
+            {
+                result=BadRequest(e.Message);
+            }
+            catch ( ValidationException e )
+            {
+                var error = "Error(s) During Creation: "+
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x,y) => x+", "+y);
+
+                result=BadRequest(error);
+            }
+            catch ( Exception e )
+            {
+                result=StatusCode(500,"Unknown error occurred while creating a Cohort, please try again later or contact Technical Support Team.");
             }
             return result;
         }
