@@ -66,15 +66,19 @@ namespace AZLearn.Controllers
         /// </summary>
         /// <param name="cohortId"></param>
         /// <param name="courseId"></param>
-        public static void AssignCourseByCohortId(string cohortId,string courseId)
+        public static void AssignCourseByCohortId(string cohortId, string courseId, string startDate, string endDate)
         {
             var parsedCohortId = int.Parse(cohortId);
             var parsedCourseId = int.Parse(courseId);
+            var parsedStartDate = DateTime.Parse(startDate);
+            var parsedEndDate = DateTime.Parse(endDate);
             using var context = new AppDbContext();
             var AddCourseByCohortId = new CohortCourse
             {
-                CohortId=parsedCohortId,
-                CourseId=parsedCourseId
+                CohortId = parsedCohortId,
+                CourseId = parsedCourseId,
+                StartDate = parsedStartDate,
+                EndDate = parsedEndDate
             };
             context.CohortCourses.Add(AddCourseByCohortId);
             context.SaveChanges();
