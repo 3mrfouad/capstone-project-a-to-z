@@ -379,9 +379,9 @@ namespace AZLearn.Controllers
         /// <param name="cohortId"></param>
         /// <returns></returns>
         [HttpGet(nameof(GetCourseSummary))]
-        public ActionResult<List<Course>> GetCourseSummary(string cohortId, string includeInactive)
+        public ActionResult<List<Course>> GetCourseSummary(string cohortId)
         {
-            var coursesList = CourseController.GetCoursesByCohortId(cohortId, includeInactive);
+            var coursesList = CourseController.GetCoursesByCohortId(cohortId);
 
             return coursesList;
         }
@@ -673,5 +673,16 @@ namespace AZLearn.Controllers
         }
 
         #endregion
+
+        #region /application/GetAssignedCourse
+        public ActionResult<Course> GetAssignedCourse(string courseId, string cohortId)
+        {
+            var course = CourseController.GetCourseByCohortId(courseId, cohortId);
+
+            return course;
+        }
+
+        #endregion
+
     }
 }

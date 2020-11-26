@@ -183,21 +183,18 @@ namespace AZLearn.Controllers
         /// <summary>
         ///     GetCoursesByCohortId
         ///     Description: Controller action that returns list of existing coursesByCohortId
-        ///     It expects below parameters, and would populate the course by cohort id in the database.
+        ///     It expects below parameters, and would retrive courses list from the database.
         /// </summary>
         /// <param name="cohortId"></param>
         /// <returns>List of Courses by Cohort Id</returns>
-        public static List<Course> GetCoursesByCohortId(string cohortId, string includeInactive)
+        public static List<Course> GetCoursesByCohortId(string cohortId)
         {
             var parsedCohortId = int.Parse(cohortId);
-            var parsedIncludeInactive = bool.Parse(includeInactive);
             using var context = new AppDbContext();
 
-            /*Retrieve all list of courses of specific Cohort by Filtering it by CohortId*/
-            //includeInactive - false - active courses
-            //includeInactive - true - inactive courses
+
             var coursesListByCohortId =
-                context.Courses.Where(key => key.Archive == parsedIncludeInactive).Include(key => key.CohortCourses)
+                context.Courses.Include(key => key.CohortCourses)
                     .Where(key => key.CohortCourses
                         .Any(subKey => subKey.CohortId == parsedCohortId)).ToList();
 
@@ -208,5 +205,28 @@ namespace AZLearn.Controllers
             }*/
             return coursesListByCohortId;
         }
+
+
+        /// <summary>
+        /// GetCourseByCohortId
+        /// Description: Controller action that returns a Courses by CohortId
+        /// It expects below parameters, and would return a course by cohort id from the database.
+        /// </summary>
+        /// <param name="courseId"></param>
+        /// <param name="cohortId"></param>
+        /// <returns></returns>
+        public static Course GetCourseByCohortId(string courseId, string cohortId)
+        {
+            var parsedCohortId = int.Parse(cohortId);
+            var parsedCourseId = int.Parse(courseId);
+            using var context = new AppDbContext();
+
+            var courseByCohortId = 
+                context.Courses.Include(key => key.CohortCourses).SingleOrDefault(key => key.CohortCourses.Any(subKey => subKey.CohortId == parsedCohortId && subKey.CourseId == parsedCourseId));
+            
+            return courseByCohortId;
+        }
+
+
     }
 }
