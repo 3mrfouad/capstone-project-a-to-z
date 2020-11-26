@@ -53,11 +53,16 @@ namespace AZLearn.Controllers
             else
             {
                 /*To check if Cohort Name already Exists , and If the Cohort is not Archived  */
-                if ( context.Cohorts.Any(key => key.Name.ToLower()==name.ToLower()&&key.Archive==false) )
+                if ( !context.Cohorts.Any(key => key.Name.ToLower()==name.ToLower()) )
                     exception.ValidationExceptions.Add(
                         new Exception("Cohort with same name already exists."));
+               ///CHECK THE QUERY FOR ARCHIVE PLEASE 
+                if ( !context.Cohorts.Any(key => key.Name.ToLower()==name.ToLower() && key.Archive==false))
+                    exception.ValidationExceptions.Add(
+                        new Exception("Selected Cohort is Archived."));
             }
-                /*To Check for Null or Empty*/
+                
+            /*To Check for Null or Empty*/
             if (!string.IsNullOrEmpty(capacity))
             {
                 if (!int.TryParse(capacity, out parsedCapacity))
@@ -83,9 +88,9 @@ namespace AZLearn.Controllers
             {
                 if (!DateTime.TryParse(startDate, out parsedStartDate))
                     exception.ValidationExceptions.Add(new Exception("Invalid value for startDate"));
-                else if (parsedStartDate < DateTime.Now.Date)
+                /*else if (parsedStartDate < DateTime.Now.Date)
                     exception.ValidationExceptions.Add(
-                        new Exception("This Cohort can not have start date in the past."));
+                        new Exception("This Cohort can not have start date in the past."));*///NOT REQUIRED AS WARNING IS GIVEN AT FRONT END
             }
 
             if (string.IsNullOrWhiteSpace(endDate))
@@ -97,19 +102,19 @@ namespace AZLearn.Controllers
             {
                 if (!DateTime.TryParse(endDate, out parsedEndDate))
                     exception.ValidationExceptions.Add(new Exception("Invalid value for endDate"));
-                else if (parsedEndDate < DateTime.Now.Date)
-                    exception.ValidationExceptions.Add(new Exception("This Cohort can not have end date in the past."));
+                /*  else if (parsedEndDate < DateTime.Now.Date)
+                      exception.ValidationExceptions.Add(new Exception("This Cohort can not have end date in the past."));*/ //NOT REQUIRED AS WARNING IS GIVEN AT FRONT END
             }
+            /* Business Logic*/
+            if ( DateTime.TryParse(startDate,out parsedStartDate)&&DateTime.TryParse(endDate,out parsedEndDate) )
+                if ( parsedEndDate<parsedStartDate )
+                    exception.ValidationExceptions.Add(new Exception("End date can not be before Start date."));
 
-            if (string.IsNullOrWhiteSpace(city))
+            if ( string.IsNullOrWhiteSpace(city))
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(city), nameof(city) + " is null."));
             else if (city.Length > 50)
                 exception.ValidationExceptions.Add(new Exception("City can only be 50 characters long."));
-            /* Business Logic*/
-            if (DateTime.TryParse(startDate, out parsedStartDate) && DateTime.TryParse(endDate, out parsedEndDate))
-                if (parsedEndDate < parsedStartDate)
-                    exception.ValidationExceptions.Add(new Exception("End date can not be before Start date."));
-
+           
             if (exception.ValidationExceptions.Count > 0) throw exception;
 
             #endregion
@@ -181,9 +186,13 @@ namespace AZLearn.Controllers
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
                 }
                     /*If the Cohort Exists or not If cohort is Archived you cannot update the course*/
-                else if ( !context.Cohorts.Any(key => key.CohortId==parsedCohortId && key.Archive==false)  )
+                else if ( !context.Cohorts.Any(key => key.CohortId==parsedCohortId)  )
                 {
                     exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
+
+                } else if ( !context.Cohorts.Any(key => key.CohortId==parsedCohortId && key.Archive==false))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id is Archived"));
                 }
             }
 
