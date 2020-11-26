@@ -51,18 +51,7 @@ namespace AZLearn.Controllers
                     exception.ValidationExceptions.Add(new Exception("DurationHrs value should be between 0 & 999.99 inclusive."));
                 }
             }
-            
-           
-            //Cohort cohortExists = context.Cohorts.Include(key => key.CohortCourses).SingleOrDefault(key => key.CohortId == parsedCohortId);
-           /* if (cohortExists != null)
-            {
-                if (context.Cohorts.Include(key => key.CohortCourses).SingleOrDefault(key => key.CohortId == parsedCohortId).CohortCourses.Any(key => key.Course.Name.ToLower() == name.ToLower()))
-                {
-                    exception.ValidationExceptions.Add(
-                        new Exception("Course with same name already exists for this cohort."));
-                }
-            }*/
-
+        
            if (exception.ValidationExceptions.Count > 0)
             {
                 throw exception;
@@ -81,65 +70,7 @@ namespace AZLearn.Controllers
         }
 
         /// <summary>
-        ///     AssignCourseByCohortId
-        ///     Description: Controller action that creates/assigns the Course by CohortId
-        ///     It expects below parameters, and would populate the course by cohort id in the database.
-        /// </summary>
-        /// <param name="cohortId"></param>
-        /// <param name="courseId"></param>
-        public static void AssignCourseByCohortId(string cohortId, string courseId, string instructorId, string startDate, string endDate, string resourcesLink)
-        {
-            var parsedCohortId = int.Parse(cohortId);
-            var parsedCourseId = int.Parse(courseId);
-            var parsedinstructorId = int.Parse(instructorId);
-            var parsedStartDate = DateTime.Parse(startDate);
-            var parsedEndDate = DateTime.Parse(endDate);
-            using var context = new AppDbContext();
-            var AddCourseByCohortId = new CohortCourse
-            {
-                CohortId = parsedCohortId,
-                CourseId = parsedCourseId,
-                InstructorId = parsedinstructorId,
-                StartDate = parsedStartDate,
-                EndDate = parsedEndDate,
-                ResourcesLink = resourcesLink
-            };
-            context.CohortCourses.Add(AddCourseByCohortId);
-            context.SaveChanges();
-        }
-        /// <summary>
-        /// UpdateAssignedCourse
-        /// Description: This action updates a cohort assigned course details
-        /// </summary>
-        /// <param name="cohortId"></param>
-        /// <param name="courseId"></param>
-        /// <param name="instructorId"></param>
-        /// <param name="startDate"></param>
-        /// <param name="endDate"></param>
-        /// <param name="resourcesLink"></param>
-        public static void UpdateAssignedCourse(string cohortId, string courseId, string instructorId, string startDate, string endDate, string resourcesLink)
-        {
-            var parsedCohortId = int.Parse(cohortId);
-            var parsedCourseId = int.Parse(courseId);
-            var parsedinstructorId = int.Parse(instructorId);
-            var parsedStartDate = DateTime.Parse(startDate);
-            var parsedEndDate = DateTime.Parse(endDate);
-
-            using var context = new AppDbContext();
-            var course = context.CohortCourses.Find(parsedCohortId, parsedCourseId);
-
-            course.CohortId = parsedCohortId;
-            course.CourseId = parsedCourseId;
-            course.InstructorId = parsedinstructorId;
-            course.StartDate = parsedStartDate;
-            course.EndDate = parsedEndDate;
-            course.ResourcesLink = resourcesLink;
-
-            context.SaveChanges();
-        }
-
-        /// <summary>
-        ///     Update a Course CourseById
+        ///     Update a CourseById
         ///     Description: Controller action that updates existing course by courseId
         ///     It expects below parameters, and would populate the course by cohort id in the database.
         ///     Assumption:
