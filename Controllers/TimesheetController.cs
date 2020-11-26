@@ -93,12 +93,15 @@ namespace AZLearn.Controllers
                     exception.ValidationExceptions.Add(
                         new Exception("Solving Time value should be between 0 & 999.99 inclusive."));
             }
-
-            if (!float.TryParse(studyTime, out parsedStudyTime))
-                exception.ValidationExceptions.Add(new Exception("Invalid value for Study Time"));
-            else if (parsedStudyTime > 999.99 || parsedStudyTime < 0)
-                exception.ValidationExceptions.Add(
-                    new Exception("Study Time value should be between 0 & 999.99 inclusive."));
+                /*if the value is Null or Empty*/
+            if (!string.IsNullOrEmpty(studyTime))
+            {
+                if (!float.TryParse(studyTime, out parsedStudyTime))
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Study Time"));
+                else if (parsedStudyTime > 999.99 || parsedStudyTime < 0)
+                    exception.ValidationExceptions.Add(
+                        new Exception("Study Time value should be between 0 & 999.99 inclusive."));
+            }
 
             if (exception.ValidationExceptions.Count > 0) throw exception;
 
@@ -177,11 +180,14 @@ namespace AZLearn.Controllers
                         new Exception("Solving Time value should be between 0 & 999.99 inclusive."));
             }
 
-            if (!float.TryParse(studyTime, out parsedStudyTime))
-                exception.ValidationExceptions.Add(new Exception("Invalid value for Study Time"));
-            else if (parsedStudyTime > 999.99 || parsedStudyTime < 0)
-                exception.ValidationExceptions.Add(
-                    new Exception("Study Time value should be between 0 & 999.99 inclusive."));
+            if (!string.IsNullOrEmpty(studyTime))
+            {
+                if (!float.TryParse(studyTime, out parsedStudyTime))
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Study Time"));
+                else if (parsedStudyTime > 999.99 || parsedStudyTime < 0)
+                    exception.ValidationExceptions.Add(
+                        new Exception("Study Time value should be between 0 & 999.99 inclusive."));
+            }
 
             if (exception.ValidationExceptions.Count > 0) throw exception;
 
