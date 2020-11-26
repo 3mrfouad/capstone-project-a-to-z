@@ -720,10 +720,27 @@ namespace AZLearn.Controllers
         #endregion
 
         #region /application/GetAssignedCourse
+        [HttpGet(nameof(GetAssignedCourse))]
         public ActionResult<Course> GetAssignedCourse(string courseId, string cohortId)
         {
-            var course = CourseController.GetCourseByCohortId(courseId, cohortId);
-            return course;
+            ActionResult<Course> result;
+            try
+            {
+                result = CourseController.GetCourseByCohortId(courseId, cohortId);
+            }
+            catch (ValidationException e)
+            {
+                var error = "Error(s) During Retrieving Course: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
+
+                result = BadRequest(error);
+            }
+            catch (Exception)
+            {
+                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+            }
+            return result;
         }
         #endregion
     }

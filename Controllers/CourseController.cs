@@ -216,7 +216,7 @@ namespace AZLearn.Controllers
         /// <returns>List of Courses by Cohort Id</returns>
         public static List<Course> GetCoursesByCohortId(string cohortId)
         {
-            var parsedCohortId = int.Parse(cohortId);
+            int parsedCohortId = 0;
 
             #region Validation
 
@@ -269,9 +269,51 @@ namespace AZLearn.Controllers
         /// <returns></returns>
         public static Course GetCourseByCohortId(string courseId, string cohortId)
         {
-            var parsedCohortId = int.Parse(cohortId);
-            var parsedCourseId = int.Parse(courseId);
+            int parsedCohortId = 0;
+            int parsedCourseId = 0;
+
+            #region Validation
+
             using var context = new AppDbContext();
+            ValidationException exception = new ValidationException();
+
+            if (string.IsNullOrWhiteSpace(cohortId))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId), nameof(cohortId) + " is null."));
+            }
+            else
+            {
+                if (!int.TryParse(cohortId, out parsedCohortId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
+                }
+                else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
+                }
+            }
+            if (string.IsNullOrWhiteSpace(courseId))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(courseId), nameof(courseId) + " is null."));
+            }
+            else
+            {
+                if (!int.TryParse(courseId, out parsedCourseId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Course Id"));
+                }
+                else if (!context.Courses.Any(key => key.CourseId == parsedCourseId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Course Id does not exist"));
+                }
+            }
+            if (exception.ValidationExceptions.Count > 0)
+            {
+                throw exception;
+            }
+
+            #endregion
+            
             var courseByCohortId =
                 context.Courses.Include(key => key.CohortCourses).SingleOrDefault(key => key.CohortCourses.Any(subKey => subKey.CohortId == parsedCohortId && subKey.CourseId == parsedCourseId));
             return courseByCohortId;
