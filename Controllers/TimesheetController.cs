@@ -257,6 +257,7 @@ namespace AZLearn.Controllers
                 if ( !int.TryParse(studentId,out parsedStudentId) )
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Student Id"));
                 else if ( !context.Users.Any(key => key.UserId==parsedStudentId&&key.IsInstructor==false) )
+
                     exception.ValidationExceptions.Add(new Exception("StudentId does not exist"));
                 
                 else if ( !context.Users.Any(key => key.UserId==parsedStudentId&&key.Archive==false) )
