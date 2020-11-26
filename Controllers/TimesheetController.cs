@@ -163,7 +163,6 @@ namespace AZLearn.Controllers
                     exception.ValidationExceptions.Add(new Exception("Timesheet Id does not exist"));
             }
 
-
             if (string.IsNullOrWhiteSpace(solvingTime))
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(solvingTime),
@@ -207,13 +206,80 @@ namespace AZLearn.Controllers
         /// <returns>Record from Timesheet Table</returns>
         public static Timesheet GetTimesheetByHomeworkId(string homeworkId, string studentId)
         {
-            var parsedHomeworkId = int.Parse(homeworkId);
-            var parsedStudentId = int.Parse(studentId);
+            var parsedHomeworkId = 0;
+            var parsedStudentId = 0;
+            #region Validation
+
+            ValidationException exception = new ValidationException();
+
+            homeworkId=string.IsNullOrEmpty(homeworkId)||string.IsNullOrWhiteSpace(homeworkId)
+                ? null
+                : homeworkId.Trim();
+            studentId=string.IsNullOrEmpty(studentId)||string.IsNullOrWhiteSpace(studentId)
+                ? null
+                : studentId.Trim();
 
             using var context = new AppDbContext();
-            var timesheet = context.Timesheets.SingleOrDefault(key =>
-                key.HomeworkId == parsedHomeworkId && key.StudentId == parsedStudentId);
+
+            if ( string.IsNullOrWhiteSpace(homeworkId) )
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(homeworkId),
+                    nameof(homeworkId)+" is null."));
+            }
+            else
+            {
+                if ( !int.TryParse(homeworkId,out parsedHomeworkId) )
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for HomeworkId"));
+
+                else if ( !context.Homeworks.Any(key => key.HomeworkId==parsedHomeworkId) )
+                    exception.ValidationExceptions.Add(new Exception("Homework Id does not exist"));
+                //Look for homework Id that is not archived
+                else if ( !context.Homeworks.Any(key => key.HomeworkId==parsedHomeworkId&&key.Archive==false) )
+                    exception.ValidationExceptions.Add(new Exception("Selected Homework Id is Archived"));
+            }
+
+            if ( string.IsNullOrWhiteSpace(studentId) )
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(studentId),
+                    nameof(studentId)+" is null."));
+            }
+            else
+            {
+                if ( !int.TryParse(studentId,out parsedStudentId) )
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Student Id"));
+                else if ( !context.Users.Any(key => key.UserId==parsedStudentId&&key.IsInstructor==false) )
+                    exception.ValidationExceptions.Add(new Exception("StudentId does not exist"));
+            }
+            
+            if ( exception.ValidationExceptions.Count>0 ) throw exception;
+
+            #endregion
+
+            #region DB Action Validation
+
+            Timesheet timesheet = new Timesheet();
+
+            if ( context.Timesheets.Any(key => key.StudentId == parsedStudentId && key.HomeworkId == parsedHomeworkId))
+            {
+                timesheet = context.Timesheets.SingleOrDefault(key =>
+                    key.HomeworkId==parsedHomeworkId&&key.StudentId==parsedStudentId);
+            }
+            else
+            {
+                /*In HomeworkView for Students if there is no timesheet created for a Homework it will display dummy data  */
+                timesheet= new Timesheet
+                {
+                    TimesheetId = 0,
+                    HomeworkId = parsedHomeworkId,
+                    StudentId = parsedStudentId,
+                    SolvingTime = 0,
+                    StudyTime = 0,
+                };
+            }
             return timesheet;
+
+            #endregion
+
         }
     }
 }

@@ -277,21 +277,6 @@ namespace AZLearn.Controllers
         {
             var homework = HomeworkController.GetHomeworkById(homeworkId);
             var timesheet = TimesheetController.GetTimesheetByHomeworkId(homeworkId, studentId);
-            if (timesheet == null)
-            {
-                var parsedHomeworkId = int.Parse(homeworkId);
-                var parsedStudentId = int.Parse(studentId);
-                timesheet = new Timesheet
-                {
-                    TimesheetId = 0,
-                    HomeworkId = parsedHomeworkId,
-                    StudentId = parsedStudentId,
-                    SolvingTime = 0,
-                    StudyTime = 0,
-                    Archive = false
-                };
-            }
-
             return new Tuple<Homework, Timesheet>(homework, timesheet);
         }
 
