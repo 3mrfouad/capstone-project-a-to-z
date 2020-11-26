@@ -13,33 +13,33 @@ namespace AZLearn.Models.CodeSnippets.LINQ
     public class QueriesController : Controller
     {
         // Create new Cohort, new Courses and Populate both plus CohortCourse
-        public static void CreateCohortCourse()
-        {
-            var cohort = new Cohort() { Name = "4.2", Capacity = 20, ModeOfTeaching = "Online", StartDate = new DateTime(2020, 11, 20), EndDate = new DateTime(2021, 03, 16), City = "Edmonton" };
-            var course1 = new Course() { Name = "React 101", Description = "React Fundamentals", DurationHrs = 10, InstructorId = 2 };
-            var course2 = new Course() { Name = "Redux 101", Description = "Redux Fundamentals", DurationHrs = 10, InstructorId = 2 };
+        //public static void CreateCohortCourse()
+        //{
+        //    var cohort = new Cohort() { Name = "4.2", Capacity = 20, ModeOfTeaching = "Online", StartDate = new DateTime(2020, 11, 20), EndDate = new DateTime(2021, 03, 16), City = "Edmonton" };
+        //    var course1 = new Course() { Name = "React 101", Description = "React Fundamentals", DurationHrs = 10, InstructorId = 2 };
+        //    var course2 = new Course() { Name = "Redux 101", Description = "Redux Fundamentals", DurationHrs = 10, InstructorId = 2 };
 
-            var cohortCourse1 = new CohortCourse()
-            {
-                Cohort = cohort,
-                Course = course1,
-                StartDate = new DateTime(2021, 03, 16),
-                EndDate = new DateTime(2021, 03, 18)
-            };
-            var cohortCourse2 = new CohortCourse()
-            {
-                Cohort = cohort,
-                Course = course2,
-                StartDate = new DateTime(2021, 03, 16),
-                EndDate = new DateTime(2021, 03, 18)
-            };
-            using var context = new AppDbContext();
-            context.CohortCourses.Add(cohortCourse1); // will also add member1 and comment1
-            context.CohortCourses.Add(cohortCourse2); // will also add comment2
+        //    var cohortCourse1 = new CohortCourse()
+        //    {
+        //        Cohort = cohort,
+        //        Course = course1,
+        //        StartDate = new DateTime(2021, 03, 16),
+        //        EndDate = new DateTime(2021, 03, 18)
+        //    };
+        //    var cohortCourse2 = new CohortCourse()
+        //    {
+        //        Cohort = cohort,
+        //        Course = course2,
+        //        StartDate = new DateTime(2021, 03, 16),
+        //        EndDate = new DateTime(2021, 03, 18)
+        //    };
+        //    using var context = new AppDbContext();
+        //    context.CohortCourses.Add(cohortCourse1); // will also add member1 and comment1
+        //    context.CohortCourses.Add(cohortCourse2); // will also add comment2
 
-            context.SaveChanges();
+        //    context.SaveChanges();
 
-        }
+        //}
         //Create Rubric, Existing User and populating the grades
         public static void CreateGradeNewUser()
         {

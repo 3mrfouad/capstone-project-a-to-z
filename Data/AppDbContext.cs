@@ -72,28 +72,28 @@ namespace AZLearn.Data
                     .HasCharSet("utf8mb4")
                     .HasCollation("utf8mb4_general_ci");
 
+            });
+
+            modelBuilder.Entity<CohortCourse>(entity =>
+            {
+                /* Creating Composite Key with CohortId, CourseId  */
+                entity.HasKey(e => new { e.CohortId, e.CourseId });
+
                 entity.Property(e => e.ResourcesLink)
                     .HasCharSet("utf8mb4")
                     .HasCollation("utf8mb4_general_ci");
 
                 entity.HasIndex(e => e.InstructorId)
-                    .HasName("FK_Course_Instructor");
+                    .HasName("FK_CohortCourse_Instructor");
 
                 entity.HasOne(thisEntity => thisEntity.Instructor)
-                    .WithMany(parent => parent.Courses)
+                    .WithMany(parent => parent.CohortCourses)
                     .HasForeignKey(thisEntity => thisEntity.InstructorId)
                     .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("FK_Course_Instructor");
+                    .HasConstraintName("FK_CohortCourse_Instructor");
 
             });
-            
-            modelBuilder.Entity<CohortCourse>(entity =>
-            {
-                /* Creating Composite Key with CohortId, CourseId  */
-                entity.HasKey(e => new {e.CohortId, e.CourseId});
 
-            });
-           
             modelBuilder.Entity<Homework>(entity =>
             {
                 entity.Property(e => e.Title)
@@ -268,3 +268,4 @@ namespace AZLearn.Data
         }
     }
 }
+

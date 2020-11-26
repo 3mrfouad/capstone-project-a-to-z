@@ -17,6 +17,11 @@ namespace AZLearn.Models
         [Key, Column(Order = 1, TypeName = "int(10)")]
         public int CourseId { get; set; }
 
+
+        [Required]
+        [Column(TypeName = "int(10)")]
+        public int InstructorId { get; set; }
+
         [Required]
         [Column(TypeName = "date")]
         public DateTime StartDate { get; set; }
@@ -24,6 +29,9 @@ namespace AZLearn.Models
         [Required]
         [Column(TypeName = "date")]
         public DateTime EndDate { get; set; }
+
+        [Column(TypeName = "varchar(250)")]
+        public string ResourcesLink { get; set; }
 
         [Column(TypeName = "boolean")]
         public bool Archive { get; set; } = false;
@@ -34,5 +42,9 @@ namespace AZLearn.Models
 
         [InverseProperty(nameof(Models.Course.CohortCourses))]
         public virtual Course Course { get; set; }
+
+        [ForeignKey(nameof(InstructorId))]
+        [InverseProperty(nameof(Models.User.CohortCourses))]
+        public virtual User Instructor { get; set; }
     }
 }

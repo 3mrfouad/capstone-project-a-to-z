@@ -3,14 +3,16 @@ using System;
 using AZLearn.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AZLearn.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201124022048_CohortId_Constrain_Migration")]
+    partial class CohortId_Constrain_Migration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,23 +74,12 @@ namespace AZLearn.Data.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("date");
 
-                    b.Property<int>("InstructorId")
-                        .HasColumnType("int(10)");
-
-                    b.Property<string>("ResourcesLink")
-                        .HasColumnType("varchar(250)")
-                        .HasAnnotation("MySql:CharSet", "utf8mb4")
-                        .HasAnnotation("MySql:Collation", "utf8mb4_general_ci");
-
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("date");
 
                     b.HasKey("CohortId", "CourseId");
 
                     b.HasIndex("CourseId");
-
-                    b.HasIndex("InstructorId")
-                        .HasName("FK_CohortCourse_Instructor");
 
                     b.ToTable("CohortCourse");
                 });
@@ -111,13 +102,24 @@ namespace AZLearn.Data.Migrations
                     b.Property<float>("DurationHrs")
                         .HasColumnType("float(5,2)");
 
+                    b.Property<int>("InstructorId")
+                        .HasColumnType("int(10)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("varchar(50)")
                         .HasAnnotation("MySql:CharSet", "utf8mb4")
                         .HasAnnotation("MySql:Collation", "utf8mb4_general_ci");
 
+                    b.Property<string>("ResourcesLink")
+                        .HasColumnType("varchar(250)")
+                        .HasAnnotation("MySql:CharSet", "utf8mb4")
+                        .HasAnnotation("MySql:Collation", "utf8mb4_general_ci");
+
                     b.HasKey("CourseId");
+
+                    b.HasIndex("InstructorId")
+                        .HasName("FK_Course_Instructor");
 
                     b.ToTable("Course");
                 });
@@ -410,11 +412,14 @@ namespace AZLearn.Data.Migrations
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
 
+            modelBuilder.Entity("AZLearn.Models.Course", b =>
+                {
                     b.HasOne("AZLearn.Models.User", "Instructor")
-                        .WithMany("CohortCourses")
+                        .WithMany("Courses")
                         .HasForeignKey("InstructorId")
-                        .HasConstraintName("FK_CohortCourse_Instructor")
+                        .HasConstraintName("FK_Course_Instructor")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
