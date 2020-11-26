@@ -44,6 +44,10 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
                 }
+                else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort is archived"));
+                }
             }
             if (string.IsNullOrWhiteSpace(courseId))
             {
@@ -573,6 +577,10 @@ namespace AZLearn.Controllers
                 else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId))
                 {
                     exception.ValidationExceptions.Add(new Exception("Homework Id does not exist"));
+                }
+                else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId && key.Archive == false))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Homework is archived"));
                 }
             }
             if (exception.ValidationExceptions.Count > 0)
