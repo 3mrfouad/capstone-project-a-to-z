@@ -525,7 +525,7 @@ namespace AZLearn.Controllers
             }
             catch (ValidationException e)
             {
-                var error = "Error(s) During Creation: " +
+                var error = "Error(s) During Assigning Course: " +
                             e.ValidationExceptions.Select(x => x.Message)
                                 .Aggregate((x, y) => x + ", " + y);
 
@@ -537,7 +537,6 @@ namespace AZLearn.Controllers
             }
 
             return result;
-            ;
         }
         #endregion
 
@@ -553,7 +552,7 @@ namespace AZLearn.Controllers
         /// <param name="cohortId"></param>
         /// <param name="courseId"></param>
         /// <returns> </returns>
-        [HttpPost(nameof(AssignCourseByCohortId))]
+        [HttpPost(nameof(UpdateAssignedCourse))]
         public ActionResult UpdateAssignedCourse(string cohortId, string courseId, string instructorId, string startDate, string endDate, string resourcesLink)
         {
             ActionResult result;
