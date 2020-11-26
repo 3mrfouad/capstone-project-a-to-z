@@ -308,24 +308,27 @@ namespace AZLearn.Controllers
         public ActionResult<Tuple<Homework, Timesheet>> GetHomeworkTimesheetForStudent(string homeworkId,
             string studentId)
         {
-            var homework = HomeworkController.GetHomeworkById(homeworkId);
-            var timesheet = TimesheetController.GetTimesheetByHomeworkId(homeworkId, studentId);
-            if (timesheet == null)
+            ActionResult<Tuple<Homework, Timesheet>> result;
+            try
             {
-                var parsedHomeworkId = int.Parse(homeworkId);
-                var parsedStudentId = int.Parse(studentId);
-                timesheet = new Timesheet
-                {
-                    TimesheetId = 0,
-                    HomeworkId = parsedHomeworkId,
-                    StudentId = parsedStudentId,
-                    SolvingTime = 0,
-                    StudyTime = 0,
-                    Archive = false
-                };
+                var homework = HomeworkController.GetHomeworkById(homeworkId);
+                var timesheet = TimesheetController.GetTimesheetByHomeworkId(homeworkId, studentId);
+                result =  new Tuple<Homework, Timesheet>(homework, timesheet);
+            }
+            catch (ValidationException e)
+            {
+                var error = "Error(s) During Creation: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
+
+                result = BadRequest(error);
+            }
+            catch (Exception)
+            {
+                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
             }
 
-            return new Tuple<Homework, Timesheet>(homework, timesheet);
+            return result;
         }
 
         #endregion

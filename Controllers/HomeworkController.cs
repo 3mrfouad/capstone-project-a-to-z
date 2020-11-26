@@ -545,12 +545,38 @@ namespace AZLearn.Controllers
         /// <returns>It returns the Homework Information based on the homework id </returns>
         public static Homework GetHomeworkById(string homeworkId)
         {
-            Homework result;
-            var parsedHomeworkId = int.Parse(homeworkId);
+            int parsedHomeworkId = 0;
+
+            #region Validation
+
+            homeworkId = (string.IsNullOrEmpty(homeworkId) || string.IsNullOrWhiteSpace(homeworkId)) ? null : homeworkId.Trim();
+
+            ValidationException exception = new ValidationException();
             using var context = new AppDbContext();
+
+            if (string.IsNullOrWhiteSpace(homeworkId))
             {
-                result = context.Homeworks.Single(key => key.HomeworkId == parsedHomeworkId);
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(homeworkId), nameof(homeworkId) + " is null."));
             }
+            else
+            {
+                if (!int.TryParse(homeworkId, out parsedHomeworkId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Homework Id"));
+                }
+                else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Homework Id does not exist"));
+                }
+            }
+            if (exception.ValidationExceptions.Count > 0)
+            {
+                throw exception;
+            }
+
+            #endregion
+
+            Homework result = context.Homeworks.Single(key => key.HomeworkId == parsedHomeworkId);
             return result;
         }
     }
