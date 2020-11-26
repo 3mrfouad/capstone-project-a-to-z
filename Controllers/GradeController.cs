@@ -71,7 +71,7 @@ namespace AZLearn.Controllers
                     
                     else if ( !context.Rubrics.Any(key => key.RubricId==parsedRubricId && key.Archive==false) )
                     {
-                        exception.ValidationExceptions.Add(new Exception("Rubric Id does not exist"));
+                        exception.ValidationExceptions.Add(new Exception("Rubric Id is Archived"));
                     }
 
 
@@ -94,7 +94,7 @@ namespace AZLearn.Controllers
                     }
                     else if ( !context.Users.Any(key => key.UserId==parsedStudentId && key.Archive==false) )
                     {
-                        exception.ValidationExceptions.Add(new Exception("Student Id does not exist"));
+                        exception.ValidationExceptions.Add(new Exception("Student Id is Archived"));
                     }
 
                 }
@@ -119,9 +119,13 @@ namespace AZLearn.Controllers
                                 new Exception("Marks should be between 0 & 999 inclusive."));
                     }
                 }
-                if ( instructorComment.Length>250 )
+
+                if (!string.IsNullOrEmpty(instructorComment))
                 {
-                    exception.ValidationExceptions.Add(new Exception("Comment can only be 250 characters long."));
+                    if (instructorComment.Length > 250)
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Comment can only be 250 characters long."));
+                    }
                 }
 
                 if ( exception.ValidationExceptions.Count>0 )
@@ -211,7 +215,7 @@ namespace AZLearn.Controllers
 
                     else if ( !context.Rubrics.Any(key => key.RubricId==parsedRubricId&&key.Archive==false) )
                     {
-                        exception.ValidationExceptions.Add(new Exception("Rubric Id does not exist"));
+                        exception.ValidationExceptions.Add(new Exception("Rubric Id is Archived"));
                     }
 
 
@@ -234,7 +238,7 @@ namespace AZLearn.Controllers
                     }
                     else if ( !context.Users.Any(key => key.UserId==parsedStudentId&&key.Archive==false) )
                     {
-                        exception.ValidationExceptions.Add(new Exception("Student Id does not exist"));
+                        exception.ValidationExceptions.Add(new Exception("Student Id is Archived"));
                     }
 
                 }
@@ -259,9 +263,13 @@ namespace AZLearn.Controllers
                                 new Exception("Marks should be between 0 & 999 inclusive."));
                     }
                 }
-                if ( instructorComment.Length>250 )
+
+                if (!string.IsNullOrEmpty(instructorComment))
                 {
-                    exception.ValidationExceptions.Add(new Exception("Comment can only be 250 characters long."));
+                    if (instructorComment.Length > 250)
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Comment can only be 250 characters long."));
+                    }
                 }
 
                 if ( exception.ValidationExceptions.Count>0 )
@@ -320,14 +328,7 @@ namespace AZLearn.Controllers
 
                 var comment = string.IsNullOrEmpty(tempStudentComment)||string.IsNullOrWhiteSpace(tempStudentComment) ? null : tempStudentComment.Trim();
 
-                if(!string.IsNullOrEmpty(comment))
-                {
-                    if ( comment.Length>250 )
-                    {
-                        exception.ValidationExceptions.Add(new Exception("Comment can only be 250 characters long."));
-                    }
-                }
-
+             
                 if ( string.IsNullOrWhiteSpace(rubricId) )
                 {
                     exception.ValidationExceptions.Add(new ArgumentNullException(nameof(rubricId),nameof(rubricId)+" is null."));
@@ -347,7 +348,7 @@ namespace AZLearn.Controllers
 
                     else if ( !context.Rubrics.Any(key => key.RubricId==parsedRubricId&&key.Archive==false) )
                     {
-                        exception.ValidationExceptions.Add(new Exception("Rubric Id does not exist"));
+                        exception.ValidationExceptions.Add(new Exception("Rubric Id is Archived"));
                     }
 
 
@@ -363,23 +364,31 @@ namespace AZLearn.Controllers
                     {
                         exception.ValidationExceptions.Add(new Exception("Invalid value for Student Id"));
                     }
-                        /*To check if he is an Instructor or Student*/
+                        /*To check if user is an Instructor or Student*/
                     else if ( !context.Users.Any(key => key.UserId==parsedStudentId&&key.IsInstructor==false) )
                     {
                         exception.ValidationExceptions.Add(new Exception("Student Id does not exist"));
                     }
                     else if ( !context.Users.Any(key => key.UserId==parsedStudentId&&key.Archive==false) )
                     {
-                        exception.ValidationExceptions.Add(new Exception("Student Id does not exist"));
+                        exception.ValidationExceptions.Add(new Exception("Student Id is Archived"));
                     }
 
                 }
-
                 /*To check whether Grade for  given Rubric id and student id already exists*/
 
                 if ( !context.Grades.Any(key => key.StudentId==parsedStudentId&&key.RubricId==parsedRubricId) )
                     exception.ValidationExceptions.Add(new Exception(
                         "Grade that you are trying to Update doesn't Exists for this Rubric Id and Student Id"));
+
+                if ( !string.IsNullOrEmpty(comment) )
+                {
+                    if ( comment.Length>250 )
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Comment can only be 250 characters long."));
+                    }
+                }
+
                 #endregion
                 if ( exception.ValidationExceptions.Count>0 )
                 {
