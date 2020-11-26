@@ -89,7 +89,7 @@ namespace AZLearn.Controllers
             }
             catch (ValidationException e)
             {
-                result = StatusCode(403, "Error Message");
+                result = StatusCode(403, "Error while retrieving Cohorts");
             }
 
             return result;
@@ -166,18 +166,6 @@ namespace AZLearn.Controllers
                     modeOfTeaching, startDate, endDate);
                 result = StatusCode(200, "Successfully Created the Cohort");
             }
-            catch (InvalidOperationException e)
-            {
-                result = NotFound(e.Message);
-            }
-            catch (ArgumentNullException e)
-            {
-                result = BadRequest(e.Message);
-            }
-            catch (ArgumentException e)
-            {
-                result = BadRequest(e.Message);
-            }
             catch (ValidationException e)
             {
                 var error = "Error(s) During Creation: " +
@@ -210,18 +198,6 @@ namespace AZLearn.Controllers
                 CohortController.UpdateCohortById(cohortId, name, capacity, city,
                     modeOfTeaching, startDate, endDate);
                 result = StatusCode(200, "Successfully Updated the Cohort details");
-            }
-            catch (InvalidOperationException e)
-            {
-                result = NotFound(e.Message);
-            }
-            catch (ArgumentNullException e)
-            {
-                result = BadRequest(e.Message);
-            }
-            catch (ArgumentException e)
-            {
-                result = BadRequest(e.Message);
             }
             catch (ValidationException e)
             {
@@ -304,18 +280,6 @@ namespace AZLearn.Controllers
             {
                 TimesheetController.CreateTimesheetByHomeworkId(homeworkId, studentId, solvingTime, studyTime);
                 result = StatusCode(200, "Successfully created TimeSheet");
-            }
-            catch ( InvalidOperationException e )
-            {
-                result=NotFound(e.Message);
-            }
-            catch ( ArgumentNullException e )
-            {
-                result=BadRequest(e.Message);
-            }
-            catch ( ArgumentException e )
-            {
-                result=BadRequest(e.Message);
             }
             catch ( ValidationException e )
             {
@@ -557,18 +521,6 @@ namespace AZLearn.Controllers
             {
                 TimesheetController.UpdateTimesheetById(timesheetId, solvingTime, studyTime);
                 result = StatusCode(200, "Successfully Updated Timesheet");
-            }
-            catch ( InvalidOperationException e )
-            {
-                result=NotFound(e.Message);
-            }
-            catch ( ArgumentNullException e )
-            {
-                result=BadRequest(e.Message);
-            }
-            catch ( ArgumentException e )
-            {
-                result=BadRequest(e.Message);
             }
             catch ( ValidationException e )
             {
