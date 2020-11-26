@@ -667,5 +667,48 @@ namespace AZLearn.Controllers
 
         #endregion
 
+        #region /application/CreateRubric
+
+        [HttpPost(nameof(CreateRubric))]
+        public ActionResult CreateRubric(string homeworkId, List<Tuple<string, string, string>> rubrics)
+        {
+            ActionResult result;
+            try
+            {
+                RubricController.CreateRubricsByHomeworkId(homeworkId, rubrics);
+                result = StatusCode(200, "Success Message");
+            }
+            catch
+            {
+                result = StatusCode(403, "Error Message");
+            }
+
+            return result;
+        }
+
+        #endregion
+
+        #region /application/CreateRubric
+
+        [HttpPatch(nameof(UpdateRubric))]
+        public ActionResult UpdateRubric (Dictionary<string, Tuple<string, string, string>> rubrics)
+        {
+            ActionResult result;
+            try
+            {
+                RubricController.UpdateRubricsById(rubrics);
+                result = StatusCode(200, "Success Message");
+            }
+            catch
+            {
+                result = StatusCode(403, "Error Message");
+            }
+
+            return result;
+        }
+
+        #endregion
+
+
     }
 }
