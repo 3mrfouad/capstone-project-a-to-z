@@ -43,13 +43,21 @@ namespace AZLearn.Controllers
             try
             {
                 GradeController.CreateGradingByStudentId(studentId, gradings);
-                result = StatusCode(200, "Success Message");
+                result = StatusCode(200, "Successfully Created Grade");
             }
-            catch
+            catch ( ValidationException e )
             {
-                result = StatusCode(403, "Error Message");
-            }
+                var error = "Error(s) During Creation: "+
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x,y) => x+", "+y);
 
+                result=BadRequest(error);
+            }
+            catch ( Exception e )
+            {
+                result=StatusCode(500,
+                    "Unknown error occurred while creating a Cohort, please try again later or contact Technical Support Team.");
+            }
             return result;
         }
 

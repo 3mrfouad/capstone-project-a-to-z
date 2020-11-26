@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AZLearn.Data;
 using AZLearn.Models;
+using AZLearn.Models.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,12 +24,108 @@ namespace AZLearn.Controllers
         public static void CreateGradingByStudentId(string studentId,
             Dictionary<string, Tuple<string, string>> gradings)
         {
+            /*rubricid | mark | Instructor comment*/
+            /* 1       |  0    |    GoodJob    */
             using var context = new AppDbContext();
-            foreach (var (rubricId, (mark, instructorComment)) in gradings)
+            var parsedRubricId = 0;
+            var parsedStudentId = 0;
+            var parsedMark = 0;
+
+            #region Validation
+            foreach ( var (tempRubricId, (tempMark, tempInstructorComment)) in gradings)
             {
-                int parsedRubricId = int.Parse(rubricId);
-                int parsedStudentId = int.Parse(studentId);
-                int parsedMark = int.Parse(mark);
+                
+                var exception = new ValidationException();
+                studentId = string.IsNullOrEmpty(studentId) || string.IsNullOrWhiteSpace(studentId)
+                    ? null
+                    : studentId.Trim();
+               var rubricId = string.IsNullOrEmpty(tempRubricId) || string.IsNullOrWhiteSpace(tempRubricId)
+                    ? null
+                    : tempRubricId.Trim();
+               var mark = string.IsNullOrEmpty(tempMark) || string.IsNullOrWhiteSpace(tempMark) ? null : tempMark.Trim();
+
+                var instructorComment=string.IsNullOrEmpty(tempInstructorComment)||string.IsNullOrWhiteSpace(tempInstructorComment) ? null : tempInstructorComment.Trim();
+
+                if ( string.IsNullOrWhiteSpace(rubricId) )
+                {
+                    exception.ValidationExceptions.Add(new ArgumentNullException(nameof(rubricId),nameof(rubricId)+" is null."));
+                }
+                else
+                {
+
+                    if (!int.TryParse(rubricId, out parsedRubricId))
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Invalid value for Rubric Id"));
+
+                    }
+
+                    else if ( !context.Rubrics.Any(key => key.RubricId==parsedRubricId) )
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Rubric Id does not exist"));
+                    }
+                    
+                    else if ( !context.Rubrics.Any(key => key.RubricId==parsedRubricId && key.Archive==false) )
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Rubric Id does not exist"));
+                    }
+
+
+                }
+                if ( string.IsNullOrWhiteSpace(studentId) )
+                {
+                    exception.ValidationExceptions.Add(new ArgumentNullException(nameof(studentId),nameof(studentId)+" is null."));
+                }
+                else
+                {
+
+                    if (!int.TryParse(studentId, out parsedStudentId))
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Invalid value for Student Id"));
+                    }
+                    
+                    else if ( !context.Users.Any(key => key.UserId==parsedStudentId && key.IsInstructor==false) )
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Student Id does not exist"));
+                    }
+                    else if ( !context.Users.Any(key => key.UserId==parsedStudentId && key.Archive==false) )
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Student Id does not exist"));
+                    }
+
+                }
+                /*To check whether Grade for  given Rubric id and student id already exists*/
+
+                if ( context.Grades.Any(key => key.StudentId==parsedStudentId&&key.RubricId==parsedRubricId) )
+                    exception.ValidationExceptions.Add(new Exception(
+                        "Grade Already Exists for this Rubric Id and Student Id"));
+
+                if ( string.IsNullOrWhiteSpace(mark) )
+                {
+                    exception.ValidationExceptions.Add(new ArgumentNullException(nameof(mark),nameof(mark)+" is null."));
+                }
+                else
+                {
+                    if (!int.TryParse(mark, out parsedMark))
+                        exception.ValidationExceptions.Add(new Exception("Invalid value for Mark"));
+                    else
+                    {
+                        if (parsedMark > 999 || parsedMark < 0)
+                            exception.ValidationExceptions.Add(
+                                new Exception("Marks should be between 0 & 999 inclusive."));
+                    }
+                }
+                if ( instructorComment.Length>250 )
+                {
+                    exception.ValidationExceptions.Add(new Exception("Comment can only be 250 characters long."));
+                }
+
+                if ( exception.ValidationExceptions.Count>0 )
+                {
+                    throw exception;
+                }
+
+                #endregion
+
                 context.Grades.Add(new Grade
                 {
                     RubricId = parsedRubricId,
@@ -36,9 +133,12 @@ namespace AZLearn.Controllers
                     Mark = parsedMark,
                     InstructorComment = instructorComment
                 });
+                
             }
+
             context.SaveChanges();
         }
+
         /// <summary>
         ///     UpdateGradingByStudentId
         ///     Description: Controller action that updates new gradings for a student i.e., grades and instructor comments
@@ -52,19 +152,23 @@ namespace AZLearn.Controllers
         public static void UpdateGradingByStudentId(string studentId,
             Dictionary<string, Tuple<string, string>> gradings)
         {
+           
             using var context = new AppDbContext();
             foreach (var (rubricId, (mark, instructorComment)) in gradings)
             {
-                int parsedRubricId = int.Parse(rubricId);
-                int parsedStudentId = int.Parse(studentId);
-                int parsedMark = int.Parse(mark);
+                var parsedRubricId = int.Parse(rubricId);
+                var parsedStudentId = int.Parse(studentId);
+                var parsedMark = int.Parse(mark);
                 var grade = context.Grades.Find(parsedRubricId, parsedStudentId);
                 grade.Mark = parsedMark;
                 grade.InstructorComment = instructorComment;
-            }            context.SaveChanges();        
-        }        
+            }
+
+            context.SaveChanges();
+        }
+
         /// <summary>
-        /// UpdateGradingByStudentId
+        ///     UpdateGradingByStudentId
         ///     Description: Controller action that updates new gradings for a student i.e., student comments
         ///     It expects below parameters, and would populate the updated student comments for a specific rubric / homework
         /// </summary>
@@ -72,41 +176,51 @@ namespace AZLearn.Controllers
         /// <param name="studentComment">Dictionary with rubricId as key and studentComment as value</param>
         public static void UpdateGradingByStudentId(string studentId, Dictionary<string, string> studentComment)
         {
+            /*studentID, rubricId ,StudentComment*/
             using var context = new AppDbContext();
-            var grade = new Grade(); ;
+            var grade = new Grade();
+            ;
             foreach (var (rubricId, comment) in studentComment)
             {
                 grade = context.Grades.Find(int.Parse(rubricId), int.Parse(studentId));
                 grade.StudentComment = comment;
-            }            context.SaveChanges();        
+            }
+
+            context.SaveChanges();
         }
+
         /// <summary>
         ///     GetGradesByStudentId
-        ///     This Action takes in Student Id and Homework Id and returns List of Grades associated to that student in the specified Homework.
+        ///     This Action takes in Student Id and Homework Id and returns List of Grades associated to that student in the
+        ///     specified Homework.
         /// </summary>
         /// <param name="studentId">Student Id</param>
         /// <param name="homeworkId">Homework Id</param>
         /// <returns>List of Grades associated with specified student for specified Homework</returns>
         public static List<Grade> GetGradesByStudentId(string studentId, string homeworkId)
         {
-            int parsedStudentId = int.Parse(studentId);
-            int parsedHomeworkId = int.Parse(homeworkId);
+            var parsedStudentId = int.Parse(studentId);
+            var parsedHomeworkId = int.Parse(homeworkId);
             using var context = new AppDbContext();
             var grades = context.Grades.Include("Rubric.Homework")
                 .Where(key => key.Rubric.HomeworkId == parsedHomeworkId && key.StudentId == parsedStudentId)
                 .ToList();
             return grades;
         }
+
         /// <summary>
         ///     GetGradeSummaryForInstructor
-        ///     This action returns List of custom objects of data (related to a Homework and grades for all students in specified cohort) required in Grade Summary Screen for instructor.
+        ///     This action returns List of custom objects of data (related to a Homework and grades for all students in specified
+        ///     cohort) required in Grade Summary Screen for instructor.
         ///     The screen needs data as per the following Format:
-        ///     Student Name, Total Marks, Marks Obtained in all requirements/ Total Requirement Marks, Marks obtained in all challenges/ Total Challenge Marks
+        ///     Student Name, Total Marks, Marks Obtained in all requirements/ Total Requirement Marks, Marks obtained in all
+        ///     challenges/ Total Challenge Marks
         /// </summary>
         /// <param name="cohortId">Cohort Id</param>
         /// <param name="homeworkId">Homework Id</param>
         /// <returns></returns>
-        public static List<GradeSummaryTypeForInstructor> GetGradeSummaryForInstructor(string cohortId, string homeworkId)
+        public static List<GradeSummaryTypeForInstructor> GetGradeSummaryForInstructor(string cohortId,
+            string homeworkId)
         {
             var gradeSummaries = new List<GradeSummaryTypeForInstructor>();
 
@@ -150,7 +264,8 @@ namespace AZLearn.Controllers
 
                     gradeSummary = new GradeSummaryTypeForInstructor($"{total}",
                         $"{marksByGroup[0]}/{rubricWeightByGroup[0]}",
-                        $"{marksByGroup[1]}/{rubricWeightByGroup[1]}", totalTimeSpentOnHomework, studentName, student.UserId);
+                        $"{marksByGroup[1]}/{rubricWeightByGroup[1]}", totalTimeSpentOnHomework, studentName,
+                        student.UserId);
                 }
 
                 gradeSummaries.Add(gradeSummary);

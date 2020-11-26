@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AZLearn.Data;
 using AZLearn.Models;
+using AZLearn.Models.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AZLearn.Controllers
@@ -16,10 +18,34 @@ namespace AZLearn.Controllers
         /// <returns>List of students enrolled in specified Cohort</returns>
         public static List<User> GetStudentsByCohortId(string cohortId)
         {
-            var parsedCohortId = int.Parse(cohortId);
-            var students = new List<User>();
+            int parsedCohortId = 0;
+
+            #region Validation
+
+            ValidationException exception = new ValidationException();
+
+            cohortId=(string.IsNullOrEmpty(cohortId)||string.IsNullOrWhiteSpace(cohortId)) ? null : cohortId.Trim();
+
             using var context = new AppDbContext();
-            students = context.Users.Where(key => key.CohortId == parsedCohortId).ToList();
+            if ( string.IsNullOrWhiteSpace(cohortId) )
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId),nameof(cohortId)+" is null."));
+            }
+            else
+            {
+                if ( !int.TryParse(cohortId,out parsedCohortId) )
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
+                }
+                else if ( !context.Cohorts.Any(key => key.CohortId==parsedCohortId) )
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
+                }
+            }
+            
+            #endregion
+            var students = new List<User>();
+            students= context.Users.Where(key => key.CohortId == parsedCohortId).ToList();
             return students;
         }
 
