@@ -204,6 +204,10 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
                 }
+                else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId && key.Archive == false))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort is archived"));
+                }
             }
             if (string.IsNullOrWhiteSpace(courseId))
             {
@@ -219,6 +223,10 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Course Id does not exist"));
                 }
+                else if (!context.Courses.Any(key => key.CourseId == parsedCourseId && key.Archive == false))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Course is archived"));
+                }
             }
             if (string.IsNullOrWhiteSpace(instructorId))
             {
@@ -233,6 +241,10 @@ namespace AZLearn.Controllers
                 else if (!context.Users.Any(key => key.UserId == parsedInstructorId && key.IsInstructor == true))
                 {
                     exception.ValidationExceptions.Add(new Exception("Instructor Id does not exist"));
+                }
+                else if (!context.Users.Any(key => key.UserId == parsedInstructorId && key.IsInstructor == true && key.Archive == false))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Instructor is archived"));
                 }
             }
             if (!string.IsNullOrWhiteSpace(resourcesLink))
