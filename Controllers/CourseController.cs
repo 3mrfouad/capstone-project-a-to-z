@@ -20,14 +20,34 @@ namespace AZLearn.Controllers
         /// <param name="name">string provided from frontend</param>
         /// <param name="description">string provided from frontend</param>
         /// <param name="durationHrs">string provided from frontend, and parsed to float to match model property data type</param>
-        public static void CreateCourse(string name, string description,
-            string durationHrs)
+        public static void CreateCourse(string name, string description, string durationHrs)
         {
-            var parsedDurationHrs = float.Parse(durationHrs);
+            float parsedDurationHrs = 0;
+
+            #region Validation
+
+            name = string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name) ? null : name.Trim();
+            description = string.IsNullOrEmpty(description) || string.IsNullOrWhiteSpace(description) ? null : description.Trim();
+            durationHrs = string.IsNullOrEmpty(durationHrs) || string.IsNullOrWhiteSpace(durationHrs) ? null : durationHrs.Trim();
 
             using var context = new AppDbContext();
             ValidationException exception = new ValidationException();
-            
+
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(name), nameof(name) + " is null."));
+            }
+            else
+            {
+                if (name.Length > 50)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Course name can only be 50 characters long."));
+                }
+                else if(context.Courses.Any(key => key.Name.ToLower() == name.ToLower() && key.Archive == false))
+                {
+                        exception.ValidationExceptions.Add(new Exception("Course with this name already exists."));
+                }
+            }
             if (string.IsNullOrWhiteSpace(description))
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(description), nameof(description) + " is null."));
@@ -51,11 +71,12 @@ namespace AZLearn.Controllers
                     exception.ValidationExceptions.Add(new Exception("DurationHrs value should be between 0 & 999.99 inclusive."));
                 }
             }
-        
-           if (exception.ValidationExceptions.Count > 0)
+            if (exception.ValidationExceptions.Count > 0)
             {
                 throw exception;
             }
+
+            #endregion
 
             var newCourse = new Course
             {
