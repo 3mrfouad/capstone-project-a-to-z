@@ -100,11 +100,9 @@ namespace AZLearn.Controllers
         ///     Frontend will send update API call to backend with all keys to update database
         /// </summary>
         /// <param name="courseId"></param>
-        /// <param name="instructorId"></param>
         /// <param name="name">>string provided from frontend</param>
         /// <param name="description">string provided from frontend</param>
         /// <param name="durationHrs">>string provided from frontend,, and parsed to float to match model property data type </param>
-        /// <param name="resourcesLink">string provided from frontend</param>
         public static void UpdateCourseById(string courseId, string name, string description,
             string durationHrs)
         {
@@ -216,17 +214,40 @@ namespace AZLearn.Controllers
         /// </summary>
         /// <param name="cohortId"></param>
         /// <returns>List of Courses by Cohort Id</returns>
-        public static List<Course> GetCoursesByCohortId(string cohortId, string includeInactive)
+        public static List<Course> GetCoursesByCohortId(string cohortId)
         {
             var parsedCohortId = int.Parse(cohortId);
-            var parsedIncludeInactive = bool.Parse(includeInactive);
+
+            #region Validation
+
             using var context = new AppDbContext();
+            ValidationException exception = new ValidationException();
+
+            if (string.IsNullOrWhiteSpace(cohortId))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId), nameof(cohortId) + " is null."));
+            }
+            else
+            {
+                if (!int.TryParse(cohortId, out parsedCohortId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
+                }
+                else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
+                }
+            }
+            if (exception.ValidationExceptions.Count > 0)
+            {
+                throw exception;
+            }
+
+            #endregion
 
             /*Retrieve all list of courses of specific Cohort by Filtering it by CohortId*/
-            //includeInactive - false - active courses
-            //includeInactive - true - inactive courses
             var coursesListByCohortId =
-                context.Courses.Where(key => key.Archive == parsedIncludeInactive).Include(key => key.CohortCourses)
+                context.Courses.Include(key => key.CohortCourses)
                     .Where(key => key.CohortCourses
                         .Any(subKey => subKey.CohortId == parsedCohortId)).ToList();
 

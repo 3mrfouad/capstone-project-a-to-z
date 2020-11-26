@@ -415,11 +415,26 @@ namespace AZLearn.Controllers
         /// <param name="cohortId"></param>
         /// <returns></returns>
         [HttpGet(nameof(GetCourseSummary))]
-        public ActionResult<List<Course>> GetCourseSummary(string cohortId, string includeInactive)
+        public ActionResult<List<Course>> GetCourseSummary(string cohortId)
         {
-            var coursesList = CourseController.GetCoursesByCohortId(cohortId, includeInactive);
+            ActionResult<List<Course>> result;
+            try
+            {
+                result = CourseController.GetCoursesByCohortId(cohortId);
+            }
+            catch (ValidationException e)
+            {
+                var error = "Error(s) During Creation: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
 
-            return coursesList;
+                result = BadRequest(error);
+            }
+            catch (Exception)
+            {
+                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+            }
+            return result;
         }
 
         #endregion
