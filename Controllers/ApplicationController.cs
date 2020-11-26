@@ -573,21 +573,30 @@ namespace AZLearn.Controllers
                 TimesheetController.UpdateTimesheetById(timesheetId, solvingTime, studyTime);
                 result = StatusCode(200, "Successfully Updated Timesheet");
             }
-            catch (ArgumentNullException e)
+            catch ( InvalidOperationException e )
             {
-                result = BadRequest(e.Message);
+                result=NotFound(e.Message);
             }
-            catch (ArgumentException e)
+            catch ( ArgumentNullException e )
             {
-                result = BadRequest(e.Message);
+                result=BadRequest(e.Message);
             }
-            catch (InvalidOperationException e)
+            catch ( ArgumentException e )
             {
-                result = NotFound(e.Message);
+                result=BadRequest(e.Message);
             }
-            catch (KeyNotFoundException e)
+            catch ( ValidationException e )
             {
-                result = NotFound(e.Message);
+                var error = "Error(s) During Creation: "+
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x,y) => x+", "+y);
+
+                result=BadRequest(error);
+            }
+            catch ( Exception e )
+            {
+                result=StatusCode(500,
+                    "Unknown error occurred while creating a Timesheet, please try again later or contact Technical Support Team.");
             }
 
             return result;

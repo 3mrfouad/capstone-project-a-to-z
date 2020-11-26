@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO.Compression;
 using System.Linq;
 using AZLearn.Data;
 using AZLearn.Models;
@@ -22,97 +21,86 @@ namespace AZLearn.Controllers
         public static void CreateTimesheetByHomeworkId(string homeworkId, string studentId, string solvingTime,
             string studyTime)
         {
-            int parsedHomeworkId = 0;
-            int parsedStudentId = 0;
+            var parsedHomeworkId = 0;
+            var parsedStudentId = 0;
             float parsedSolvingTime = 0;
             float parsedStudyTime = 0;
 
             #region Validation
 
-            ValidationException exception = new ValidationException();
+            var exception = new ValidationException();
 
-            homeworkId=(string.IsNullOrEmpty(homeworkId)||string.IsNullOrWhiteSpace(homeworkId)) ? null : homeworkId.Trim();
-            studentId=(string.IsNullOrEmpty(studentId)||string.IsNullOrWhiteSpace(studentId)) ? null : studentId.Trim();
-            solvingTime=(string.IsNullOrEmpty(solvingTime)||string.IsNullOrWhiteSpace(solvingTime)) ? null : solvingTime.Trim();
-            studyTime = (string.IsNullOrEmpty(studyTime) || string.IsNullOrWhiteSpace(studyTime))
+            homeworkId = string.IsNullOrEmpty(homeworkId) || string.IsNullOrWhiteSpace(homeworkId)
+                ? null
+                : homeworkId.Trim();
+            studentId = string.IsNullOrEmpty(studentId) || string.IsNullOrWhiteSpace(studentId)
+                ? null
+                : studentId.Trim();
+            solvingTime = string.IsNullOrEmpty(solvingTime) || string.IsNullOrWhiteSpace(solvingTime)
+                ? null
+                : solvingTime.Trim();
+            studyTime = string.IsNullOrEmpty(studyTime) || string.IsNullOrWhiteSpace(studyTime)
                 ? null
                 : studyTime.Trim();
 
             using var context = new AppDbContext();
 
-            if ( string.IsNullOrWhiteSpace(homeworkId) )
+            if (string.IsNullOrWhiteSpace(homeworkId))
             {
-                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(homeworkId),nameof(homeworkId)+" is null."));
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(homeworkId),
+                    nameof(homeworkId) + " is null."));
             }
             else
             {
-                if ( !int.TryParse(homeworkId,out parsedHomeworkId))
-                {
+                if (!int.TryParse(homeworkId, out parsedHomeworkId))
                     exception.ValidationExceptions.Add(new Exception("Invalid value for HomeworkId"));
-                }
 
-                else if ( !context.Homeworks.Any(key => key.HomeworkId==parsedHomeworkId) )
-                {
+                else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId))
                     exception.ValidationExceptions.Add(new Exception("Homework Id does not exist"));
-                }
                 //Look for homework Id thats not archived
-                else if ( !context.Homeworks.Any(key => key.HomeworkId==parsedHomeworkId && key.Archive==false ))
-                {
+                else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId && key.Archive == false))
                     exception.ValidationExceptions.Add(new Exception("Selected Homework Id is Archived"));
-
-                }
             }
-            if ( string.IsNullOrWhiteSpace(studentId) )
+
+            if (string.IsNullOrWhiteSpace(studentId))
             {
-                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(studentId),nameof(studentId)+" is null."));
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(studentId),
+                    nameof(studentId) + " is null."));
             }
             else
             {
                 if (!int.TryParse(studentId, out parsedStudentId))
-                {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Student Id"));
-                }
                 else if (!context.Users.Any(key => key.UserId == parsedStudentId && key.IsInstructor == false))
-                {
                     exception.ValidationExceptions.Add(new Exception("StudentId does not exist"));
-                }
             }
-                /*To check whether Timesheet for  given Homeworkid and student id already exists */
+            /*To check whether Timesheet for  given Homeworkid and student id already exists */
 
-            if(context.Timesheets.Any(key=>key.StudentId == parsedStudentId && key.HomeworkId== parsedHomeworkId))
+            if (context.Timesheets.Any(key => key.StudentId == parsedStudentId && key.HomeworkId == parsedHomeworkId))
+                exception.ValidationExceptions.Add(new Exception(
+                    "Timesheet Already Exists for this Homework and student Id,Please check with the coordinator"));
+
+            if (string.IsNullOrWhiteSpace(solvingTime))
             {
-                exception.ValidationExceptions.Add(new Exception("Timesheet Already Exists for this Homework and student Id,Please check with the coordinator"));
-
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(solvingTime),
+                    nameof(solvingTime) + " is null."));
+            }
+            else
+            {
+                if (!float.TryParse(solvingTime, out parsedSolvingTime))
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Solving Time"));
+                else if (parsedSolvingTime > 999.99 || parsedSolvingTime < 0)
+                    exception.ValidationExceptions.Add(
+                        new Exception("Solving Time value should be between 0 & 999.99 inclusive."));
             }
 
-            if ( string.IsNullOrWhiteSpace(solvingTime) )
-                {
-                    exception.ValidationExceptions.Add(new ArgumentNullException(nameof(solvingTime),nameof(solvingTime)+" is null."));
-                }
-                else
-                {
-                    if ( !float.TryParse(solvingTime,out parsedSolvingTime) )
-                    {
-                        exception.ValidationExceptions.Add(new Exception("Invalid value for Solving Time"));
-                    }
-                    else if ( parsedSolvingTime>999.99||parsedSolvingTime<0 )
-                    {
-                        exception.ValidationExceptions.Add(new Exception("Solving Time value should be between 0 & 999.99 inclusive."));
-                    }
-                }
-            if ( !float.TryParse(studyTime,out parsedStudyTime) )
-            {
+            if (!float.TryParse(studyTime, out parsedStudyTime))
                 exception.ValidationExceptions.Add(new Exception("Invalid value for Study Time"));
-            }
-            else if ( parsedStudyTime>999.99||parsedStudyTime<0 )
-            {
-                exception.ValidationExceptions.Add(new Exception("Study Time value should be between 0 & 999.99 inclusive."));
-            }
+            else if (parsedStudyTime > 999.99 || parsedStudyTime < 0)
+                exception.ValidationExceptions.Add(
+                    new Exception("Study Time value should be between 0 & 999.99 inclusive."));
 
-            if ( exception.ValidationExceptions.Count>0 )
-            {
-                throw exception;
-            }
+            if (exception.ValidationExceptions.Count > 0) throw exception;
 
             #endregion
 
@@ -142,15 +130,72 @@ namespace AZLearn.Controllers
         /// <param name="studyTime"></param>
         public static void UpdateTimesheetById(string timesheetId, string solvingTime, string studyTime)
         {
-            int parsedTimesheetId = int.Parse(timesheetId);
-            float parsedSolvingTime = float.Parse(solvingTime);
-            float parsedStudyTime = float.Parse(studyTime);
+            var parsedTimesheetId = 0;
+            float parsedSolvingTime = 0;
+            float parsedStudyTime = 0;
 
+            #region Validation
+
+            var exception = new ValidationException();
+
+            timesheetId = string.IsNullOrEmpty(timesheetId) || string.IsNullOrWhiteSpace(timesheetId)
+                ? null
+                : timesheetId.Trim();
+            solvingTime = string.IsNullOrEmpty(solvingTime) || string.IsNullOrWhiteSpace(solvingTime)
+                ? null
+                : solvingTime.Trim();
+            studyTime = string.IsNullOrEmpty(studyTime) || string.IsNullOrWhiteSpace(studyTime)
+                ? null
+                : studyTime.Trim();
             using var context = new AppDbContext();
+
+            if (string.IsNullOrWhiteSpace(timesheetId))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(timesheetId),
+                    nameof(timesheetId) + " is null."));
+            }
+            else
+            {
+                if (!int.TryParse(timesheetId, out parsedTimesheetId))
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Timesheet Id"));
+                /*If the Homework is Archived you cannot update the Timesheet*/
+                else if (!context.Timesheets.Any(key => key.TimesheetId == parsedTimesheetId && key.Archive == false))
+                    exception.ValidationExceptions.Add(new Exception("Timesheet Id does not exist"));
+            }
+
+
+            if (string.IsNullOrWhiteSpace(solvingTime))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(solvingTime),
+                    nameof(solvingTime) + " is null."));
+            }
+            else
+            {
+                if (!float.TryParse(solvingTime, out parsedSolvingTime))
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Solving Time"));
+                else if (parsedSolvingTime > 999.99 || parsedSolvingTime < 0)
+                    exception.ValidationExceptions.Add(
+                        new Exception("Solving Time value should be between 0 & 999.99 inclusive."));
+            }
+
+            if (!float.TryParse(studyTime, out parsedStudyTime))
+                exception.ValidationExceptions.Add(new Exception("Invalid value for Study Time"));
+            else if (parsedStudyTime > 999.99 || parsedStudyTime < 0)
+                exception.ValidationExceptions.Add(
+                    new Exception("Study Time value should be between 0 & 999.99 inclusive."));
+
+            if (exception.ValidationExceptions.Count > 0) throw exception;
+
+            #endregion
+
+            #region DB Action Validation
+
             var timesheet = context.Timesheets.Find(parsedTimesheetId);
             timesheet.SolvingTime = parsedSolvingTime;
             timesheet.StudyTime = parsedStudyTime;
             context.SaveChanges();
+
+            #endregion
         }
 
         /// <summary>
@@ -162,8 +207,8 @@ namespace AZLearn.Controllers
         /// <returns>Record from Timesheet Table</returns>
         public static Timesheet GetTimesheetByHomeworkId(string homeworkId, string studentId)
         {
-            int parsedHomeworkId = int.Parse(homeworkId);
-            int parsedStudentId = int.Parse(studentId);
+            var parsedHomeworkId = int.Parse(homeworkId);
+            var parsedStudentId = int.Parse(studentId);
 
             using var context = new AppDbContext();
             var timesheet = context.Timesheets.SingleOrDefault(key =>
