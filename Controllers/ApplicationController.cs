@@ -143,11 +143,19 @@ namespace AZLearn.Controllers
                 HomeworkController.UpdateHomeworkById(homeworkId, courseId, instructorId, cohortId,
                     isAssignment, title, avgCompletionTime, dueDate, releaseDate,
                     documentLink, gitHubClassRoomLink);
-                result = StatusCode(200, "Success Message");
+                result = StatusCode(200, "Successfully updated Homework");
             }
-            catch (ArgumentException e)
+            catch (ValidationException e)
             {
-                result = StatusCode(403, "Error Message");
+                var error = "Error(s) During Creation: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
+
+                result = BadRequest(error);
+            }
+            catch (Exception)
+            {
+                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
             }
 
             return result;
