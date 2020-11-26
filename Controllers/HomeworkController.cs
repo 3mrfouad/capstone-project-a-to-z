@@ -367,6 +367,10 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Homework Id does not exist"));
                 }
+                else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId && key.Archive == false))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Homeworkis archived"));
+                }
             }
             if (string.IsNullOrWhiteSpace(courseId))
             {
@@ -439,7 +443,7 @@ namespace AZLearn.Controllers
                 }
                 else if (!context.Users.Any(key => key.UserId == parsedInstructorId && key.IsInstructor == true && key.Archive == false))
                 {
-                    exception.ValidationExceptions.Add(new Exception("Instructor is arhived"));
+                    exception.ValidationExceptions.Add(new Exception("Instructor is archived"));
                 }
             }
 
@@ -578,10 +582,7 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Homework Id does not exist"));
                 }
-                else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId && key.Archive == false))
-                {
-                    exception.ValidationExceptions.Add(new Exception("Homework is archived"));
-                }
+                
             }
             if (exception.ValidationExceptions.Count > 0)
             {
