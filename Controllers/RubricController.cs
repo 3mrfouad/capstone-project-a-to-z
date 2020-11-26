@@ -81,6 +81,10 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Homework Id does not exist"));
                 }
+                else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId && key.Archive == false))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Homework is archived"));
+                }
             }
 
             #endregion
@@ -90,9 +94,6 @@ namespace AZLearn.Controllers
 
                 bool parsedIsChallenge = false;
                 int parsedWeight = 0;
-                /*isChallenge = (string.IsNullOrEmpty(isChallenge) || string.IsNullOrWhiteSpace(isChallenge)) ? null : isChallenge.Trim();
-                criteria = (string.IsNullOrEmpty(criteria) || string.IsNullOrWhiteSpace(criteria)) ? null : criteria.Trim();
-                weight = (string.IsNullOrEmpty(weight) || string.IsNullOrWhiteSpace(weight)) ? null : weight.Trim();*/
 
                 #region Validation for Rubrics
 
