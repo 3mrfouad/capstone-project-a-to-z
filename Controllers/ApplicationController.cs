@@ -757,5 +757,61 @@ namespace AZLearn.Controllers
             return result;
         }
         #endregion
+
+        #region /application/CreateRubric
+
+        [HttpPost(nameof(CreateRubric))]
+        public ActionResult CreateRubric(string homeworkId, List<Tuple<string, string, string>> rubrics)
+        {
+            ActionResult result;
+            try
+            {
+                RubricController.CreateRubricsByHomeworkId(homeworkId, rubrics);
+                result = StatusCode(200, "Successfully created Rubric for Homework.");
+            }
+            catch (ValidationException e)
+            {
+                var error = "Error(s) During creating Rubric: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
+
+                result = BadRequest(error);
+            }
+            catch (Exception)
+            {
+                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+            }
+            return result;
+        }
+
+        #endregion
+
+        #region /application/UpdateRubric
+
+        [HttpPatch(nameof(UpdateRubric))]
+        public ActionResult UpdateRubric(Dictionary<string, Tuple<string, string, string>> rubrics)
+        {
+            ActionResult result;
+            try
+            {
+                RubricController.UpdateRubricsById(rubrics);
+                result = StatusCode(200, "Successfully updated the rubric");
+            }
+            catch (ValidationException e)
+            {
+                var error = "Error(s) During updating Rubric: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
+
+                result = BadRequest(error);
+            }
+            catch (Exception)
+            {
+                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+            }
+            return result;
+        }
+
+        #endregion
     }
 }
