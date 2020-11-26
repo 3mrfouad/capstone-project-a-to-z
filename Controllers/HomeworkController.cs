@@ -204,28 +204,18 @@ namespace AZLearn.Controllers
                     exception.ValidationExceptions.Add(new Exception("Average Completion Time should be between 0 and 999.99 inclusive"));
                 }
             }
-            /*================================================================================================*/
             if (!string.IsNullOrWhiteSpace(releaseDate))
             {
                 if (!DateTime.TryParse(releaseDate, out parsedReleasedate))
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for release date"));
                 }
-                else if (parsedReleasedate < DateTime.Now.Date)
-                {
-                    exception.ValidationExceptions.Add(new Exception("Homework can not be released in the past."));
-                }
             }
-            /*================================================================================================*/
             if (!string.IsNullOrWhiteSpace(dueDate))
             {
                 if (!DateTime.TryParse(dueDate, out parsedDuedate))
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for due date"));
-                }
-                else if (parsedDuedate < DateTime.Now.Date)
-                {
-                    exception.ValidationExceptions.Add(new Exception("Homework can not have due date in the past."));
                 }
                 else if (!string.IsNullOrWhiteSpace(releaseDate) &&
                          DateTime.TryParse(releaseDate, out parsedReleasedate) && parsedReleasedate > parsedDuedate)
@@ -233,7 +223,6 @@ namespace AZLearn.Controllers
                     exception.ValidationExceptions.Add(new Exception("Homework can not be due before it is released."));
                 }
             }
-            /*================================================================================================*/
             if (!string.IsNullOrWhiteSpace(documentLink))
             {
                 if (documentLink.Length > 250)
@@ -440,28 +429,18 @@ namespace AZLearn.Controllers
                     exception.ValidationExceptions.Add(new Exception("Average Completion Time should be between 0 and 999.99 inclusive"));
                 }
             }
-            /*================================================================================================*/
             if (!string.IsNullOrWhiteSpace(releaseDate))
             {
                 if (!DateTime.TryParse(releaseDate, out parsedReleasedate))
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for release date"));
                 }
-                else if (parsedReleasedate < DateTime.Now.Date)
-                {
-                    exception.ValidationExceptions.Add(new Exception("Homework can not be released in the past."));
-                }
             }
-            /*================================================================================================*/
             if (!string.IsNullOrWhiteSpace(dueDate))
             {
                 if (!DateTime.TryParse(dueDate, out parsedDuedate))
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for due date"));
-                }
-                else if (parsedDuedate < DateTime.Now.Date)
-                {
-                    exception.ValidationExceptions.Add(new Exception("Homework can not have due date in the past."));
                 }
                 else if (!string.IsNullOrWhiteSpace(releaseDate) &&
                          DateTime.TryParse(releaseDate, out parsedReleasedate) && parsedReleasedate > parsedDuedate)
@@ -469,7 +448,6 @@ namespace AZLearn.Controllers
                     exception.ValidationExceptions.Add(new Exception("Homework can not be due before it is released."));
                 }
             }
-            /*================================================================================================*/
             if (!string.IsNullOrWhiteSpace(documentLink))
             {
                 if (documentLink.Length > 250)
@@ -480,7 +458,7 @@ namespace AZLearn.Controllers
                 {
                     /** Citation
                      *  https://stackoverflow.com/questions/161738/what-is-the-best-regular-expression-to-check-if-a-string-is-a-valid-url
-                     *  Referenced above source to validate the incoming Resources Link (URL) bafire saving to DB.
+                     *  Referenced above source to validate the incoming Resources Link (URL) before saving to DB.
                      */
                     Uri uri;
                     if (!(Uri.TryCreate(documentLink, UriKind.Absolute, out uri) &&
