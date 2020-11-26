@@ -125,22 +125,30 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Course Id"));
                 }
-                /*================================================================================================*/
                 else
                 {
-                    if (!context.Courses.Any(key => key.CourseId == parsedCourseId && key.Archive == false))
+                    if (!context.Courses.Any(key => key.CourseId == parsedCourseId))
                     {
-                        exception.ValidationExceptions.Add(new Exception("Homework cannot be created for this course. Course Id does not exist/Course has been archived"));
+                        exception.ValidationExceptions.Add(new Exception("HCourse Id does not exist."));
+                    }
+                    else if (!context.Courses.Any(key => key.CourseId == parsedCourseId && key.Archive == false))
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Course has been archived"));
                     }
                     else
                     {
                         if ((!string.IsNullOrWhiteSpace(cohortId)) && int.TryParse(cohortId, out parsedCohortId))
                         {
                             if (!context.CohortCourses.Any(key =>
+                                key.CohortId == parsedCohortId && key.CourseId == parsedCourseId))
+                            {
+                                exception.ValidationExceptions.Add(new Exception("This course is not assigned to this Cohort"));
+                            }
+                            else if (!context.CohortCourses.Any(key =>
                                 key.CohortId == parsedCohortId && key.CourseId == parsedCourseId &&
                                 key.Archive == false))
                             {
-                                exception.ValidationExceptions.Add(new Exception("Homework cannot be created. Either this course is not assigned to this Cohort or this course has been archived for this cohort."));
+                                exception.ValidationExceptions.Add(new Exception("This course has been archived for this cohort."));
                             }
                             else
                             {
@@ -154,7 +162,6 @@ namespace AZLearn.Controllers
                         }
                     }
                 }
-                /*====================================================================================================*/
             }
             if (string.IsNullOrWhiteSpace(cohortId))
             {
@@ -170,6 +177,10 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
                 }
+                else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId && key.Archive == false))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort is archived"));
+                }
             }
             if (string.IsNullOrWhiteSpace(instructorId))
             {
@@ -184,6 +195,10 @@ namespace AZLearn.Controllers
                 else if (!context.Users.Any(key => key.UserId == parsedInstructorId && key.IsInstructor == true))
                 {
                     exception.ValidationExceptions.Add(new Exception("Instructor Id does not exist"));
+                }
+                else if (!context.Users.Any(key => key.UserId == parsedInstructorId && key.IsInstructor == true && key.Archive == false))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Instructor is archived"));
                 }
             }
             if (!string.IsNullOrWhiteSpace(isAssignment))
