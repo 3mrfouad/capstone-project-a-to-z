@@ -688,7 +688,7 @@ namespace AZLearn.Controllers
 
         #endregion
 
-        #region /application/CreateRubric
+        #region /application/UpdateRubric
 
         [HttpPatch(nameof(UpdateRubric))]
         public ActionResult UpdateRubric (Dictionary<string, Tuple<string, string, string>> rubrics)
