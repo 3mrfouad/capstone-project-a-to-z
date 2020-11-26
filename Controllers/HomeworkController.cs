@@ -520,7 +520,6 @@ namespace AZLearn.Controllers
 
             #endregion
 
-
             var homework = context.Homeworks.SingleOrDefault(key => key.HomeworkId == parsedHomeworkId);
             homework.CourseId = parsedCourseId;
             homework.InstructorId = parsedInstructorId;

@@ -108,15 +108,89 @@ namespace AZLearn.Controllers
         public static void UpdateCourseById(string courseId, string name, string description,
             string durationHrs)
         {
-            var parsedCourseId = int.Parse(courseId);
-            var parsedDurationHrs = float.Parse(durationHrs);
+            int parsedCourseId = 0;
+            float parsedDurationHrs = 0;
+
+            #region Validation
+
+            courseId = string.IsNullOrEmpty(courseId) || string.IsNullOrWhiteSpace(courseId) ? null : courseId.Trim();
+            name = string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name) ? null : name.Trim();
+            description = string.IsNullOrEmpty(description) || string.IsNullOrWhiteSpace(description) ? null : description.Trim();
+            durationHrs = string.IsNullOrEmpty(durationHrs) || string.IsNullOrWhiteSpace(durationHrs) ? null : durationHrs.Trim();
+
             using var context = new AppDbContext();
+            ValidationException exception = new ValidationException();
+
+            if (string.IsNullOrWhiteSpace(courseId))
             {
-                var course = context.Courses.SingleOrDefault(key => key.CourseId == parsedCourseId);
-                course.Name = name;
-                course.Description = description;
-                course.DurationHrs = parsedDurationHrs;
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(courseId), nameof(courseId) + " is null."));
             }
+            else
+            {
+                if (!int.TryParse(courseId, out parsedCourseId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Course Id"));
+                }
+                else if (!context.Courses.Any(key => key.CourseId == parsedCourseId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Course Id does not exist"));
+                }
+            }
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(name), nameof(name) + " is null."));
+            }
+            else
+            {
+                if (name.Length > 50)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Course name can only be 50 characters long."));
+                }
+                else
+                {
+                    if (context.Courses.Any(key => key.Name.ToLower() == name.ToLower() && ))
+                    {
+                       
+                    }
+
+                }
+            }
+            
+            if (string.IsNullOrWhiteSpace(description))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(description), nameof(description) + " is null."));
+            }
+            else if (description.Length > 250)
+            {
+                exception.ValidationExceptions.Add(new Exception("Course Description can only be 250 characters long."));
+            }
+            if (string.IsNullOrWhiteSpace(durationHrs))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(durationHrs), nameof(durationHrs) + " is null."));
+            }
+            else
+            {
+                if (!float.TryParse(durationHrs, out parsedDurationHrs))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for DurationHrs"));
+                }
+                else if (parsedDurationHrs > 999.99 || parsedDurationHrs < 0)
+                {
+                    exception.ValidationExceptions.Add(new Exception("DurationHrs value should be between 0 & 999.99 inclusive."));
+                }
+            }
+            if (exception.ValidationExceptions.Count > 0)
+            {
+                throw exception;
+            }
+
+            #endregion
+
+            var course = context.Courses.SingleOrDefault(key => key.CourseId == parsedCourseId);
+            course.Name = name;
+            course.Description = description;
+            course.DurationHrs = parsedDurationHrs;
+            
             context.SaveChanges();
         }
 
