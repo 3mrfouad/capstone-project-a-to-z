@@ -146,13 +146,16 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Course name can only be 50 characters long."));
                 }
-                else
+                else 
                 {
-                    if (context.Courses.Any(key => key.Name.ToLower() == name.ToLower() && ))
+                    if ((!string.IsNullOrWhiteSpace(courseId)) && int.TryParse(courseId, out parsedCourseId))
                     {
-                       
+                        /* Two courses with same name should not be allowed */
+                        if (context.Courses.Any(key => key.Name.ToLower() == name.ToLower() && key.CourseId != parsedCourseId))
+                        {
+                            exception.ValidationExceptions.Add(new Exception("A Course with this name already exists."));
+                        }
                     }
-
                 }
             }
             
