@@ -186,13 +186,12 @@ namespace AZLearn.Controllers
                     exception.ValidationExceptions.Add(new Exception("Instructor Id does not exist"));
                 }
             }
-            if (string.IsNullOrWhiteSpace(isAssignment))
+            if (!string.IsNullOrWhiteSpace(isAssignment))
             {
-                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(isAssignment), nameof(isAssignment) + " is null."));
-            }
-            else if(!bool.TryParse(isAssignment, out parsedIsAssignment))
-            {
-                exception.ValidationExceptions.Add(new Exception("Invalid value for isAssignment."));
+                if (!bool.TryParse(isAssignment, out parsedIsAssignment))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for isAssignment."));
+                }
             }
             if (!string.IsNullOrWhiteSpace(avgCompletionTime))
             {
