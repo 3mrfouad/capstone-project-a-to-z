@@ -16,6 +16,7 @@ namespace AZLearn.Controllers
         /// </summary>
         /// <param name="cohortId">Cohort Id</param>
         /// <returns>List of students enrolled in specified Cohort</returns>
+        /// /application/InstructorGradeSummary
         public static List<User> GetStudentsByCohortId(string cohortId)
         {
             int parsedCohortId = 0;
