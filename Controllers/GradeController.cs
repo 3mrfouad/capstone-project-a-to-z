@@ -152,13 +152,104 @@ namespace AZLearn.Controllers
         public static void UpdateGradingByStudentId(string studentId,
             Dictionary<string, Tuple<string, string>> gradings)
         {
-           
+            var parsedRubricId = 0;
+            var parsedStudentId = 0;
+            var parsedMark = 0;
+
             using var context = new AppDbContext();
-            foreach (var (rubricId, (mark, instructorComment)) in gradings)
+            #region Validation
+            foreach ( var (tempRubricId, (tempMark, tempInstructorComment)) in gradings)
             {
-                var parsedRubricId = int.Parse(rubricId);
-                var parsedStudentId = int.Parse(studentId);
-                var parsedMark = int.Parse(mark);
+                var exception = new ValidationException();
+                studentId=string.IsNullOrEmpty(studentId)||string.IsNullOrWhiteSpace(studentId)
+                    ? null
+                    : studentId.Trim();
+                var rubricId = string.IsNullOrEmpty(tempRubricId)||string.IsNullOrWhiteSpace(tempRubricId)
+                    ? null
+                    : tempRubricId.Trim();
+                var mark = string.IsNullOrEmpty(tempMark)||string.IsNullOrWhiteSpace(tempMark) ? null : tempMark.Trim();
+
+                var instructorComment = string.IsNullOrEmpty(tempInstructorComment)||string.IsNullOrWhiteSpace(tempInstructorComment) ? null : tempInstructorComment.Trim();
+                if ( string.IsNullOrWhiteSpace(rubricId) )
+                {
+                    exception.ValidationExceptions.Add(new ArgumentNullException(nameof(rubricId),nameof(rubricId)+" is null."));
+                }
+                else
+                {
+
+                    if ( !int.TryParse(rubricId,out parsedRubricId) )
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Invalid value for Rubric Id"));
+
+                    }
+
+                    else if ( !context.Rubrics.Any(key => key.RubricId==parsedRubricId) )
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Rubric Id does not exist"));
+                    }
+
+                    else if ( !context.Rubrics.Any(key => key.RubricId==parsedRubricId&&key.Archive==false) )
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Rubric Id does not exist"));
+                    }
+
+
+                }
+                if ( string.IsNullOrWhiteSpace(studentId) )
+                {
+                    exception.ValidationExceptions.Add(new ArgumentNullException(nameof(studentId),nameof(studentId)+" is null."));
+                }
+                else
+                {
+
+                    if ( !int.TryParse(studentId,out parsedStudentId) )
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Invalid value for Student Id"));
+                    }
+
+                    else if ( !context.Users.Any(key => key.UserId==parsedStudentId&&key.IsInstructor==false) )
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Student Id does not exist"));
+                    }
+                    else if ( !context.Users.Any(key => key.UserId==parsedStudentId&&key.Archive==false) )
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Student Id does not exist"));
+                    }
+
+                }
+                /*To check whether Grade for  given Rubric id and student id already exists*/
+
+                if ( !context.Grades.Any(key => key.StudentId==parsedStudentId&&key.RubricId==parsedRubricId) )
+                    exception.ValidationExceptions.Add(new Exception(
+                        "Grade that you are trying to Update doesn't Exists for this Rubric Id and Student Id"));
+
+                if ( string.IsNullOrWhiteSpace(mark) )
+                {
+                    exception.ValidationExceptions.Add(new ArgumentNullException(nameof(mark),nameof(mark)+" is null."));
+                }
+                else
+                {
+                    if ( !int.TryParse(mark,out parsedMark) )
+                        exception.ValidationExceptions.Add(new Exception("Invalid value for Mark"));
+                    else
+                    {
+                        if ( parsedMark>999||parsedMark<0 )
+                            exception.ValidationExceptions.Add(
+                                new Exception("Marks should be between 0 & 999 inclusive."));
+                    }
+                }
+                if ( instructorComment.Length>250 )
+                {
+                    exception.ValidationExceptions.Add(new Exception("Comment can only be 250 characters long."));
+                }
+
+                if ( exception.ValidationExceptions.Count>0 )
+                {
+                    throw exception;
+                }
+
+                #endregion
+
                 var grade = context.Grades.Find(parsedRubricId, parsedStudentId);
                 grade.Mark = parsedMark;
                 grade.InstructorComment = instructorComment;
