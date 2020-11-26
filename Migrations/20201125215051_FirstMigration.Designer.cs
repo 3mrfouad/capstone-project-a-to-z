@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace AZLearn.Data.Migrations
+namespace AZLearn.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201125171707_Course_to_CohortCourse_Properties_ShiftMigration")]
-    partial class Course_to_CohortCourse_Properties_ShiftMigration
+    [Migration("20201125215051_FirstMigration")]
+    partial class FirstMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

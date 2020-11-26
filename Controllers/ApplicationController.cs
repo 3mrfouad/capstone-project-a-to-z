@@ -43,13 +43,21 @@ namespace AZLearn.Controllers
             try
             {
                 GradeController.CreateGradingByStudentId(studentId, gradings);
-                result = StatusCode(200, "Success Message");
+                result = StatusCode(200, "Successfully Created Grade");
             }
-            catch
+            catch ( ValidationException e )
             {
-                result = StatusCode(403, "Error Message");
-            }
+                var error = "Error(s) During Creation: "+
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x,y) => x+", "+y);
 
+                result=BadRequest(error);
+            }
+            catch ( Exception e )
+            {
+                result=StatusCode(500,
+                    "Unknown error occurred while creating a Cohort, please try again later or contact Technical Support Team.");
+            }
             return result;
         }
 
@@ -65,13 +73,21 @@ namespace AZLearn.Controllers
             try
             {
                 GradeController.UpdateGradingByStudentId(studentId, gradings);
-                result = StatusCode(200, "Success Message");
+                result = StatusCode(200, "Successfully Updated the Grade Fields");
             }
-            catch
+            catch ( ValidationException e )
             {
-                result = StatusCode(403, "Error Message");
-            }
+                var error = "Error(s) During Creation: "+
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x,y) => x+", "+y);
 
+                result=BadRequest(error);
+            }
+            catch ( Exception e )
+            {
+                result=StatusCode(500,
+                    "Unknown error occurred while creating a Cohort, please try again later or contact Technical Support Team.");
+            }
             return result;
         }
 
@@ -89,7 +105,7 @@ namespace AZLearn.Controllers
             }
             catch (ValidationException e)
             {
-                result = StatusCode(403, "Error Message");
+                result = StatusCode(403, "Error while retrieving Cohorts");
             }
 
             return result;
@@ -166,18 +182,6 @@ namespace AZLearn.Controllers
                     modeOfTeaching, startDate, endDate);
                 result = StatusCode(200, "Successfully Created the Cohort");
             }
-            catch (InvalidOperationException e)
-            {
-                result = NotFound(e.Message);
-            }
-            catch (ArgumentNullException e)
-            {
-                result = BadRequest(e.Message);
-            }
-            catch (ArgumentException e)
-            {
-                result = BadRequest(e.Message);
-            }
             catch (ValidationException e)
             {
                 var error = "Error(s) During Creation: " +
@@ -210,18 +214,6 @@ namespace AZLearn.Controllers
                 CohortController.UpdateCohortById(cohortId, name, capacity, city,
                     modeOfTeaching, startDate, endDate);
                 result = StatusCode(200, "Successfully Updated the Cohort details");
-            }
-            catch (InvalidOperationException e)
-            {
-                result = NotFound(e.Message);
-            }
-            catch (ArgumentNullException e)
-            {
-                result = BadRequest(e.Message);
-            }
-            catch (ArgumentException e)
-            {
-                result = BadRequest(e.Message);
             }
             catch (ValidationException e)
             {
@@ -277,21 +269,6 @@ namespace AZLearn.Controllers
         {
             var homework = HomeworkController.GetHomeworkById(homeworkId);
             var timesheet = TimesheetController.GetTimesheetByHomeworkId(homeworkId, studentId);
-            if (timesheet == null)
-            {
-                var parsedHomeworkId = int.Parse(homeworkId);
-                var parsedStudentId = int.Parse(studentId);
-                timesheet = new Timesheet
-                {
-                    TimesheetId = 0,
-                    HomeworkId = parsedHomeworkId,
-                    StudentId = parsedStudentId,
-                    SolvingTime = 0,
-                    StudyTime = 0,
-                    Archive = false
-                };
-            }
-
             return new Tuple<Homework, Timesheet>(homework, timesheet);
         }
 
@@ -318,11 +295,20 @@ namespace AZLearn.Controllers
             try
             {
                 TimesheetController.CreateTimesheetByHomeworkId(homeworkId, studentId, solvingTime, studyTime);
-                result = StatusCode(200, "Success Message");
+                result = StatusCode(200, "Successfully created TimeSheet");
             }
-            catch
+            catch ( ValidationException e )
             {
-                result = StatusCode(403, "Error Message");
+                var error = "Error(s) During Creation: "+
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x,y) => x+", "+y);
+
+                result=BadRequest(error);
+            }
+            catch ( Exception e )
+            {
+                result=StatusCode(500,
+                    "Unknown error occurred while creating a Timesheet, please try again later or contact Technical Support Team.");
             }
 
             return result;
@@ -552,21 +538,18 @@ namespace AZLearn.Controllers
                 TimesheetController.UpdateTimesheetById(timesheetId, solvingTime, studyTime);
                 result = StatusCode(200, "Successfully Updated Timesheet");
             }
-            catch (ArgumentNullException e)
+            catch ( ValidationException e )
             {
-                result = BadRequest(e.Message);
+                var error = "Error(s) During Creation: "+
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x,y) => x+", "+y);
+
+                result=BadRequest(error);
             }
-            catch (ArgumentException e)
+            catch ( Exception e )
             {
-                result = BadRequest(e.Message);
-            }
-            catch (InvalidOperationException e)
-            {
-                result = NotFound(e.Message);
-            }
-            catch (KeyNotFoundException e)
-            {
-                result = NotFound(e.Message);
+                result=StatusCode(500,
+                    "Unknown error occurred while creating a Timesheet, please try again later or contact Technical Support Team.");
             }
 
             return result;

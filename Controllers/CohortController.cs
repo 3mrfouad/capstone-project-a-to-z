@@ -181,7 +181,7 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
                 }
-                    /*If the Course is Archived you cannot update the course*/
+                    /*If the Cohort is Archived you cannot update the course*/
                 else if ( !context.Cohorts.Any(key => key.CohortId==parsedCohortId && key.Archive==false)  )
                 {
                     exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
