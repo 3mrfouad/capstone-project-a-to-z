@@ -110,13 +110,20 @@ namespace AZLearn.Controllers
                 HomeworkController.CreateHomeworkByCourseId(courseId, instructorId, cohortId,
                     isAssignment, title, avgCompletionTime, dueDate, releaseDate,
                     documentLink, gitHubClassRoomLink);
-                result = StatusCode(200, "Success Message");
+                result = StatusCode(200, "Successfully created new Homework");
             }
-            catch
+            catch (ValidationException e)
             {
-                result = StatusCode(403, "Error Message");
-            }
+                var error = "Error(s) During Creation: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
 
+                result = BadRequest(error);
+            }
+            catch (Exception)
+            {
+                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+            }
             return result;
         }
 
@@ -255,7 +262,25 @@ namespace AZLearn.Controllers
         [HttpGet("HomeworkSummary")]
         public ActionResult<IEnumerable<Homework>> GetHomeworkSummary(string courseId, string cohortId)
         {
-            return HomeworkController.GetHomeworksByCourseId(courseId, cohortId);
+            ActionResult<IEnumerable<Homework>> result;
+            try
+            {
+                result = HomeworkController.GetHomeworksByCourseId(courseId, cohortId);
+            }
+            catch (ValidationException e)
+            {
+                var error = "Error(s) During Creation: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
+
+                result = BadRequest(error);
+            }
+            catch (Exception)
+            {
+                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+            }
+
+            return result;
         }
 
         #endregion
@@ -672,6 +697,14 @@ namespace AZLearn.Controllers
             return result;
         }
 
+        #endregion
+
+        #region /application/GetAssignedCourse
+        public ActionResult<Course> GetAssignedCourse(string courseId, string cohortId)
+        {
+            var course = CourseController.GetCourseByCohortId(courseId, cohortId);
+            return course;
+        }
         #endregion
     }
 }

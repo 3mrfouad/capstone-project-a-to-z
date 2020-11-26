@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace AZLearn.Data.Migrations
+namespace AZLearn.Migrations
 {
-    public partial class firstMigration : Migration
+    public partial class InitialMigrationUpdatedContext : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -31,6 +31,26 @@ namespace AZLearn.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Cohort", x => x.CohortId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Course",
+                columns: table => new
+                {
+                    CourseId = table.Column<int>(type: "int(10)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "varchar(50)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                        .Annotation("MySql:Collation", "utf8mb4_general_ci"),
+                    Description = table.Column<string>(type: "varchar(250)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                        .Annotation("MySql:Collation", "utf8mb4_general_ci"),
+                    DurationHrs = table.Column<float>(type: "float(5,2)", nullable: false),
+                    Archive = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Course", x => x.CourseId);
                 });
 
             migrationBuilder.CreateTable(
@@ -64,19 +84,14 @@ namespace AZLearn.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Course",
+                name: "CohortCourse",
                 columns: table => new
                 {
-                    CourseId = table.Column<int>(type: "int(10)", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    CohortId = table.Column<int>(type: "int(10)", nullable: false),
+                    CourseId = table.Column<int>(type: "int(10)", nullable: false),
                     InstructorId = table.Column<int>(type: "int(10)", nullable: false),
-                    Name = table.Column<string>(type: "varchar(50)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                        .Annotation("MySql:Collation", "utf8mb4_general_ci"),
-                    Description = table.Column<string>(type: "varchar(250)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                        .Annotation("MySql:Collation", "utf8mb4_general_ci"),
-                    DurationHrs = table.Column<float>(type: "float(5,2)", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "date", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "date", nullable: false),
                     ResourcesLink = table.Column<string>(type: "varchar(250)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                         .Annotation("MySql:Collation", "utf8mb4_general_ci"),
@@ -84,9 +99,68 @@ namespace AZLearn.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Course", x => x.CourseId);
+                    table.PrimaryKey("PK_CohortCourse", x => new { x.CohortId, x.CourseId });
                     table.ForeignKey(
-                        name: "FK_Course_Instructor",
+                        name: "FK_CohortCourse_Cohort_CohortId",
+                        column: x => x.CohortId,
+                        principalTable: "Cohort",
+                        principalColumn: "CohortId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CohortCourse_Course_CourseId",
+                        column: x => x.CourseId,
+                        principalTable: "Course",
+                        principalColumn: "CourseId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CohortCourse_Instructor",
+                        column: x => x.InstructorId,
+                        principalTable: "User",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Homework",
+                columns: table => new
+                {
+                    HomeworkId = table.Column<int>(type: "int(10)", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    CourseId = table.Column<int>(type: "int(10)", nullable: false),
+                    CohortId = table.Column<int>(type: "int(10)", nullable: false),
+                    InstructorId = table.Column<int>(type: "int(10)", nullable: false),
+                    IsAssignment = table.Column<bool>(type: "boolean", nullable: false),
+                    Title = table.Column<string>(type: "varchar(100)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                        .Annotation("MySql:Collation", "utf8mb4_general_ci"),
+                    AvgCompletionTime = table.Column<float>(type: "float(5,2)", nullable: false),
+                    DueDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    ReleaseDate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    DocumentLink = table.Column<string>(type: "varchar(250)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                        .Annotation("MySql:Collation", "utf8mb4_general_ci"),
+                    GitHubClassRoomLink = table.Column<string>(type: "varchar(250)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                        .Annotation("MySql:Collation", "utf8mb4_general_ci"),
+                    Archive = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Homework", x => x.HomeworkId);
+                    table.ForeignKey(
+                        name: "FK_Homework_Cohort",
+                        column: x => x.CohortId,
+                        principalTable: "Cohort",
+                        principalColumn: "CohortId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Homework_Course",
+                        column: x => x.CourseId,
+                        principalTable: "Course",
+                        principalColumn: "CourseId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Homework_Instructor",
                         column: x => x.InstructorId,
                         principalTable: "User",
                         principalColumn: "UserId",
@@ -112,73 +186,6 @@ namespace AZLearn.Data.Migrations
                     table.ForeignKey(
                         name: "FK_Notification_Student",
                         column: x => x.StudentId,
-                        principalTable: "User",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CohortCourse",
-                columns: table => new
-                {
-                    CohortId = table.Column<int>(type: "int(10)", nullable: false),
-                    CourseId = table.Column<int>(type: "int(10)", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "date", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "date", nullable: false),
-                    Archive = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CohortCourse", x => new { x.CohortId, x.CourseId });
-                    table.ForeignKey(
-                        name: "FK_CohortCourse_Cohort_CohortId",
-                        column: x => x.CohortId,
-                        principalTable: "Cohort",
-                        principalColumn: "CohortId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CohortCourse_Course_CourseId",
-                        column: x => x.CourseId,
-                        principalTable: "Course",
-                        principalColumn: "CourseId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Homework",
-                columns: table => new
-                {
-                    HomeworkId = table.Column<int>(type: "int(10)", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CourseId = table.Column<int>(type: "int(10)", nullable: false),
-                    InstructorId = table.Column<int>(type: "int(10)", nullable: false),
-                    IsAssignment = table.Column<bool>(type: "boolean", nullable: false),
-                    Title = table.Column<string>(type: "varchar(100)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                        .Annotation("MySql:Collation", "utf8mb4_general_ci"),
-                    AvgCompletionTime = table.Column<float>(type: "float(5,2)", nullable: false),
-                    DueDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    ReleaseDate = table.Column<DateTime>(type: "datetime", nullable: true),
-                    DocumentLink = table.Column<string>(type: "varchar(250)", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                        .Annotation("MySql:Collation", "utf8mb4_general_ci"),
-                    GitHubClassRoomLink = table.Column<string>(type: "varchar(250)", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                        .Annotation("MySql:Collation", "utf8mb4_general_ci"),
-                    Archive = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Homework", x => x.HomeworkId);
-                    table.ForeignKey(
-                        name: "FK_Homework_Course",
-                        column: x => x.CourseId,
-                        principalTable: "Course",
-                        principalColumn: "CourseId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Homework_Instructor",
-                        column: x => x.InstructorId,
                         principalTable: "User",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Restrict);
@@ -318,14 +325,19 @@ namespace AZLearn.Data.Migrations
                 column: "CourseId");
 
             migrationBuilder.CreateIndex(
-                name: "FK_Course_Instructor",
-                table: "Course",
+                name: "FK_CohortCourse_Instructor",
+                table: "CohortCourse",
                 column: "InstructorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Grade_StudentId",
                 table: "Grade",
                 column: "StudentId");
+
+            migrationBuilder.CreateIndex(
+                name: "FK_Homework_Cohort",
+                table: "Homework",
+                column: "CohortId");
 
             migrationBuilder.CreateIndex(
                 name: "FK_Homework_Course",
