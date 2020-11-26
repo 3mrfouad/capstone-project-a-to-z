@@ -552,7 +552,7 @@ namespace AZLearn.Controllers
         /// <param name="cohortId"></param>
         /// <param name="courseId"></param>
         /// <returns> </returns>
-        [HttpPost(nameof(UpdateAssignedCourse))]
+        [HttpPut(nameof(UpdateAssignedCourse))]
         public ActionResult UpdateAssignedCourse(string cohortId, string courseId, string instructorId, string startDate, string endDate, string resourcesLink)
         {
             ActionResult result;
