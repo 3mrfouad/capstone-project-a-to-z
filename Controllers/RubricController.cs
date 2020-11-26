@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AZLearn.Data;
 using AZLearn.Models;
+using AZLearn.Models.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AZLearn.Controllers
@@ -17,9 +18,37 @@ namespace AZLearn.Controllers
         /// <returns>List of Rubrics associated with specified Homework Id</returns>
         public static List<Rubric> GetRubricsByHomeworkId(string homeworkId)
         {
-            var parsedHomeworkId = int.Parse(homeworkId);
-            var rubrics = new List<Rubric>();
+            int parsedHomeworkId = 0;
+            
+            #region Validation
+
             using var context = new AppDbContext();
+            ValidationException exception = new ValidationException();
+            homeworkId = (string.IsNullOrEmpty(homeworkId) || string.IsNullOrWhiteSpace(homeworkId)) ? null : homeworkId.Trim();
+
+            if (string.IsNullOrWhiteSpace(homeworkId))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(homeworkId), nameof(homeworkId) + " is null."));
+            }
+            else
+            {
+                if (!int.TryParse(homeworkId, out parsedHomeworkId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Homework Id"));
+                }
+                else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Homework Id does not exist"));
+                }
+            }
+            if (exception.ValidationExceptions.Count > 0)
+            {
+                throw exception;
+            }
+
+            #endregion
+
+            var rubrics = new List<Rubric>();
             rubrics=context.Rubrics.Where(key => key.HomeworkId==parsedHomeworkId).ToList();
             return rubrics;
         }

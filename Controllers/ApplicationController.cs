@@ -486,19 +486,34 @@ namespace AZLearn.Controllers
         /// <param name="homeworkId"></param>
         /// <returns></returns>
         [HttpGet(nameof(GetHomeworkForInstructor))]
-        public ActionResult<Tuple<Homework, List<Rubric>, List<User>, List<Course>>> GetHomeworkForInstructor(
-            string homeworkId)
-
+        public ActionResult<Tuple<Homework, List<Rubric>, List<User>, List<Course>>> GetHomeworkForInstructor(string homeworkId)
         {
-            var homework = HomeworkController.GetHomeworkById(homeworkId);
+            ActionResult<Tuple<Homework, List<Rubric>, List<User>, List<Course>>> result;
+            try
+            {
+                var homework = HomeworkController.GetHomeworkById(homeworkId);
 
-            var rubricsList = RubricController.GetRubricsByHomeworkId(homeworkId);
+                var rubricsList = RubricController.GetRubricsByHomeworkId(homeworkId);
 
-            var coursesList = CourseController.GetCourses();
+                var coursesList = CourseController.GetCourses();
 
-            var instructorsList = UserController.GetInstructors();
+                var instructorsList = UserController.GetInstructors();
 
-            return new Tuple<Homework, List<Rubric>, List<User>, List<Course>>(homework, rubricsList, instructorsList, coursesList);
+                result = new Tuple<Homework, List<Rubric>, List<User>, List<Course>>(homework, rubricsList, instructorsList, coursesList);
+            }
+            catch (ValidationException e)
+            {
+                var error = "Error(s) During Creation: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
+
+                result = BadRequest(error);
+            }
+            catch (Exception)
+            {
+                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+            }
+            return result;
         }
         #endregion
 
