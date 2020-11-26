@@ -357,7 +357,25 @@ namespace AZLearn.Controllers
         [HttpGet("Grades")]
         public ActionResult<List<Grade>> GetGrades(string studentId, string homeworkId)
         {
-            return GradeController.GetGradesByStudentId(studentId, homeworkId);
+            ActionResult<List<Grade>> result;
+            try
+            {
+                result = GradeController.GetGradesByStudentId(studentId, homeworkId);
+            }
+            catch (ValidationException e)
+            {
+                var error = "Error(s) During Creation: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
+
+                result = BadRequest(error);
+            }
+            catch (Exception)
+            {
+                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+            }
+
+            return result;
         }
 
         #endregion

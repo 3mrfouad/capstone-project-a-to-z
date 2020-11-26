@@ -407,9 +407,60 @@ namespace AZLearn.Controllers
         /// <returns>List of Grades associated with specified student for specified Homework</returns>
         public static List<Grade> GetGradesByStudentId(string studentId, string homeworkId)
         {
-            var parsedStudentId = int.Parse(studentId);
-            var parsedHomeworkId = int.Parse(homeworkId);
+            var parsedStudentId = 0;
+            var parsedHomeworkId = 0;
+
+            #region Validation
+
+            ValidationException exception = new ValidationException();
+
+            studentId=(string.IsNullOrEmpty(studentId)||string.IsNullOrWhiteSpace(studentId)) ? null : studentId.Trim();
+            homeworkId=(string.IsNullOrEmpty(homeworkId)||string.IsNullOrWhiteSpace(homeworkId)) ? null : homeworkId.Trim();
             using var context = new AppDbContext();
+            if ( string.IsNullOrWhiteSpace(studentId) )
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(studentId),nameof(studentId)+" is null."));
+            }
+            else
+            {
+                if ( !int.TryParse(studentId,out parsedStudentId) )
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Student Id"));
+                }
+                else if ( !context.Users.Any(key => key.UserId==parsedStudentId&&key.IsInstructor==false) )
+                {
+                    exception.ValidationExceptions.Add(new Exception("Student Id does not exist"));
+                }
+                else if ( !context.Users.Any(key => key.UserId==parsedStudentId&&key.Archive==false) )
+                {
+                    exception.ValidationExceptions.Add(new Exception("Student Id is Archived"));
+                }
+            }
+            if ( string.IsNullOrWhiteSpace(homeworkId) )
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(homeworkId),nameof(homeworkId)+" is null."));
+            }
+            else
+            {
+                if ( !int.TryParse(homeworkId,out parsedHomeworkId) )
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Homework Id"));
+                }
+                else if ( !context.Homeworks.Any(key=>key.HomeworkId==parsedHomeworkId) )
+                {
+                    exception.ValidationExceptions.Add(new Exception("Homework Id does not exist"));
+                }
+                else if ( !context.Homeworks.Any(key => key.HomeworkId==parsedHomeworkId && key.Archive==false) )
+                {
+                    exception.ValidationExceptions.Add(new Exception("Homework Id is Archived"));
+                }
+            }
+            if ( exception.ValidationExceptions.Count>0 )
+            {
+                throw exception;
+            }
+
+            #endregion
             var grades = context.Grades.Include("Rubric.Homework")
                 .Where(key => key.Rubric.HomeworkId == parsedHomeworkId && key.StudentId == parsedStudentId)
                 .ToList();
