@@ -133,6 +133,10 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Course Id does not exist"));
                 }
+                else if (!context.Courses.Any(key => key.CourseId == parsedCourseId && key.Archive == false))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Course is archived"));
+                }
             }
             if (string.IsNullOrWhiteSpace(name))
             {
