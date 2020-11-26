@@ -30,12 +30,17 @@ namespace AZLearn.Controllers
             var parsedRubricId = 0;
             var parsedStudentId = 0;
             var parsedMark = 0;
+            var exception = new ValidationException();
+
 
             #region Validation
+            if ( gradings.Count==0 )
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(gradings),nameof(gradings)+" is null."));
+            }
+
             foreach ( var (tempRubricId, (tempMark, tempInstructorComment)) in gradings)
             {
-                
-                var exception = new ValidationException();
                 studentId = string.IsNullOrEmpty(studentId) || string.IsNullOrWhiteSpace(studentId)
                     ? null
                     : studentId.Trim();
@@ -135,6 +140,11 @@ namespace AZLearn.Controllers
                 });
                 
             }
+            if ( exception.ValidationExceptions.Count>0 )
+            {
+                throw exception;
+            }
+
 
             context.SaveChanges();
         }
@@ -149,18 +159,29 @@ namespace AZLearn.Controllers
         ///     Dictionary with rubricId as key and Tuple as value, the Tuple has two parameters i.e., mark and
         ///     instructor comment
         /// </param>
-        public static void UpdateGradingByStudentId(string studentId,
+        /// Test on Postman for Tuple: {
+      /*  "1":{
+            "Item1":"50",
+            "Item2":"Very Good"
+        }
+    }*/
+    public static void UpdateGradingByStudentId(string studentId,
             Dictionary<string, Tuple<string, string>> gradings)
         {
             var parsedRubricId = 0;
             var parsedStudentId = 0;
             var parsedMark = 0;
+            var exception = new ValidationException();
+
 
             using var context = new AppDbContext();
             #region Validation
+            if ( gradings.Count==0 )
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(gradings),nameof(gradings)+" is null."));
+            }
             foreach ( var (tempRubricId, (tempMark, tempInstructorComment)) in gradings)
             {
-                var exception = new ValidationException();
                 studentId=string.IsNullOrEmpty(studentId)||string.IsNullOrWhiteSpace(studentId)
                     ? null
                     : studentId.Trim();
@@ -254,6 +275,10 @@ namespace AZLearn.Controllers
                 grade.Mark = parsedMark;
                 grade.InstructorComment = instructorComment;
             }
+            if ( exception.ValidationExceptions.Count>0 )
+            {
+                throw exception;
+            }
 
             context.SaveChanges();
         }
@@ -265,16 +290,108 @@ namespace AZLearn.Controllers
         /// </summary>
         /// <param name="studentId"></param>
         /// <param name="studentComment">Dictionary with rubricId as key and studentComment as value</param>
-        public static void UpdateGradingByStudentId(string studentId, Dictionary<string, string> studentComment)
+        /// Testing fpr Dictonary on Postman:  {
+       /* "1":"Thankyou for feedback"
+    }*/
+    public static void UpdateGradingByStudentId(string studentId, Dictionary<string, string> studentComment)
         {
             /*studentID, rubricId ,StudentComment*/
+            var parsedRubricId = 0;
+            var parsedStudentId = 0;
+            var exception = new ValidationException();
+
             using var context = new AppDbContext();
             var grade = new Grade();
-            ;
-            foreach (var (rubricId, comment) in studentComment)
+            #region Validation
+
+            if(studentComment.Count==0)
             {
-                grade = context.Grades.Find(int.Parse(rubricId), int.Parse(studentId));
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(studentComment),nameof(studentComment)+" is null."));
+            }
+
+            foreach ( var (tempRubricId, tempStudentComment) in studentComment)
+            {
+                studentId=string.IsNullOrEmpty(studentId)||string.IsNullOrWhiteSpace(studentId)
+                    ? null
+                    : studentId.Trim();
+                var rubricId = string.IsNullOrEmpty(tempRubricId)||string.IsNullOrWhiteSpace(tempRubricId)
+                    ? null
+                    : tempRubricId.Trim();
+
+                var comment = string.IsNullOrEmpty(tempStudentComment)||string.IsNullOrWhiteSpace(tempStudentComment) ? null : tempStudentComment.Trim();
+
+                if(!string.IsNullOrEmpty(comment))
+                {
+                    if ( comment.Length>250 )
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Comment can only be 250 characters long."));
+                    }
+                }
+
+                if ( string.IsNullOrWhiteSpace(rubricId) )
+                {
+                    exception.ValidationExceptions.Add(new ArgumentNullException(nameof(rubricId),nameof(rubricId)+" is null."));
+                }
+                else
+                {
+                    if ( !int.TryParse(rubricId,out parsedRubricId) )
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Invalid value for Rubric Id"));
+
+                    }
+
+                    else if ( !context.Rubrics.Any(key => key.RubricId==parsedRubricId) )
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Rubric Id does not exist"));
+                    }
+
+                    else if ( !context.Rubrics.Any(key => key.RubricId==parsedRubricId&&key.Archive==false) )
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Rubric Id does not exist"));
+                    }
+
+
+                }
+                if ( string.IsNullOrWhiteSpace(studentId) )
+                {
+                    exception.ValidationExceptions.Add(new ArgumentNullException(nameof(studentId),nameof(studentId)+" is null."));
+                }
+                else
+                {
+
+                    if ( !int.TryParse(studentId,out parsedStudentId) )
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Invalid value for Student Id"));
+                    }
+                        /*To check if he is an Instructor or Student*/
+                    else if ( !context.Users.Any(key => key.UserId==parsedStudentId&&key.IsInstructor==false) )
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Student Id does not exist"));
+                    }
+                    else if ( !context.Users.Any(key => key.UserId==parsedStudentId&&key.Archive==false) )
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Student Id does not exist"));
+                    }
+
+                }
+
+                /*To check whether Grade for  given Rubric id and student id already exists*/
+
+                if ( !context.Grades.Any(key => key.StudentId==parsedStudentId&&key.RubricId==parsedRubricId) )
+                    exception.ValidationExceptions.Add(new Exception(
+                        "Grade that you are trying to Update doesn't Exists for this Rubric Id and Student Id"));
+                #endregion
+                if ( exception.ValidationExceptions.Count>0 )
+                {
+                    throw exception;
+                }
+
+                grade= context.Grades.Find(int.Parse(rubricId), int.Parse(studentId));
                 grade.StudentComment = comment;
+            }
+                if ( exception.ValidationExceptions.Count>0 )
+            {
+                throw exception;
             }
 
             context.SaveChanges();
