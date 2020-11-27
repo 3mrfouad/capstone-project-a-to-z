@@ -88,7 +88,7 @@ namespace AZLearn.Controllers
             {
                 result = CohortController.GetCohorts();
             }
-            catch (ValidationException)
+            catch (Exception)
             {
                 result = StatusCode(403, "Error: retrieving all Cohorts Information");
             }
@@ -896,7 +896,19 @@ namespace AZLearn.Controllers
         [HttpGet(nameof(GetInstructors))]
         public ActionResult<List<User>> GetInstructors()
         {
-            return UserController.GetInstructors();
+
+            ActionResult<List<User>> result;
+            try
+            {
+                result = UserController.GetInstructors();
+            }
+            catch (Exception)
+            {
+                result = StatusCode(403, "Error: retrieving all Instructors Information");
+            }
+
+            return result;
+   
         }
 
         #endregion
