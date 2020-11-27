@@ -221,11 +221,15 @@ namespace AZLearn.Controllers
                             new Exception("Capacity value should be between 0 & 999 inclusive."));
             }
 
-            if ( string.IsNullOrWhiteSpace(modeOfTeaching) )
+            if (string.IsNullOrWhiteSpace(modeOfTeaching))
+            {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(modeOfTeaching),
-                    nameof(modeOfTeaching)+" is null."));
-            else if ( modeOfTeaching.Length>50 )
+                    nameof(modeOfTeaching) + " is null."));
+            }
+            else if (modeOfTeaching.Length > 50)
+            {
                 exception.ValidationExceptions.Add(new Exception("Mode of Teaching can only be 50 characters long."));
+            }
             if ( string.IsNullOrWhiteSpace(startDate) )
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(startDate),
@@ -237,7 +241,7 @@ namespace AZLearn.Controllers
                     exception.ValidationExceptions.Add(
                         new Exception("This Cohort can not have start date in the past."));*/ //NOT REQUIRED AS WARNING IS GIVEN AT FRONT END
 
-               if ( string.IsNullOrWhiteSpace(endDate) )
+            if ( string.IsNullOrWhiteSpace(endDate) )
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(endDate),
                     nameof(endDate)+" is null."));
@@ -249,9 +253,11 @@ namespace AZLearn.Controllers
             //NOT REQUIRED AS WARNING IS GIVEN AT FRONT END
 
             /* Business Logic*/
-            if ( DateTime.TryParse(startDate,out parsedStartDate) && DateTime.TryParse(endDate,out parsedEndDate) )
-                if ( parsedEndDate<parsedStartDate )
+            if (DateTime.TryParse(startDate, out parsedStartDate) && DateTime.TryParse(endDate, out parsedEndDate))
+            {
+                if (parsedEndDate < parsedStartDate)
                     exception.ValidationExceptions.Add(new Exception("End date can not be before Start date."));
+            }
 
             if ( string.IsNullOrWhiteSpace(city) )
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(city),nameof(city)+" is null."));
