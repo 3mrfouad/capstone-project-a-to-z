@@ -79,7 +79,7 @@ namespace AZLearn.Controllers
                     }
                 }
             }
-                
+
             if (string.IsNullOrWhiteSpace(instructorId))
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(instructorId), nameof(instructorId) + " is null."));
@@ -311,7 +311,7 @@ namespace AZLearn.Controllers
             context.SaveChanges();
         }
 
-        public static void ArchiveAssignedCourse (string courseId, string cohortId)
+        public static void ArchiveAssignedCourse(string courseId, string cohortId)
         {
             var parsedCourseId = 0;
             var parsedCohortId = 0;
@@ -319,6 +319,7 @@ namespace AZLearn.Controllers
             using var context = new AppDbContext();
 
             courseId = (string.IsNullOrEmpty(courseId) || string.IsNullOrWhiteSpace(courseId)) ? null : courseId.Trim();
+
             if (courseId == null)
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(courseId), nameof(courseId) + " is null."));
@@ -336,6 +337,7 @@ namespace AZLearn.Controllers
             }
 
             cohortId = string.IsNullOrEmpty(cohortId) || string.IsNullOrWhiteSpace(cohortId) ? null : cohortId.Trim();
+
             if (cohortId == null)
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId),
@@ -350,9 +352,19 @@ namespace AZLearn.Controllers
                     exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
             }
 
-            if (!context.CohortCourses.Any(key=>key.CohortId == parsedCohortId  && key.CourseId == parsedCourseId))
+            if (!context.CohortCourses.Any(key => key.CohortId == parsedCohortId && key.CourseId == parsedCourseId))
             {
                 exception.ValidationExceptions.Add(new Exception("No valid Course and Cohort combination found"));
+            }
+            else if (context.CohortCourses.Any(key =>
+                key.CohortId == parsedCohortId && key.CourseId == parsedCourseId && key.Archive == true))
+            {
+                exception.ValidationExceptions.Add(new Exception("Course and Cohort combination is already archived"));
+            }
+
+            if (exception.ValidationExceptions.Count > 0)
+            {
+                throw exception;
             }
             else
             {
@@ -361,8 +373,44 @@ namespace AZLearn.Controllers
                 context.SaveChanges();
             }
 
-            
-
         }
+
+        public static void ArchiveAssignedCourse(string cohortId)
+        {
+            var parsedCohortId = 0;
+            var exception = new ValidationException();
+            using var context = new AppDbContext();
+
+            cohortId = string.IsNullOrEmpty(cohortId) || string.IsNullOrWhiteSpace(cohortId) ? null : cohortId.Trim();
+
+            if (cohortId == null)
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId),
+                    nameof(cohortId) + " is null."));
+            }
+            else
+            {
+                if (!int.TryParse(cohortId, out parsedCohortId))
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
+                else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
+            }
+
+            if (exception.ValidationExceptions.Count > 0)
+            {
+                throw exception;
+            }
+            else
+            {
+                var assignedCourses = context.CohortCourses.Where(key => key.CohortId == parsedCohortId).ToList();
+                foreach (var course in assignedCourses)
+                {
+                    course.Archive = true;
+                }
+                context.SaveChanges();
+            }
+
+
+        } //Extra as of now
     }
 }
