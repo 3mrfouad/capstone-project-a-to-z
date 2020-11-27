@@ -285,9 +285,14 @@ namespace AZLearn.Controllers
         /// <param name="cohortId"></param>
         public static void ArchiveCohortById(string cohortId)
         {
-            var parsedCohortId = 0;
+
+
+     
             var exception = new ValidationException();
             using var context = new AppDbContext();
+            var parsedCohortId = 0;
+
+            #region Validation
 
             cohortId = string.IsNullOrEmpty(cohortId) || string.IsNullOrWhiteSpace(cohortId) ? null : cohortId.Trim();
             if (cohortId == null)
@@ -306,9 +311,26 @@ namespace AZLearn.Controllers
                     exception.ValidationExceptions.Add(new Exception("Cohort Id is already archived"));
             }
 
+            #endregion
+
+            var assignedCourses = context.CohortCourses.Where(key => key.CohortId == parsedCohortId).ToList();
+                foreach (var course in assignedCourses)
+                {
+                    course.Archive = true;
+                }
+                
+            var homeworks = context.Homeworks.Where(key => key.CohortId == parsedCohortId).ToList();
+
+            foreach (var homework in homeworks)
+            {
+                homework.Archive = true;
+            }
+
             var cohort = context.Cohorts.Find(parsedCohortId);
             cohort.Archive = true;
+            
             context.SaveChanges();
         }
+
     }
 }
