@@ -35,6 +35,22 @@ namespace AZLearn.Controllers
 
             #region Validation
 
+            if (string.IsNullOrWhiteSpace(studentId))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(studentId),
+                    nameof(studentId) + " is null."));
+            }
+            else
+            {
+                if (!int.TryParse(studentId, out parsedStudentId))
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Student Id"));
+
+                else if (!context.Users.Any(key => key.UserId == parsedStudentId && key.IsInstructor == false))
+                    exception.ValidationExceptions.Add(new Exception("Student Id does not exist"));
+                else if (!context.Users.Any(key => key.UserId == parsedStudentId && key.Archive == false))
+                    exception.ValidationExceptions.Add(new Exception("Student Id is Archived"));
+            }
+            
             if (gradings.Count == 0)
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(gradings),
                     nameof(gradings) + " is null."));
@@ -72,22 +88,7 @@ namespace AZLearn.Controllers
                     else if (!context.Rubrics.Any(key => key.RubricId == parsedRubricId && key.Archive == false))
                         exception.ValidationExceptions.Add(new Exception("Rubric Id is Archived"));
                 }
-
-                if (string.IsNullOrWhiteSpace(studentId))
-                {
-                    exception.ValidationExceptions.Add(new ArgumentNullException(nameof(studentId),
-                        nameof(studentId) + " is null."));
-                }
-                else
-                {
-                    if (!int.TryParse(studentId, out parsedStudentId))
-                        exception.ValidationExceptions.Add(new Exception("Invalid value for Student Id"));
-
-                    else if (!context.Users.Any(key => key.UserId == parsedStudentId && key.IsInstructor == false))
-                        exception.ValidationExceptions.Add(new Exception("Student Id does not exist"));
-                    else if (!context.Users.Any(key => key.UserId == parsedStudentId && key.Archive == false))
-                        exception.ValidationExceptions.Add(new Exception("Student Id is Archived"));
-                }
+                
                 /*To check whether Grade for  given Rubric id and student id already exists*/
 
                 if (context.Grades.Any(key => key.StudentId == parsedStudentId && key.RubricId == parsedRubricId))
@@ -160,7 +161,6 @@ namespace AZLearn.Controllers
             var parsedMark = 0;
             var exception = new ValidationException();
 
-
             using var context = new AppDbContext();
 
             #region Validation
@@ -217,11 +217,11 @@ namespace AZLearn.Controllers
                         exception.ValidationExceptions.Add(new Exception("Student Id is Archived"));
                 }
                 /*To check whether Grade for  given Rubric id and student id already exists*/
-
+                //*****************************************************************
                 if (!context.Grades.Any(key => key.StudentId == parsedStudentId && key.RubricId == parsedRubricId))
                     exception.ValidationExceptions.Add(new Exception(
                         "Grade that you are trying to Update doesn't Exists for this Rubric Id and Student Id"));
-
+                //*****************************************************************
                 if (string.IsNullOrWhiteSpace(mark))
                 {
                     exception.ValidationExceptions.Add(new ArgumentNullException(nameof(mark),
@@ -389,8 +389,6 @@ namespace AZLearn.Controllers
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Student Id"));
                 else if (!context.Users.Any(key => key.UserId == parsedStudentId && key.IsInstructor == false))
                     exception.ValidationExceptions.Add(new Exception("Student Id does not exist"));
-                else if (!context.Users.Any(key => key.UserId == parsedStudentId && key.Archive == false))
-                    exception.ValidationExceptions.Add(new Exception("Student Id is Archived"));
             }
 
             if (string.IsNullOrWhiteSpace(homeworkId))
@@ -404,8 +402,6 @@ namespace AZLearn.Controllers
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Homework Id"));
                 else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId))
                     exception.ValidationExceptions.Add(new Exception("Homework Id does not exist"));
-                else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId && key.Archive == false))
-                    exception.ValidationExceptions.Add(new Exception("Homework Id is Archived"));
             }
 
             if (exception.ValidationExceptions.Count > 0) throw exception;
@@ -457,8 +453,6 @@ namespace AZLearn.Controllers
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
                 else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
                     exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
-                else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId && key.Archive == false))
-                    exception.ValidationExceptions.Add(new Exception("Selected Cohort Id is Archived"));
             }
 
             if (string.IsNullOrWhiteSpace(homeworkId))
@@ -472,16 +466,11 @@ namespace AZLearn.Controllers
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Homework Id"));
                 else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId))
                     exception.ValidationExceptions.Add(new Exception("Homework Id does not exist"));
-
-                else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId && key.Archive == false))
-                    exception.ValidationExceptions.Add(new Exception("Selected Homework Id is Archived"));
             }
 
             if (exception.ValidationExceptions.Count > 0) throw exception;
 
             #endregion
-
-            #region DBValidation
 
             var studentsByCohort = UserController.GetStudentsByCohortId(cohortId);
 
@@ -531,7 +520,6 @@ namespace AZLearn.Controllers
 
             return gradeSummaries;
 
-            #endregion
         }
     }
 }

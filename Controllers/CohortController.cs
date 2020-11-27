@@ -53,11 +53,13 @@ namespace AZLearn.Controllers
             else
             {
                 /*To check if Cohort Name already Exists , and If the Cohort is not Archived  */
-                if ( !context.Cohorts.Any(key => key.Name.ToLower()==name.ToLower()) )
+                if ( context.Cohorts.Any(key => key.Name.ToLower()==name.ToLower()))
+                {
                     exception.ValidationExceptions.Add(
                         new Exception("Cohort with same name already exists."));
-               ///CHECK THE QUERY FOR ARCHIVE PLEASE 
-                if ( !context.Cohorts.Any(key => key.Name.ToLower()==name.ToLower() && key.Archive==false))
+                }
+
+                if ( context.Cohorts.Any(key => key.Name.ToLower()==name.ToLower() && key.Archive==true))
                     exception.ValidationExceptions.Add(
                         new Exception("Selected Cohort is Archived."));
             }
@@ -118,7 +120,7 @@ namespace AZLearn.Controllers
             if (exception.ValidationExceptions.Count > 0) throw exception;
 
             #endregion
-            #region DB Action Validation
+          
             context.Add(new Cohort
             {
                 Name = name,
@@ -129,7 +131,7 @@ namespace AZLearn.Controllers
                 EndDate = parsedEndDate
             });
             context.SaveChanges();
-            #endregion
+          
         }
 
         /// <summary>
@@ -175,7 +177,7 @@ namespace AZLearn.Controllers
             using var context = new AppDbContext();
 
 
-            if ( cohortId==null )
+            if (string.IsNullOrWhiteSpace(cohortId) )
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId),nameof(cohortId)+" is null."));
             }
@@ -259,7 +261,6 @@ namespace AZLearn.Controllers
             if ( exception.ValidationExceptions.Count>0 ) throw exception;
 
             #endregion
-            #region DB Action Validation
 
             var cohort = context.Cohorts.Find(parsedCohortId);
             cohort.Name = name;
@@ -269,7 +270,7 @@ namespace AZLearn.Controllers
             cohort.StartDate = parsedStartDate;
             cohort.EndDate = parsedEndDate;
             context.SaveChanges();
-            #endregion
+           
         }
 
         /// <summary>

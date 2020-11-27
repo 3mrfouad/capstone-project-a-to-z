@@ -110,6 +110,10 @@ namespace AZLearn.Controllers
                 }
                 else
                 {
+                    if (criteria.Length > 250)
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Criteria should be max 250 characters long."));
+                    }
                     if ((!string.IsNullOrWhiteSpace(homeworkId)) && int.TryParse(homeworkId, out parsedHomeworkId))
                     {
                         if (context.Rubrics.Any(key => key.Criteria.ToLower() == criteria.Trim().ToLower() && key.HomeworkId == parsedHomeworkId && key.Archive == false))
@@ -181,6 +185,10 @@ namespace AZLearn.Controllers
                     {
                         exception.ValidationExceptions.Add(new Exception("Rubric Id does not exist"));
                     }
+                    else if (!context.Rubrics.Any(key => key.RubricId == parsedRubricId && key.Archive == false))
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Rubric is archived."));
+                    }
                 }
                 if (!string.IsNullOrWhiteSpace(isChallenge))
                 {
@@ -195,6 +203,10 @@ namespace AZLearn.Controllers
                 }
                 else
                 {
+                    if (criteria.Length > 250)
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Criteria should be max 250 characters long."));
+                    }
                     if ((!string.IsNullOrWhiteSpace(rubricId)) && int.TryParse(rubricId.Trim(), out parsedRubricId))
                     {
                         int matchingHomeworkId = context.Rubrics.SingleOrDefault(key => key.RubricId == parsedRubricId)

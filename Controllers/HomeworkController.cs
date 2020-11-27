@@ -44,9 +44,15 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
                 }
-                else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
+                else
                 {
-                    exception.ValidationExceptions.Add(new Exception("Cohort is archived"));
+                    if (int.TryParse(courseId, out parsedCourseId))
+                    {
+                        if (!context.CohortCourses.Any(key => key.CohortId == parsedCohortId && key.CourseId == parsedCourseId))
+                        {
+                            exception.ValidationExceptions.Add(new Exception("This course is not assigned to this cohort."));
+                        }
+                    }
                 }
             }
             if (string.IsNullOrWhiteSpace(courseId))
@@ -369,7 +375,7 @@ namespace AZLearn.Controllers
                 }
                 else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId && key.Archive == false))
                 {
-                    exception.ValidationExceptions.Add(new Exception("Homeworkis archived"));
+                    exception.ValidationExceptions.Add(new Exception("Homework is archived"));
                 }
             }
             if (string.IsNullOrWhiteSpace(courseId))
@@ -382,7 +388,7 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Course Id"));
                 }
-                /*================================================================================================*/
+                
                 else
                 {
                     if (!context.Courses.Any(key => key.CourseId == parsedCourseId))
@@ -425,6 +431,10 @@ namespace AZLearn.Controllers
                 else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
                 {
                     exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
+                }
+                else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId && key.Archive == false))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort has been archived"));
                 }
             }
             if (string.IsNullOrWhiteSpace(instructorId))

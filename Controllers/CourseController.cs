@@ -331,7 +331,7 @@ namespace AZLearn.Controllers
 
             courseId = (string.IsNullOrEmpty(courseId) || string.IsNullOrWhiteSpace(courseId)) ? null : courseId.Trim();
             if (courseId == null)
- {
+            {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(courseId), nameof(courseId) + " is null."));
             }
             else
@@ -340,13 +340,13 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Course Id"));
                 }
- else if (!context.Courses.Any(key => key.CourseId == parsedCourseId))
+                else if (!context.Courses.Any(key => key.CourseId == parsedCourseId))
                 {
                     exception.ValidationExceptions.Add(new Exception("Course Id does not exist"));
                 }
                 else if (!context.Courses.Any(key => key.CourseId == parsedCourseId && key.Archive == false))
                 {
-                    exception.ValidationExceptions.Add(new Exception("Course Id is already archived"));
+                    exception.ValidationExceptions.Add(new Exception("Course is already archived"));
                 }
             }
 
