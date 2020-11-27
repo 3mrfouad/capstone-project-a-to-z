@@ -12,7 +12,7 @@ namespace AZLearn.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class ApplicationController : Controller 
+    public class ApplicationController : Controller
     {
         #region CohortController
 
@@ -735,7 +735,7 @@ namespace AZLearn.Controllers
         #endregion
 
         #endregion
-        
+
         #region TimesheetController
 
         #region /application/CreateTimesheet
@@ -883,7 +883,7 @@ namespace AZLearn.Controllers
         #endregion
 
         #endregion
-        
+
         #region UserController
 
         #region /application/GetInstructors
@@ -910,7 +910,137 @@ namespace AZLearn.Controllers
                 result = StatusCode(403, "Error: retrieving all Instructors Information");
             }
             return result;
-   
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Archive EndPoints
+
+        #region /application/ArchiveCohort
+
+        [HttpPatch(nameof(ArchiveCohort))]
+        public ActionResult ArchiveCohort(string cohortId)
+        {
+            ActionResult result;
+
+            try
+            {
+                CohortController.ArchiveCohortById(cohortId);
+
+                result = StatusCode(200, "Successfully Updated the Cohort details");
+            }
+            catch (ValidationException e)
+            {
+                var error = "Error(s) During UpdateCohort: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
+                result = BadRequest(error);
+            }
+            catch (Exception)
+            {
+                result = StatusCode(500,
+                    "Unknown error occurred while Updating a Cohort, please try again later or contact Technical Support Team.");
+            }
+
+            return result;
+        }
+
+        #endregion
+
+        #region /application/ArchiveCourse
+
+        [HttpPatch(nameof(ArchiveCourse))]
+        public ActionResult ArchiveCourse(string courseId)
+        {
+            ActionResult result;
+
+            try
+            {
+                CourseController.ArchiveCourseById(courseId);
+
+                result = StatusCode(200, "Successfully Updated the Cohort details");
+            }
+            catch (ValidationException e)
+            {
+                var error = "Error(s) During UpdateCohort: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
+                result = BadRequest(error);
+            }
+            catch (Exception)
+            {
+                result = StatusCode(500,
+                    "Unknown error occurred while Updating a Cohort, please try again later or contact Technical Support Team.");
+            }
+
+            return result;
+
+
+        }
+        #endregion
+
+        #region /application/ArchiveAssignedCourse
+
+        [HttpPatch(nameof(ArchiveAssignedCourse))]
+        public ActionResult ArchiveAssignedCourse(string cohortId,string courseId)
+        {
+            ActionResult result;
+
+            try
+            {
+                CohortCourseController.ArchiveAssignedCourse(cohortId, courseId);
+
+                result = StatusCode(200, "Successfully Updated the Cohort details");
+            }
+            catch (ValidationException e)
+            {
+                var error = "Error(s) During UpdateCohort: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
+                result = BadRequest(error);
+            }
+            catch (Exception)
+            {
+                result = StatusCode(500,
+                    "Unknown error occurred while Updating a Cohort, please try again later or contact Technical Support Team.");
+            }
+
+            return result;
+
+        }
+
+        #endregion
+
+        #region /application/ArchiveHomework
+
+        [HttpPatch(nameof(ArchiveHomework))]
+        public ActionResult ArchiveHomework (string homeworkId)
+        {
+            ActionResult result;
+
+            try
+            {
+                HomeworkController.ArchiveHomeworkById(homeworkId);
+
+                result = StatusCode(200, "Successfully Updated the Cohort details");
+            }
+            catch (ValidationException e)
+            {
+                var error = "Error(s) During UpdateCohort: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
+                result = BadRequest(error);
+            }
+            catch (Exception)
+            {
+                result = StatusCode(500,
+                    "Unknown error occurred while Updating a Cohort, please try again later or contact Technical Support Team.");
+            }
+
+            return result;
         }
 
         #endregion
