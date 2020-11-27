@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AZLearn.Controllers
 {
-    public class RubricController :ControllerBase
+    public class RubricController : ControllerBase
     {
         /// <summary>
         ///     GetRubricsByHomeworkId
@@ -19,7 +19,7 @@ namespace AZLearn.Controllers
         public static List<Rubric> GetRubricsByHomeworkId(string homeworkId)
         {
             int parsedHomeworkId = 0;
-            
+
             #region Validation
 
             using var context = new AppDbContext();
@@ -49,7 +49,7 @@ namespace AZLearn.Controllers
             #endregion
 
             var rubrics = new List<Rubric>();
-            rubrics=context.Rubrics.Where(key => key.HomeworkId==parsedHomeworkId).ToList();
+            rubrics = context.Rubrics.Where(key => key.HomeworkId == parsedHomeworkId).ToList();
             return rubrics;
         }
         /// <summary>
@@ -57,7 +57,7 @@ namespace AZLearn.Controllers
         /// </summary>
         /// <param name="homeworkId"></param>
         /// <param name="rubrics"></param>
-        public static void CreateRubricsByHomeworkId(string homeworkId,List<Tuple<string,string,string>> rubrics)
+        public static void CreateRubricsByHomeworkId(string homeworkId, List<Tuple<string, string, string>> rubrics)
         {
             int parsedHomeworkId = 0;
 
@@ -89,7 +89,7 @@ namespace AZLearn.Controllers
 
             #endregion
 
-            foreach ( var (isChallenge, criteria, weight) in rubrics )
+            foreach (var (isChallenge, criteria, weight) in rubrics)
             {
 
                 bool parsedIsChallenge = false;
@@ -128,7 +128,7 @@ namespace AZLearn.Controllers
                     {
                         exception.ValidationExceptions.Add(new Exception("Invalid value for weight"));
                     }
-                    else if(parsedWeight > 999 || parsedWeight < 0)
+                    else if (parsedWeight > 999 || parsedWeight < 0)
                     {
                         exception.ValidationExceptions.Add(new Exception("Weight should be between 0 and 999 inclusive."));
                     }
@@ -140,10 +140,10 @@ namespace AZLearn.Controllers
                 #endregion
                 context.Rubrics.Add(new Rubric
                 {
-                    HomeworkId=parsedHomeworkId,
-                    IsChallenge=parsedIsChallenge,
-                    Criteria=criteria.Trim(),
-                    Weight=parsedWeight
+                    HomeworkId = parsedHomeworkId,
+                    IsChallenge = parsedIsChallenge,
+                    Criteria = criteria.Trim(),
+                    Weight = parsedWeight
                 });
             }
 
@@ -153,10 +153,10 @@ namespace AZLearn.Controllers
         /// 
         /// </summary>
         /// <param name="rubrics"></param>
-        public static void UpdateRubricsById(Dictionary<string,Tuple<string,string,string>> rubrics)
+        public static void UpdateRubricsById(Dictionary<string, Tuple<string, string, string>> rubrics)
         {
             using var context = new AppDbContext();
-            foreach ( var (rubricId, (isChallenge, criteria, weight)) in rubrics )
+            foreach (var (rubricId, (isChallenge, criteria, weight)) in rubrics)
             {
 
                 int parsedRubricId = 0;
@@ -237,9 +237,56 @@ namespace AZLearn.Controllers
                 #endregion
 
                 var rubric = context.Rubrics.Find(parsedRubricId);
-                rubric.IsChallenge=parsedIsChallenge;
-                rubric.Criteria=criteria.Trim();
-                rubric.Weight=parsedWeight;
+                rubric.IsChallenge = parsedIsChallenge;
+                rubric.Criteria = criteria.Trim();
+                rubric.Weight = parsedWeight;
+            }
+
+            context.SaveChanges();
+        }
+
+        public static void ArchiveRubricsById(List<string> rubrics)
+        {
+            var exception = new ValidationException();
+            using var context = new AppDbContext();
+            var parsedRubricId = 0;
+
+            foreach (var tempRubricId in rubrics)
+            {
+
+                var rubricId = (string.IsNullOrEmpty(tempRubricId) || string.IsNullOrWhiteSpace(tempRubricId)) ? null : tempRubricId.Trim();
+
+                #region Validation
+
+                if (string.IsNullOrWhiteSpace(rubricId))
+                {
+                    exception.ValidationExceptions.Add(new ArgumentNullException(nameof(rubricId), nameof(rubricId) + " is null."));
+                }
+                else
+                {
+                    if (!int.TryParse(rubricId, out parsedRubricId))
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Invalid value for Rubric Id"));
+                    }
+                    else if (!context.Rubrics.Any(key => key.RubricId == parsedRubricId))
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Rubric Id does not exist"));
+                    }
+                    else if (!context.Rubrics.Any(key => key.RubricId == parsedRubricId && key.Archive == false))
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Rubric Id is already archived"));
+                    }
+
+                }
+
+                if (exception.ValidationExceptions.Count > 0)
+                {
+                    throw exception;
+                }
+                #endregion
+
+                var rubric = context.Rubrics.Find(parsedRubricId);
+                rubric.Archive = true;
             }
 
             context.SaveChanges();
