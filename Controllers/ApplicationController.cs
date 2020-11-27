@@ -23,9 +23,18 @@ namespace AZLearn.Controllers
                 GradeController.UpdateGradingByStudentId(studentId, studentComment);
                 result = StatusCode(200, "Success Message");
             }
-            catch
+            catch ( ValidationException e )
             {
-                result = StatusCode(403, "Error Message");
+                var error = "Error(s) During UpdateStudentFeedback: "+
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x,y) => x+", "+y);
+
+                result=BadRequest(error);
+            }
+            catch ( Exception e )
+            {
+                result=StatusCode(500,
+                    "Unknown error occurred while Updating Feedback, please get in touch with your instructor or program coordinator");
             }
 
             return result;
@@ -47,7 +56,7 @@ namespace AZLearn.Controllers
             }
             catch ( ValidationException e )
             {
-                var error = "Error(s) During Creation: "+
+                var error = "Error(s) During CreateGrading: "+
                             e.ValidationExceptions.Select(x => x.Message)
                                 .Aggregate((x,y) => x+", "+y);
 
@@ -56,7 +65,7 @@ namespace AZLearn.Controllers
             catch ( Exception e )
             {
                 result=StatusCode(500,
-                    "Unknown error occurred while creating a Cohort, please try again later or contact Technical Support Team.");
+                    "Unknown error occurred while Creating a Grade, please try again later or contact Technical Support Team.");
             }
             return result;
         }
@@ -77,7 +86,7 @@ namespace AZLearn.Controllers
             }
             catch ( ValidationException e )
             {
-                var error = "Error(s) During Creation: "+
+                var error = "Error(s) During UpdateGrading: "+
                             e.ValidationExceptions.Select(x => x.Message)
                                 .Aggregate((x,y) => x+", "+y);
 
@@ -86,7 +95,7 @@ namespace AZLearn.Controllers
             catch ( Exception e )
             {
                 result=StatusCode(500,
-                    "Unknown error occurred while creating a Cohort, please try again later or contact Technical Support Team.");
+                    "Unknown error occurred while Updating a Grading, please try again later or contact Technical Support Team.");
             }
             return result;
         }
@@ -105,7 +114,7 @@ namespace AZLearn.Controllers
             }
             catch (ValidationException e)
             {
-                result = StatusCode(403, "Error while retrieving Cohorts");
+                result = StatusCode(403, "Error: retrieving all Cohorts Information");
             }
 
             return result;
@@ -184,7 +193,7 @@ namespace AZLearn.Controllers
             }
             catch (ValidationException e)
             {
-                var error = "Error(s) During Creation: " +
+                var error = "Error(s) During CreateCohort: "+
                             e.ValidationExceptions.Select(x => x.Message)
                                 .Aggregate((x, y) => x + ", " + y);
 
@@ -217,7 +226,7 @@ namespace AZLearn.Controllers
             }
             catch (ValidationException e)
             {
-                var error = "Error(s) During Creation: " +
+                var error = "Error(s) During UpdateCohort: "+
                             e.ValidationExceptions.Select(x => x.Message)
                                 .Aggregate((x, y) => x + ", " + y);
                 result = BadRequest(error);
@@ -225,7 +234,7 @@ namespace AZLearn.Controllers
             catch (Exception e)
             {
                 result = StatusCode(500,
-                    "Unknown error occurred while creating a Cohort, please try again later or contact Technical Support Team.");
+                    "Unknown error occurred while Updating a Cohort, please try again later or contact Technical Support Team.");
             }
 
             return result;
@@ -299,7 +308,7 @@ namespace AZLearn.Controllers
             }
             catch ( ValidationException e )
             {
-                var error = "Error(s) During Creation: "+
+                var error = "Error(s) During CreateTimesheet: "+
                             e.ValidationExceptions.Select(x => x.Message)
                                 .Aggregate((x,y) => x+", "+y);
 
@@ -330,7 +339,26 @@ namespace AZLearn.Controllers
         public ActionResult<List<GradeSummaryTypeForInstructor>> GetGradeSummaryForInstructor(string cohortId,
             string homeworkId)
         {
-            return GradeController.GetGradeSummaryForInstructor(cohortId, homeworkId);
+            ActionResult<List<GradeSummaryTypeForInstructor>> result;
+            try
+            {
+                result = GradeController.GetGradeSummaryForInstructor(cohortId, homeworkId);
+            }
+            catch ( ValidationException e )
+            {
+                var error = "Error(s) During Creation: "+
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x,y) => x+", "+y);
+
+                result=BadRequest(error);
+            }
+            catch ( Exception )
+            {
+                result=StatusCode(500,"Unknown error occurred while retrieving Grade Summary, please try again later.");
+            }
+
+            return result;
+
         }
 
         #endregion
@@ -348,7 +376,25 @@ namespace AZLearn.Controllers
         [HttpGet("Grades")]
         public ActionResult<List<Grade>> GetGrades(string studentId, string homeworkId)
         {
-            return GradeController.GetGradesByStudentId(studentId, homeworkId);
+            ActionResult<List<Grade>> result;
+            try
+            {
+                result = GradeController.GetGradesByStudentId(studentId, homeworkId);
+            }
+            catch (ValidationException e)
+            {
+                var error = "Error(s) During GetGrades: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
+
+                result = BadRequest(error);
+            }
+            catch (Exception)
+            {
+                result = StatusCode(500, "Unknown error occurred while retrieving Grades, please try again later."); 
+            }
+
+            return result;
         }
 
         #endregion
@@ -540,7 +586,7 @@ namespace AZLearn.Controllers
             }
             catch ( ValidationException e )
             {
-                var error = "Error(s) During Creation: "+
+                var error = "Error(s) During UpdateTimesheetById: "+
                             e.ValidationExceptions.Select(x => x.Message)
                                 .Aggregate((x,y) => x+", "+y);
 
@@ -549,7 +595,7 @@ namespace AZLearn.Controllers
             catch ( Exception e )
             {
                 result=StatusCode(500,
-                    "Unknown error occurred while creating a Timesheet, please try again later or contact Technical Support Team.");
+                    "Unknown error occurred while updating the Timesheet, please try again later or get in contact with your instructor or program coordinator");
             }
 
             return result;

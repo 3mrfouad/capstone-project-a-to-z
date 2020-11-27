@@ -53,22 +53,25 @@ namespace AZLearn.Controllers
             else
             {
                 /*To check if Cohort Name already Exists , and If the Cohort is not Archived  */
-                if ( context.Cohorts.Any(key => key.Name.ToLower()==name.ToLower()&&key.Archive==false) )
+                if ( !context.Cohorts.Any(key => key.Name.ToLower()==name.ToLower()) )
                     exception.ValidationExceptions.Add(
                         new Exception("Cohort with same name already exists."));
+               ///CHECK THE QUERY FOR ARCHIVE PLEASE 
+                if ( !context.Cohorts.Any(key => key.Name.ToLower()==name.ToLower() && key.Archive==false))
+                    exception.ValidationExceptions.Add(
+                        new Exception("Selected Cohort is Archived."));
             }
-
-            if (!int.TryParse(capacity, out parsedCapacity))
-            {
-                exception.ValidationExceptions.Add(new Exception("Invalid value for Capacity"));
-            }
-            else
+                
+            /*To Check for Null or Empty*/
+            if (!string.IsNullOrEmpty(capacity))
             {
                 if (!int.TryParse(capacity, out parsedCapacity))
+                {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Capacity"));
+                }
                 else if (parsedCapacity > 999 || parsedCapacity < 0)
-                    exception.ValidationExceptions.Add(
-                        new Exception("Capacity value should be between 0 & 999 inclusive."));
+                        exception.ValidationExceptions.Add(
+                            new Exception("Capacity value should be between 0 & 999 inclusive."));
             }
 
             if (string.IsNullOrWhiteSpace(modeOfTeaching))
@@ -85,9 +88,9 @@ namespace AZLearn.Controllers
             {
                 if (!DateTime.TryParse(startDate, out parsedStartDate))
                     exception.ValidationExceptions.Add(new Exception("Invalid value for startDate"));
-                else if (parsedStartDate < DateTime.Now.Date)
+                /*else if (parsedStartDate < DateTime.Now.Date)
                     exception.ValidationExceptions.Add(
-                        new Exception("This Cohort can not have start date in the past."));
+                        new Exception("This Cohort can not have start date in the past."));*///NOT REQUIRED AS WARNING IS GIVEN AT FRONT END
             }
 
             if (string.IsNullOrWhiteSpace(endDate))
@@ -99,19 +102,19 @@ namespace AZLearn.Controllers
             {
                 if (!DateTime.TryParse(endDate, out parsedEndDate))
                     exception.ValidationExceptions.Add(new Exception("Invalid value for endDate"));
-                else if (parsedEndDate < DateTime.Now.Date)
-                    exception.ValidationExceptions.Add(new Exception("This Cohort can not have end date in the past."));
+                /*  else if (parsedEndDate < DateTime.Now.Date)
+                      exception.ValidationExceptions.Add(new Exception("This Cohort can not have end date in the past."));*/ //NOT REQUIRED AS WARNING IS GIVEN AT FRONT END
             }
+            /* Business Logic*/
+            if ( DateTime.TryParse(startDate,out parsedStartDate)&&DateTime.TryParse(endDate,out parsedEndDate) )
+                if ( parsedEndDate<parsedStartDate )
+                    exception.ValidationExceptions.Add(new Exception("End date can not be before Start date."));
 
-            if (string.IsNullOrWhiteSpace(city))
+            if ( string.IsNullOrWhiteSpace(city))
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(city), nameof(city) + " is null."));
             else if (city.Length > 50)
                 exception.ValidationExceptions.Add(new Exception("City can only be 50 characters long."));
-            /* Business Logic*/
-            if (DateTime.TryParse(startDate, out parsedStartDate) && DateTime.TryParse(endDate, out parsedEndDate))
-                if (parsedEndDate < parsedStartDate)
-                    exception.ValidationExceptions.Add(new Exception("End date can not be before Start date."));
-
+           
             if (exception.ValidationExceptions.Count > 0) throw exception;
 
             #endregion
@@ -171,6 +174,7 @@ namespace AZLearn.Controllers
 
             using var context = new AppDbContext();
 
+
             if ( cohortId==null )
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId),nameof(cohortId)+" is null."));
@@ -181,10 +185,14 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
                 }
-                    /*If the Cohort is Archived you cannot update the course*/
-                else if ( !context.Cohorts.Any(key => key.CohortId==parsedCohortId && key.Archive==false)  )
+                    /*If the Cohort Exists or not If cohort is Archived you cannot update the course*/
+                else if ( !context.Cohorts.Any(key => key.CohortId==parsedCohortId)  )
                 {
                     exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
+
+                } else if ( !context.Cohorts.Any(key => key.CohortId==parsedCohortId && key.Archive==false))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id is Archived"));
                 }
             }
 
@@ -192,25 +200,23 @@ namespace AZLearn.Controllers
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(name),nameof(name)+" is null."));
             else if ( name.Length>50 )
                 exception.ValidationExceptions.Add(new Exception("Cohort name can only be 50 characters long."));
-            else
+          /*  else
             {
-                /*To check if Cohort Name already Exists , and to check If the Cohort is not Archived  */
-                if ( context.Cohorts.Any(key => key.Name.ToLower()==name.ToLower()&&key.Archive==false) )
+                *//*To check if Cohort Name already Exists , and to check If the Cohort is not Archived and Update *//*
+                if ( !context.Cohorts.Any(key => key.Name.ToLower()==name.ToLower()&&key.Archive==false) )
                     exception.ValidationExceptions.Add(
-                        new Exception("Cohort with same name already exists."));
-            }
+                        new Exception("Cohort that you are trying to update doesnt exists"));
+            }*/ ///NOT REQUIRED IN CASE OF UPDATE
 
-            if ( !int.TryParse(capacity,out parsedCapacity) )
+            if (!string.IsNullOrEmpty(capacity))
             {
-                exception.ValidationExceptions.Add(new Exception("Invalid value for Capacity"));
-            }
-            else
-            {
-                if ( !int.TryParse(capacity,out parsedCapacity) )
+                if (!int.TryParse(capacity, out parsedCapacity))
+                {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Capacity"));
-                else if ( parsedCapacity>999||parsedCapacity<0 )
-                    exception.ValidationExceptions.Add(
-                        new Exception("Capacity value should be between 0 & 999 inclusive."));
+                }
+                else if (parsedCapacity > 999 || parsedCapacity < 0)
+                        exception.ValidationExceptions.Add(
+                            new Exception("Capacity value should be between 0 & 999 inclusive."));
             }
 
             if ( string.IsNullOrWhiteSpace(modeOfTeaching) )
@@ -223,37 +229,33 @@ namespace AZLearn.Controllers
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(startDate),
                     nameof(startDate)+" is null."));
             }
-            else
-            {
-                if ( !DateTime.TryParse(startDate,out parsedStartDate) )
+            else if ( !DateTime.TryParse(startDate,out parsedStartDate) )
                     exception.ValidationExceptions.Add(new Exception("Invalid value for startDate"));
-                else if ( parsedStartDate<DateTime.Now.Date )
+               /* else if ( parsedStartDate<DateTime.Now.Date )
                     exception.ValidationExceptions.Add(
-                        new Exception("This Cohort can not have start date in the past."));
-            }
+                        new Exception("This Cohort can not have start date in the past."));*/ //NOT REQUIRED AS WARNING IS GIVEN AT FRONT END
 
-            if ( string.IsNullOrWhiteSpace(endDate) )
+               if ( string.IsNullOrWhiteSpace(endDate) )
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(endDate),
                     nameof(endDate)+" is null."));
             }
-            else
-            {
-                if ( !DateTime.TryParse(endDate,out parsedEndDate) )
+            else if ( !DateTime.TryParse(endDate,out parsedEndDate) )
                     exception.ValidationExceptions.Add(new Exception("Invalid value for endDate"));
-                else if ( parsedEndDate<DateTime.Now.Date )
-                    exception.ValidationExceptions.Add(new Exception("This Cohort can not have end date in the past."));
-            }
+            /*  else if ( parsedEndDate<DateTime.Now.Date )
+                  exception.ValidationExceptions.Add(new Exception("This Cohort can not have end date in the past."));*/
+            //NOT REQUIRED AS WARNING IS GIVEN AT FRONT END
+
+            /* Business Logic*/
+            if ( DateTime.TryParse(startDate,out parsedStartDate) && DateTime.TryParse(endDate,out parsedEndDate) )
+                if ( parsedEndDate<parsedStartDate )
+                    exception.ValidationExceptions.Add(new Exception("End date can not be before Start date."));
 
             if ( string.IsNullOrWhiteSpace(city) )
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(city),nameof(city)+" is null."));
             else if ( city.Length>50 )
                 exception.ValidationExceptions.Add(new Exception("City can only be 50 characters long."));
-            /* Business Logic*/
-            if ( DateTime.TryParse(startDate,out parsedStartDate)&&DateTime.TryParse(endDate,out parsedEndDate) )
-                if ( parsedEndDate<parsedStartDate )
-                    exception.ValidationExceptions.Add(new Exception("End date can not be before Start date."));
-
+           
             if ( exception.ValidationExceptions.Count>0 ) throw exception;
 
             #endregion
