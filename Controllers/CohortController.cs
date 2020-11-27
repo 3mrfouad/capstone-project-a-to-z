@@ -259,7 +259,7 @@ namespace AZLearn.Controllers
             #endregion
             #region DB Action Validation
 
-            var cohort = context.Cohorts.Find(int.Parse(cohortId));
+            var cohort = context.Cohorts.Find(parsedCohortId);
             cohort.Name = name;
             cohort.Capacity = parsedCapacity;
             cohort.City = city;
@@ -279,6 +279,43 @@ namespace AZLearn.Controllers
         public static List<Cohort> GetCohorts()
         {
             return new AppDbContext().Cohorts.ToList();
+        }
+        /// <summary>
+        /// ArchiveCohortById
+        /// Description: This action archives a cohort by cohortId PK
+        /// </summary>
+        /// <param name="cohortId"></param>
+        public static void ArchiveCohortById(string cohortId)
+        {
+            var parsedCohortId = 0;
+            var exception = new ValidationException();
+            using var context = new AppDbContext();
+
+            cohortId = (string.IsNullOrEmpty(cohortId) || string.IsNullOrWhiteSpace(cohortId)) ? null : cohortId.Trim();
+            if (cohortId == null)
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId), nameof(cohortId) + " is null."));
+            }
+            else
+            {
+                if (!int.TryParse(cohortId, out parsedCohortId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
+                }
+                /*If the Cohort is Archived you cannot update the course*/
+                else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
+                }
+                else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId && key.Archive == false))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id is already archived"));
+                }
+            }
+
+            var cohort = context.Cohorts.Find(parsedCohortId);
+            cohort.Archive = true;
+            context.SaveChanges();
         }
     }
 }
