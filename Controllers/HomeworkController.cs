@@ -594,5 +594,114 @@ namespace AZLearn.Controllers
             Homework result = context.Homeworks.Single(key => key.HomeworkId == parsedHomeworkId);
             return result;
         }
+
+        public static void ArchiveHomeworkById(string homeworkId)
+        {
+            int parsedHomeworkId = 0;
+
+            #region Validation
+
+            homeworkId = (string.IsNullOrEmpty(homeworkId) || string.IsNullOrWhiteSpace(homeworkId)) ? null : homeworkId.Trim();
+
+            ValidationException exception = new ValidationException();
+            using var context = new AppDbContext();
+
+            if (string.IsNullOrWhiteSpace(homeworkId))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(homeworkId), nameof(homeworkId) + " is null."));
+            }
+            else
+            {
+                if (!int.TryParse(homeworkId, out parsedHomeworkId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Homework Id"));
+                }
+                else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Homework Id does not exist"));
+                }
+                else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId && key.Archive == false))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Homework is already archived"));
+                }
+            }
+            
+            if (exception.ValidationExceptions.Count > 0)
+            {
+                throw exception;
+            }
+
+            #endregion
+
+            var rubrics = context.Rubrics.Where(key => key.HomeworkId == parsedHomeworkId).ToList();
+            foreach (var rubric in rubrics)
+            {
+                rubric.Archive = true;
+
+                var grades = context.Grades.Where(key => key.RubricId == rubric.RubricId).ToList();
+                foreach (var grade in grades)
+                {
+                    grade.Archive = true;
+                }
+            }
+            
+            var timesheets = context.Timesheets.Where(key => key.HomeworkId == parsedHomeworkId).ToList();
+            foreach (var timesheet in timesheets)
+            {
+                timesheet.Archive = true;
+            }
+
+
+            var homework = context.Homeworks.SingleOrDefault(key => key.HomeworkId == parsedHomeworkId);
+            homework.Archive = true;
+
+            context.SaveChanges();
+        }
+
+        public static void ArchiveHomeworkByCohortId(string cohortId)
+        {
+            var exception = new ValidationException();
+            using var context = new AppDbContext();
+            var parsedCohortId = 0;
+
+            #region Validation
+
+            cohortId = (string.IsNullOrEmpty(cohortId) || string.IsNullOrWhiteSpace(cohortId)) ? null : cohortId.Trim();
+            
+            if (string.IsNullOrWhiteSpace(cohortId))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId), nameof(cohortId) + " is null."));
+            }
+            else
+            {
+                if (!int.TryParse(cohortId, out parsedCohortId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
+                }
+                else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
+                }
+
+            }
+
+            if (exception.ValidationExceptions.Count > 0)
+            {
+                throw exception;
+            }
+            else
+            {
+                var homeworks = context.Homeworks.Where(key => key.CohortId == parsedCohortId).ToList();
+
+                foreach (var homework in homeworks)
+                {
+                    homework.Archive = true;
+                }
+                context.SaveChanges();
+            }
+
+            #endregion
+
+        } //Extra as of now
     }
 }
