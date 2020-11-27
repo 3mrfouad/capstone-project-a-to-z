@@ -49,7 +49,6 @@ namespace AZLearn.Controllers
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(name), nameof(name) + " is null."));
             else if (name.Length > 50)
                 exception.ValidationExceptions.Add(new Exception("Cohort name can only be 50 characters long."));
-
             else
             {
                 /*To check if Cohort Name already Exists , and If the Cohort is not Archived  */
@@ -120,16 +119,20 @@ namespace AZLearn.Controllers
             if (exception.ValidationExceptions.Count > 0) throw exception;
 
             #endregion
-          
-            context.Add(new Cohort
+
+            if (capacity == null)
             {
-                Name = name,
-                Capacity = parsedCapacity,
-                City = city,
-                ModeOfTeaching = modeOfTeaching,
-                StartDate = parsedStartDate,
-                EndDate = parsedEndDate
-            });
+                context.Add(new Cohort
+                {
+                    Name = name.,
+                    Capacity = parsedCapacity,
+                    City = city,
+                    ModeOfTeaching = modeOfTeaching,
+                    StartDate = parsedStartDate,
+                    EndDate = parsedEndDate
+                });
+            }
+            
             context.SaveChanges();
           
         }
@@ -187,7 +190,7 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
                 }
-                    /*If the Cohort Exists or not If cohort is Archived you cannot update the course*/
+                /*If the Cohort Exists or not If cohort is Archived you cannot update the course*/
                 else if ( !context.Cohorts.Any(key => key.CohortId==parsedCohortId)  )
                 {
                     exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
@@ -197,18 +200,21 @@ namespace AZLearn.Controllers
                     exception.ValidationExceptions.Add(new Exception("Cohort Id is Archived"));
                 }
             }
-
             if ( string.IsNullOrWhiteSpace(name) )
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(name),nameof(name)+" is null."));
             else if ( name.Length>50 )
                 exception.ValidationExceptions.Add(new Exception("Cohort name can only be 50 characters long."));
-          /*  else
+            else
             {
-                *//*To check if Cohort Name already Exists , and to check If the Cohort is not Archived and Update *//*
-                if ( !context.Cohorts.Any(key => key.Name.ToLower()==name.ToLower()&&key.Archive==false) )
-                    exception.ValidationExceptions.Add(
-                        new Exception("Cohort that you are trying to update doesnt exists"));
-            }*/ ///NOT REQUIRED IN CASE OF UPDATE
+                if ((!string.IsNullOrWhiteSpace(cohortId)) && int.TryParse(cohortId, out parsedCohortId))
+                {
+                    /* Two cohorts with same name should not be allowed */
+                    if (context.Cohorts.Any(key => key.Name.ToLower() == name.ToLower() && key.CohortId != parsedCohortId))
+                    {
+                        exception.ValidationExceptions.Add(new Exception("A cohort with this name already exists."));
+                    }
+                }
+            }
 
             if (!string.IsNullOrEmpty(capacity))
             {
@@ -237,9 +243,9 @@ namespace AZLearn.Controllers
             }
             else if ( !DateTime.TryParse(startDate,out parsedStartDate) )
                     exception.ValidationExceptions.Add(new Exception("Invalid value for startDate"));
-               /* else if ( parsedStartDate<DateTime.Now.Date )
-                    exception.ValidationExceptions.Add(
-                        new Exception("This Cohort can not have start date in the past."));*/ //NOT REQUIRED AS WARNING IS GIVEN AT FRONT END
+            /* else if ( parsedStartDate<DateTime.Now.Date )
+                 exception.ValidationExceptions.Add(
+                     new Exception("This Cohort can not have start date in the past."));*/ //NOT REQUIRED AS WARNING IS GIVEN AT FRONT END
 
             if ( string.IsNullOrWhiteSpace(endDate) )
             {
