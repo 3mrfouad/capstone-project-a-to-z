@@ -135,13 +135,20 @@ namespace AZLearn.Controllers
                 HomeworkController.CreateHomeworkByCourseId(courseId, instructorId, cohortId,
                     isAssignment, title, avgCompletionTime, dueDate, releaseDate,
                     documentLink, gitHubClassRoomLink);
-                result = StatusCode(200, "Success Message");
+                result = StatusCode(200, "Successfully created new Homework");
             }
-            catch
+            catch (ValidationException e)
             {
-                result = StatusCode(403, "Error Message");
-            }
+                var error = "Error(s) During CreateHomework: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
 
+                result = BadRequest(error);
+            }
+            catch (Exception)
+            {
+                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+            }
             return result;
         }
 
@@ -161,11 +168,19 @@ namespace AZLearn.Controllers
                 HomeworkController.UpdateHomeworkById(homeworkId, courseId, instructorId, cohortId,
                     isAssignment, title, avgCompletionTime, dueDate, releaseDate,
                     documentLink, gitHubClassRoomLink);
-                result = StatusCode(200, "Success Message");
+                result = StatusCode(200, "Successfully updated Homework");
             }
-            catch (ArgumentException e)
+            catch (ValidationException e)
             {
-                result = StatusCode(403, "Error Message");
+                var error = "Error(s) During UpdateHomework: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
+
+                result = BadRequest(error);
+            }
+            catch (Exception)
+            {
+                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
             }
 
             return result;
@@ -256,7 +271,25 @@ namespace AZLearn.Controllers
         [HttpGet("HomeworkSummary")]
         public ActionResult<IEnumerable<Homework>> GetHomeworkSummary(string courseId, string cohortId)
         {
-            return HomeworkController.GetHomeworksByCourseId(courseId, cohortId);
+            ActionResult<IEnumerable<Homework>> result;
+            try
+            {
+                result = HomeworkController.GetHomeworksByCourseId(courseId, cohortId);
+            }
+            catch (ValidationException e)
+            {
+                var error = "Error(s) During GetHomeworkSummary: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
+
+                result = BadRequest(error);
+            }
+            catch (Exception)
+            {
+                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+            }
+
+            return result;
         }
 
         #endregion
@@ -276,9 +309,27 @@ namespace AZLearn.Controllers
         public ActionResult<Tuple<Homework, Timesheet>> GetHomeworkTimesheetForStudent(string homeworkId,
             string studentId)
         {
-            var homework = HomeworkController.GetHomeworkById(homeworkId);
-            var timesheet = TimesheetController.GetTimesheetByHomeworkId(homeworkId, studentId);
-            return new Tuple<Homework, Timesheet>(homework, timesheet);
+            ActionResult<Tuple<Homework, Timesheet>> result;
+            try
+            {
+                var homework = HomeworkController.GetHomeworkById(homeworkId);
+                var timesheet = TimesheetController.GetTimesheetByHomeworkId(homeworkId, studentId);
+                result =  new Tuple<Homework, Timesheet>(homework, timesheet);
+            }
+            catch (ValidationException e)
+            {
+                var error = "Error(s) During GetHomeworkTimesheetForStudent: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
+
+                result = BadRequest(error);
+            }
+            catch (Exception)
+            {
+                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+            }
+
+            return result;
         }
 
         #endregion
@@ -413,9 +464,24 @@ namespace AZLearn.Controllers
         [HttpGet(nameof(GetCourseSummary))]
         public ActionResult<List<Course>> GetCourseSummary(string cohortId)
         {
-            var coursesList = CourseController.GetCoursesByCohortId(cohortId);
+            ActionResult<List<Course>> result;
+            try
+            {
+                result = CourseController.GetCoursesByCohortId(cohortId);
+            }
+            catch (ValidationException e)
+            {
+                var error = "Error(s) During GetCourseSummary: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
 
-            return coursesList;
+                result = BadRequest(error);
+            }
+            catch (Exception)
+            {
+                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+            }
+            return result;
         }
 
         #endregion
@@ -433,7 +499,24 @@ namespace AZLearn.Controllers
         [HttpGet(nameof(GetCourses))]
         public ActionResult<List<Course>> GetCourses()
         {
-            return CourseController.GetCourses();
+            ActionResult<List<Course>> result;
+            try
+            {
+                result =  CourseController.GetCourses();
+            }
+            catch (ValidationException e)
+            {
+                var error = "Error(s) During GetCourses: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
+
+                result = BadRequest(error);
+            }
+            catch (Exception)
+            {
+                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+            }
+            return result;
         }
 
         #endregion
@@ -467,19 +550,34 @@ namespace AZLearn.Controllers
         /// <param name="homeworkId"></param>
         /// <returns></returns>
         [HttpGet(nameof(GetHomeworkForInstructor))]
-        public ActionResult<Tuple<Homework, List<Rubric>, List<User>, List<Course>>> GetHomeworkForInstructor(
-            string homeworkId)
-
+        public ActionResult<Tuple<Homework, List<Rubric>, List<User>, List<Course>>> GetHomeworkForInstructor(string homeworkId)
         {
-            var homework = HomeworkController.GetHomeworkById(homeworkId);
+            ActionResult<Tuple<Homework, List<Rubric>, List<User>, List<Course>>> result;
+            try
+            {
+                var homework = HomeworkController.GetHomeworkById(homeworkId);
 
-            var rubricsList = RubricController.GetRubricsByHomeworkId(homeworkId);
+                var rubricsList = RubricController.GetRubricsByHomeworkId(homeworkId);
 
-            var coursesList = CourseController.GetCourses();
+                var coursesList = CourseController.GetCourses();
 
-            var instructorsList = UserController.GetInstructors();
+                var instructorsList = UserController.GetInstructors();
 
-            return new Tuple<Homework, List<Rubric>, List<User>, List<Course>>(homework, rubricsList, instructorsList, coursesList);
+                result = new Tuple<Homework, List<Rubric>, List<User>, List<Course>>(homework, rubricsList, instructorsList, coursesList);
+            }
+            catch (ValidationException e)
+            {
+                var error = "Error(s) During GetHomeworkForInstructor: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
+
+                result = BadRequest(error);
+            }
+            catch (Exception)
+            {
+                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+            }
+            return result;
         }
         #endregion
 
@@ -501,12 +599,12 @@ namespace AZLearn.Controllers
             ActionResult result;
             try
             {
-                CourseController.AssignCourseByCohortId(cohortId, courseId, instructorId, startDate, endDate, resourcesLink);
+                CohortCourseController.AssignCourseByCohortId(cohortId, courseId, instructorId, startDate, endDate, resourcesLink);
                 result = StatusCode(200, "Successfully Assigned Course to Cohort");
             }
             catch (ValidationException e)
             {
-                var error = "Error(s) During Creation: " +
+                var error = "Error(s) During AssignCourseByCohortId: " +
                             e.ValidationExceptions.Select(x => x.Message)
                                 .Aggregate((x, y) => x + ", " + y);
 
@@ -518,7 +616,6 @@ namespace AZLearn.Controllers
             }
 
             return result;
-            ;
         }
         #endregion
 
@@ -534,18 +631,18 @@ namespace AZLearn.Controllers
         /// <param name="cohortId"></param>
         /// <param name="courseId"></param>
         /// <returns> </returns>
-        [HttpPost(nameof(AssignCourseByCohortId))]
+        [HttpPatch(nameof(UpdateAssignedCourse))]
         public ActionResult UpdateAssignedCourse(string cohortId, string courseId, string instructorId, string startDate, string endDate, string resourcesLink)
         {
             ActionResult result;
             try
             {
-                CourseController.UpdateAssignedCourse(cohortId, courseId, instructorId, startDate, endDate, resourcesLink);
+                CohortCourseController.UpdateAssignedCourse(cohortId, courseId, instructorId, startDate, endDate, resourcesLink);
                 result = StatusCode(200, "Successfully Assigned Course to Cohort");
             }
             catch (ValidationException e)
             {
-                var error = "Error(s) During Creation: " +
+                var error = "Error(s) During UpdateAssignedCourse: " +
                             e.ValidationExceptions.Select(x => x.Message)
                                 .Aggregate((x, y) => x + ", " + y);
 
@@ -664,11 +761,9 @@ namespace AZLearn.Controllers
         ///     Test Passed
         /// </summary>
         /// <param name="courseId"></param>
-        /// <param name="instructorId"></param>
         /// <param name="name"></param>
         /// <param name="description"></param>
         /// <param name="durationHrs"></param>
-        /// <param name="resourcesLink"></param>
         /// <returns></returns>
         [HttpPatch(nameof(UpdateCourseById))]
         public ActionResult UpdateCourseById(string courseId, string name, string description,
@@ -681,21 +776,17 @@ namespace AZLearn.Controllers
                     durationHrs);
                 result = StatusCode(200, "Successfully Updated Course");
             }
-            catch (ArgumentNullException e)
+            catch (ValidationException e)
             {
-                result = BadRequest(e.Message);
+                var error = "Error(s) During Creation: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
+
+                result = BadRequest(error);
             }
-            catch (ArgumentException e)
+            catch (Exception)
             {
-                result = BadRequest(e.Message);
-            }
-            catch (InvalidOperationException e)
-            {
-                result = NotFound(e.Message);
-            }
-            catch (KeyNotFoundException e)
-            {
-                result = NotFound(e.Message);
+                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
             }
 
             return result;
@@ -704,13 +795,28 @@ namespace AZLearn.Controllers
         #endregion
 
         #region /application/GetAssignedCourse
+        [HttpGet(nameof(GetAssignedCourse))]
         public ActionResult<Course> GetAssignedCourse(string courseId, string cohortId)
         {
-            var course = CourseController.GetCourseByCohortId(courseId, cohortId);
+            ActionResult<Course> result;
+            try
+            {
+                result = CourseController.GetCourseByCohortId(courseId, cohortId);
+            }
+            catch (ValidationException e)
+            {
+                var error = "Error(s) During GetAssignedCourse: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
 
-            return course;
+                result = BadRequest(error);
+            }
+            catch (Exception)
+            {
+                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+            }
+            return result;
         }
-
         #endregion
 
         #region /application/CreateRubric
@@ -722,13 +828,20 @@ namespace AZLearn.Controllers
             try
             {
                 RubricController.CreateRubricsByHomeworkId(homeworkId, rubrics);
-                result = StatusCode(200, "Success Message");
+                result = StatusCode(200, "Successfully created Rubric for Homework.");
             }
-            catch
+            catch (ValidationException e)
             {
-                result = StatusCode(403, "Error Message");
-            }
+                var error = "Error(s) During CreateRubric: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
 
+                result = BadRequest(error);
+            }
+            catch (Exception)
+            {
+                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+            }
             return result;
         }
 
@@ -737,24 +850,30 @@ namespace AZLearn.Controllers
         #region /application/UpdateRubric
 
         [HttpPatch(nameof(UpdateRubric))]
-        public ActionResult UpdateRubric (Dictionary<string, Tuple<string, string, string>> rubrics)
+        public ActionResult UpdateRubric(Dictionary<string, Tuple<string, string, string>> rubrics)
         {
             ActionResult result;
             try
             {
                 RubricController.UpdateRubricsById(rubrics);
-                result = StatusCode(200, "Success Message");
+                result = StatusCode(200, "Successfully updated the rubric");
             }
-            catch
+            catch (ValidationException e)
             {
-                result = StatusCode(403, "Error Message");
-            }
+                var error = "Error(s) During UpdateRubric: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
 
+                result = BadRequest(error);
+            }
+            catch (Exception)
+            {
+                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+            }
             return result;
         }
 
         #endregion
-
 
     }
 }

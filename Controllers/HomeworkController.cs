@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AZLearn.Data;
 using AZLearn.Models;
+using AZLearn.Models.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AZLearn.Controllers
@@ -19,14 +20,60 @@ namespace AZLearn.Controllers
         /// <returns>List of Homeworks for specified course under the specified Cohort Id</returns>
         public static List<Homework> GetHomeworksByCourseId(string courseId, string cohortId)
         {
-            List<Homework> homeworks;
-            var parsedCohortId = int.Parse(cohortId);
-            var parsedCourseId = int.Parse(courseId);
-            using (var context = new AppDbContext())
+            int parsedCohortId = 0;
+            int parsedCourseId = 0;
+
+            #region Validation
+
+            ValidationException exception = new ValidationException();
+
+            courseId = (string.IsNullOrEmpty(courseId) || string.IsNullOrWhiteSpace(courseId)) ? null : courseId.Trim();
+            cohortId = (string.IsNullOrEmpty(cohortId) || string.IsNullOrWhiteSpace(cohortId)) ? null : cohortId.Trim();
+            using var context = new AppDbContext();
+            if (string.IsNullOrWhiteSpace(cohortId))
             {
-                homeworks = context.Homeworks
-                    .Where(key => key.CourseId == parsedCourseId && key.CohortId == parsedCohortId).ToList();
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId), nameof(cohortId) + " is null."));
             }
+            else
+            {
+                if (!int.TryParse(cohortId, out parsedCohortId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
+                }
+                else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
+                }
+                else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort is archived"));
+                }
+            }
+            if (string.IsNullOrWhiteSpace(courseId))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(courseId), nameof(courseId) + " is null."));
+            }
+            else
+            {
+                if (!int.TryParse(courseId, out parsedCourseId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Course Id"));
+                }
+                else if (!context.Courses.Any(key => key.CourseId == parsedCourseId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Course Id does not exist"));
+                }
+            }
+            if (exception.ValidationExceptions.Count > 0)
+            {
+                throw exception;
+            }
+
+            #endregion
+
+            List<Homework> homeworks;
+            homeworks = context.Homeworks
+                .Where(key => key.CourseId == parsedCourseId && key.CohortId == parsedCohortId).ToList();
 
             return homeworks;
         }
@@ -49,15 +96,201 @@ namespace AZLearn.Controllers
             string isAssignment, string title, string avgCompletionTime, string dueDate, string releaseDate,
             string documentLink, string gitHubClassRoomLink)
         {
-            var parsedCourseId = int.Parse(courseId);
-            var parsedInstructorId = int.Parse(instructorId);
-            var parsedCohortId = int.Parse(cohortId);
-            var parsedIsAssignment = bool.Parse(isAssignment);
-            var parsedAvgCompletionTime = float.Parse(avgCompletionTime);
-            var parsedDuedate = DateTime.Parse(dueDate);
-            var parsedReleasedate = DateTime.Parse(releaseDate);
+            int parsedCourseId = 0;
+            int parsedInstructorId = 0;
+            int parsedCohortId = 0;
+            bool parsedIsAssignment = false;
+            float parsedAvgCompletionTime = 0;
+            DateTime parsedDuedate = new DateTime();
+            DateTime parsedReleasedate = new DateTime();
+
+            #region Validation
+            ValidationException exception = new ValidationException();
+
+            courseId = (string.IsNullOrEmpty(courseId) || string.IsNullOrWhiteSpace(courseId)) ? null : courseId.Trim();
+            instructorId = (string.IsNullOrEmpty(instructorId) || string.IsNullOrWhiteSpace(instructorId)) ? null : instructorId.Trim();
+            cohortId = (string.IsNullOrEmpty(cohortId) || string.IsNullOrWhiteSpace(cohortId)) ? null : cohortId.Trim();
+            isAssignment = (string.IsNullOrEmpty(isAssignment) || string.IsNullOrWhiteSpace(isAssignment)) ? null : isAssignment.Trim();
+            title = (string.IsNullOrEmpty(title) || string.IsNullOrWhiteSpace(title)) ? null : title.Trim();
+            avgCompletionTime = (string.IsNullOrEmpty(avgCompletionTime) || string.IsNullOrWhiteSpace(avgCompletionTime)) ? null : avgCompletionTime.Trim();
+            dueDate = (string.IsNullOrEmpty(dueDate) || string.IsNullOrWhiteSpace(dueDate)) ? null : dueDate.Trim();
+            releaseDate = (string.IsNullOrEmpty(releaseDate) || string.IsNullOrWhiteSpace(releaseDate)) ? null : releaseDate.Trim();
+            documentLink = (string.IsNullOrEmpty(documentLink) || string.IsNullOrWhiteSpace(documentLink)) ? null : documentLink.Trim();
+            gitHubClassRoomLink = (string.IsNullOrEmpty(gitHubClassRoomLink) || string.IsNullOrWhiteSpace(gitHubClassRoomLink)) ? null : gitHubClassRoomLink.Trim();
 
             using var context = new AppDbContext();
+            if (string.IsNullOrWhiteSpace(courseId))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(courseId), nameof(courseId) + " is null."));
+            }
+            else
+            {
+                if (!int.TryParse(courseId, out parsedCourseId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Course Id"));
+                }
+                else
+                {
+                    if (!context.Courses.Any(key => key.CourseId == parsedCourseId))
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Course Id does not exist."));
+                    }
+                    else if (!context.Courses.Any(key => key.CourseId == parsedCourseId && key.Archive == false))
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Course has been archived"));
+                    }
+                    else
+                    {
+                        if ((!string.IsNullOrWhiteSpace(cohortId)) && int.TryParse(cohortId, out parsedCohortId))
+                        {
+                            if (!context.CohortCourses.Any(key =>
+                                key.CohortId == parsedCohortId && key.CourseId == parsedCourseId))
+                            {
+                                exception.ValidationExceptions.Add(new Exception("This course is not assigned to this Cohort"));
+                            }
+                            else if (!context.CohortCourses.Any(key =>
+                                key.CohortId == parsedCohortId && key.CourseId == parsedCourseId &&
+                                key.Archive == false))
+                            {
+                                exception.ValidationExceptions.Add(new Exception("This course has been archived for this cohort."));
+                            }
+                            else
+                            {
+                                if (context.Homeworks.Any(key =>
+                                    key.CohortId == parsedCohortId && key.CourseId == parsedCourseId &&
+                                    key.Title.ToLower() == title.ToLower()))
+                                {
+                                    exception.ValidationExceptions.Add(new Exception("Homework with same name already exists under this course for this cohort."));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (string.IsNullOrWhiteSpace(cohortId))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId), nameof(cohortId) + " is null."));
+            }
+            else
+            {
+                if (!int.TryParse(cohortId, out parsedCohortId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
+                }
+                else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
+                }
+                else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId && key.Archive == false))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort is archived"));
+                }
+            }
+            if (string.IsNullOrWhiteSpace(instructorId))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(instructorId), nameof(instructorId) + " is null."));
+            }
+            else
+            {
+                if (!int.TryParse(instructorId, out parsedInstructorId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Instructor Id"));
+                }
+                else if (!context.Users.Any(key => key.UserId == parsedInstructorId && key.IsInstructor == true))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Instructor Id does not exist"));
+                }
+                else if (!context.Users.Any(key => key.UserId == parsedInstructorId && key.IsInstructor == true && key.Archive == false))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Instructor is archived"));
+                }
+            }
+            if (!string.IsNullOrWhiteSpace(isAssignment))
+            {
+                if (!bool.TryParse(isAssignment, out parsedIsAssignment))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for isAssignment."));
+                }
+            }
+            if (!string.IsNullOrWhiteSpace(avgCompletionTime))
+            {
+                if (!float.TryParse(avgCompletionTime, out parsedAvgCompletionTime))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for average Completion time"));
+                }
+                else if (parsedAvgCompletionTime > 999.99 || parsedAvgCompletionTime < 0)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Average Completion Time should be between 0 and 999.99 inclusive"));
+                }
+            }
+            if (!string.IsNullOrWhiteSpace(releaseDate))
+            {
+                if (!DateTime.TryParse(releaseDate, out parsedReleasedate))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for release date"));
+                }
+            }
+            if (!string.IsNullOrWhiteSpace(dueDate))
+            {
+                if (!DateTime.TryParse(dueDate, out parsedDuedate))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for due date"));
+                }
+                else if (!string.IsNullOrWhiteSpace(releaseDate) &&
+                         DateTime.TryParse(releaseDate, out parsedReleasedate) && parsedReleasedate > parsedDuedate)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Homework can not be due before it is released."));
+                }
+            }
+            if (!string.IsNullOrWhiteSpace(documentLink))
+            {
+                if (documentLink.Length > 250)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Document Link can only be 250 characters long."));
+                }
+                else
+                {
+                    /** Citation
+                     *  https://stackoverflow.com/questions/161738/what-is-the-best-regular-expression-to-check-if-a-string-is-a-valid-url
+                     *  Referenced above source to validate the incoming Resources Link (URL) bafire saving to DB.
+                     */
+                    Uri uri;
+                    if (!(Uri.TryCreate(documentLink, UriKind.Absolute, out uri) &&
+                          (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps || uri.Scheme == Uri.UriSchemeFtp)))
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Document Link is not valid."));
+                    }
+                    /*End Citation*/
+                }
+            }
+            if (!string.IsNullOrWhiteSpace(gitHubClassRoomLink))
+            {
+                if (gitHubClassRoomLink.Length > 250)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Github Classroom Link can only be 250 characters long."));
+                }
+                else
+                {
+                    /** Citation
+                     *  https://stackoverflow.com/questions/161738/what-is-the-best-regular-expression-to-check-if-a-string-is-a-valid-url
+                     *  Referenced above source to validate the incoming Resources Link (URL) bafire saving to DB.
+                     */
+                    Uri uri;
+                    if (!(Uri.TryCreate(gitHubClassRoomLink, UriKind.Absolute, out uri) &&
+                          (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps || uri.Scheme == Uri.UriSchemeFtp)))
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Github Classroom Link is not valid."));
+                    }
+                    /*End Citation*/
+                }
+            }
+            
+            if (exception.ValidationExceptions.Count > 0)
+            {
+                throw exception;
+            }
+
+            #endregion
 
             var newHomework = new Homework
             {
@@ -91,20 +324,216 @@ namespace AZLearn.Controllers
         /// <param name="releaseDate">Release Date of this Homework</param>
         /// <param name="documentLink">Link To Google Drive where this Homework Document can be accessed</param>
         /// <param name="gitHubClassRoomLink">Link To GitHub Classroom where students can create repository to submit this Homework</param>
-        public static void UpdateHomeworkById(string homeworkId, string courseId, string instructorId, string cohortId,
-            string isAssignment, string title, string avgCompletionTime, string dueDate, string releaseDate,
+        public static void UpdateHomeworkById(string homeworkId, string courseId, string instructorId, string cohortId, string isAssignment, string title, string avgCompletionTime, string dueDate, string releaseDate,
             string documentLink, string gitHubClassRoomLink)
         {
-            var parsedHomeworkId = int.Parse(homeworkId);
-            var parsedCourseId = int.Parse(courseId);
-            var parsedInstructorId = int.Parse(instructorId);
-            var parsedCohortId = int.Parse(cohortId);
-            var parsedIsAssignment = bool.Parse(isAssignment);
-            var parsedAvgCompletionTime = float.Parse(avgCompletionTime);
-            var parsedDuedate = DateTime.Parse(dueDate);
-            var parsedReleasedate = DateTime.Parse(releaseDate);
+            int parsedHomeworkId = 0;
+            int parsedCourseId = 0;
+            int parsedInstructorId = 0;
+            int parsedCohortId = 0;
+            bool parsedIsAssignment = false;
+            float parsedAvgCompletionTime = 0;
+            DateTime parsedDuedate = new DateTime();
+            DateTime parsedReleasedate = new DateTime();
 
+            #region Validation
+
+            homeworkId = (string.IsNullOrEmpty(homeworkId) || string.IsNullOrWhiteSpace(homeworkId)) ? null : homeworkId.Trim();
+            courseId = (string.IsNullOrEmpty(courseId) || string.IsNullOrWhiteSpace(courseId)) ? null : courseId.Trim();
+            instructorId = (string.IsNullOrEmpty(instructorId) || string.IsNullOrWhiteSpace(instructorId)) ? null : instructorId.Trim();
+            cohortId = (string.IsNullOrEmpty(cohortId) || string.IsNullOrWhiteSpace(cohortId)) ? null : cohortId.Trim();
+            isAssignment = (string.IsNullOrEmpty(isAssignment) || string.IsNullOrWhiteSpace(isAssignment)) ? null : isAssignment.Trim();
+            title = (string.IsNullOrEmpty(title) || string.IsNullOrWhiteSpace(title)) ? null : title.Trim();
+            avgCompletionTime = (string.IsNullOrEmpty(avgCompletionTime) || string.IsNullOrWhiteSpace(avgCompletionTime)) ? null : avgCompletionTime.Trim();
+            dueDate = (string.IsNullOrEmpty(dueDate) || string.IsNullOrWhiteSpace(dueDate)) ? null : dueDate.Trim();
+            releaseDate = (string.IsNullOrEmpty(releaseDate) || string.IsNullOrWhiteSpace(releaseDate)) ? null : releaseDate.Trim();
+            documentLink = (string.IsNullOrEmpty(documentLink) || string.IsNullOrWhiteSpace(documentLink)) ? null : documentLink.Trim();
+            gitHubClassRoomLink = (string.IsNullOrEmpty(gitHubClassRoomLink) || string.IsNullOrWhiteSpace(gitHubClassRoomLink)) ? null : gitHubClassRoomLink.Trim();
+
+            ValidationException exception = new ValidationException();
             using var context = new AppDbContext();
+
+            if (string.IsNullOrWhiteSpace(homeworkId))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(homeworkId), nameof(homeworkId) + " is null."));
+            }
+            else
+            {
+                if (!int.TryParse(homeworkId, out parsedHomeworkId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Homework Id"));
+                }
+                else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Homework Id does not exist"));
+                }
+                else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId && key.Archive == false))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Homeworkis archived"));
+                }
+            }
+            if (string.IsNullOrWhiteSpace(courseId))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(courseId), nameof(courseId) + " is null."));
+            }
+            else
+            {
+                if (!int.TryParse(courseId, out parsedCourseId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Course Id"));
+                }
+                /*================================================================================================*/
+                else
+                {
+                    if (!context.Courses.Any(key => key.CourseId == parsedCourseId))
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Course Id does not exist"));
+                    }
+                    else
+                    {
+                        if (!context.Courses.Any(key => key.CourseId == parsedCourseId && key.Archive == false))
+                        {
+                            exception.ValidationExceptions.Add(new Exception("Course has been archived"));
+                        }
+                        else if ((!string.IsNullOrWhiteSpace(cohortId)) && int.TryParse(cohortId, out parsedCohortId))
+                        {
+                            if (!context.CohortCourses.Any(key =>
+                                key.CohortId == parsedCohortId && key.CourseId == parsedCourseId))
+                            {
+                                exception.ValidationExceptions.Add(new Exception("This course is not assigned to this Cohort"));
+                            }
+                            else if (!context.CohortCourses.Any(key =>
+                                key.CohortId == parsedCohortId && key.CourseId == parsedCourseId &&
+                                key.Archive == false))
+                            {
+                                exception.ValidationExceptions.Add(new Exception("This course has been archived for this cohort."));
+                            }
+                        }
+                    }
+                }
+            }
+            if (string.IsNullOrWhiteSpace(cohortId))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId), nameof(cohortId) + " is null."));
+            }
+            else
+            {
+                if (!int.TryParse(cohortId, out parsedCohortId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
+                }
+                else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
+                }
+            }
+            if (string.IsNullOrWhiteSpace(instructorId))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(instructorId), nameof(instructorId) + " is null."));
+            }
+            else
+            {
+                if (!int.TryParse(instructorId, out parsedInstructorId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Instructor Id"));
+                }
+                else if (!context.Users.Any(key => key.UserId == parsedInstructorId && key.IsInstructor == true))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Instructor Id does not exist"));
+                }
+                else if (!context.Users.Any(key => key.UserId == parsedInstructorId && key.IsInstructor == true && key.Archive == false))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Instructor is archived"));
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(isAssignment))
+            {
+                if (!bool.TryParse(isAssignment, out parsedIsAssignment))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for isAssignment."));
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(avgCompletionTime))
+            {
+                if (!float.TryParse(avgCompletionTime, out parsedAvgCompletionTime))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for average Completion time"));
+                }
+                else if (parsedAvgCompletionTime > 999.99 || parsedAvgCompletionTime < 0)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Average Completion Time should be between 0 and 999.99 inclusive"));
+                }
+            }
+            if (!string.IsNullOrWhiteSpace(releaseDate))
+            {
+                if (!DateTime.TryParse(releaseDate, out parsedReleasedate))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for release date"));
+                }
+            }
+            if (!string.IsNullOrWhiteSpace(dueDate))
+            {
+                if (!DateTime.TryParse(dueDate, out parsedDuedate))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for due date"));
+                }
+                else if (!string.IsNullOrWhiteSpace(releaseDate) &&
+                         DateTime.TryParse(releaseDate, out parsedReleasedate) && parsedReleasedate > parsedDuedate)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Homework can not be due before it is released."));
+                }
+            }
+            if (!string.IsNullOrWhiteSpace(documentLink))
+            {
+                if (documentLink.Length > 250)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Document Link can only be 250 characters long."));
+                }
+                else
+                {
+                    /** Citation
+                     *  https://stackoverflow.com/questions/161738/what-is-the-best-regular-expression-to-check-if-a-string-is-a-valid-url
+                     *  Referenced above source to validate the incoming Resources Link (URL) before saving to DB.
+                     */
+                    Uri uri;
+                    if (!(Uri.TryCreate(documentLink, UriKind.Absolute, out uri) &&
+                          (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps || uri.Scheme == Uri.UriSchemeFtp)))
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Document Link is not valid."));
+                    }
+                    /*End Citation*/
+                }
+            }
+            if (!string.IsNullOrWhiteSpace(gitHubClassRoomLink))
+            {
+                if (gitHubClassRoomLink.Length > 250)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Github Classroom Link can only be 250 characters long."));
+                }
+                else
+                {
+                    /** Citation
+                     *  https://stackoverflow.com/questions/161738/what-is-the-best-regular-expression-to-check-if-a-string-is-a-valid-url
+                     *  Referenced above source to validate the incoming Resources Link (URL) bafire saving to DB.
+                     */
+                    Uri uri;
+                    if (!(Uri.TryCreate(gitHubClassRoomLink, UriKind.Absolute, out uri) &&
+                          (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps || uri.Scheme == Uri.UriSchemeFtp)))
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Github Classroom Link is not valid."));
+                    }
+                    /*End Citation*/
+                }
+            }
+
+            if (exception.ValidationExceptions.Count > 0)
+            {
+                throw exception;
+            }
+
+            #endregion
 
             var homework = context.Homeworks.SingleOrDefault(key => key.HomeworkId == parsedHomeworkId);
             homework.CourseId = parsedCourseId;
@@ -129,14 +558,40 @@ namespace AZLearn.Controllers
         /// <param name="homeworkId"></param>
         /// <returns>It returns the Homework Information based on the homework id </returns>
         public static Homework GetHomeworkById(string homeworkId)
-
         {
-            Homework result;
-            var parsedHomeworkId = int.Parse(homeworkId);
+            int parsedHomeworkId = 0;
+
+            #region Validation
+
+            homeworkId = (string.IsNullOrEmpty(homeworkId) || string.IsNullOrWhiteSpace(homeworkId)) ? null : homeworkId.Trim();
+
+            ValidationException exception = new ValidationException();
             using var context = new AppDbContext();
+
+            if (string.IsNullOrWhiteSpace(homeworkId))
             {
-                result = context.Homeworks.Single(key => key.HomeworkId == parsedHomeworkId);
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(homeworkId), nameof(homeworkId) + " is null."));
             }
+            else
+            {
+                if (!int.TryParse(homeworkId, out parsedHomeworkId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Homework Id"));
+                }
+                else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Homework Id does not exist"));
+                }
+                
+            }
+            if (exception.ValidationExceptions.Count > 0)
+            {
+                throw exception;
+            }
+
+            #endregion
+
+            Homework result = context.Homeworks.Single(key => key.HomeworkId == parsedHomeworkId);
             return result;
         }
     }
