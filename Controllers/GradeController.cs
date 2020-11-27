@@ -533,5 +533,74 @@ namespace AZLearn.Controllers
 
             #endregion
         }
+        public static void ArchiveGradingByStudentId(string studentId, List<string> rubrics)
+        {
+            /*studentID, rubricId ,StudentComment*/
+            var parsedRubricId = 0;
+            var parsedStudentId = 0;
+            var exception = new ValidationException();
+            using var context = new AppDbContext();
+
+            studentId = string.IsNullOrEmpty(studentId) || string.IsNullOrWhiteSpace(studentId) ? null : studentId.Trim();
+
+            if (string.IsNullOrWhiteSpace(studentId))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(studentId),
+                    nameof(studentId) + " is null."));
+            }
+            else
+            {
+                if (!int.TryParse(studentId, out parsedStudentId))
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Student Id"));
+                /*To check if user is an Instructor or Student*/
+                else if (!context.Users.Any(key => key.UserId == parsedStudentId && key.IsInstructor == false))
+                    exception.ValidationExceptions.Add(new Exception("Student Id does not exist"));
+            }
+            #region Validation
+
+            foreach (var tempRubricId in rubrics)
+            {
+
+                var rubricId = string.IsNullOrEmpty(tempRubricId) || string.IsNullOrWhiteSpace(tempRubricId)
+                    ? null
+                    : tempRubricId.Trim();
+
+
+                if (string.IsNullOrWhiteSpace(rubricId))
+                {
+                    exception.ValidationExceptions.Add(new ArgumentNullException(nameof(rubricId),
+                        nameof(rubricId) + " is null."));
+                }
+                else
+                {
+                    if (!int.TryParse(rubricId, out parsedRubricId))
+                        exception.ValidationExceptions.Add(new Exception("Invalid value for Rubric Id"));
+
+                    else if (!context.Rubrics.Any(key => key.RubricId == parsedRubricId))
+                        exception.ValidationExceptions.Add(new Exception("Rubric Id does not exist"));
+                }
+
+                
+                /*To check whether Grade for given Rubric id and student id already exists*/
+
+                if (!context.Grades.Any(key => key.StudentId == parsedStudentId && key.RubricId == parsedRubricId))
+                    exception.ValidationExceptions.Add(new Exception(
+                        "Grade that you are trying to archive doesn't Exists for this Rubric Id and Student Id"));
+                else if (context.Grades.Any(key => key.StudentId == parsedStudentId && key.RubricId == parsedRubricId && key.Archive == true))
+                    exception.ValidationExceptions.Add(new Exception(
+                       "Grade that you are trying to archive for this Rubric Id and Student Id is already archived"));
+                #endregion
+
+                if (exception.ValidationExceptions.Count > 0) throw exception;
+
+                var grade = context.Grades.Find(parsedRubricId, parsedStudentId);
+                grade.Archive = true;
+            }
+
+            if (exception.ValidationExceptions.Count > 0) throw exception;
+
+            context.SaveChanges();
+        }
+
     }
 }
