@@ -200,9 +200,9 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
                 }
-                else if(parsedCohortId > 9999999999 || parsedCohortId < 0)
+                else if(parsedCohortId > 2147483647 || parsedCohortId < 0)
                 {
-                    exception.ValidationExceptions.Add(new Exception("Cohort Id value should be between 0 & 9999999999 inclusive"));
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id value should be between 0 & 2147483647 inclusive"));
                 }
                 /*If the Cohort Exists or not If cohort is Archived you cannot update the course*/
                 else if ( !context.Cohorts.Any(key => key.CohortId==parsedCohortId)  )
