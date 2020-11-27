@@ -20,9 +20,9 @@ namespace AZLearn.Controllers
         /// <param name="courseId"></param>
         public static void AssignCourseByCohortId(string cohortId, string courseId, string instructorId, string startDate, string endDate, string resourcesLink)
         {
-            int parsedCohortId = int.Parse(cohortId);
-            int parsedCourseId = int.Parse(courseId);
-            int parsedInstructorId = int.Parse(instructorId);
+            int parsedCohortId = 0;
+            int parsedCourseId = 0;
+            int parsedInstructorId = 0;
             DateTime parsedStartDate = new DateTime();
             DateTime parsedEndDate = new DateTime();
 
@@ -48,6 +48,10 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
                 }
+                else if (parsedCohortId > 2147483647 || parsedCohortId < 0)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id value should be between 0 & 2147483647 inclusive"));
+                }
                 else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
                 {
                     exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
@@ -66,6 +70,10 @@ namespace AZLearn.Controllers
                 if (!int.TryParse(courseId, out parsedCourseId))
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Course Id"));
+                }
+                else if (parsedCourseId > 2147483647 || parsedCourseId < 0)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Course Id value should be between 0 & 2147483647 inclusive"));
                 }
                 else
                 {
@@ -97,6 +105,10 @@ namespace AZLearn.Controllers
                 if (!int.TryParse(instructorId, out parsedInstructorId))
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Instructor Id"));
+                }
+                else if (parsedInstructorId > 2147483647 || parsedInstructorId < 0)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Instructor Id value should be between 0 & 2147483647 inclusive"));
                 }
                 else if (!context.Users.Any(key => key.UserId == parsedInstructorId && key.IsInstructor == true))
                 {
@@ -155,16 +167,32 @@ namespace AZLearn.Controllers
 
             #endregion
 
-            var AddCourseByCohortId = new CohortCourse
+            if (resourcesLink == null)
             {
-                CohortId = parsedCohortId,
-                CourseId = parsedCourseId,
-                InstructorId = parsedInstructorId,
-                StartDate = parsedStartDate,
-                EndDate = parsedEndDate,
-                ResourcesLink = resourcesLink
-            };
-            context.CohortCourses.Add(AddCourseByCohortId);
+                var AddCourseByCohortId = new CohortCourse
+                {
+                    CohortId = parsedCohortId,
+                    CourseId = parsedCourseId,
+                    InstructorId = parsedInstructorId,
+                    StartDate = parsedStartDate,
+                    EndDate = parsedEndDate
+                };
+                context.CohortCourses.Add(AddCourseByCohortId);
+            }
+            else if (resourcesLink != null)
+            {
+                var AddCourseByCohortId = new CohortCourse
+                {
+                    CohortId = parsedCohortId,
+                    CourseId = parsedCourseId,
+                    InstructorId = parsedInstructorId,
+                    StartDate = parsedStartDate,
+                    EndDate = parsedEndDate,
+                    ResourcesLink = resourcesLink
+                };
+                context.CohortCourses.Add(AddCourseByCohortId);
+            }
+
             context.SaveChanges();
         }
 
@@ -208,6 +236,10 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
                 }
+                else if (parsedCohortId > 2147483647 || parsedCohortId < 0)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id value should be between 0 & 2147483647 inclusive"));
+                }
                 else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
                 {
                     exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
@@ -227,6 +259,10 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Course Id"));
                 }
+                else if (parsedCourseId > 2147483647 || parsedCourseId < 0)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Course Id value should be between 0 & 2147483647 inclusive"));
+                }
                 else if (!context.Courses.Any(key => key.CourseId == parsedCourseId))
                 {
                     exception.ValidationExceptions.Add(new Exception("Course Id does not exist"));
@@ -245,6 +281,10 @@ namespace AZLearn.Controllers
                 if (!int.TryParse(instructorId, out parsedInstructorId))
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Instructor Id"));
+                }
+                else if (parsedInstructorId > 2147483647 || parsedInstructorId < 0)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Instructor Id value should be between 0 & 2147483647 inclusive"));
                 }
                 else if (!context.Users.Any(key => key.UserId == parsedInstructorId && key.IsInstructor == true))
                 {
@@ -308,14 +348,23 @@ namespace AZLearn.Controllers
             #endregion
 
             var course = context.CohortCourses.Find(parsedCohortId, parsedCourseId);
-
-            course.CohortId = parsedCohortId;
-            course.CourseId = parsedCourseId;
-            course.InstructorId = parsedInstructorId;
-            course.StartDate = parsedStartDate;
-            course.EndDate = parsedEndDate;
-            course.ResourcesLink = resourcesLink;
-
+            if (resourcesLink == null)
+            {
+                course.CohortId = parsedCohortId;
+                course.CourseId = parsedCourseId;
+                course.InstructorId = parsedInstructorId;
+                course.StartDate = parsedStartDate;
+                course.EndDate = parsedEndDate;
+            }
+            else if (resourcesLink != null)
+            {
+                course.CohortId = parsedCohortId;
+                course.CourseId = parsedCourseId;
+                course.InstructorId = parsedInstructorId;
+                course.StartDate = parsedStartDate;
+                course.EndDate = parsedEndDate;
+                course.ResourcesLink = resourcesLink;
+            }
             context.SaveChanges();
         }
     }
