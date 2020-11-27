@@ -160,7 +160,6 @@ namespace AZLearn.Controllers
                     }
                 }
             }
-            
             if (string.IsNullOrWhiteSpace(description))
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(description), nameof(description) + " is null."));

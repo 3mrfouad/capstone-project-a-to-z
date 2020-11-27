@@ -190,7 +190,6 @@ namespace AZLearn.Controllers
 
             using var context = new AppDbContext();
 
-
             if (string.IsNullOrWhiteSpace(cohortId) )
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId),nameof(cohortId)+" is null."));
@@ -200,6 +199,10 @@ namespace AZLearn.Controllers
                 if ( !int.TryParse(cohortId,out parsedCohortId) )
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
+                }
+                else if(parsedCohortId > 9999999999 || parsedCohortId < 0)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id value should be between 0 & 9999999999 inclusive"));
                 }
                 /*If the Cohort Exists or not If cohort is Archived you cannot update the course*/
                 else if ( !context.Cohorts.Any(key => key.CohortId==parsedCohortId)  )
@@ -286,12 +289,24 @@ namespace AZLearn.Controllers
             #endregion
 
             var cohort = context.Cohorts.Find(parsedCohortId);
-            cohort.Name = name;
-            cohort.Capacity = parsedCapacity;
-            cohort.City = city;
-            cohort.ModeOfTeaching = modeOfTeaching;
-            cohort.StartDate = parsedStartDate;
-            cohort.EndDate = parsedEndDate;
+            if (capacity == null)
+            {
+                cohort.Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(name);
+                cohort.City = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(city);
+                cohort.ModeOfTeaching = modeOfTeaching;
+                cohort.StartDate = parsedStartDate;
+                cohort.EndDate = parsedEndDate;
+            }
+            else if (capacity != null)
+            {
+                cohort.Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(name);
+                cohort.Capacity = parsedCapacity;
+                cohort.City = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(city);
+                cohort.ModeOfTeaching = modeOfTeaching;
+                cohort.StartDate = parsedStartDate;
+                cohort.EndDate = parsedEndDate;
+            }
+           
             context.SaveChanges();
            
         }
@@ -327,6 +342,10 @@ namespace AZLearn.Controllers
                 if (!int.TryParse(cohortId, out parsedCohortId))
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
+                }
+                else if (parsedCohortId > 9999999999 || parsedCohortId < 0)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id value should be between 0 & 9999999999 inclusive"));
                 }
                 /*If the Cohort is Archived you cannot update the course*/
                 else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
