@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using AZLearn.Data;
 using AZLearn.Models;
@@ -124,17 +125,27 @@ namespace AZLearn.Controllers
             {
                 context.Add(new Cohort
                 {
-                    Name = name.,
-                    Capacity = parsedCapacity,
-                    City = city,
+                    Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(name),
+                    City = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(city),
                     ModeOfTeaching = modeOfTeaching,
                     StartDate = parsedStartDate,
                     EndDate = parsedEndDate
                 });
             }
-            
+            else if (capacity != null)
+            {
+                context.Add(new Cohort
+                {
+                    Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(name),
+                    Capacity = parsedCapacity,
+                    City = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(city),
+                    ModeOfTeaching = modeOfTeaching,
+                    StartDate = parsedStartDate,
+                    EndDate = parsedEndDate
+                });
+            }
+
             context.SaveChanges();
-          
         }
 
         /// <summary>

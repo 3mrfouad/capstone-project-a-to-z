@@ -345,7 +345,7 @@ namespace AZLearn.Controllers
 
                 if (exception.ValidationExceptions.Count > 0) throw exception;
 
-                grade = context.Grades.Find(int.Parse(rubricId), int.Parse(studentId));
+                grade = context.Grades.Find(parsedRubricId, parsedStudentId);
                 grade.StudentComment = comment;
             }
 
