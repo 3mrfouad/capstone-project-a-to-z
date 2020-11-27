@@ -114,7 +114,7 @@ namespace AZLearn.Controllers
             }
             catch (ValidationException e)
             {
-                var error = "Error(s) During Creation: " +
+                var error = "Error(s) During CreateHomework: " +
                             e.ValidationExceptions.Select(x => x.Message)
                                 .Aggregate((x, y) => x + ", " + y);
 
@@ -147,7 +147,7 @@ namespace AZLearn.Controllers
             }
             catch (ValidationException e)
             {
-                var error = "Error(s) During Creation: " +
+                var error = "Error(s) During UpdateHomework: " +
                             e.ValidationExceptions.Select(x => x.Message)
                                 .Aggregate((x, y) => x + ", " + y);
 
@@ -277,7 +277,7 @@ namespace AZLearn.Controllers
             }
             catch (ValidationException e)
             {
-                var error = "Error(s) During Creation: " +
+                var error = "Error(s) During GetHomeworkSummary: " +
                             e.ValidationExceptions.Select(x => x.Message)
                                 .Aggregate((x, y) => x + ", " + y);
 
@@ -317,7 +317,7 @@ namespace AZLearn.Controllers
             }
             catch (ValidationException e)
             {
-                var error = "Error(s) During Creation: " +
+                var error = "Error(s) During GetHomeworkTimesheetForStudent: " +
                             e.ValidationExceptions.Select(x => x.Message)
                                 .Aggregate((x, y) => x + ", " + y);
 
@@ -424,7 +424,7 @@ namespace AZLearn.Controllers
             }
             catch (ValidationException e)
             {
-                var error = "Error(s) During Creation: " +
+                var error = "Error(s) During GetCourseSummary: " +
                             e.ValidationExceptions.Select(x => x.Message)
                                 .Aggregate((x, y) => x + ", " + y);
 
@@ -452,7 +452,24 @@ namespace AZLearn.Controllers
         [HttpGet(nameof(GetCourses))]
         public ActionResult<List<Course>> GetCourses()
         {
-            return CourseController.GetCourses();
+            ActionResult<List<Course>> result;
+            try
+            {
+                result =  CourseController.GetCourses();
+            }
+            catch (ValidationException e)
+            {
+                var error = "Error(s) During GetCourses: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
+
+                result = BadRequest(error);
+            }
+            catch (Exception)
+            {
+                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+            }
+            return result;
         }
 
         #endregion
@@ -503,7 +520,7 @@ namespace AZLearn.Controllers
             }
             catch (ValidationException e)
             {
-                var error = "Error(s) During Creation: " +
+                var error = "Error(s) During GetHomeworkForInstructor: " +
                             e.ValidationExceptions.Select(x => x.Message)
                                 .Aggregate((x, y) => x + ", " + y);
 
@@ -540,7 +557,7 @@ namespace AZLearn.Controllers
             }
             catch (ValidationException e)
             {
-                var error = "Error(s) During Assigning Course: " +
+                var error = "Error(s) During AssignCourseByCohortId: " +
                             e.ValidationExceptions.Select(x => x.Message)
                                 .Aggregate((x, y) => x + ", " + y);
 
@@ -578,7 +595,7 @@ namespace AZLearn.Controllers
             }
             catch (ValidationException e)
             {
-                var error = "Error(s) During Creation: " +
+                var error = "Error(s) During UpdateAssignedCourse: " +
                             e.ValidationExceptions.Select(x => x.Message)
                                 .Aggregate((x, y) => x + ", " + y);
 
@@ -744,7 +761,7 @@ namespace AZLearn.Controllers
             }
             catch (ValidationException e)
             {
-                var error = "Error(s) During Retrieving Course: " +
+                var error = "Error(s) During GetAssignedCourse: " +
                             e.ValidationExceptions.Select(x => x.Message)
                                 .Aggregate((x, y) => x + ", " + y);
 
@@ -771,7 +788,7 @@ namespace AZLearn.Controllers
             }
             catch (ValidationException e)
             {
-                var error = "Error(s) During creating Rubric: " +
+                var error = "Error(s) During CreateRubric: " +
                             e.ValidationExceptions.Select(x => x.Message)
                                 .Aggregate((x, y) => x + ", " + y);
 
@@ -799,7 +816,7 @@ namespace AZLearn.Controllers
             }
             catch (ValidationException e)
             {
-                var error = "Error(s) During updating Rubric: " +
+                var error = "Error(s) During UpdateRubric: " +
                             e.ValidationExceptions.Select(x => x.Message)
                                 .Aggregate((x, y) => x + ", " + y);
 
