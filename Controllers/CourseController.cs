@@ -226,7 +226,42 @@ namespace AZLearn.Controllers
             
             return courseByCohortId;
         }
+        /// <summary>
+        /// ArchiveCourseById
+        /// Description: This action archives a course by courseId PK
+        /// </summary>
+        /// <param name="courseId"></param>
+        public static void ArchiveCourseById(string courseId)
+        {
+            var parsedCourseId = 0;
+            var exception = new ValidationException();
+            using var context = new AppDbContext();
 
+            courseId = (string.IsNullOrEmpty(courseId) || string.IsNullOrWhiteSpace(courseId)) ? null : courseId.Trim();
+            if (courseId == null)
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(courseId), nameof(courseId) + " is null."));
+            }
+            else
+            {
+                if (!int.TryParse(courseId, out parsedCourseId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Course Id"));
+                }
+                /*If the Cohort is Archived you cannot update the course*/
+                else if (!context.Courses.Any(key => key.CourseId == parsedCourseId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Course Id does not exist"));
+                }
+                else if (!context.Courses.Any(key => key.CourseId == parsedCourseId && key.Archive == false))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Course Id is already archived"));
+                }
+            }
 
+            var cohort = context.Cohorts.Find(parsedCourseId);
+            cohort.Archive = true;
+            context.SaveChanges();
+        }
     }
 }
