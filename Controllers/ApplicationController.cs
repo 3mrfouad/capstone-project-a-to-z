@@ -610,7 +610,7 @@ namespace AZLearn.Controllers
 
                 result = BadRequest(error);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
             }
@@ -689,7 +689,7 @@ namespace AZLearn.Controllers
 
                 result=BadRequest(error);
             }
-            catch ( Exception e )
+            catch ( Exception )
             {
                 result=StatusCode(500,
                     "Unknown error occurred while updating the Timesheet, please try again later or get in contact with your instructor or program coordinator");
