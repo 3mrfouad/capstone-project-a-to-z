@@ -43,9 +43,9 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Course name can only be 50 characters long."));
                 }
-                else if(context.Courses.Any(key => key.Name.ToLower() == name.ToLower() && key.Archive == false))
+                else if (context.Courses.Any(key => key.Name.ToLower() == name.ToLower() && key.Archive == false))
                 {
-                        exception.ValidationExceptions.Add(new Exception("Course with this name already exists."));
+                    exception.ValidationExceptions.Add(new Exception("Course with this name already exists."));
                 }
             }
             if (string.IsNullOrWhiteSpace(description))
@@ -148,7 +148,7 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Course name can only be 50 characters long."));
                 }
-                else 
+                else
                 {
                     if ((!string.IsNullOrWhiteSpace(courseId)) && int.TryParse(courseId, out parsedCourseId))
                     {
@@ -160,7 +160,7 @@ namespace AZLearn.Controllers
                     }
                 }
             }
-            
+
             if (string.IsNullOrWhiteSpace(description))
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(description), nameof(description) + " is null."));
@@ -195,7 +195,7 @@ namespace AZLearn.Controllers
             course.Name = name;
             course.Description = description;
             course.DurationHrs = parsedDurationHrs;
-            
+
             context.SaveChanges();
         }
 
@@ -263,7 +263,7 @@ namespace AZLearn.Controllers
             return coursesListByCohortId;
         }
 
-    /// <summary>
+        /// <summary>
         /// GetCourseByCohortId
         /// Description: Controller action that returns a Courses by CohortId
         /// It expects below parameters, and would return a course by cohort id from the database.
@@ -331,7 +331,7 @@ namespace AZLearn.Controllers
 
             courseId = (string.IsNullOrEmpty(courseId) || string.IsNullOrWhiteSpace(courseId)) ? null : courseId.Trim();
             if (courseId == null)
- {
+            {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(courseId), nameof(courseId) + " is null."));
             }
             else
@@ -340,7 +340,7 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Course Id"));
                 }
- else if (!context.Courses.Any(key => key.CourseId == parsedCourseId))
+                else if (!context.Courses.Any(key => key.CourseId == parsedCourseId))
                 {
                     exception.ValidationExceptions.Add(new Exception("Course Id does not exist"));
                 }
@@ -350,10 +350,24 @@ namespace AZLearn.Controllers
                 }
             }
 
-            var cohort = context.Cohorts.Find(parsedCourseId);
+            var homeworks = context.Homeworks.Where(key => key.CourseId == parsedCourseId).ToList();
+
+            foreach (var homework in homeworks)
+            {
+                homework.Archive = true;
+            }
+
+            var assignedCourses = context.CohortCourses.Where(key => key.CourseId == parsedCourseId).ToList();
+            foreach (var course in assignedCourses)
+            {
+                course.Archive = true;
+            }
+
+            var cohort = context.Courses.Find(parsedCourseId);
             cohort.Archive = true;
+
             context.SaveChanges();
 
-}  
+        }
     }
 }
