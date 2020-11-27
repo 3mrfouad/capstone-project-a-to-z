@@ -374,7 +374,7 @@ namespace AZLearn.Controllers
         ///     Description:The API End Point looks for action GetCoursesByCohortID in CourseController and retrieves the
         ///     information of all courses based on the Cohort id  from database.
         ///     EndPoint Testing : localhost:xxxxx/application/getcoursesummary?cohortId=1
-        ///     /*Test Passed*/
+        ///     /*Test Passed*/ 
         /// </summary>
         /// <param name="cohortId"></param>
         /// <returns></returns>

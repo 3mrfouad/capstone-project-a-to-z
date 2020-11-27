@@ -1,7 +1,7 @@
 import React from "react";
 import { Table, Container, Button, Form, Row, Col } from "react-bootstrap";
 
-const HomeworkInstructor = () => {
+const HomeworkCreateInstructor = () => {
   return (
     <React.Fragment>
       <Container>
@@ -119,4 +119,4 @@ const HomeworkInstructor = () => {
   );
 };
 
-export default HomeworkInstructor;
+export default HomeworkCreateInstructor;

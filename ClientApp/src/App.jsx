@@ -10,8 +10,8 @@ import SideBar from "./components/shared/SideBar/SideBar";
 import GradesStudent from "./components/Student/GradesStudent/GradesStudent";
 import CohortCard from "./components/Instructor/CohortCard/CohortCard";
 import CohortSummary from "./components/Instructor/CohortSummary/CohortSummary";
-import CourseCard from "./components/Instructor/CohortCard/CohortCard";
 import GradingSummary from "./components/Instructor/GradingSummary/GradingSummary";
+import CourseCreateEdit from "./components/Instructor/CourseCreateEdit/CourseCreateEdit";
 
 const App = () => {
   return (
@@ -37,6 +37,7 @@ const App = () => {
           <Route path="/cohortcard" exact component={CohortCard} />
           <Route path="/cohortsummary" exact component={CohortSummary} />
           <Route path="/gradingsummary" exact component={GradingSummary} />
+          <Route path="/coursecreate" exact component={CourseCreateEdit} />
         </Switch>
       </Router>
     </React.Fragment>

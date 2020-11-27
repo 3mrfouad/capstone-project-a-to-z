@@ -1,10 +1,10 @@
 import React from "react";
 import { Form, Button, Row, Col, Container } from "react-bootstrap";
 
-const CourseCard = () => {
+const CourseEditAssigned = () => {
   const submitHandler = (e) => {
     e.preventDefault();
-    console.log("create course");
+    console.log("Course Edit Assigned");
   };
   return (
     <React.Fragment>
@@ -16,29 +16,32 @@ const CourseCard = () => {
               <Form.Group controlId="">
                 <Form.Label>Course Name</Form.Label>
                 <Form.Control
-                //   type="email"
-                //   placeholder="Enter Email"
-                //   value={email}
-                //   onChange={(e) => setEmail(e.target.value)}
+                  disabled
+                  //   type="email"
+                  //   placeholder="Enter Email"
+                  //   value={email}
+                  //   onChange={(e) => setEmail(e.target.value)}
                 ></Form.Control>
               </Form.Group>
 
               <Form.Group controlId="">
                 <Form.Label>Hours</Form.Label>
                 <Form.Control
-                //   type="password"
-                //   placeholder="Enter Password"
-                //   value={password}
-                //   onChange={(e) => setPassword(e.target.value)}
+                  disabled
+                  //   type="password"
+                  //   placeholder="Enter Password"
+                  //   value={password}
+                  //   onChange={(e) => setPassword(e.target.value)}
                 ></Form.Control>
               </Form.Group>
               <Form.Group controlId="">
                 <Form.Label>Description</Form.Label>
                 <Form.Control
-                //   type="password"
-                //   placeholder="Enter Password"
-                //   value={password}
-                //   onChange={(e) => setPassword(e.target.value)}
+                  disabled
+                  //   type="password"
+                  //   placeholder="Enter Password"
+                  //   value={password}
+                  //   onChange={(e) => setPassword(e.target.value)}
                 ></Form.Control>
               </Form.Group>
               <Form.Group controlId="">
@@ -72,4 +75,4 @@ const CourseCard = () => {
   );
 };
 
-export default CourseCard;
+export default CourseEditAssigned;

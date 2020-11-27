@@ -45,7 +45,9 @@ const CourseSummaryStudent = () => {
             </tr>
           </tbody>
         </Table>
-        <Button>Back</Button>
+        <button type="button" className="btn btn-link">
+          Back
+        </button>
       </Container>
     </React.Fragment>
   );

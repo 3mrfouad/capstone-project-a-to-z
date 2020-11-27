@@ -4,9 +4,9 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { cohortSummaryInstructor } from "../../../actions/instructorActions";
 
-const CourseSummaryInstructor = () => {
+const CohortSummaryInstructor = () => {
   const dispatch = useDispatch();
-  const { products, loading } = useSelector(
+  const { cohorts, loading } = useSelector(
     (state) => state.cohortSummaryInstructor
   );
   useEffect(() => {
@@ -57,11 +57,15 @@ const CourseSummaryInstructor = () => {
             </tr>
           </tbody>
         </Table>
-        <Button>Back</Button> <Button>Register Student</Button>{" "}
-        <Button>Create Cohort</Button>
+        <button type="button" className="btn btn-link">
+          Back
+        </button>{" "}
+        <Button className="float-right mr-3">Create Cohort</Button>
+        <Button className="float-right mr-3">Register Users</Button>{" "}
+        <Button className="float-right mr-3">Manage Course</Button>{" "}
       </Container>
     </React.Fragment>
   );
 };
 
-export default CourseSummaryInstructor;
+export default CohortSummaryInstructor;
