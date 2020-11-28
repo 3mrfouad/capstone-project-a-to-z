@@ -11,7 +11,7 @@ using Microsoft.Data;
 namespace AZLearn.Controllers
 {
     [Route("[controller]")]
-    [ApiController]
+    [ApiController] 
     public class ApplicationController : Controller
     {
         #region CohortController
