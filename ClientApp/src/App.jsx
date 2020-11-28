@@ -13,6 +13,7 @@ import CohortSummary from "./components/Instructor/CohortSummary/CohortSummary";
 import GradingSummary from "./components/Instructor/GradingSummary/GradingSummary";
 import CourseCreateEdit from "./components/Instructor/CourseCreateEdit/CourseCreateEdit";
 import GradesInstructorPage from "./screens/GradesInstructorPage/GradesInstructorPage";
+import ManageCourse from "./components/Instructor/ManageCourses/ManageCourses";
 
 const App = () => {
   return (
@@ -49,6 +50,7 @@ const App = () => {
             exact
             component={CourseSummaryStudent}
           />
+          <Route path="/managecourse" exact component={ManageCourse} />
         </Switch>
       </Router>
     </React.Fragment>

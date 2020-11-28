@@ -1,6 +1,11 @@
-import React from "react";
-import { Table, Container, Button } from "react-bootstrap";
+import React, { useState } from "react";
+import { Table, Container, Button, Modal } from "react-bootstrap";
+import { Link } from "react-router-dom";
+
 const CourseSummaryInstructor = () => {
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
   return (
     <React.Fragment>
       <Container>
@@ -25,7 +30,9 @@ const CourseSummaryInstructor = () => {
               <td>
                 <a href="#">Homework</a>{" "}
               </td>
-              <td>Edit | Archive</td>
+              <td>
+                Edit | <Link onClick={handleShow}>Remove</Link>{" "}
+              </td>
             </tr>
             <tr>
               <td>CSS</td>
@@ -35,7 +42,7 @@ const CourseSummaryInstructor = () => {
               <td>
                 <a href="#">Homework</a>{" "}
               </td>
-              <td>Edit | Archive</td>
+              <td>Edit | Remove</td>
             </tr>
             <tr>
               <td>HTML</td>
@@ -46,7 +53,7 @@ const CourseSummaryInstructor = () => {
                 {" "}
                 <a href="#">Homework</a>{" "}
               </td>
-              <td>Edit | Archive</td>
+              <td>Edit | Remove</td>
             </tr>
           </tbody>
         </Table>
@@ -55,6 +62,17 @@ const CourseSummaryInstructor = () => {
         </button>{" "}
         <Button className="float-right mr-3">Add Course</Button>
       </Container>
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Body>Archive: Are you sure?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            No
+          </Button>
+          <Button variant="primary" onClick={handleClose}>
+            Yes
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </React.Fragment>
   );
 };

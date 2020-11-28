@@ -28,7 +28,9 @@ const CourseSummaryStudent = () => {
           <tbody>
             <tr>
               <td>React.js</td>
-              <td>React Basics</td>
+              <td>
+                React Basicsfffffffffffffffffffffffffffffffffffffffffffffffffff
+              </td>
               <td>10</td>
               <td>Instructor A</td>
               <td>

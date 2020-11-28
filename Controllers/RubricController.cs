@@ -36,7 +36,7 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Homework Id"));
                 }
-                else if (parsedHomeworkId > 2147483647 || parsedHomeworkId < 1)
+                if (parsedHomeworkId > 2147483647 || parsedHomeworkId < 1)
                 {
                     exception.ValidationExceptions.Add(new Exception("Homework Id value should be between 1 & 2147483647 inclusive"));
                 }
@@ -81,7 +81,7 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Homework Id"));
                 }
-                else if (parsedHomeworkId > 2147483647 || parsedHomeworkId < 1)
+                if (parsedHomeworkId > 2147483647 || parsedHomeworkId < 1)
                 {
                     exception.ValidationExceptions.Add(new Exception("Homework Id value should be between 1 & 2147483647 inclusive"));
                 }
@@ -211,7 +211,7 @@ namespace AZLearn.Controllers
                     {
                         exception.ValidationExceptions.Add(new Exception("Invalid value for Rubric Id"));
                     }
-                    else if (parsedRubricId > 2147483647 || parsedRubricId < 1)
+                    if (parsedRubricId > 2147483647 || parsedRubricId < 1)
                     {
                         exception.ValidationExceptions.Add(new Exception("Rubric Id value should be between 1 & 2147483647 inclusive"));
                     }
@@ -314,6 +314,8 @@ namespace AZLearn.Controllers
                     {
                         exception.ValidationExceptions.Add(new Exception("Invalid value for Rubric Id"));
                     }
+                    if (parsedRubricId > 2147483647 || parsedRubricId < 1)
+                        exception.ValidationExceptions.Add(new Exception("Rubric Id value should be between 1 & 2147483647 inclusive"));
                     else if (!context.Rubrics.Any(key => key.RubricId == parsedRubricId))
                     {
                         exception.ValidationExceptions.Add(new Exception("Rubric Id does not exist"));

@@ -1,8 +1,9 @@
 import React from "react";
-import { Table, Container, Button } from "react-bootstrap";
-import { useEffect } from "react";
+import { Table, Container, Button, Modal } from "react-bootstrap";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { cohortSummaryInstructor } from "../../../actions/instructorActions";
+import { Link } from "react-router-dom";
 
 const CohortSummaryInstructor = () => {
   const dispatch = useDispatch();
@@ -12,6 +13,9 @@ const CohortSummaryInstructor = () => {
   useEffect(() => {
     dispatch(cohortSummaryInstructor());
   }, [dispatch]);
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
   return (
     <React.Fragment>
       <Container>
@@ -35,7 +39,9 @@ const CohortSummaryInstructor = () => {
               <td>2020-08-04</td>
               <td>2021-01-30</td>
               <td>Edmonton </td>
-              <td>Edit | Retire</td>
+              <td>
+                Edit | <Link onClick={handleShow}> Retire </Link>
+              </td>
             </tr>
             <tr>
               <td>4.2</td>
@@ -64,6 +70,17 @@ const CohortSummaryInstructor = () => {
         <Button className="float-right mr-3">Register Users</Button>{" "}
         <Button className="float-right mr-3">Manage Course</Button>{" "}
       </Container>
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Body>Retire: Are you sure?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            No
+          </Button>
+          <Button variant="primary" onClick={handleClose}>
+            Yes
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </React.Fragment>
   );
 };
