@@ -20,9 +20,9 @@ namespace AZLearn.Controllers
         /// <param name="courseId"></param>
         public static void AssignCourseByCohortId(string cohortId, string courseId, string instructorId, string startDate, string endDate, string resourcesLink)
         {
-            int parsedCohortId = int.Parse(cohortId);
-            int parsedCourseId = int.Parse(courseId);
-            int parsedInstructorId = int.Parse(instructorId);
+            int parsedCohortId = 0;
+            int parsedCourseId = 0;
+            int parsedInstructorId = 0;
             DateTime parsedStartDate = new DateTime();
             DateTime parsedEndDate = new DateTime();
 
@@ -52,6 +52,11 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
                 }
+                else if ( context.Cohorts.Any(key => key.CohortId==parsedCohortId&&key.Archive==true) )
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort is archived"));
+                }
+
             }
             if (string.IsNullOrWhiteSpace(courseId))
             {
@@ -69,6 +74,10 @@ namespace AZLearn.Controllers
                     {
                         exception.ValidationExceptions.Add(new Exception("Course Id does not exist"));
                     }
+                    else if ( context.Courses.Any(key => key.CourseId==parsedCourseId&&key.Archive==true) )
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Course is archived"));
+                    }
                     else
                     {
                         if ((!string.IsNullOrWhiteSpace(cohortId)) && int.TryParse(cohortId, out parsedCohortId) && (context.CohortCourses.Any(key =>
@@ -77,6 +86,7 @@ namespace AZLearn.Controllers
                             exception.ValidationExceptions.Add(new Exception("Course is already assigned to this Cohort"));
                         }
                     }
+
                 }
             }
                 
@@ -172,9 +182,9 @@ namespace AZLearn.Controllers
         /// <param name="resourcesLink"></param>
         public static void UpdateAssignedCourse(string cohortId, string courseId, string instructorId, string startDate, string endDate, string resourcesLink)
         {
-            int parsedCohortId = int.Parse(cohortId);
-            int parsedCourseId = int.Parse(courseId);
-            int parsedInstructorId = int.Parse(instructorId);
+            int parsedCohortId = 0;
+            int parsedCourseId = 0;
+            int parsedInstructorId = 0;
             DateTime parsedStartDate = new DateTime();
             DateTime parsedEndDate = new DateTime();
 

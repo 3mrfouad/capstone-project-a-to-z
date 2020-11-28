@@ -345,7 +345,7 @@ namespace AZLearn.Controllers
 
                 if (exception.ValidationExceptions.Count > 0) throw exception;
 
-                grade = context.Grades.Find(int.Parse(rubricId), int.Parse(studentId));
+                grade = context.Grades.Find(parsedRubricId, parsedStudentId);
                 grade.StudentComment = comment;
             }
 
@@ -389,8 +389,7 @@ namespace AZLearn.Controllers
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Student Id"));
                 else if (!context.Users.Any(key => key.UserId == parsedStudentId && key.IsInstructor == false))
                     exception.ValidationExceptions.Add(new Exception("Student Id does not exist"));
-                else if (!context.Users.Any(key => key.UserId == parsedStudentId && key.Archive == false))
-                    exception.ValidationExceptions.Add(new Exception("Student Id is Archived"));
+                
             }
 
             if (string.IsNullOrWhiteSpace(homeworkId))
@@ -404,8 +403,7 @@ namespace AZLearn.Controllers
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Homework Id"));
                 else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId))
                     exception.ValidationExceptions.Add(new Exception("Homework Id does not exist"));
-                else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId && key.Archive == false))
-                    exception.ValidationExceptions.Add(new Exception("Homework Id is Archived"));
+               
             }
 
             if (exception.ValidationExceptions.Count > 0) throw exception;
@@ -457,8 +455,7 @@ namespace AZLearn.Controllers
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
                 else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
                     exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
-                else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId && key.Archive == false))
-                    exception.ValidationExceptions.Add(new Exception("Selected Cohort Id is Archived"));
+                
             }
 
             if (string.IsNullOrWhiteSpace(homeworkId))
@@ -473,8 +470,6 @@ namespace AZLearn.Controllers
                 else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId))
                     exception.ValidationExceptions.Add(new Exception("Homework Id does not exist"));
 
-                else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId && key.Archive == false))
-                    exception.ValidationExceptions.Add(new Exception("Selected Homework Id is Archived"));
             }
 
             if (exception.ValidationExceptions.Count > 0) throw exception;

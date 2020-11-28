@@ -53,10 +53,10 @@ namespace AZLearn.Controllers
             else
             {
                 /*To check if Cohort Name already Exists , and If the Cohort is not Archived  */
-                if ( !context.Cohorts.Any(key => key.Name.ToLower()==name.ToLower()) )
+                if ( context.Cohorts.Any(key => key.Name.ToLower()==name.ToLower()) )
                     exception.ValidationExceptions.Add(
                         new Exception("Cohort with same name already exists."));
-               ///CHECK THE QUERY FOR ARCHIVE PLEASE 
+
                 if ( !context.Cohorts.Any(key => key.Name.ToLower()==name.ToLower() && key.Archive==false))
                     exception.ValidationExceptions.Add(
                         new Exception("Selected Cohort is Archived."));
@@ -160,49 +160,63 @@ namespace AZLearn.Controllers
 
             var exception = new ValidationException();
 
-            cohortId=(string.IsNullOrEmpty(cohortId)||string.IsNullOrWhiteSpace(cohortId)) ? null : cohortId.Trim();
-            name=string.IsNullOrEmpty(name)||string.IsNullOrWhiteSpace(name) ? null : name.Trim();
-            capacity=string.IsNullOrEmpty(capacity)||string.IsNullOrWhiteSpace(capacity) ? null : capacity.Trim();
-            modeOfTeaching=string.IsNullOrEmpty(modeOfTeaching)||string.IsNullOrWhiteSpace(modeOfTeaching)
+            cohortId = (string.IsNullOrEmpty(cohortId) || string.IsNullOrWhiteSpace(cohortId)) ? null : cohortId.Trim();
+            name = string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name) ? null : name.Trim();
+            capacity = string.IsNullOrEmpty(capacity) || string.IsNullOrWhiteSpace(capacity) ? null : capacity.Trim();
+            modeOfTeaching = string.IsNullOrEmpty(modeOfTeaching) || string.IsNullOrWhiteSpace(modeOfTeaching)
                 ? null
                 : modeOfTeaching.Trim();
-            startDate=string.IsNullOrEmpty(startDate)||string.IsNullOrWhiteSpace(startDate)
+            startDate = string.IsNullOrEmpty(startDate) || string.IsNullOrWhiteSpace(startDate)
                 ? null
                 : startDate.Trim();
-            endDate=string.IsNullOrEmpty(endDate)||string.IsNullOrWhiteSpace(endDate) ? null : endDate.Trim();
-            city=string.IsNullOrEmpty(city)||string.IsNullOrWhiteSpace(city) ? null : city.Trim();
+            endDate = string.IsNullOrEmpty(endDate) || string.IsNullOrWhiteSpace(endDate) ? null : endDate.Trim();
+            city = string.IsNullOrEmpty(city) || string.IsNullOrWhiteSpace(city) ? null : city.Trim();
 
             using var context = new AppDbContext();
 
 
-            if ( cohortId==null )
+            if (cohortId == null)
             {
-                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId),nameof(cohortId)+" is null."));
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId),
+                    nameof(cohortId) + " is null."));
             }
             else
             {
-                if ( !int.TryParse(cohortId,out parsedCohortId) )
+                if (!int.TryParse(cohortId, out parsedCohortId))
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
                 }
-                    /*If the Cohort Exists or not If cohort is Archived you cannot update the course*/
-                else if ( !context.Cohorts.Any(key => key.CohortId==parsedCohortId)  )
+                /*If the Cohort Exists or not If cohort is Archived you cannot update the course*/
+                else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
                 {
                     exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
 
-                } else if ( !context.Cohorts.Any(key => key.CohortId==parsedCohortId && key.Archive==false))
+                }
+                else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId && key.Archive == false))
                 {
                     exception.ValidationExceptions.Add(new Exception("Cohort Id is Archived"));
                 }
+
             }
 
-            if ( string.IsNullOrWhiteSpace(name) )
-                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(name),nameof(name)+" is null."));
-            else if ( name.Length>50 )
+            if (string.IsNullOrWhiteSpace(name))
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(name), nameof(name) + " is null."));
+            else if (name.Length > 50)
                 exception.ValidationExceptions.Add(new Exception("Cohort name can only be 50 characters long."));
-          /*  else
-            {
-                *//*To check if Cohort Name already Exists , and to check If the Cohort is not Archived and Update *//*
+            else if ((!string.IsNullOrWhiteSpace(cohortId)) && int.TryParse(cohortId, out parsedCohortId))
+                {
+                    /* Two cohorts with same name should not be allowed */
+                    if (context.Cohorts.Any(key =>
+                        key.Name.ToLower() == name.ToLower() && key.CohortId != parsedCohortId))
+                    {
+                        exception.ValidationExceptions.Add(new Exception("A Cohort with this name already exists."));
+                    }
+                }
+            
+            /*  else
+              {
+                  */
+            /*To check if Cohort Name already Exists , and to check If the Cohort is not Archived and Update */ /*
                 if ( !context.Cohorts.Any(key => key.Name.ToLower()==name.ToLower()&&key.Archive==false) )
                     exception.ValidationExceptions.Add(
                         new Exception("Cohort that you are trying to update doesnt exists"));
@@ -215,27 +229,37 @@ namespace AZLearn.Controllers
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Capacity"));
                 }
                 else if (parsedCapacity > 999 || parsedCapacity < 0)
-                        exception.ValidationExceptions.Add(
-                            new Exception("Capacity value should be between 0 & 999 inclusive."));
-            }
-
-            if ( string.IsNullOrWhiteSpace(modeOfTeaching) )
-                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(modeOfTeaching),
-                    nameof(modeOfTeaching)+" is null."));
-            else if ( modeOfTeaching.Length>50 )
-                exception.ValidationExceptions.Add(new Exception("Mode of Teaching can only be 50 characters long."));
-            if ( string.IsNullOrWhiteSpace(startDate) )
-            {
-                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(startDate),
-                    nameof(startDate)+" is null."));
-            }
-            else if ( !DateTime.TryParse(startDate,out parsedStartDate) )
-                    exception.ValidationExceptions.Add(new Exception("Invalid value for startDate"));
-               /* else if ( parsedStartDate<DateTime.Now.Date )
                     exception.ValidationExceptions.Add(
-                        new Exception("This Cohort can not have start date in the past."));*/ //NOT REQUIRED AS WARNING IS GIVEN AT FRONT END
+                        new Exception("Capacity value should be between 0 & 999 inclusive."));
+            }
 
-               if ( string.IsNullOrWhiteSpace(endDate) )
+            if (string.IsNullOrWhiteSpace(modeOfTeaching))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(modeOfTeaching),
+                    nameof(modeOfTeaching) + " is null."));
+            }
+            else if (modeOfTeaching.Length > 50)
+                {
+                    exception.ValidationExceptions.Add(
+                        new Exception("Mode of Teaching can only be 50 characters long."));
+                }
+            
+
+            if (string.IsNullOrWhiteSpace(startDate))
+                {
+                    exception.ValidationExceptions.Add(new ArgumentNullException(nameof(startDate),
+                        nameof(startDate) + " is null."));
+                }
+                else if (!DateTime.TryParse(startDate, out parsedStartDate))
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for startDate"));
+
+                /* else if ( parsedStartDate<DateTime.Now.Date )
+                     exception.ValidationExceptions.Add(
+                         new Exception("This Cohort can not have start date in the past."));*/
+                //NOT REQUIRED AS WARNING IS GIVEN AT FRONT END
+            
+
+            if ( string.IsNullOrWhiteSpace(endDate) )
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(endDate),
                     nameof(endDate)+" is null."));

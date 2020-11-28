@@ -88,7 +88,7 @@ namespace AZLearn.Controllers
             {
                 result = CohortController.GetCohorts();
             }
-            catch (ValidationException e)
+            catch (Exception)
             {
                 result = StatusCode(403, "Error: retrieving all Cohorts Information");
             }
@@ -266,7 +266,7 @@ namespace AZLearn.Controllers
             }
             catch (Exception e)
             {
-                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+                result = StatusCode(500,$"Unexpected server/database error occurred. System error message(s): " + e.Message); 
             }
 
             return result;
@@ -554,7 +554,7 @@ namespace AZLearn.Controllers
             }
             catch (Exception)
             {
-                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+                result = StatusCode(500, "Unknown error occurred, please try again later."); 
             }
 
             return result;
@@ -823,10 +823,10 @@ namespace AZLearn.Controllers
 
         #region RubricController
 
-        #region /application/CreateRubric
+        #region /application/CreateRubrics
 
-        [HttpPost(nameof(CreateRubric))]
-        public ActionResult CreateRubric(string homeworkId, List<Tuple<string, string, string>> rubrics)
+        [HttpPost(nameof(CreateRubrics))]
+        public ActionResult CreateRubrics(string homeworkId, List<Tuple<string, string, string>> rubrics)
         {
             ActionResult result;
             try
@@ -851,10 +851,10 @@ namespace AZLearn.Controllers
 
         #endregion
 
-        #region /application/UpdateRubric
+        #region /application/UpdateRubrics
 
-        [HttpPatch(nameof(UpdateRubric))]
-        public ActionResult UpdateRubric(Dictionary<string, Tuple<string, string, string>> rubrics)
+        [HttpPatch(nameof(UpdateRubrics))]
+        public ActionResult UpdateRubrics(Dictionary<string, Tuple<string, string, string>> rubrics)
         {
             ActionResult result;
             try
@@ -893,12 +893,20 @@ namespace AZLearn.Controllers
         ///     /*Test Passed*/
         /// </summary>
         /// <returns>The API End Point returns list of all Instructors in database</returns>
-        [HttpGet(nameof(GetInstructors))]
+     [HttpGet(nameof(GetInstructors))]
         public ActionResult<List<User>> GetInstructors()
         {
-            return UserController.GetInstructors();
-        }
-
+            ActionResult<List<User>> result;
+            try
+            {
+                result = UserController.GetInstructors();
+            }
+            catch (Exception)
+            {
+                result = StatusCode(403, "Error: retrieving all Instructors Information");
+            }
+            return result;
+           }
         #endregion
 
         #endregion
