@@ -42,9 +42,9 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
                 }
-                else if (parsedCohortId > 2147483647 || parsedCohortId < 0)
+                else if (parsedCohortId > 2147483647 || parsedCohortId < 1)
                 {
-                    exception.ValidationExceptions.Add(new Exception("Cohort Id value should be between 0 & 2147483647 inclusive"));
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id value should be between 1 & 2147483647 inclusive"));
                 }
                 else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
                 {
@@ -71,9 +71,9 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Course Id"));
                 }
-                else if (parsedCourseId > 2147483647 || parsedCourseId < 0)
+                else if (parsedCourseId > 2147483647 || parsedCourseId < 1)
                 {
-                    exception.ValidationExceptions.Add(new Exception("Course Id value should be between 0 & 2147483647 inclusive"));
+                    exception.ValidationExceptions.Add(new Exception("Course Id value should be between 1 & 2147483647 inclusive"));
                 }
                 else if (!context.Courses.Any(key => key.CourseId == parsedCourseId))
                 {
@@ -145,9 +145,9 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Course Id"));
                 }
-                else if (parsedCourseId > 2147483647 || parsedCourseId < 0)
+                else if (parsedCourseId > 2147483647 || parsedCourseId < 1)
                 {
-                    exception.ValidationExceptions.Add(new Exception("Course Id value should be between 0 & 2147483647 inclusive"));
+                    exception.ValidationExceptions.Add(new Exception("Course Id value should be between 1 & 2147483647 inclusive"));
                 }
                 else
                 {
@@ -197,9 +197,9 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
                 }
-                else if (parsedCohortId > 2147483647 || parsedCohortId < 0)
+                else if (parsedCohortId > 2147483647 || parsedCohortId < 1)
                 {
-                    exception.ValidationExceptions.Add(new Exception("Cohort Id value should be between 0 & 2147483647 inclusive"));
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id value should be between 1 & 2147483647 inclusive"));
                 }
                 else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
                 {
@@ -220,9 +220,9 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Instructor Id"));
                 }
-                else if (parsedInstructorId > 2147483647 || parsedInstructorId < 0)
+                else if (parsedInstructorId > 2147483647 || parsedInstructorId < 1)
                 {
-                    exception.ValidationExceptions.Add(new Exception("Instructor Id value should be between 0 & 2147483647 inclusive"));
+                    exception.ValidationExceptions.Add(new Exception("Instructor Id value should be between 1 & 2147483647 inclusive"));
                 }
                 else if (!context.Users.Any(key => key.UserId == parsedInstructorId && key.IsInstructor == true))
                 {
@@ -442,9 +442,9 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Homework Id"));
                 }
-                else if (parsedHomeworkId > 2147483647 || parsedHomeworkId < 0)
+                else if (parsedHomeworkId > 2147483647 || parsedHomeworkId < 1)
                 {
-                    exception.ValidationExceptions.Add(new Exception("Homework Id value should be between 0 & 2147483647 inclusive"));
+                    exception.ValidationExceptions.Add(new Exception("Homework Id value should be between 1 & 2147483647 inclusive"));
                 }
                 else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId))
                 {
@@ -465,9 +465,9 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Course Id"));
                 }
-                else if (parsedCourseId > 2147483647 || parsedCourseId < 0)
+                else if (parsedCourseId > 2147483647 || parsedCourseId < 1)
                 {
-                    exception.ValidationExceptions.Add(new Exception("Course Id value should be between 0 & 2147483647 inclusive"));
+                    exception.ValidationExceptions.Add(new Exception("Course Id value should be between 1 & 2147483647 inclusive"));
                 }
                 else
                 {
@@ -508,9 +508,9 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
                 }
-                else if (parsedCohortId > 2147483647 || parsedCohortId < 0)
+                else if (parsedCohortId > 2147483647 || parsedCohortId < 1)
                 {
-                    exception.ValidationExceptions.Add(new Exception("Cohort Id value should be between 0 & 2147483647 inclusive"));
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id value should be between 1 & 2147483647 inclusive"));
                 }
                 else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
                 {
@@ -531,9 +531,9 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Instructor Id"));
                 }
-                else if (parsedInstructorId > 2147483647 || parsedInstructorId < 0)
+                else if (parsedInstructorId > 2147483647 || parsedInstructorId < 1)
                 {
-                    exception.ValidationExceptions.Add(new Exception("Instructor Id value should be between 0 & 2147483647 inclusive"));
+                    exception.ValidationExceptions.Add(new Exception("Instructor Id value should be between 1 & 2147483647 inclusive"));
                 }
                 else if (!context.Users.Any(key => key.UserId == parsedInstructorId && key.IsInstructor == true))
                 {
@@ -714,9 +714,9 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Homework Id"));
                 }
-                else if (parsedHomeworkId > 2147483647 || parsedHomeworkId < 0)
+                else if (parsedHomeworkId > 2147483647 || parsedHomeworkId < 1)
                 {
-                    exception.ValidationExceptions.Add(new Exception("Homework Id value should be between 0 & 2147483647 inclusive"));
+                    exception.ValidationExceptions.Add(new Exception("Homework Id value should be between 1 & 2147483647 inclusive"));
                 }
                 else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId))
                 {

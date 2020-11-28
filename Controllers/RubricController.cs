@@ -36,9 +36,9 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Homework Id"));
                 }
-                else if (parsedHomeworkId > 2147483647 || parsedHomeworkId < 0)
+                else if (parsedHomeworkId > 2147483647 || parsedHomeworkId < 1)
                 {
-                    exception.ValidationExceptions.Add(new Exception("Homework Id value should be between 0 & 2147483647 inclusive"));
+                    exception.ValidationExceptions.Add(new Exception("Homework Id value should be between 1 & 2147483647 inclusive"));
                 }
                 else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId))
                 {
@@ -81,9 +81,9 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Homework Id"));
                 }
-                else if (parsedHomeworkId > 2147483647 || parsedHomeworkId < 0)
+                else if (parsedHomeworkId > 2147483647 || parsedHomeworkId < 1)
                 {
-                    exception.ValidationExceptions.Add(new Exception("Homework Id value should be between 0 & 2147483647 inclusive"));
+                    exception.ValidationExceptions.Add(new Exception("Homework Id value should be between 1 & 2147483647 inclusive"));
                 }
                 else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId))
                 {
@@ -211,9 +211,9 @@ namespace AZLearn.Controllers
                     {
                         exception.ValidationExceptions.Add(new Exception("Invalid value for Rubric Id"));
                     }
-                    else if (parsedRubricId > 2147483647 || parsedRubricId < 0)
+                    else if (parsedRubricId > 2147483647 || parsedRubricId < 1)
                     {
-                        exception.ValidationExceptions.Add(new Exception("Rubric Id value should be between 0 & 2147483647 inclusive"));
+                        exception.ValidationExceptions.Add(new Exception("Rubric Id value should be between 1 & 2147483647 inclusive"));
                     }
                     else if (!context.Rubrics.Any(key => key.RubricId == parsedRubricId))
                     {
