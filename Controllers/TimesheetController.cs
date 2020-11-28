@@ -54,7 +54,7 @@ namespace AZLearn.Controllers
             {
                 if (!int.TryParse(homeworkId, out parsedHomeworkId))
                     exception.ValidationExceptions.Add(new Exception("Invalid value for HomeworkId"));
-                else if (parsedHomeworkId > 2147483647 || parsedHomeworkId < 1)
+                if (parsedHomeworkId > 2147483647 || parsedHomeworkId < 1)
                 {
                     exception.ValidationExceptions.Add(new Exception("Homework Id value should be between 1 & 2147483647 inclusive"));
                 }
@@ -74,7 +74,7 @@ namespace AZLearn.Controllers
             {
                 if (!int.TryParse(studentId, out parsedStudentId))
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Student Id"));
-                else if (parsedStudentId > 2147483647 || parsedStudentId < 1)
+                if (parsedStudentId > 2147483647 || parsedStudentId < 1)
                 {
                     exception.ValidationExceptions.Add(new Exception("Student Id value should be between 1 & 2147483647 inclusive"));
                 }
@@ -170,7 +170,7 @@ namespace AZLearn.Controllers
             {
                 if (!int.TryParse(timesheetId, out parsedTimesheetId))
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Timesheet Id"));
-                else if (parsedTimesheetId > 2147483647 || parsedTimesheetId < 1)
+                if (parsedTimesheetId > 2147483647 || parsedTimesheetId < 1)
                 {
                     exception.ValidationExceptions.Add(new Exception("Timesheet Id value should be between 1 & 2147483647 inclusive"));
                 }
@@ -249,7 +249,7 @@ namespace AZLearn.Controllers
             {
                 if (!int.TryParse(homeworkId, out parsedHomeworkId))
                     exception.ValidationExceptions.Add(new Exception("Invalid value for HomeworkId"));
-                else if (parsedHomeworkId > 2147483647 || parsedHomeworkId < 1)
+                if (parsedHomeworkId > 2147483647 || parsedHomeworkId < 1)
                 {
                     exception.ValidationExceptions.Add(new Exception("HomeworkId Id value should be between 1 & 2147483647 inclusive"));
                 }
@@ -266,7 +266,7 @@ namespace AZLearn.Controllers
             {
                 if (!int.TryParse(studentId, out parsedStudentId))
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Student Id"));
-                else if (parsedStudentId > 2147483647 || parsedStudentId < 1)
+                if (parsedStudentId > 2147483647 || parsedStudentId < 1)
                 {
                     exception.ValidationExceptions.Add(new Exception("Student Id value should be between 1 & 2147483647 inclusive"));
                 }
@@ -322,6 +322,8 @@ namespace AZLearn.Controllers
             {
                 if (!int.TryParse(timesheetId, out parsedTimesheetId))
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Timesheet Id"));
+                if (parsedTimesheetId > 2147483647 || parsedTimesheetId < 1)
+                    exception.ValidationExceptions.Add(new Exception("Timesheet Id value should be between 1 & 2147483647 inclusive"));
                 else if (!context.Timesheets.Any(key => key.TimesheetId == parsedTimesheetId))
                     exception.ValidationExceptions.Add(new Exception("Timesheet Id does not exist"));
                 else if (!context.Timesheets.Any(key => key.TimesheetId == parsedTimesheetId && key.Archive == false))
@@ -339,6 +341,6 @@ namespace AZLearn.Controllers
             context.SaveChanges();
 
             #endregion
-        }
+        } // Extra for now
     }
 }
