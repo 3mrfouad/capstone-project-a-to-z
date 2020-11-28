@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using AZLearn.Data;
 using AZLearn.Models;
@@ -29,6 +30,7 @@ namespace AZLearn.Controllers
 
             courseId = (string.IsNullOrEmpty(courseId) || string.IsNullOrWhiteSpace(courseId)) ? null : courseId.Trim();
             cohortId = (string.IsNullOrEmpty(cohortId) || string.IsNullOrWhiteSpace(cohortId)) ? null : cohortId.Trim();
+
             using var context = new AppDbContext();
             if (string.IsNullOrWhiteSpace(cohortId))
             {
@@ -39,6 +41,10 @@ namespace AZLearn.Controllers
                 if (!int.TryParse(cohortId, out parsedCohortId))
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
+                }
+                else if (parsedCohortId > 2147483647 || parsedCohortId < 0)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id value should be between 0 & 2147483647 inclusive"));
                 }
                 else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
                 {
@@ -64,6 +70,10 @@ namespace AZLearn.Controllers
                 if (!int.TryParse(courseId, out parsedCourseId))
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Course Id"));
+                }
+                else if (parsedCourseId > 2147483647 || parsedCourseId < 0)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Course Id value should be between 0 & 2147483647 inclusive"));
                 }
                 else if (!context.Courses.Any(key => key.CourseId == parsedCourseId))
                 {
@@ -107,8 +117,8 @@ namespace AZLearn.Controllers
             int parsedCohortId = 0;
             bool parsedIsAssignment = false;
             float parsedAvgCompletionTime = 0;
-            DateTime parsedDuedate = new DateTime();
-            DateTime parsedReleasedate = new DateTime();
+            DateTime parsedDueDate = new DateTime();
+            DateTime parsedReleaseDate = new DateTime();
 
             #region Validation
             ValidationException exception = new ValidationException();
@@ -121,8 +131,8 @@ namespace AZLearn.Controllers
             avgCompletionTime = (string.IsNullOrEmpty(avgCompletionTime) || string.IsNullOrWhiteSpace(avgCompletionTime)) ? null : avgCompletionTime.Trim();
             dueDate = (string.IsNullOrEmpty(dueDate) || string.IsNullOrWhiteSpace(dueDate)) ? null : dueDate.Trim();
             releaseDate = (string.IsNullOrEmpty(releaseDate) || string.IsNullOrWhiteSpace(releaseDate)) ? null : releaseDate.Trim();
-            documentLink = (string.IsNullOrEmpty(documentLink) || string.IsNullOrWhiteSpace(documentLink)) ? null : documentLink.Trim();
-            gitHubClassRoomLink = (string.IsNullOrEmpty(gitHubClassRoomLink) || string.IsNullOrWhiteSpace(gitHubClassRoomLink)) ? null : gitHubClassRoomLink.Trim();
+            documentLink = (string.IsNullOrEmpty(documentLink) || string.IsNullOrWhiteSpace(documentLink)) ? null : documentLink.Trim().ToLower();
+            gitHubClassRoomLink = (string.IsNullOrEmpty(gitHubClassRoomLink) || string.IsNullOrWhiteSpace(gitHubClassRoomLink)) ? null : gitHubClassRoomLink.Trim().ToLower();
 
             using var context = new AppDbContext();
             if (string.IsNullOrWhiteSpace(courseId))
@@ -134,6 +144,10 @@ namespace AZLearn.Controllers
                 if (!int.TryParse(courseId, out parsedCourseId))
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Course Id"));
+                }
+                else if (parsedCourseId > 2147483647 || parsedCourseId < 0)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Course Id value should be between 0 & 2147483647 inclusive"));
                 }
                 else
                 {
@@ -183,6 +197,10 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
                 }
+                else if (parsedCohortId > 2147483647 || parsedCohortId < 0)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id value should be between 0 & 2147483647 inclusive"));
+                }
                 else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
                 {
                     exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
@@ -201,6 +219,10 @@ namespace AZLearn.Controllers
                 if (!int.TryParse(instructorId, out parsedInstructorId))
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Instructor Id"));
+                }
+                else if (parsedInstructorId > 2147483647 || parsedInstructorId < 0)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Instructor Id value should be between 0 & 2147483647 inclusive"));
                 }
                 else if (!context.Users.Any(key => key.UserId == parsedInstructorId && key.IsInstructor == true))
                 {
@@ -231,19 +253,19 @@ namespace AZLearn.Controllers
             }
             if (!string.IsNullOrWhiteSpace(releaseDate))
             {
-                if (!DateTime.TryParse(releaseDate, out parsedReleasedate))
+                if (!DateTime.TryParse(releaseDate, out parsedReleaseDate))
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for release date"));
                 }
             }
             if (!string.IsNullOrWhiteSpace(dueDate))
             {
-                if (!DateTime.TryParse(dueDate, out parsedDuedate))
+                if (!DateTime.TryParse(dueDate, out parsedDueDate))
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for due date"));
                 }
                 else if (!string.IsNullOrWhiteSpace(releaseDate) &&
-                         DateTime.TryParse(releaseDate, out parsedReleasedate) && parsedReleasedate > parsedDuedate)
+                         DateTime.TryParse(releaseDate, out parsedReleaseDate) && parsedReleaseDate > parsedDueDate)
                 {
                     exception.ValidationExceptions.Add(new Exception("Homework can not be due before it is released."));
                 }
@@ -298,20 +320,71 @@ namespace AZLearn.Controllers
 
             #endregion
 
-            var newHomework = new Homework
+            if (dueDate != null && releaseDate != null)
             {
-                CourseId = parsedCourseId,
-                InstructorId = parsedInstructorId,
-                CohortId = parsedCohortId,
-                IsAssignment = parsedIsAssignment,
-                Title = title,
-                AvgCompletionTime = parsedAvgCompletionTime,
-                DueDate = parsedDuedate,
-                ReleaseDate = parsedReleasedate,
-                DocumentLink = documentLink,
-                GitHubClassRoomLink = gitHubClassRoomLink
-            };
-            context.Homeworks.Add(newHomework);
+                var newHomework = new Homework
+                {
+                    CourseId = parsedCourseId,
+                    InstructorId = parsedInstructorId,
+                    CohortId = parsedCohortId,
+                    IsAssignment = parsedIsAssignment,
+                    Title = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(title),
+                    AvgCompletionTime = parsedAvgCompletionTime,
+                    DueDate = parsedDueDate,
+                    ReleaseDate = parsedReleaseDate,
+                    DocumentLink = documentLink,
+                    GitHubClassRoomLink = gitHubClassRoomLink
+                };
+                context.Homeworks.Add(newHomework);
+            }
+            else if (dueDate == null && releaseDate == null)
+            {
+                var newHomework = new Homework
+                {
+                    CourseId = parsedCourseId,
+                    InstructorId = parsedInstructorId,
+                    CohortId = parsedCohortId,
+                    IsAssignment = parsedIsAssignment,
+                    Title = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(title),
+                    AvgCompletionTime = parsedAvgCompletionTime,
+                    DocumentLink = documentLink,
+                    GitHubClassRoomLink = gitHubClassRoomLink
+                };
+                context.Homeworks.Add(newHomework);
+            }
+            else if (dueDate == null)
+            {
+                var newHomework = new Homework
+                {
+                    CourseId = parsedCourseId,
+                    InstructorId = parsedInstructorId,
+                    CohortId = parsedCohortId,
+                    IsAssignment = parsedIsAssignment,
+                    Title = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(title),
+                    AvgCompletionTime = parsedAvgCompletionTime,
+                    ReleaseDate = parsedReleaseDate,
+                    DocumentLink = documentLink,
+                    GitHubClassRoomLink = gitHubClassRoomLink
+                };
+                context.Homeworks.Add(newHomework);
+            }
+            else if (releaseDate == null)
+            {
+                var newHomework = new Homework
+                {
+                    CourseId = parsedCourseId,
+                    InstructorId = parsedInstructorId,
+                    CohortId = parsedCohortId,
+                    IsAssignment = parsedIsAssignment,
+                    Title = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(title),
+                    AvgCompletionTime = parsedAvgCompletionTime,
+                    DueDate = parsedDueDate,
+                    DocumentLink = documentLink,
+                    GitHubClassRoomLink = gitHubClassRoomLink
+                };
+                context.Homeworks.Add(newHomework);
+            }
+
             context.SaveChanges();
         }
 
@@ -339,8 +412,8 @@ namespace AZLearn.Controllers
             int parsedCohortId = 0;
             bool parsedIsAssignment = false;
             float parsedAvgCompletionTime = 0;
-            DateTime parsedDuedate = new DateTime();
-            DateTime parsedReleasedate = new DateTime();
+            DateTime parsedDueDate = new DateTime();
+            DateTime parsedReleaseDate = new DateTime();
 
             #region Validation
 
@@ -353,8 +426,8 @@ namespace AZLearn.Controllers
             avgCompletionTime = (string.IsNullOrEmpty(avgCompletionTime) || string.IsNullOrWhiteSpace(avgCompletionTime)) ? null : avgCompletionTime.Trim();
             dueDate = (string.IsNullOrEmpty(dueDate) || string.IsNullOrWhiteSpace(dueDate)) ? null : dueDate.Trim();
             releaseDate = (string.IsNullOrEmpty(releaseDate) || string.IsNullOrWhiteSpace(releaseDate)) ? null : releaseDate.Trim();
-            documentLink = (string.IsNullOrEmpty(documentLink) || string.IsNullOrWhiteSpace(documentLink)) ? null : documentLink.Trim();
-            gitHubClassRoomLink = (string.IsNullOrEmpty(gitHubClassRoomLink) || string.IsNullOrWhiteSpace(gitHubClassRoomLink)) ? null : gitHubClassRoomLink.Trim();
+            documentLink = (string.IsNullOrEmpty(documentLink) || string.IsNullOrWhiteSpace(documentLink)) ? null : documentLink.Trim().ToLower();
+            gitHubClassRoomLink = (string.IsNullOrEmpty(gitHubClassRoomLink) || string.IsNullOrWhiteSpace(gitHubClassRoomLink)) ? null : gitHubClassRoomLink.Trim().ToLower();
 
             ValidationException exception = new ValidationException();
             using var context = new AppDbContext();
@@ -368,6 +441,10 @@ namespace AZLearn.Controllers
                 if (!int.TryParse(homeworkId, out parsedHomeworkId))
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Homework Id"));
+                }
+                else if (parsedHomeworkId > 2147483647 || parsedHomeworkId < 0)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Homework Id value should be between 0 & 2147483647 inclusive"));
                 }
                 else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId))
                 {
@@ -388,7 +465,10 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Course Id"));
                 }
-                
+                else if (parsedCourseId > 2147483647 || parsedCourseId < 0)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Course Id value should be between 0 & 2147483647 inclusive"));
+                }
                 else
                 {
                     if (!context.Courses.Any(key => key.CourseId == parsedCourseId))
@@ -428,6 +508,10 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
                 }
+                else if (parsedCohortId > 2147483647 || parsedCohortId < 0)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id value should be between 0 & 2147483647 inclusive"));
+                }
                 else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
                 {
                     exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
@@ -446,6 +530,10 @@ namespace AZLearn.Controllers
                 if (!int.TryParse(instructorId, out parsedInstructorId))
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Instructor Id"));
+                }
+                else if (parsedInstructorId > 2147483647 || parsedInstructorId < 0)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Instructor Id value should be between 0 & 2147483647 inclusive"));
                 }
                 else if (!context.Users.Any(key => key.UserId == parsedInstructorId && key.IsInstructor == true))
                 {
@@ -478,19 +566,19 @@ namespace AZLearn.Controllers
             }
             if (!string.IsNullOrWhiteSpace(releaseDate))
             {
-                if (!DateTime.TryParse(releaseDate, out parsedReleasedate))
+                if (!DateTime.TryParse(releaseDate, out parsedReleaseDate))
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for release date"));
                 }
             }
             if (!string.IsNullOrWhiteSpace(dueDate))
             {
-                if (!DateTime.TryParse(dueDate, out parsedDuedate))
+                if (!DateTime.TryParse(dueDate, out parsedDueDate))
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for due date"));
                 }
                 else if (!string.IsNullOrWhiteSpace(releaseDate) &&
-                         DateTime.TryParse(releaseDate, out parsedReleasedate) && parsedReleasedate > parsedDuedate)
+                         DateTime.TryParse(releaseDate, out parsedReleaseDate) && parsedReleaseDate > parsedDueDate)
                 {
                     exception.ValidationExceptions.Add(new Exception("Homework can not be due before it is released."));
                 }
@@ -546,17 +634,55 @@ namespace AZLearn.Controllers
             #endregion
 
             var homework = context.Homeworks.SingleOrDefault(key => key.HomeworkId == parsedHomeworkId);
-            homework.CourseId = parsedCourseId;
-            homework.InstructorId = parsedInstructorId;
-            homework.CohortId = parsedCohortId;
-            homework.IsAssignment = parsedIsAssignment;
-            homework.Title = title;
-            homework.AvgCompletionTime = parsedAvgCompletionTime;
-            homework.DueDate = parsedDuedate;
-            homework.ReleaseDate = parsedReleasedate;
-            homework.DocumentLink = documentLink;
-            homework.GitHubClassRoomLink = gitHubClassRoomLink;
-
+            if (dueDate != null && releaseDate != null)
+            {
+                homework.CourseId = parsedCourseId;
+                homework.InstructorId = parsedInstructorId;
+                homework.CohortId = parsedCohortId;
+                homework.IsAssignment = parsedIsAssignment;
+                homework.Title = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(title);
+                homework.AvgCompletionTime = parsedAvgCompletionTime;
+                homework.DueDate = parsedDueDate;
+                homework.ReleaseDate = parsedReleaseDate;
+                homework.DocumentLink = documentLink;
+                homework.GitHubClassRoomLink = gitHubClassRoomLink;
+            }
+            else if (dueDate == null && releaseDate == null)
+            {
+                homework.CourseId = parsedCourseId;
+                homework.InstructorId = parsedInstructorId;
+                homework.CohortId = parsedCohortId;
+                homework.IsAssignment = parsedIsAssignment;
+                homework.Title = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(title);
+                homework.AvgCompletionTime = parsedAvgCompletionTime;
+                homework.DocumentLink = documentLink;
+                homework.GitHubClassRoomLink = gitHubClassRoomLink;
+            }
+            else if (dueDate == null)
+            {
+                homework.CourseId = parsedCourseId;
+                homework.InstructorId = parsedInstructorId;
+                homework.CohortId = parsedCohortId;
+                homework.IsAssignment = parsedIsAssignment;
+                homework.Title = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(title);
+                homework.AvgCompletionTime = parsedAvgCompletionTime;
+                homework.ReleaseDate = parsedReleaseDate;
+                homework.DocumentLink = documentLink;
+                homework.GitHubClassRoomLink = gitHubClassRoomLink;
+            }
+            else if (releaseDate == null)
+            {
+                homework.CourseId = parsedCourseId;
+                homework.InstructorId = parsedInstructorId;
+                homework.CohortId = parsedCohortId;
+                homework.IsAssignment = parsedIsAssignment;
+                homework.Title = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(title);
+                homework.AvgCompletionTime = parsedAvgCompletionTime;
+                homework.DueDate = parsedDueDate;
+                homework.DocumentLink = documentLink;
+                homework.GitHubClassRoomLink = gitHubClassRoomLink;
+            }
+            
             context.SaveChanges();
         }
 
@@ -587,6 +713,10 @@ namespace AZLearn.Controllers
                 if (!int.TryParse(homeworkId, out parsedHomeworkId))
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Homework Id"));
+                }
+                else if (parsedHomeworkId > 2147483647 || parsedHomeworkId < 0)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Homework Id value should be between 0 & 2147483647 inclusive"));
                 }
                 else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId))
                 {

@@ -188,7 +188,7 @@ namespace AZLearn.Controllers
                     InstructorId = parsedInstructorId,
                     StartDate = parsedStartDate,
                     EndDate = parsedEndDate,
-                    ResourcesLink = resourcesLink
+                    ResourcesLink = resourcesLink.ToLower()
                 };
                 context.CohortCourses.Add(AddCourseByCohortId);
             }
@@ -363,7 +363,7 @@ namespace AZLearn.Controllers
                 course.InstructorId = parsedInstructorId;
                 course.StartDate = parsedStartDate;
                 course.EndDate = parsedEndDate;
-                course.ResourcesLink = resourcesLink;
+                course.ResourcesLink = resourcesLink.ToLower();
             }
             context.SaveChanges();
         }

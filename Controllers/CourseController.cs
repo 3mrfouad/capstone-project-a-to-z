@@ -79,6 +79,7 @@ namespace AZLearn.Controllers
 
             #endregion
 
+            description = description.ToLower();
             var newCourse = new Course
             {
                 /*  Create a Course*/
@@ -195,6 +196,7 @@ namespace AZLearn.Controllers
 
             #endregion
 
+            description = description.ToLower();
             var course = context.Courses.SingleOrDefault(key => key.CourseId == parsedCourseId);
             course.Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(name);
             course.Description = char.ToUpper(description[0]) + description.Substring(1);
