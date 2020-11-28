@@ -286,8 +286,6 @@ namespace AZLearn.Controllers
         public static void ArchiveCohortById(string cohortId)
         {
 
-
-     
             var exception = new ValidationException();
             using var context = new AppDbContext();
             var parsedCohortId = 0;
@@ -304,14 +302,16 @@ namespace AZLearn.Controllers
             {
                 if (!int.TryParse(cohortId, out parsedCohortId))
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
-                /*If the Cohort is Archived you cannot update the course*/
                 else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
                     exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
-                else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId && key.Archive == false))
+                else if (context.Cohorts.Any(key => key.CohortId == parsedCohortId && key.Archive == true))
                     exception.ValidationExceptions.Add(new Exception("Cohort Id is already archived"));
             }
 
             #endregion
+
+            if (exception.ValidationExceptions.Count > 0) throw exception;
+            
 
             var assignedCourses = context.CohortCourses.Where(key => key.CohortId == parsedCohortId).ToList();
                 foreach (var course in assignedCourses)
