@@ -930,7 +930,7 @@ namespace AZLearn.Controllers
             {
                 CohortController.ArchiveCohortById(cohortId);
 
-                result = StatusCode(200, $"Successfully Archived Cohort Id: {cohortId}");
+                result = StatusCode(200, $"Successfully Archived Cohort Id: {cohortId.Trim()}");
             }
             catch (ValidationException e)
             {
@@ -961,7 +961,7 @@ namespace AZLearn.Controllers
             {
                 CourseController.ArchiveCourseById(courseId);
 
-                result = StatusCode(200, $"Successfully Archived Course Id: {courseId}");
+                result = StatusCode(200, $"Successfully Archived Course Id: {courseId.Trim()}");
             }
             catch (ValidationException e)
             {
@@ -993,7 +993,7 @@ namespace AZLearn.Controllers
             {
                 CohortCourseController.ArchiveAssignedCourse(cohortId, courseId);
 
-                result = StatusCode(200, $"Successfully Archived course assignment. Course Id: {courseId} | Cohort Id: {cohortId}");
+                result = StatusCode(200, $"Successfully Archived course assignment. Course Id: {courseId.Trim()} | Cohort Id: {cohortId.Trim()}");
             }
             catch (ValidationException e)
             {
@@ -1025,7 +1025,7 @@ namespace AZLearn.Controllers
             {
                 HomeworkController.ArchiveHomeworkById(homeworkId);
 
-                result = StatusCode(200, $"Successfully Archived Homework Id: {homeworkId}");
+                result = StatusCode(200, $"Successfully Archived Homework Id: {homeworkId.Trim()}");
             }
             catch (ValidationException e)
             {
