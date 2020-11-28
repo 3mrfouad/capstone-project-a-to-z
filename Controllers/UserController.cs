@@ -37,7 +37,7 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
                 }
-                else if (parsedCohortId > 2147483647 || parsedCohortId < 1)
+                if (parsedCohortId > 2147483647 || parsedCohortId < 1)
                 {
                     exception.ValidationExceptions.Add(new Exception("Cohort Id value should be between 1 & 2147483647 inclusive"));
                 }
@@ -85,7 +85,7 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for User Id"));
                 }
-                else if (parsedUserId > 2147483647 || parsedUserId < 1)
+                if (parsedUserId > 2147483647 || parsedUserId < 1)
                 {
                     exception.ValidationExceptions.Add(new Exception("User Id value should be between 1 & 2147483647 inclusive"));
                 }
