@@ -178,7 +178,7 @@ namespace AZLearn.Controllers
                             {
                                 if (context.Homeworks.Any(key =>
                                     key.CohortId == parsedCohortId && key.CourseId == parsedCourseId &&
-                                    key.Title.ToLower() == title.ToLower()))
+                                    String.Equals(key.Title, title, StringComparison.CurrentCultureIgnoreCase)))
                                 {
                                     exception.ValidationExceptions.Add(new Exception("Homework with same name already exists under this course for this cohort."));
                                 }
