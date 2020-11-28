@@ -838,10 +838,10 @@ namespace AZLearn.Controllers
 
         #region RubricController
 
-        #region /application/CreateRubric
+        #region /application/CreateRubrics
 
-        [HttpPost(nameof(CreateRubric))]
-        public ActionResult CreateRubric(string homeworkId, List<Tuple<string, string, string>> rubrics)
+        [HttpPost(nameof(CreateRubrics))]
+        public ActionResult CreateRubrics(string homeworkId, List<Tuple<string, string, string>> rubrics)
         {
             ActionResult result;
             try
@@ -867,10 +867,10 @@ namespace AZLearn.Controllers
 
         #endregion
 
-        #region /application/UpdateRubric
+        #region /application/UpdateRubrics
 
-        [HttpPatch(nameof(UpdateRubric))]
-        public ActionResult UpdateRubric(Dictionary<string, Tuple<string, string, string>> rubrics)
+        [HttpPatch(nameof(UpdateRubrics))]
+        public ActionResult UpdateRubrics(Dictionary<string, Tuple<string, string, string>> rubrics)
         {
             ActionResult result;
             try

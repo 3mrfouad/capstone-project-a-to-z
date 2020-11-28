@@ -54,7 +54,10 @@ namespace AZLearn.Controllers
             {
                 if (!int.TryParse(homeworkId, out parsedHomeworkId))
                     exception.ValidationExceptions.Add(new Exception("Invalid value for HomeworkId"));
-
+                else if (parsedHomeworkId > 2147483647 || parsedHomeworkId < 0)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Homework Id value should be between 0 & 2147483647 inclusive"));
+                }
                 else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId))
                     exception.ValidationExceptions.Add(new Exception("Homework Id does not exist"));
                 /*Look for homework Id that is not archived*/
@@ -69,12 +72,16 @@ namespace AZLearn.Controllers
             }
             else
             {
-                //**********************************************
                 if (!int.TryParse(studentId, out parsedStudentId))
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Student Id"));
+                else if (parsedStudentId > 2147483647 || parsedStudentId < 0)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Student Id value should be between 0 & 2147483647 inclusive"));
+                }
                 else if (!context.Users.Any(key => key.UserId == parsedStudentId && key.IsInstructor == false))
-                    exception.ValidationExceptions.Add(new Exception("StudentId does not exist"));
-               //***************************************************
+                    exception.ValidationExceptions.Add(new Exception("Student Id does not exist"));
+                else if (!context.Users.Any(key => key.UserId == parsedStudentId && key.IsInstructor == false && key.Archive == false))
+                    exception.ValidationExceptions.Add(new Exception("Selected Student Id is Archived"));
             }
             /*To check whether Timesheet for  given Homework id and student id already exists */
 
@@ -163,6 +170,10 @@ namespace AZLearn.Controllers
             {
                 if (!int.TryParse(timesheetId, out parsedTimesheetId))
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Timesheet Id"));
+                else if (parsedTimesheetId > 2147483647 || parsedTimesheetId < 0)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Timesheet Id value should be between 0 & 2147483647 inclusive"));
+                }
                 /*If the Homework is Archived you cannot update the Timesheet*/
                 else if (!context.Timesheets.Any(key => key.TimesheetId == parsedTimesheetId ))
                     exception.ValidationExceptions.Add(new Exception("Timesheet Id does not exist")); 
@@ -238,7 +249,10 @@ namespace AZLearn.Controllers
             {
                 if ( !int.TryParse(homeworkId,out parsedHomeworkId) )
                     exception.ValidationExceptions.Add(new Exception("Invalid value for HomeworkId"));
-
+                else if (parsedHomeworkId > 2147483647 || parsedHomeworkId < 0)
+                {
+                    exception.ValidationExceptions.Add(new Exception("HomeworkId Id value should be between 0 & 2147483647 inclusive"));
+                }
                 else if ( !context.Homeworks.Any(key => key.HomeworkId==parsedHomeworkId) )
                     exception.ValidationExceptions.Add(new Exception("Homework Id does not exist"));
             }
@@ -252,8 +266,13 @@ namespace AZLearn.Controllers
             {
                 if ( !int.TryParse(studentId,out parsedStudentId) )
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Student Id"));
+                else if (parsedStudentId > 2147483647 || parsedStudentId < 0)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Student Id value should be between 0 & 2147483647 inclusive"));
+                }
+
                 else if ( !context.Users.Any(key => key.UserId==parsedStudentId&&key.IsInstructor==false) )
-                    exception.ValidationExceptions.Add(new Exception("StudentId does not exist"));
+                    exception.ValidationExceptions.Add(new Exception("Student Id does not exist"));
             }
             
             if ( exception.ValidationExceptions.Count>0 ) throw exception;
@@ -265,7 +284,7 @@ namespace AZLearn.Controllers
             if ( context.Timesheets.Any(key => key.StudentId == parsedStudentId && key.HomeworkId == parsedHomeworkId))
             {
                 timesheet = context.Timesheets.SingleOrDefault(key =>
-                    key.HomeworkId==parsedHomeworkId&&key.StudentId==parsedStudentId);
+                    key.HomeworkId==parsedHomeworkId && key.StudentId==parsedStudentId);
             }
             else
             {

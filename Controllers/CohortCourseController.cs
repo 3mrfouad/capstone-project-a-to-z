@@ -34,7 +34,7 @@ namespace AZLearn.Controllers
             instructorId = (string.IsNullOrEmpty(instructorId) || string.IsNullOrWhiteSpace(instructorId)) ? null : instructorId.Trim();
             startDate = (string.IsNullOrEmpty(startDate) || string.IsNullOrWhiteSpace(startDate)) ? null : startDate.Trim();
             endDate = (string.IsNullOrEmpty(endDate) || string.IsNullOrWhiteSpace(endDate)) ? null : endDate.Trim();
-            resourcesLink = (string.IsNullOrEmpty(resourcesLink) || string.IsNullOrWhiteSpace(resourcesLink)) ? null : resourcesLink.Trim();
+            resourcesLink = (string.IsNullOrEmpty(resourcesLink) || string.IsNullOrWhiteSpace(resourcesLink)) ? null : resourcesLink.Trim().ToLower();
 
             using var context = new AppDbContext();
 
@@ -56,7 +56,7 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
                 }
-                else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId && key.Archive == false))
+                else if (context.Cohorts.Any(key => key.CohortId == parsedCohortId && key.Archive == true))
                 {
                     exception.ValidationExceptions.Add(new Exception("Cohort is archived"));
                 }
@@ -71,7 +71,7 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Course Id"));
                 }
-                else if (parsedCourseId > 2147483647 || parsedCourseId < 0)
+                else if (parsedCourseId > 2147483647 || parsedCourseId < 1)
                 {
                     exception.ValidationExceptions.Add(new Exception("Course Id value should be between 0 & 2147483647 inclusive"));
                 }
@@ -81,7 +81,7 @@ namespace AZLearn.Controllers
                     {
                         exception.ValidationExceptions.Add(new Exception("Course Id does not exist"));
                     }
-                    else if (!context.Courses.Any(key => key.CourseId == parsedCourseId && key.Archive == false))
+                    else if (context.Courses.Any(key => key.CourseId == parsedCourseId && key.Archive == true))
                     {
                         exception.ValidationExceptions.Add(new Exception("Course is archived"));
                     }
@@ -167,33 +167,18 @@ namespace AZLearn.Controllers
 
             #endregion
 
-            if (resourcesLink == null)
+            var AddCourseByCohortId = new CohortCourse
             {
-                var AddCourseByCohortId = new CohortCourse
-                {
-                    CohortId = parsedCohortId,
-                    CourseId = parsedCourseId,
-                    InstructorId = parsedInstructorId,
-                    StartDate = parsedStartDate,
-                    EndDate = parsedEndDate
-                };
-                context.CohortCourses.Add(AddCourseByCohortId);
-            }
-            else if (resourcesLink != null)
-            {
-                var AddCourseByCohortId = new CohortCourse
-                {
-                    CohortId = parsedCohortId,
-                    CourseId = parsedCourseId,
-                    InstructorId = parsedInstructorId,
-                    StartDate = parsedStartDate,
-                    EndDate = parsedEndDate,
-                    ResourcesLink = resourcesLink.ToLower()
-                };
-                context.CohortCourses.Add(AddCourseByCohortId);
-            }
+                CohortId = parsedCohortId,
+                CourseId = parsedCourseId,
+                InstructorId = parsedInstructorId,
+                StartDate = parsedStartDate,
+                EndDate = parsedEndDate,
+                ResourcesLink = resourcesLink
+            };
+            context.CohortCourses.Add(AddCourseByCohortId);
 
-            context.SaveChanges();
+                context.SaveChanges();
         }
 
         /// <summary>
@@ -222,7 +207,7 @@ namespace AZLearn.Controllers
             instructorId = (string.IsNullOrEmpty(instructorId) || string.IsNullOrWhiteSpace(instructorId)) ? null : instructorId.Trim();
             startDate = (string.IsNullOrEmpty(startDate) || string.IsNullOrWhiteSpace(startDate)) ? null : startDate.Trim();
             endDate = (string.IsNullOrEmpty(endDate) || string.IsNullOrWhiteSpace(endDate)) ? null : endDate.Trim();
-            resourcesLink = (string.IsNullOrEmpty(resourcesLink) || string.IsNullOrWhiteSpace(resourcesLink)) ? null : resourcesLink.Trim();
+            resourcesLink = (string.IsNullOrEmpty(resourcesLink) || string.IsNullOrWhiteSpace(resourcesLink)) ? null : resourcesLink.Trim().ToLower();
 
             using var context = new AppDbContext();
 
@@ -270,6 +255,14 @@ namespace AZLearn.Controllers
                 else if (!context.Courses.Any(key => key.CourseId == parsedCourseId && key.Archive == false))
                 {
                     exception.ValidationExceptions.Add(new Exception("Course is archived"));
+                }
+                else
+                {
+                    if ((!string.IsNullOrWhiteSpace(cohortId)) && int.TryParse(cohortId, out parsedCohortId) && (!context.CohortCourses.Any(key =>
+                        key.CohortId == parsedCohortId && key.CourseId == parsedCourseId)))
+                    {
+                        exception.ValidationExceptions.Add(new Exception("No Combination of Cohort and Course found"));
+                    }
                 }
             }
             if (string.IsNullOrWhiteSpace(instructorId))
@@ -348,23 +341,13 @@ namespace AZLearn.Controllers
             #endregion
 
             var course = context.CohortCourses.Find(parsedCohortId, parsedCourseId);
-            if (resourcesLink == null)
-            {
-                course.CohortId = parsedCohortId;
-                course.CourseId = parsedCourseId;
-                course.InstructorId = parsedInstructorId;
-                course.StartDate = parsedStartDate;
-                course.EndDate = parsedEndDate;
-            }
-            else if (resourcesLink != null)
-            {
-                course.CohortId = parsedCohortId;
-                course.CourseId = parsedCourseId;
-                course.InstructorId = parsedInstructorId;
-                course.StartDate = parsedStartDate;
-                course.EndDate = parsedEndDate;
-                course.ResourcesLink = resourcesLink.ToLower();
-            }
+            course.CohortId = parsedCohortId;
+            course.CourseId = parsedCourseId;
+            course.InstructorId = parsedInstructorId;
+            course.StartDate = parsedStartDate;
+            course.EndDate = parsedEndDate;
+            course.ResourcesLink = resourcesLink;
+            
             context.SaveChanges();
         }
     }
