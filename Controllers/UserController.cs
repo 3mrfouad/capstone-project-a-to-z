@@ -38,6 +38,10 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
                 }
+                else if (parsedCohortId > 2147483647 || parsedCohortId < 1)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id value should be between 1 & 2147483647 inclusive"));
+                }
                 else if ( !context.Cohorts.Any(key => key.CohortId==parsedCohortId) )
                 {
                     exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
@@ -80,12 +84,22 @@ namespace AZLearn.Controllers
             {
                 if ( !int.TryParse(userId, out parsedUserId) )
                 {
-                    exception.ValidationExceptions.Add(new Exception("Invalid value for Homework Id"));
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for User Id"));
+                }
+                else if (parsedUserId > 2147483647 || parsedUserId < 1)
+                {
+                    exception.ValidationExceptions.Add(new Exception("User Id value should be between 1 & 2147483647 inclusive"));
                 }
                 else if ( !context.Users.Any(key => key.UserId==parsedUserId) )
                 {
                     exception.ValidationExceptions.Add(new Exception("User Id does not exist"));
                 }
+                //*****************This validation to be decided after Login**********************************************
+                else if ( !context.Users.Any(key => key.UserId==parsedUserId && key.Archive==false) )
+                {
+                    exception.ValidationExceptions.Add(new Exception("Selected User Id is Archived"));
+                }
+                //*****************************************************
             }
             if ( exception.ValidationExceptions.Count>0 )
             {

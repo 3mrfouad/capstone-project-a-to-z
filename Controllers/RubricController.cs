@@ -36,6 +36,10 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Homework Id"));
                 }
+                else if (parsedHomeworkId > 2147483647 || parsedHomeworkId < 1)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Homework Id value should be between 1 & 2147483647 inclusive"));
+                }
                 else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId))
                 {
                     exception.ValidationExceptions.Add(new Exception("Homework Id does not exist"));
@@ -77,6 +81,10 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Homework Id"));
                 }
+                else if (parsedHomeworkId > 2147483647 || parsedHomeworkId < 1)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Homework Id value should be between 1 & 2147483647 inclusive"));
+                }
                 else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId))
                 {
                     exception.ValidationExceptions.Add(new Exception("Homework Id does not exist"));
@@ -89,14 +97,24 @@ namespace AZLearn.Controllers
 
             #endregion
 
-            foreach (var (isChallenge, criteria, weight) in rubrics)
+            foreach ( var (tempIsChallenge, tempCriteria, tempWeight) in rubrics )
             {
+                var isChallenge = string.IsNullOrEmpty(tempIsChallenge) || string.IsNullOrWhiteSpace(tempIsChallenge)
+                    ? null
+                    : tempIsChallenge.Trim();
+                var criteria = string.IsNullOrEmpty(tempCriteria) || string.IsNullOrWhiteSpace(tempCriteria)
+                    ? null
+                    : tempCriteria.Trim().ToLower();
+                var weight = string.IsNullOrEmpty(tempWeight) || string.IsNullOrWhiteSpace(tempWeight)
+                    ? null
+                    : tempWeight.Trim();
 
                 bool parsedIsChallenge = false;
                 int parsedWeight = 0;
 
                 #region Validation for Rubrics
 
+               
                 if (!string.IsNullOrWhiteSpace(isChallenge))
                 {
                     if (!bool.TryParse(isChallenge.Trim(), out parsedIsChallenge))
@@ -110,6 +128,10 @@ namespace AZLearn.Controllers
                 }
                 else
                 {
+                    if (criteria.Length > 250)
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Criteria should be max 250 characters long."));
+                    }
                     if ((!string.IsNullOrWhiteSpace(homeworkId)) && int.TryParse(homeworkId, out parsedHomeworkId))
                     {
                         if (context.Rubrics.Any(key => key.Criteria.ToLower() == criteria.Trim().ToLower() && key.HomeworkId == parsedHomeworkId && key.Archive == false))
@@ -140,10 +162,10 @@ namespace AZLearn.Controllers
                 #endregion
                 context.Rubrics.Add(new Rubric
                 {
-                    HomeworkId = parsedHomeworkId,
-                    IsChallenge = parsedIsChallenge,
-                    Criteria = criteria.Trim(),
-                    Weight = parsedWeight
+                    HomeworkId=parsedHomeworkId,
+                    IsChallenge=parsedIsChallenge,
+                    Criteria= char.ToUpper(criteria[0]) + criteria.Substring(1),
+                    Weight=parsedWeight
                 });
             }
 
@@ -156,8 +178,20 @@ namespace AZLearn.Controllers
         public static void UpdateRubricsById(Dictionary<string, Tuple<string, string, string>> rubrics)
         {
             using var context = new AppDbContext();
-            foreach (var (rubricId, (isChallenge, criteria, weight)) in rubrics)
+            foreach ( var (tempRubricId, (tempIsChallenge, tempCriteria, tempWeight)) in rubrics )
             {
+                var rubricId = string.IsNullOrEmpty(tempRubricId) || string.IsNullOrWhiteSpace(tempRubricId)
+                    ? null
+                    : tempRubricId.Trim();
+                var isChallenge = string.IsNullOrEmpty(tempIsChallenge) || string.IsNullOrWhiteSpace(tempIsChallenge)
+                    ? null
+                    : tempIsChallenge.Trim().ToLower();
+                var criteria = string.IsNullOrEmpty(tempCriteria) || string.IsNullOrWhiteSpace(tempCriteria)
+                    ? null
+                    : tempCriteria.Trim().ToLower();
+                var weight = string.IsNullOrEmpty(tempWeight) || string.IsNullOrWhiteSpace(tempWeight)
+                    ? null
+                    : tempWeight.Trim();
 
                 int parsedRubricId = 0;
                 bool parsedIsChallenge = false;
@@ -177,9 +211,17 @@ namespace AZLearn.Controllers
                     {
                         exception.ValidationExceptions.Add(new Exception("Invalid value for Rubric Id"));
                     }
+                    else if (parsedRubricId > 2147483647 || parsedRubricId < 1)
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Rubric Id value should be between 1 & 2147483647 inclusive"));
+                    }
                     else if (!context.Rubrics.Any(key => key.RubricId == parsedRubricId))
                     {
                         exception.ValidationExceptions.Add(new Exception("Rubric Id does not exist"));
+                    }
+                    else if (!context.Rubrics.Any(key => key.RubricId == parsedRubricId && key.Archive == false))
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Rubric is archived."));
                     }
                 }
                 if (!string.IsNullOrWhiteSpace(isChallenge))
@@ -195,6 +237,10 @@ namespace AZLearn.Controllers
                 }
                 else
                 {
+                    if (criteria.Length > 250)
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Criteria should be max 250 characters long."));
+                    }
                     if ((!string.IsNullOrWhiteSpace(rubricId)) && int.TryParse(rubricId.Trim(), out parsedRubricId))
                     {
                         int matchingHomeworkId = context.Rubrics.SingleOrDefault(key => key.RubricId == parsedRubricId)
@@ -237,14 +283,14 @@ namespace AZLearn.Controllers
                 #endregion
 
                 var rubric = context.Rubrics.Find(parsedRubricId);
-                rubric.IsChallenge = parsedIsChallenge;
-                rubric.Criteria = criteria.Trim();
-                rubric.Weight = parsedWeight;
-            }
+
+                rubric.IsChallenge=parsedIsChallenge;
+                rubric.Criteria = char.ToUpper(criteria[0]) + criteria.Substring(1);
+                rubric.Weight=parsedWeight;
+                }
 
             context.SaveChanges();
-        }
-
+            }
         public static void ArchiveRubricsById(List<string> rubrics)
         {
             var exception = new ValidationException();
@@ -289,7 +335,7 @@ namespace AZLearn.Controllers
                 rubric.Archive = true;
             }
 
-            context.SaveChanges();
+            
         }
     }
 }

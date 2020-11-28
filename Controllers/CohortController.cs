@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using AZLearn.Data;
 using AZLearn.Models;
@@ -51,11 +52,13 @@ namespace AZLearn.Controllers
             else
             {
                 /*To check if Cohort Name already Exists , and If the Cohort is not Archived  */
-                if ( context.Cohorts.Any(key => key.Name.ToLower()==name.ToLower()) )
+                if ( context.Cohorts.Any(key => key.Name.ToLower()==name.ToLower()))
+                {
                     exception.ValidationExceptions.Add(
                         new Exception("Cohort with same name already exists."));
+                }
 
-                if ( !context.Cohorts.Any(key => key.Name.ToLower()==name.ToLower() && key.Archive==false))
+                if ( context.Cohorts.Any(key => key.Name.ToLower()==name.ToLower() && key.Archive==true))
                     exception.ValidationExceptions.Add(
                         new Exception("Selected Cohort is Archived."));
             }
@@ -118,20 +121,31 @@ namespace AZLearn.Controllers
 
             #endregion
 
-            #region DB Action Validation
-
-            context.Add(new Cohort
+            if (capacity == null)
             {
-                Name = name,
-                Capacity = parsedCapacity,
-                City = city,
-                ModeOfTeaching = modeOfTeaching,
-                StartDate = parsedStartDate,
-                EndDate = parsedEndDate
-            });
-            context.SaveChanges();
+                context.Add(new Cohort
+                {
+                    Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(name),
+                    City = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(city),
+                    ModeOfTeaching = modeOfTeaching,
+                    StartDate = parsedStartDate,
+                    EndDate = parsedEndDate
+                });
+            }
+            else if (capacity != null)
+            {
+                context.Add(new Cohort
+                {
+                    Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(name),
+                    Capacity = parsedCapacity,
+                    City = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(city),
+                    ModeOfTeaching = modeOfTeaching,
+                    StartDate = parsedStartDate,
+                    EndDate = parsedEndDate
+                });
+            }
 
-            #endregion
+            context.SaveChanges();
         }
 
         /// <summary>
@@ -176,8 +190,7 @@ namespace AZLearn.Controllers
 
             using var context = new AppDbContext();
 
-
-            if (cohortId == null)
+            if (string.IsNullOrWhiteSpace(cohortId) )
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId),
                     nameof(cohortId) + " is null."));
@@ -188,8 +201,12 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
                 }
+                else if(parsedCohortId > 2147483647 || parsedCohortId < 1)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id value should be between 1 & 2147483647 inclusive"));
+                }
                 /*If the Cohort Exists or not If cohort is Archived you cannot update the course*/
-                else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
+                else if ( !context.Cohorts.Any(key => key.CohortId==parsedCohortId)  )
                 {
                     exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
 
@@ -200,29 +217,21 @@ namespace AZLearn.Controllers
                 }
 
             }
-
-            if (string.IsNullOrWhiteSpace(name))
-                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(name), nameof(name) + " is null."));
-            else if (name.Length > 50)
+            if ( string.IsNullOrWhiteSpace(name) )
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(name),nameof(name)+" is null."));
+            else if ( name.Length>50 )
                 exception.ValidationExceptions.Add(new Exception("Cohort name can only be 50 characters long."));
-            else if ((!string.IsNullOrWhiteSpace(cohortId)) && int.TryParse(cohortId, out parsedCohortId))
+            else
+            {
+                if ((!string.IsNullOrWhiteSpace(cohortId)) && int.TryParse(cohortId, out parsedCohortId))
                 {
                     /* Two cohorts with same name should not be allowed */
-                    if (context.Cohorts.Any(key =>
-                        key.Name.ToLower() == name.ToLower() && key.CohortId != parsedCohortId))
+                    if (context.Cohorts.Any(key => key.Name.ToLower() == name.ToLower() && key.CohortId != parsedCohortId))
                     {
-                        exception.ValidationExceptions.Add(new Exception("A Cohort with this name already exists."));
+                        exception.ValidationExceptions.Add(new Exception("A cohort with this name already exists."));
                     }
                 }
-            
-            /*  else
-              {
-                  */
-            /*To check if Cohort Name already Exists , and to check If the Cohort is not Archived and Update */ /*
-                if ( !context.Cohorts.Any(key => key.Name.ToLower()==name.ToLower()&&key.Archive==false) )
-                    exception.ValidationExceptions.Add(
-                        new Exception("Cohort that you are trying to update doesnt exists"));
-            }*/ ///NOT REQUIRED IN CASE OF UPDATE
+            }
 
             if (!string.IsNullOrEmpty(capacity))
             {
@@ -267,8 +276,10 @@ namespace AZLearn.Controllers
 
             /* Business Logic*/
             if (DateTime.TryParse(startDate, out parsedStartDate) && DateTime.TryParse(endDate, out parsedEndDate))
+            {
                 if (parsedEndDate < parsedStartDate)
                     exception.ValidationExceptions.Add(new Exception("End date can not be before Start date."));
+            }
 
             if (string.IsNullOrWhiteSpace(city))
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(city), nameof(city) + " is null."));
@@ -279,18 +290,27 @@ namespace AZLearn.Controllers
 
             #endregion
 
-            #region DB Action Validation
-
             var cohort = context.Cohorts.Find(parsedCohortId);
-            cohort.Name = name;
-            cohort.Capacity = parsedCapacity;
-            cohort.City = city;
-            cohort.ModeOfTeaching = modeOfTeaching;
-            cohort.StartDate = parsedStartDate;
-            cohort.EndDate = parsedEndDate;
+            if (capacity == null)
+            {
+                cohort.Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(name);
+                cohort.City = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(city);
+                cohort.ModeOfTeaching = modeOfTeaching;
+                cohort.StartDate = parsedStartDate;
+                cohort.EndDate = parsedEndDate;
+            }
+            else if (capacity != null)
+            {
+                cohort.Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(name);
+                cohort.Capacity = parsedCapacity;
+                cohort.City = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(city);
+                cohort.ModeOfTeaching = modeOfTeaching;
+                cohort.StartDate = parsedStartDate;
+                cohort.EndDate = parsedEndDate;
+            }
+           
             context.SaveChanges();
-
-            #endregion
+           
         }
 
         /// <summary>
@@ -327,7 +347,14 @@ namespace AZLearn.Controllers
             else
             {
                 if (!int.TryParse(cohortId, out parsedCohortId))
+                {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
+                }
+                else if (parsedCohortId > 2147483647 || parsedCohortId < 1)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id value should be between 1 & 2147483647 inclusive"));
+                }
+                /*If the Cohort is Archived you cannot update the course*/
                 else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
                     exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
                 else if (context.Cohorts.Any(key => key.CohortId == parsedCohortId && key.Archive == true))

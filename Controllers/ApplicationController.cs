@@ -38,10 +38,10 @@ namespace AZLearn.Controllers
 
                 result = BadRequest(error);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 result = StatusCode(500,
-                    "Unknown error occurred while creating a Cohort, please try again later or contact Technical Support Team.");
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
 
             return result;
@@ -70,10 +70,10 @@ namespace AZLearn.Controllers
                                 .Aggregate((x, y) => x + ", " + y);
                 result = BadRequest(error);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 result = StatusCode(500,
-                    "Unknown error occurred while Updating a Cohort, please try again later or contact Technical Support Team.");
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
 
             return result;
@@ -91,9 +91,10 @@ namespace AZLearn.Controllers
             {
                 result = CohortController.GetCohorts();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                result = StatusCode(403, "Error: retrieving all Cohorts Information");
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
 
             return result;
@@ -144,9 +145,10 @@ namespace AZLearn.Controllers
 
                 result = BadRequest(error);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
 
             return result;
@@ -189,9 +191,10 @@ namespace AZLearn.Controllers
 
                 result = BadRequest(error);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
 
             return result;
@@ -228,9 +231,10 @@ namespace AZLearn.Controllers
 
                 result = BadRequest(error);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
 
             return result;
@@ -269,7 +273,8 @@ namespace AZLearn.Controllers
             }
             catch (Exception e)
             {
-                result = StatusCode(500,$"Unexpected server/database error occurred. System error message(s): " + e.Message); 
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
 
             return result;
@@ -293,9 +298,10 @@ namespace AZLearn.Controllers
 
                 result = BadRequest(error);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
             return result;
         }
@@ -327,9 +333,10 @@ namespace AZLearn.Controllers
 
                 result = BadRequest(error);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
             return result;
         }
@@ -363,9 +370,10 @@ namespace AZLearn.Controllers
 
                 result = BadRequest(error);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
             return result;
         }
@@ -399,9 +407,10 @@ namespace AZLearn.Controllers
 
                 result = BadRequest(error);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
             return result;
         }
@@ -432,9 +441,10 @@ namespace AZLearn.Controllers
 
                 result = BadRequest(error);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
 
             return result;
@@ -476,9 +486,10 @@ namespace AZLearn.Controllers
 
                 result = BadRequest(error);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
 
             return result;
@@ -520,9 +531,10 @@ namespace AZLearn.Controllers
 
                 result = BadRequest(error);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
             return result;
         }
@@ -555,9 +567,10 @@ namespace AZLearn.Controllers
 
                 result = BadRequest(error);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                result = StatusCode(500, "Unknown error occurred, please try again later."); 
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
 
             return result;
@@ -567,7 +580,7 @@ namespace AZLearn.Controllers
 
         #endregion
 
-        #region GradeConroller
+        #region GradeController
 
         #region /application/CreateGrading
 
@@ -589,10 +602,10 @@ namespace AZLearn.Controllers
 
                 result = BadRequest(error);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 result = StatusCode(500,
-                    "Unknown error occurred while Creating a Grade, please try again later or contact Technical Support Team.");
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
             return result;
         }
@@ -619,10 +632,10 @@ namespace AZLearn.Controllers
 
                 result = BadRequest(error);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 result = StatusCode(500,
-                    "Unknown error occurred while Updating a Grading, please try again later or contact Technical Support Team.");
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
             return result;
         }
@@ -649,10 +662,10 @@ namespace AZLearn.Controllers
 
                 result = BadRequest(error);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 result = StatusCode(500,
-                    "Unknown error occurred while Updating Feedback, please get in touch with your instructor or program coordinator");
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
 
             return result;
@@ -686,9 +699,10 @@ namespace AZLearn.Controllers
 
                 result = BadRequest(error);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                result = StatusCode(500, "Unknown error occurred while retrieving Grades, please try again later.");
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
 
             return result;
@@ -723,9 +737,10 @@ namespace AZLearn.Controllers
 
                 result = BadRequest(error);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                result = StatusCode(500, "Unknown error occurred while retrieving Grade Summary, please try again later.");
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
 
             return result;
@@ -769,10 +784,10 @@ namespace AZLearn.Controllers
 
                 result = BadRequest(error);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 result = StatusCode(500,
-                    "Unknown error occurred while creating a Timesheet, please try again later or contact Technical Support Team.");
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
 
             return result;
@@ -811,10 +826,10 @@ namespace AZLearn.Controllers
 
                 result = BadRequest(error);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 result = StatusCode(500,
-                    "Unknown error occurred while updating the Timesheet, please try again later or get in contact with your instructor or program coordinator");
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
 
             return result;
@@ -845,9 +860,10 @@ namespace AZLearn.Controllers
 
                 result = BadRequest(error);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
             return result;
         }
@@ -873,9 +889,10 @@ namespace AZLearn.Controllers
 
                 result = BadRequest(error);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
             return result;
         }
@@ -903,10 +920,10 @@ namespace AZLearn.Controllers
             try
             {
                 result = UserController.GetInstructors();
-            }
-            catch (Exception)
+            } 
+            catch (Exception e)
             {
-                result = StatusCode(403, "Error: retrieving all Instructors Information");
+                result = StatusCode(500, "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
             return result;
 
@@ -941,7 +958,7 @@ namespace AZLearn.Controllers
             catch (Exception e)
             {
                 result = StatusCode(500,
-                    $"Unexpected server/database error occurred. System error message(s): " + e.Message);
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
 
             return result;
@@ -972,7 +989,7 @@ namespace AZLearn.Controllers
             catch (Exception e)
             {
                 result = StatusCode(500,
-                    $"Unexpected server/database error occurred. System error message(s): " + e.Message);
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
 
             return result;
@@ -1004,7 +1021,7 @@ namespace AZLearn.Controllers
             catch (Exception e)
             {
                 result = StatusCode(500,
-                    $"Unexpected server/database error occurred. System error message(s): " + e.Message);
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
 
             return result;
@@ -1036,9 +1053,8 @@ namespace AZLearn.Controllers
             catch (Exception e)
             {
                 result = StatusCode(500,
-                    $"Unexpected server/database error occurred. System error message(s): " + e.Message);
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
-
             return result;
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO.Compression;
 using System.Linq;
 using AZLearn.Data;
@@ -78,11 +79,12 @@ namespace AZLearn.Controllers
 
             #endregion
 
+            description = description.ToLower();
             var newCourse = new Course
             {
                 /*  Create a Course*/
-                Name = name,
-                Description = description,
+                Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(name),
+                Description = char.ToUpper(description[0]) + description.Substring(1),
                 DurationHrs = parsedDurationHrs,
             };
 
@@ -129,6 +131,10 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Course Id"));
                 }
+                else if (parsedCourseId > 2147483647 || parsedCourseId < 1)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Course Id value should be between 1 & 2147483647 inclusive"));
+                }
                 else if (!context.Courses.Any(key => key.CourseId == parsedCourseId))
                 {
                     exception.ValidationExceptions.Add(new Exception("Course Id does not exist"));
@@ -160,7 +166,6 @@ namespace AZLearn.Controllers
                     }
                 }
             }
-
             if (string.IsNullOrWhiteSpace(description))
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(description), nameof(description) + " is null."));
@@ -191,9 +196,10 @@ namespace AZLearn.Controllers
 
             #endregion
 
+            description = description.ToLower();
             var course = context.Courses.SingleOrDefault(key => key.CourseId == parsedCourseId);
-            course.Name = name;
-            course.Description = description;
+            course.Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(name);
+            course.Description = char.ToUpper(description[0]) + description.Substring(1);
             course.DurationHrs = parsedDurationHrs;
 
             context.SaveChanges();
@@ -236,6 +242,10 @@ namespace AZLearn.Controllers
                 if (!int.TryParse(cohortId, out parsedCohortId))
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
+                }
+                else if (parsedCohortId > 2147483647 || parsedCohortId < 1)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id value should be between 1 & 2147483647 inclusive"));
                 }
                 else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
                 {
@@ -288,6 +298,10 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
                 }
+                else if (parsedCohortId > 2147483647 || parsedCohortId < 1)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id value should be between 1 & 2147483647 inclusive"));
+                }
                 else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
                 {
                     exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
@@ -302,6 +316,10 @@ namespace AZLearn.Controllers
                 if (!int.TryParse(courseId, out parsedCourseId))
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Course Id"));
+                }
+                else if (parsedCourseId > 2147483647 || parsedCourseId < 1)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Course Id value should be between 1 & 2147483647 inclusive"));
                 }
                 else if (!context.Courses.Any(key => key.CourseId == parsedCourseId))
                 {
@@ -340,13 +358,17 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Course Id"));
                 }
+                else if (parsedCourseId > 2147483647 || parsedCourseId < 1)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Course Id value should be between 1 & 2147483647 inclusive"));
+                }
                 else if (!context.Courses.Any(key => key.CourseId == parsedCourseId))
                 {
                     exception.ValidationExceptions.Add(new Exception("Course Id does not exist"));
                 }
                 else if (!context.Courses.Any(key => key.CourseId == parsedCourseId && key.Archive == false))
                 {
-                    exception.ValidationExceptions.Add(new Exception("Course Id is already archived"));
+                    exception.ValidationExceptions.Add(new Exception("Course is already archived"));
                 }
             }
 
