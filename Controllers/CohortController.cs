@@ -197,7 +197,7 @@ namespace AZLearn.Controllers
             }
             else
             {
-                if (!int.TryParse(cohortId, out parsedCohortId))
+                if (!int.TryParse(cohortId, out parsedCohortId)) // 2147483647 to -2147483647
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
                 }
@@ -370,11 +370,28 @@ namespace AZLearn.Controllers
                 {
                     course.Archive = true;
                 }
-                
-            var homeworks = context.Homeworks.Where(key => key.CohortId == parsedCohortId).ToList();
 
+            var homeworks = context.Homeworks.Where(key => key.CohortId == parsedCohortId).ToList();
             foreach (var homework in homeworks)
             {
+                var rubrics = context.Rubrics.Where(key => key.HomeworkId == homework.HomeworkId).ToList();
+                foreach (var rubric in rubrics)
+                {
+                    var grades = context.Grades.Where(key => key.RubricId == rubric.RubricId).ToList();
+                    foreach (var grade in grades)
+                    {
+                        grade.Archive = true;
+                    }
+
+                    rubric.Archive = true;
+                }
+
+                var timesheets = context.Timesheets.Where(key => key.HomeworkId == homework.HomeworkId).ToList();
+                foreach (var timesheet in timesheets)
+                {
+                    timesheet.Archive = true;
+                }
+
                 homework.Archive = true;
             }
 

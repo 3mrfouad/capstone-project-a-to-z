@@ -376,13 +376,31 @@ namespace AZLearn.Controllers
 
             foreach (var homework in homeworks)
             {
+                var rubrics = context.Rubrics.Where(key => key.HomeworkId == homework.HomeworkId).ToList();
+                foreach (var rubric in rubrics)
+                {
+                    var grades = context.Grades.Where(key => key.RubricId == rubric.RubricId).ToList();
+                    foreach (var grade in grades)
+                    {
+                        grade.Archive = true;
+                    }
+                    
+                    rubric.Archive = true;
+                }
+
+                var timesheets = context.Timesheets.Where(key => key.HomeworkId == homework.HomeworkId).ToList();
+                foreach (var timesheet in timesheets)
+                {
+                    timesheet.Archive = true;
+                }
+
                 homework.Archive = true;
             }
 
             var assignedCourses = context.CohortCourses.Where(key => key.CourseId == parsedCourseId).ToList();
-            foreach (var course in assignedCourses)
+            foreach (var cohortCourse in assignedCourses)
             {
-                course.Archive = true;
+                cohortCourse.Archive = true;
             }
 
             var cohort = context.Courses.Find(parsedCourseId);

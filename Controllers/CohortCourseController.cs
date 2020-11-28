@@ -415,13 +415,35 @@ namespace AZLearn.Controllers
             {
                 throw exception;
             }
-            else
+
+            var homeworks = context.Homeworks.Where(key => key.CohortId == parsedCohortId && key.CourseId == parsedCourseId).ToList();
+
+            foreach (var homework in homeworks)
             {
-                var cohortCourse = context.CohortCourses.Find(parsedCohortId, parsedCourseId);
-                cohortCourse.Archive = true;
-                context.SaveChanges();
+                var rubrics = context.Rubrics.Where(key => key.HomeworkId == homework.HomeworkId).ToList();
+                foreach (var rubric in rubrics)
+                {
+                    var grades = context.Grades.Where(key => key.RubricId == rubric.RubricId).ToList();
+                    foreach (var grade in grades)
+                    {
+                        grade.Archive = true;
+                    }
+
+                    rubric.Archive = true;
+                }
+
+                var timesheets = context.Timesheets.Where(key => key.HomeworkId == homework.HomeworkId).ToList();
+                foreach (var timesheet in timesheets)
+                {
+                    timesheet.Archive = true;
+                }
+
+                homework.Archive = true;
             }
 
+            var cohortCourse = context.CohortCourses.Find(parsedCohortId, parsedCourseId);
+                cohortCourse.Archive = true;
+                context.SaveChanges();
         }
 
         public static void ArchiveAssignedCourse(string cohortId)
