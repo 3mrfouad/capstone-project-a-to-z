@@ -930,19 +930,19 @@ namespace AZLearn.Controllers
             {
                 CohortController.ArchiveCohortById(cohortId);
 
-                result = StatusCode(200, "Successfully Updated the Cohort details");
+                result = StatusCode(200, $"Successfully Archived Cohort Id: {cohortId}");
             }
             catch (ValidationException e)
             {
-                var error = "Error(s) During UpdateCohort: " +
+                var error = "Error(s) During ArchiveCohort: " +
                             e.ValidationExceptions.Select(x => x.Message)
                                 .Aggregate((x, y) => x + ", " + y);
                 result = BadRequest(error);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 result = StatusCode(500,
-                    "Unknown error occurred while Updating a Cohort, please try again later or contact Technical Support Team.");
+                    $"Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
 
             return result;
@@ -961,19 +961,19 @@ namespace AZLearn.Controllers
             {
                 CourseController.ArchiveCourseById(courseId);
 
-                result = StatusCode(200, "Successfully Updated the Cohort details");
+                result = StatusCode(200, $"Successfully Archived Course Id: {courseId}");
             }
             catch (ValidationException e)
             {
-                var error = "Error(s) During UpdateCohort: " +
+                var error = "Error(s) During ArchiveCourse: " +
                             e.ValidationExceptions.Select(x => x.Message)
                                 .Aggregate((x, y) => x + ", " + y);
                 result = BadRequest(error);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 result = StatusCode(500,
-                    "Unknown error occurred while Updating a Cohort, please try again later or contact Technical Support Team.");
+                    $"Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
 
             return result;
@@ -993,19 +993,19 @@ namespace AZLearn.Controllers
             {
                 CohortCourseController.ArchiveAssignedCourse(cohortId, courseId);
 
-                result = StatusCode(200, "Successfully Updated the Cohort details");
+                result = StatusCode(200, $"Successfully Archived course assignment. Course Id: {courseId} | Cohort Id: {cohortId}");
             }
             catch (ValidationException e)
             {
-                var error = "Error(s) During UpdateCohort: " +
+                var error = "Error(s) During ArchiveAssignedCourse: " +
                             e.ValidationExceptions.Select(x => x.Message)
                                 .Aggregate((x, y) => x + ", " + y);
                 result = BadRequest(error);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 result = StatusCode(500,
-                    "Unknown error occurred while Updating a Cohort, please try again later or contact Technical Support Team.");
+                    $"Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
 
             return result;
@@ -1025,19 +1025,19 @@ namespace AZLearn.Controllers
             {
                 HomeworkController.ArchiveHomeworkById(homeworkId);
 
-                result = StatusCode(200, "Successfully Updated the Cohort details");
+                result = StatusCode(200, $"Successfully Archived Homework Id: {homeworkId}");
             }
             catch (ValidationException e)
             {
-                var error = "Error(s) During UpdateCohort: " +
+                var error = "Error(s) During ArchiveHomework: " +
                             e.ValidationExceptions.Select(x => x.Message)
                                 .Aggregate((x, y) => x + ", " + y);
                 result = BadRequest(error);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 result = StatusCode(500,
-                    "Unknown error occurred while Updating a Cohort, please try again later or contact Technical Support Team.");
+                    $"Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
 
             return result;
