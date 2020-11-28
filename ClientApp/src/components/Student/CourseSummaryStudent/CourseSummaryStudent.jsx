@@ -1,7 +1,17 @@
 import React from "react";
 import { Table, Container, Button } from "react-bootstrap";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { courseSummaryStudent } from "../../../actions/studentActions";
 
 const CourseSummaryStudent = () => {
+  const dispatch = useDispatch();
+  const { courses, loading } = useSelector(
+    (state) => state.courseSummaryStudent
+  );
+  useEffect(() => {
+    dispatch(courseSummaryStudent());
+  }, [dispatch]);
   return (
     <React.Fragment>
       <Container>

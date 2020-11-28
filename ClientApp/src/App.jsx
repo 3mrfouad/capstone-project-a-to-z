@@ -12,6 +12,7 @@ import CohortCard from "./components/Instructor/CohortCard/CohortCard";
 import CohortSummary from "./components/Instructor/CohortSummary/CohortSummary";
 import GradingSummary from "./components/Instructor/GradingSummary/GradingSummary";
 import CourseCreateEdit from "./components/Instructor/CourseCreateEdit/CourseCreateEdit";
+import GradesInstructorPage from "./screens/GradesInstructorPage/GradesInstructorPage";
 
 const App = () => {
   return (
@@ -38,6 +39,16 @@ const App = () => {
           <Route path="/cohortsummary" exact component={CohortSummary} />
           <Route path="/gradingsummary" exact component={GradingSummary} />
           <Route path="/coursecreate" exact component={CourseCreateEdit} />
+          <Route
+            path="/GradesInstructorPage"
+            exact
+            component={GradesInstructorPage}
+          />
+          <Route
+            path="/CourseSummaryStudent"
+            exact
+            component={CourseSummaryStudent}
+          />
         </Switch>
       </Router>
     </React.Fragment>

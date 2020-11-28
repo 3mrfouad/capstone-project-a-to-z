@@ -5,7 +5,9 @@ export const courseSummaryStudent = () => {
     try {
       dispatch({ type: "COURSE_SUMMARY_STUDENT_REQUEST" });
       // update the url later
-      const { data } = await axios.get("/api/products");
+      const { data } = await axios.get(
+        "https://localhost:5001/application/getcourses"
+      );
       dispatch({
         type: "COURSE_SUMMARY_STUDENT_SUCCESS",
         payload: data,
@@ -27,7 +29,9 @@ export const homeworkSummaryStudent = () => {
     try {
       dispatch({ type: "HOMEWORK_SUMMARY_STUDENT_REQUEST" });
       // update the url later
-      const { data } = await axios.get("/api/products");
+      const { data } = await axios.get(
+        "https://localhost:5001/application/gethomework"
+      );
       dispatch({
         type: "HOMEWORK_SUMMARY_STUDENT_SUCCESS",
         payload: data,
@@ -49,7 +53,9 @@ export const homeworkStudent = () => {
     try {
       dispatch({ type: "HOMEWORK_STUDENT_REQUEST" });
       // update the url later
-      const { data } = await axios.get("/api/products");
+      const { data } = await axios.get(
+        "https://localhost:5001/application/gethomework"
+      );
       dispatch({
         type: "HOMEWORK_STUDENT_SUCCESS",
         payload: data,
@@ -80,7 +86,7 @@ export const createTimeSheetStudent = (timeSheet) => {
       //       Authorization: `Bearer ${userInfo.token}`,
       //     },
       //   };
-      const { data } = await axios.post(`/api/products`, timeSheet, config);
+      const { data } = await axios.post(`/api/products`, timeSheet);
 
       dispatch({
         type: "CREATE_TIME_SHEET_STUDENT_SUCCESS",

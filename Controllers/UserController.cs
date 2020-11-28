@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AZLearn.Data;
 using AZLearn.Models;
+using AZLearn.Models.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AZLearn.Controllers
@@ -14,12 +16,44 @@ namespace AZLearn.Controllers
         /// </summary>
         /// <param name="cohortId">Cohort Id</param>
         /// <returns>List of students enrolled in specified Cohort</returns>
+        /// /application/InstructorGradeSummary
         public static List<User> GetStudentsByCohortId(string cohortId)
         {
-            var parsedCohortId = int.Parse(cohortId);
-            var students = new List<User>();
+            int parsedCohortId = 0;
+
+            #region Validation
+
+            ValidationException exception = new ValidationException();
+
+            cohortId=(string.IsNullOrEmpty(cohortId)||string.IsNullOrWhiteSpace(cohortId)) ? null : cohortId.Trim();
+
             using var context = new AppDbContext();
-            students = context.Users.Where(key => key.CohortId == parsedCohortId).ToList();
+            if ( string.IsNullOrWhiteSpace(cohortId) )
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId),nameof(cohortId)+" is null."));
+            }
+            else
+            {
+                if ( !int.TryParse(cohortId,out parsedCohortId) )
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
+                }
+                else if (parsedCohortId > 2147483647 || parsedCohortId < 1)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id value should be between 1 & 2147483647 inclusive"));
+                }
+                else if ( !context.Cohorts.Any(key => key.CohortId==parsedCohortId) )
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
+                }
+            }
+            if ( exception.ValidationExceptions.Count>0 )
+            {
+                throw exception;
+            }
+            #endregion
+            var students = new List<User>();
+            students= context.Users.Where(key => key.CohortId == parsedCohortId).ToList();
             return students;
         }
 
@@ -32,12 +66,49 @@ namespace AZLearn.Controllers
         /// <returns>It returns the User Information based on the user id </returns>
         public static User GetUserById(string userId)
         {
+
             User result;
-            var parsedUserId = int.Parse(userId);
-            using var context = new AppDbContext();
+            var parsedUserId = 0;
+
+            #region Validation
+             ValidationException exception = new ValidationException();
+             using var context = new AppDbContext();
+
+            userId=(string.IsNullOrEmpty(userId)||string.IsNullOrWhiteSpace(userId)) ? null : userId.Trim();
+
+            if ( string.IsNullOrWhiteSpace(userId) )
             {
-                result = context.Users.Single(key => key.UserId == parsedUserId);
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(userId),nameof(userId)+" is null."));
             }
+            else
+            {
+                if ( !int.TryParse(userId, out parsedUserId) )
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for User Id"));
+                }
+                else if (parsedUserId > 2147483647 || parsedUserId < 1)
+                {
+                    exception.ValidationExceptions.Add(new Exception("User Id value should be between 1 & 2147483647 inclusive"));
+                }
+                else if ( !context.Users.Any(key => key.UserId==parsedUserId) )
+                {
+                    exception.ValidationExceptions.Add(new Exception("User Id does not exist"));
+                }
+                //*****************This validation to be decided after Login**********************************************
+                else if ( !context.Users.Any(key => key.UserId==parsedUserId && key.Archive==false) )
+                {
+                    exception.ValidationExceptions.Add(new Exception("Selected User Id is Archived"));
+                }
+                //*****************************************************
+            }
+            if ( exception.ValidationExceptions.Count>0 )
+            {
+                throw exception;
+            }
+
+            #endregion
+            result= context.Users.Single(key => key.UserId == parsedUserId);
+            
             return result;
         }
 
