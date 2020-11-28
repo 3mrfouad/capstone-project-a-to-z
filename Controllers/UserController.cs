@@ -42,10 +42,6 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
                 }
-                else if ( !context.Cohorts.Any(key => key.CohortId==parsedCohortId&& key.Archive==false) )
-                {
-                    exception.ValidationExceptions.Add(new Exception("Selected Cohort Id is Archived"));
-                }
             }
             if ( exception.ValidationExceptions.Count>0 )
             {
@@ -89,10 +85,6 @@ namespace AZLearn.Controllers
                 else if ( !context.Users.Any(key => key.UserId==parsedUserId) )
                 {
                     exception.ValidationExceptions.Add(new Exception("User Id does not exist"));
-                }
-                else if ( !context.Users.Any(key => key.UserId==parsedUserId && key.Archive==false) )
-                {
-                    exception.ValidationExceptions.Add(new Exception("Selected User Id is Archived"));
                 }
             }
             if ( exception.ValidationExceptions.Count>0 )

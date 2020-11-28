@@ -267,9 +267,9 @@ namespace AZLearn.Controllers
 
                 result = BadRequest(error);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+                result = StatusCode(500,$"Unexpected server/database error occurred. System error message(s): " + e.Message); 
             }
 
             return result;
@@ -557,7 +557,7 @@ namespace AZLearn.Controllers
             }
             catch (Exception)
             {
-                result = StatusCode(500, "Unknown error occurred, please try again later."); //Need to add LINK here 
+                result = StatusCode(500, "Unknown error occurred, please try again later."); 
             }
 
             return result;
@@ -896,10 +896,9 @@ namespace AZLearn.Controllers
         ///     /*Test Passed*/
         /// </summary>
         /// <returns>The API End Point returns list of all Instructors in database</returns>
-        [HttpGet(nameof(GetInstructors))]
+     [HttpGet(nameof(GetInstructors))]
         public ActionResult<List<User>> GetInstructors()
         {
-
             ActionResult<List<User>> result;
             try
             {
