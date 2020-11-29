@@ -8,10 +8,11 @@ import HomeworkSummaryStudent from "./components/Student/HomeworkSummaryStudent/
 import HomeworkStudent from "./components/Student/HomeworkStudent/HomeworkStudent";
 import SideBar from "./components/shared/SideBar/SideBar";
 import GradesStudent from "./components/Student/GradesStudent/GradesStudent";
-import CohortCard from "./components/Instructor/CohortCard/CohortCard";
+import CohortCreate from "./components/Instructor/CohortCreate/CohortCreate";
+import CohortEdit from "./components/Instructor/CohortEdit/CohortEdit";
 import CohortSummary from "./components/Instructor/CohortSummary/CohortSummary";
 import GradingSummary from "./components/Instructor/GradingSummary/GradingSummary";
-import CourseCreateEdit from "./components/Instructor/CourseCreateEdit/CourseCreateEdit";
+import CourseCreateEdit from "./components/Instructor/CourseCreate/CourseCreate";
 import GradesInstructorPage from "./screens/GradesInstructorPage/GradesInstructorPage";
 import ManageCourse from "./components/Instructor/ManageCourses/ManageCourses";
 
@@ -36,7 +37,8 @@ const App = () => {
           />
           <Route path="/sidebar" exact component={SideBar} />
           <Route path="/gradesstudent" exact component={GradesStudent} />
-          <Route path="/cohortcard" exact component={CohortCard} />
+          <Route path="/cohortcreate" exact component={CohortCreate} />
+          <Route path="/cohortedit" exact component={CohortEdit} />
           <Route path="/cohortsummary" exact component={CohortSummary} />
           <Route path="/gradingsummary" exact component={GradingSummary} />
           <Route path="/coursecreate" exact component={CourseCreateEdit} />

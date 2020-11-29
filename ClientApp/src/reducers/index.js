@@ -1,5 +1,12 @@
 import { combineReducers } from "redux";
-import { cohortSummaryInstructorReducer } from "./instructorReducer";
+import {
+  cohortSummaryInstructorReducer,
+  cohortCreateReducer,
+  cohortEditReducer,
+  courseCreateReducer,
+  courseEditReducer,
+  homeworkSummaryInstructorReducer,
+} from "./instructorReducer";
 import {
   courseSummaryStudentReducer,
   homeworkSummaryStudentReducer,
@@ -13,6 +20,11 @@ const rootReducers = combineReducers({
   homeworkSummaryStudent: homeworkSummaryStudentReducer,
   homeworkStudent: homeworkStudentReducer,
   createTimeSheetStudent: createTimeSheetStudentReducer,
+  cohortCreate: cohortCreateReducer,
+  cohortEdit: cohortEditReducer,
+  courseCreate: courseCreateReducer,
+  courseEdit: courseEditReducer,
+  homeworkSummaryInstructor: homeworkSummaryInstructorReducer,
 });
 
 export default rootReducers;
