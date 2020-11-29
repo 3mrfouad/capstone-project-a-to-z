@@ -415,7 +415,7 @@ namespace AZLearn.Controllers
             return result;
         }
 
-        #endregion
+        #endregion  
 
         #region /application/UpdateHomework
 
@@ -426,7 +426,7 @@ namespace AZLearn.Controllers
 
         {
             ActionResult result;
-            try
+            try  
             {
                 HomeworkController.UpdateHomeworkById(homeworkId, courseId, instructorId, cohortId,
                     isAssignment, title, avgCompletionTime, dueDate, releaseDate,
