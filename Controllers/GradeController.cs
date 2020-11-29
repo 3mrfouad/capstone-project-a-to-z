@@ -147,6 +147,8 @@ namespace AZLearn.Controllers
                     });
                 }
             }
+
+            if ( exception.ValidationExceptions.Count>0 ) throw exception;
             context.SaveChanges();
         }
 
@@ -284,6 +286,7 @@ namespace AZLearn.Controllers
                     grade.InstructorComment = char.ToUpper(instructorComment[0]) + instructorComment.Substring(1);
                 }
             }
+            if ( exception.ValidationExceptions.Count>0 ) throw exception;
             context.SaveChanges();
         }
 
