@@ -27,7 +27,7 @@ namespace AZLearn.Controllers
 
             #region Validation
 
-            name = string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name) ? null : name.Trim();
+            name = string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name) ? null : name.Trim().ToLower();
             description = string.IsNullOrEmpty(description) || string.IsNullOrWhiteSpace(description) ? null : description.Trim();
             durationHrs = string.IsNullOrEmpty(durationHrs) || string.IsNullOrWhiteSpace(durationHrs) ? null : durationHrs.Trim();
 
@@ -114,7 +114,7 @@ namespace AZLearn.Controllers
             #region Validation
 
             courseId = string.IsNullOrEmpty(courseId) || string.IsNullOrWhiteSpace(courseId) ? null : courseId.Trim();
-            name = string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name) ? null : name.Trim();
+            name = string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name) ? null : name.Trim().ToLower();
             description = string.IsNullOrEmpty(description) || string.IsNullOrWhiteSpace(description) ? null : description.Trim();
             durationHrs = string.IsNullOrEmpty(durationHrs) || string.IsNullOrWhiteSpace(durationHrs) ? null : durationHrs.Trim();
 
