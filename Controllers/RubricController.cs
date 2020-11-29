@@ -95,6 +95,11 @@ namespace AZLearn.Controllers
                 }
             }
 
+            if ( rubrics.Count==0 )
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(rubrics),
+                    nameof(rubrics)+" is null."));
+            }
             #endregion
 
             foreach ( var (tempIsChallenge, tempCriteria, tempWeight) in rubrics )
@@ -169,6 +174,10 @@ namespace AZLearn.Controllers
                 });
             }
 
+            if ( exception.ValidationExceptions.Count>0 )
+            {
+                throw exception;
+            }
             context.SaveChanges();
         }
         /// <summary>
@@ -178,6 +187,13 @@ namespace AZLearn.Controllers
         public static void UpdateRubricsById(Dictionary<string, Tuple<string, string, string>> rubrics)
         {
             using var context = new AppDbContext();
+            ValidationException exception = new ValidationException();
+            if (rubrics.Count == 0)
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(rubrics),
+                    nameof(rubrics)+" is null."));
+            }
+
             foreach ( var (tempRubricId, (tempIsChallenge, tempCriteria, tempWeight)) in rubrics )
             {
                 var rubricId = string.IsNullOrEmpty(tempRubricId) || string.IsNullOrWhiteSpace(tempRubricId)
@@ -199,7 +215,6 @@ namespace AZLearn.Controllers
 
                 #region Validation
 
-                ValidationException exception = new ValidationException();
 
                 if (string.IsNullOrWhiteSpace(rubricId))
                 {
@@ -289,6 +304,10 @@ namespace AZLearn.Controllers
                 rubric.Weight=parsedWeight;
                 }
 
+            if ( exception.ValidationExceptions.Count>0 )
+            {
+                throw exception;
+            }
             context.SaveChanges();
             }
         public static void ArchiveRubricsById(List<string> rubrics)

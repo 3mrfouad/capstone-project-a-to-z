@@ -652,7 +652,7 @@ namespace AZLearn.Controllers
             try
             {
                 GradeController.UpdateGradingByStudentId(studentId, studentComment);
-                result = StatusCode(200, "Success Message");
+                result = StatusCode(200, "Successfully Updated Student Comments");
             }
             catch (ValidationException e)
             {
@@ -846,6 +846,7 @@ namespace AZLearn.Controllers
         [HttpPost(nameof(CreateRubrics))]
         public ActionResult CreateRubrics(string homeworkId, [FromBody] List<Tuple<string, string, string>> rubrics)
         {
+            /*IsChalllenge |Criteria| Weight */
             ActionResult result;
             try
             {

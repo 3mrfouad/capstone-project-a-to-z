@@ -302,6 +302,7 @@ namespace AZLearn.Controllers
      }*/
         public static void UpdateGradingByStudentId(string studentId, Dictionary<string, string> studentComment)
         {
+
             /*studentID, rubricId ,StudentComment*/
             var parsedRubricId = 0;
             var parsedStudentId = 0;
@@ -392,6 +393,7 @@ namespace AZLearn.Controllers
                     grade.StudentComment = char.ToUpper(comment[0]) + comment.Substring(1);
                 }
             }
+            if ( exception.ValidationExceptions.Count>0 ) throw exception;
 
             context.SaveChanges();
         }
