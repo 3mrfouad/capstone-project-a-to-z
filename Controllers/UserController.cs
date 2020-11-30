@@ -52,7 +52,7 @@ namespace AZLearn.Controllers
             }
             #endregion
             var students = new List<User>();
-            students= context.Users.Where(key => key.CohortId == parsedCohortId).ToList();
+            students= context.Users.Where(key => key.CohortId == parsedCohortId && key.IsInstructor==false).ToList();
             return students;
         }
 
