@@ -372,6 +372,11 @@ namespace AZLearn.Controllers
                 }
             }
 
+            if (exception.ValidationExceptions.Count > 0)
+            {
+                throw exception;
+            }
+
             var homeworks = context.Homeworks.Where(key => key.CourseId == parsedCourseId).ToList();
 
             foreach (var homework in homeworks)
