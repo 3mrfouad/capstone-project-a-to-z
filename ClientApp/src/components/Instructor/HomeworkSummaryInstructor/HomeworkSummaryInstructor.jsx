@@ -1,6 +1,19 @@
 import React from "react";
 import { Table, Container, Button } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { homeworkSummaryInstructor } from "../../../actions/instructorActions";
+
 const HomeworkSummaryInstructor = () => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    // get cohort by id
+    // populate the cohort data in here
+  }, []);
+  const homeworkSummaryInstructor = useSelector(
+    (state) => state.homeworkSummaryInstructor
+  );
+  const { loading, error, homeworkSummary } = homeworkSummaryInstructor;
+
   return (
     <React.Fragment>
       <Container>
