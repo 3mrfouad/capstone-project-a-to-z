@@ -360,6 +360,7 @@ namespace AZLearn.Controllers
             using var context = new AppDbContext();
 
             courseId = (string.IsNullOrEmpty(courseId) || string.IsNullOrWhiteSpace(courseId)) ? null : courseId.Trim();
+            cohortId = string.IsNullOrEmpty(cohortId) || string.IsNullOrWhiteSpace(cohortId) ? null : cohortId.Trim();
 
             if (courseId == null)
             {
@@ -381,8 +382,6 @@ namespace AZLearn.Controllers
                     exception.ValidationExceptions.Add(new Exception("Course Id does not exist"));
                 }
             }
-
-            cohortId = string.IsNullOrEmpty(cohortId) || string.IsNullOrWhiteSpace(cohortId) ? null : cohortId.Trim();
 
             if (cohortId == null)
             {

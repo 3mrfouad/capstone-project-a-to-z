@@ -1002,13 +1002,13 @@ namespace AZLearn.Controllers
         #region /application/ArchiveAssignedCourse
 
         [HttpPatch(nameof(ArchiveAssignedCourse))]
-        public ActionResult ArchiveAssignedCourse(string cohortId,string courseId)
+        public ActionResult ArchiveAssignedCourse(string courseId, string cohortId)
         {
             ActionResult result;
 
             try
             {
-                CohortCourseController.ArchiveAssignedCourse(cohortId, courseId);
+                CohortCourseController.ArchiveAssignedCourse(courseId, cohortId);
 
                 result = StatusCode(200, $"Successfully Archived course assignment. Course Id: {courseId.Trim()} | Cohort Id: {cohortId.Trim()}");
             }
