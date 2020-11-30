@@ -387,9 +387,10 @@ namespace AZLearn.Controllers
                 if (comment != null)
                 {
                     comment = comment.ToLower();
-                    grade = context.Grades.Find(parsedRubricId, parsedStudentId);
-                    grade.StudentComment = char.ToUpper(comment[0]) + comment.Substring(1);
+                    comment=char.ToUpper(comment[0])+comment.Substring(1);
                 }
+                grade=context.Grades.Find(parsedRubricId,parsedStudentId);
+                grade.StudentComment=comment;
             }
             if ( exception.ValidationExceptions.Count>0 ) throw exception;
 
