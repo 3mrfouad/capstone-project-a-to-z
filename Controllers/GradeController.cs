@@ -275,16 +275,14 @@ namespace AZLearn.Controllers
                 #endregion
 
                 var grade = context.Grades.Find(parsedRubricId, parsedStudentId);
-                if (instructorComment == null)
+                if ( instructorComment!=null )
                 {
-                    grade.Mark = parsedMark;
+                    instructorComment=instructorComment.ToLower();
+                    instructorComment=char.ToUpper(instructorComment[0])+instructorComment.Substring(1);
                 }
-                else if (instructorComment != null)
-                {
-                    instructorComment = instructorComment.ToLower();
+     
                     grade.Mark = parsedMark;
-                    grade.InstructorComment = char.ToUpper(instructorComment[0]) + instructorComment.Substring(1);
-                }
+                    grade.InstructorComment =instructorComment;
             }
             if ( exception.ValidationExceptions.Count>0 ) throw exception;
             context.SaveChanges();
@@ -389,9 +387,10 @@ namespace AZLearn.Controllers
                 if (comment != null)
                 {
                     comment = comment.ToLower();
-                    grade = context.Grades.Find(parsedRubricId, parsedStudentId);
-                    grade.StudentComment = char.ToUpper(comment[0]) + comment.Substring(1);
+                    comment=char.ToUpper(comment[0])+comment.Substring(1);
                 }
+                grade=context.Grades.Find(parsedRubricId,parsedStudentId);
+                grade.StudentComment=comment;
             }
             if ( exception.ValidationExceptions.Count>0 ) throw exception;
 
