@@ -20,7 +20,6 @@ namespace AZLearn.Controllers
         public static List<User> GetStudentsByCohortId(string cohortId)
         {
             int parsedCohortId = 0;
-
             #region Validation
 
             ValidationException exception = new ValidationException();

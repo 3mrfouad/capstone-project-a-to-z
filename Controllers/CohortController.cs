@@ -32,12 +32,12 @@ namespace AZLearn.Controllers
             #region Validation
 
             var exception = new ValidationException();
-            name = string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name) ? null : name.Trim();
+            name = string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name) ? null : name.Trim().ToLower();
             capacity = string.IsNullOrEmpty(capacity) || string.IsNullOrWhiteSpace(capacity) ? null : capacity.Trim();
             modeOfTeaching = string.IsNullOrEmpty(modeOfTeaching) || string.IsNullOrWhiteSpace(modeOfTeaching) ? null : modeOfTeaching.Trim();
             startDate = string.IsNullOrEmpty(startDate) || string.IsNullOrWhiteSpace(startDate) ? null : startDate.Trim();
             endDate = string.IsNullOrEmpty(endDate) || string.IsNullOrWhiteSpace(endDate) ? null : endDate.Trim();
-            city = string.IsNullOrEmpty(city) || string.IsNullOrWhiteSpace(city) ? null : city.Trim();
+            city = string.IsNullOrEmpty(city) || string.IsNullOrWhiteSpace(city) ? null : city.Trim().ToLower();
 
             using var context = new AppDbContext();
 

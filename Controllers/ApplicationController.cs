@@ -11,7 +11,7 @@ using Microsoft.Data;
 namespace AZLearn.Controllers
 {
     [Route("[controller]")]
-    [ApiController]
+    [ApiController] 
     public class ApplicationController : Controller
     {
         #region CohortController
@@ -407,15 +407,15 @@ namespace AZLearn.Controllers
 
                 result = BadRequest(error);
             }
-            catch (Exception e)
+            catch ( Exception e )
             {
-                result = StatusCode(500,
-                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
+                result=StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): "+e.Message);
             }
             return result;
         }
 
-        #endregion
+        #endregion  
 
         #region /application/UpdateHomework
 
@@ -426,7 +426,7 @@ namespace AZLearn.Controllers
 
         {
             ActionResult result;
-            try
+            try  
             {
                 HomeworkController.UpdateHomeworkById(homeworkId, courseId, instructorId, cohortId,
                     isAssignment, title, avgCompletionTime, dueDate, releaseDate,
@@ -472,10 +472,29 @@ namespace AZLearn.Controllers
             string studentId)
         {
             ActionResult<Tuple<Homework, Timesheet>> result;
+            var homework = new Homework();
+            var timesheet = new Timesheet();
             try
             {
-                var homework = HomeworkController.GetHomeworkById(homeworkId);
-                var timesheet = TimesheetController.GetTimesheetByHomeworkId(homeworkId, studentId);
+                homework = HomeworkController.GetHomeworkById(homeworkId);
+            }
+            catch (ValidationException e)
+            {
+                var error = "Error(s) During GetHomeworkTimesheetForStudent: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
+
+                result = BadRequest(error);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
+            }
+
+            try
+            {
+                timesheet = TimesheetController.GetTimesheetByHomeworkId(homeworkId, studentId);
                 result = new Tuple<Homework, Timesheet>(homework, timesheet);
             }
             catch (ValidationException e)
@@ -490,6 +509,24 @@ namespace AZLearn.Controllers
             {
                 result = StatusCode(500,
                     "Unexpected server/database error occurred. System error message(s): " + e.Message);
+            }
+            try
+            {
+                timesheet = TimesheetController.GetTimesheetByHomeworkId(homeworkId,studentId);
+                result=new Tuple<Homework,Timesheet>(homework,timesheet);
+            }
+            catch ( ValidationException e )
+            {
+                var error = "Error(s) During GetHomeworkTimesheetForStudent: "+
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x,y) => x+", "+y);
+
+                result=BadRequest(error);
+            }
+            catch ( Exception e )
+            {
+                result=StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): "+e.Message);
             }
 
             return result;
@@ -652,7 +689,7 @@ namespace AZLearn.Controllers
             try
             {
                 GradeController.UpdateGradingByStudentId(studentId, studentComment);
-                result = StatusCode(200, "Success Message");
+                result = StatusCode(200, "Successfully Updated Student Comments");
             }
             catch (ValidationException e)
             {
@@ -731,7 +768,7 @@ namespace AZLearn.Controllers
             }
             catch (ValidationException e)
             {
-                var error = "Error(s) During Creation: " +
+                var error = "Error(s) During Retrieving Grade Summary For Instructor: " +
                             e.ValidationExceptions.Select(x => x.Message)
                                 .Aggregate((x, y) => x + ", " + y);
 
@@ -846,6 +883,7 @@ namespace AZLearn.Controllers
         [HttpPost(nameof(CreateRubrics))]
         public ActionResult CreateRubrics(string homeworkId, [FromBody] List<Tuple<string, string, string>> rubrics)
         {
+            /*IsChalllenge |Criteria| Weight */
             ActionResult result;
             try
             {
@@ -1001,13 +1039,13 @@ namespace AZLearn.Controllers
         #region /application/ArchiveAssignedCourse
 
         [HttpPatch(nameof(ArchiveAssignedCourse))]
-        public ActionResult ArchiveAssignedCourse(string cohortId,string courseId)
+        public ActionResult ArchiveAssignedCourse(string courseId, string cohortId)
         {
             ActionResult result;
 
             try
             {
-                CohortCourseController.ArchiveAssignedCourse(cohortId, courseId);
+                CohortCourseController.ArchiveAssignedCourse(courseId, cohortId);
 
                 result = StatusCode(200, $"Successfully Archived course assignment. Course Id: {courseId.Trim()} | Cohort Id: {cohortId.Trim()}");
             }

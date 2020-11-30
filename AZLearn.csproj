@@ -35,10 +35,10 @@
   <ItemGroup>
     <Folder Include="ClientApp\src\actions\" />
     <Folder Include="ClientApp\src\actions\" />
+    <Folder Include="ClientApp\src\actions\" />
     <Folder Include="ClientApp\src\reducers\" />
     <Folder Include="ClientApp\src\reducers\" />
-    <Folder Include="Data\" />
-    <Folder Include="Data\Migrations\" />
+    <Folder Include="ClientApp\src\reducers\" />
     <Folder Include="Models\CodeSnippets\ExceptionSnippets\" />
   </ItemGroup>
 

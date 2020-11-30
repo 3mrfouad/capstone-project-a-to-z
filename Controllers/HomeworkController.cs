@@ -178,13 +178,15 @@ namespace AZLearn.Controllers
                             {
                                 if (context.Homeworks.Any(key =>
                                     key.CohortId == parsedCohortId && key.CourseId == parsedCourseId &&
-                                    key.Title.ToLower() == title.ToLower()))
+                                    String.Equals(key.Title, title, StringComparison.CurrentCultureIgnoreCase)))
                                 {
                                     exception.ValidationExceptions.Add(new Exception("Homework with same name already exists under this course for this cohort."));
                                 }
                             }
                         }
                     }
+
+
                 }
             }
             if (string.IsNullOrWhiteSpace(cohortId))
@@ -257,6 +259,14 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for isAssignment."));
                 }
+            }
+            if ( string.IsNullOrWhiteSpace(title))
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(title),nameof(title)+" is null."));
+            }
+            else if ( title.Length>100 )
+            {
+                exception.ValidationExceptions.Add(new Exception("Homework Title can only be 100 characters long."));
             }
             if (!string.IsNullOrWhiteSpace(avgCompletionTime))
             {
@@ -512,6 +522,16 @@ namespace AZLearn.Controllers
                             {
                                 exception.ValidationExceptions.Add(new Exception("This course has been archived for this cohort."));
                             }
+
+                            else
+                            {
+                                if ( context.Homeworks.Any(key =>
+                                    key.CohortId==parsedCohortId&&key.CourseId==parsedCourseId&&
+                                    String.Equals(key.Title,title,StringComparison.CurrentCultureIgnoreCase)) )
+                                {
+                                    exception.ValidationExceptions.Add(new Exception("Homework Title with same name already exists under this course for this cohort."));
+                                }
+                            }
                         }
                     }
                 }
@@ -590,6 +610,15 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for isAssignment."));
                 }
+            }
+
+            if ( string.IsNullOrWhiteSpace(title) )
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(title),nameof(title)+" is null."));
+            }
+            else if ( title.Length>100 )
+            {
+                exception.ValidationExceptions.Add(new Exception("Homework Title can only be 100 characters long."));
             }
 
             if (!string.IsNullOrWhiteSpace(avgCompletionTime))
