@@ -472,10 +472,29 @@ namespace AZLearn.Controllers
             string studentId)
         {
             ActionResult<Tuple<Homework, Timesheet>> result;
+            var homework = new Homework();
+            var timesheet = new Timesheet();
             try
             {
-                var homework = HomeworkController.GetHomeworkById(homeworkId);
-                var timesheet = TimesheetController.GetTimesheetByHomeworkId(homeworkId, studentId);
+                homework = HomeworkController.GetHomeworkById(homeworkId);
+            }
+            catch (ValidationException e)
+            {
+                var error = "Error(s) During GetHomeworkTimesheetForStudent: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
+
+                result = BadRequest(error);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
+            }
+
+            try
+            {
+                timesheet = TimesheetController.GetTimesheetByHomeworkId(homeworkId, studentId);
                 result = new Tuple<Homework, Timesheet>(homework, timesheet);
             }
             catch (ValidationException e)
