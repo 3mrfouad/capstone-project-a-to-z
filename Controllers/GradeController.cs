@@ -483,6 +483,7 @@ namespace AZLearn.Controllers
             var gradeSummaries = new List<GradeSummaryTypeForInstructor>();
             var parsedCohortId = 0;
             var parsedHomeworkId = 0;
+           
 
             #region Validation
 
@@ -533,53 +534,66 @@ namespace AZLearn.Controllers
             #endregion
 
             var studentsByCohort = UserController.GetStudentsByCohortId(cohortId);
-
-            //rubricWeightByGroup is an array with first element- total weight of requirements, second element- total weight of challenges for a specified Homework
-            var rubricWeightByGroup = RubricController.GetRubricsByHomeworkId(homeworkId)
-                .GroupBy(key => key.IsChallenge).Select(key => key.Sum(s => s.Weight)).ToArray();
-
-            //If there are no challenges, then weight of challenge = 0 to avoid NullValueException
-            if (rubricWeightByGroup.Length == 1) rubricWeightByGroup[1] = 0;
-            //Loop to get GradeSummary for all students in a Cohort
-            foreach (var student in studentsByCohort)
+            if (RubricController.GetRubricsByHomeworkId(homeworkId).Any())
             {
-                string totalTimeSpentOnHomework;
-                GradeSummaryTypeForInstructor gradeSummary;
-                var studentName = student.Name;
-                var timesheet = TimesheetController.GetTimesheetByHomeworkId(homeworkId, $"{student.UserId}");
-                if (timesheet == null)
-                    totalTimeSpentOnHomework = " ";
-                else
-                    totalTimeSpentOnHomework = (timesheet.SolvingTime + timesheet.StudyTime).ToString();
+                //rubricWeightByGroup is an array with first element- total weight of requirements, second element- total weight of challenges for a specified Homework
+                var rubricWeightByGroup = RubricController.GetRubricsByHomeworkId(homeworkId)
+                    .GroupBy(key => key.IsChallenge).Select(key => key.Sum(s => s.Weight)).ToArray();
 
-                var gradesOfStudent = GetGradesByStudentId($"{student.UserId}", homeworkId);
-                //If grades do not exist for that student (in case Instructor has not added/marked grades for that student)- show empty string for grades 
-                if (gradesOfStudent.Count == 0)
+                //If there are no challenges, then weight of challenge = 0 to avoid NullValueException
+                if (rubricWeightByGroup.Length == 1)
+                    rubricWeightByGroup[1] = 0;
+
+
+
+                //Loop to get GradeSummary for all students in a Cohort
+                foreach (var student in studentsByCohort)
                 {
-                    gradeSummary = new GradeSummaryTypeForInstructor(" ", $" /{rubricWeightByGroup[0]}",
-                        $" /{rubricWeightByGroup[1]}", totalTimeSpentOnHomework, studentName, student.UserId);
-                }
-                else
-                {
-                    var total = gradesOfStudent.Sum(key => key.Mark);
-                    //Group marks of student in a homework by requirements and challenges and store them in array
-                    var marksByGroup = gradesOfStudent.GroupBy(key => key.Rubric.IsChallenge)
-                        .Select(key => key.Sum(s => s.Mark))
-                        .ToArray();
-                    //In case there are no challenges, we will show 0/0 for challenges' marks
-                    if (marksByGroup.Length == 1) marksByGroup[1] = 0;
+                    string totalTimeSpentOnHomework;
+                    GradeSummaryTypeForInstructor gradeSummary;
+                    var studentName = student.Name;
+                    var timesheet = TimesheetController.GetTimesheetByHomeworkId(homeworkId, $"{student.UserId}");
+                    if (timesheet == null)
+                        totalTimeSpentOnHomework = " ";
+                    else
+                        totalTimeSpentOnHomework = (timesheet.SolvingTime + timesheet.StudyTime).ToString();
 
-                    gradeSummary = new GradeSummaryTypeForInstructor($"{total}",
-                        $"{marksByGroup[0]}/{rubricWeightByGroup[0]}",
-                        $"{marksByGroup[1]}/{rubricWeightByGroup[1]}", totalTimeSpentOnHomework, studentName,
-                        student.UserId);
-                }
+                    var gradesOfStudent = GetGradesByStudentId($"{student.UserId}", homeworkId);
+                    //If grades do not exist for that student (in case Instructor has not added/marked grades for that student)- show empty string for grades 
+                    if (gradesOfStudent.Count == 0)
+                    {
+                        gradeSummary = new GradeSummaryTypeForInstructor(" ", $" /{rubricWeightByGroup[0]}",
+                            $" /{rubricWeightByGroup[1]}", totalTimeSpentOnHomework, studentName, student.UserId);
+                    }
+                    else
+                    {
+                        var total = gradesOfStudent.Sum(key => key.Mark);
+                        //Group marks of student in a homework by requirements and challenges and store them in array
+                        var marksByGroup = gradesOfStudent.GroupBy(key => key.Rubric.IsChallenge)
+                            .Select(key => key.Sum(s => s.Mark))
+                            .ToArray();
+                        //In case there are no challenges, we will show 0/0 for challenges' marks
+                        if (marksByGroup.Length == 1) marksByGroup[1] = 0;
 
+                        gradeSummary = new GradeSummaryTypeForInstructor($"{total}",
+                            $"{marksByGroup[0]}/{rubricWeightByGroup[0]}",
+                            $"{marksByGroup[1]}/{rubricWeightByGroup[1]}", totalTimeSpentOnHomework, studentName,
+                            student.UserId);
+                    }
+
+                    gradeSummaries.Add(gradeSummary);
+                }
+            }
+            else
+            {
+                GradeSummaryTypeForInstructor gradeSummary = new GradeSummaryTypeForInstructor(" ",
+                    " ",
+                    " ", " ", "No rubrics found for this homework ",
+                    0);
                 gradeSummaries.Add(gradeSummary);
             }
 
             return gradeSummaries;
-
         }
         public static void ArchiveGradingByStudentId(string studentId, List<string> rubrics)
         {
