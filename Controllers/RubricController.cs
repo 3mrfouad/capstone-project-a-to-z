@@ -256,7 +256,7 @@ namespace AZLearn.Controllers
                     {
                         exception.ValidationExceptions.Add(new Exception("Criteria should be max 250 characters long."));
                     }
-                    if ((!string.IsNullOrWhiteSpace(rubricId)) && int.TryParse(rubricId, out parsedRubricId))
+                    if ((!string.IsNullOrWhiteSpace(rubricId))&&int.TryParse(rubricId,out parsedRubricId)&&parsedRubricId>0&&context.Rubrics.Any(key => key.RubricId==parsedRubricId) )
                     {
                         int matchingHomeworkId = context.Rubrics.SingleOrDefault(key => key.RubricId == parsedRubricId)
                             .HomeworkId;
