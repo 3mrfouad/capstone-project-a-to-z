@@ -124,10 +124,8 @@ export const updateTimeSheetStudent = (solvingHrs, studyHrs) => {
       //       Authorization: `Bearer ${userInfo.token}`,
       //     },
       //   };
-      const {
-        data,
-      } = await axios.patch(
-        "https://localhost:5001/application/homeworksummary",
+      const { data } = await axios.patch(
+        "https://localhost:5001/application/updatetimesheet",
         {
           params: {
             timesheetId: "1",

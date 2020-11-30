@@ -72,7 +72,6 @@ export const updateTimeSheetStudentReducer = (state = {}, action) => {
       return { loading: true };
     case "UPDATE_TIME_SHEET_STUDENT_SUCCESS":
       return { loading: false, success: true, timeSheet: action.payload };
-
     case "UPDATE_TIME_SHEET_STUDENT_FAIL":
       return { loading: false, error: action.payload };
     default:
