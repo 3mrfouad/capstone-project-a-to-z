@@ -12,6 +12,7 @@ import {
   homeworkSummaryStudentReducer,
   homeworkStudentReducer,
   createTimeSheetStudentReducer,
+  updateTimeSheetStudentReducer,
 } from "./studentReducer";
 
 const rootReducers = combineReducers({
@@ -20,6 +21,7 @@ const rootReducers = combineReducers({
   homeworkSummaryStudent: homeworkSummaryStudentReducer,
   homeworkStudent: homeworkStudentReducer,
   createTimeSheetStudent: createTimeSheetStudentReducer,
+  updateTimeSheetStudent: updateTimeSheetStudentReducer,
   cohortCreate: cohortCreateReducer,
   cohortEdit: cohortEditReducer,
   courseCreate: courseCreateReducer,

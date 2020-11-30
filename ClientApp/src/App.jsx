@@ -6,7 +6,6 @@ import CourseSummaryStudent from "./components/Student/CourseSummaryStudent/Cour
 import CourseSummaryInstructor from "./components/Instructor/CourseSummaryInstructor/CourseSummaryInstructor";
 import HomeworkSummaryStudent from "./components/Student/HomeworkSummaryStudent/HomeworkSummaryStudent";
 import HomeworkStudent from "./components/Student/HomeworkStudent/HomeworkStudent";
-import SideBar from "./components/shared/SideBar/SideBar";
 import GradesStudent from "./components/Student/GradesStudent/GradesStudent";
 import CohortCreate from "./components/Instructor/CohortCreate/CohortCreate";
 import CohortEdit from "./components/Instructor/CohortEdit/CohortEdit";
@@ -35,7 +34,6 @@ const App = () => {
             exact
             component={HomeworkStudent}
           />
-          <Route path="/sidebar" exact component={SideBar} />
           <Route path="/gradesstudent" exact component={GradesStudent} />
           <Route path="/cohortcreate" exact component={CohortCreate} />
           <Route path="/cohortedit" exact component={CohortEdit} />

@@ -29,8 +29,11 @@ export const homeworkSummaryStudent = () => {
     try {
       dispatch({ type: "HOMEWORK_SUMMARY_STUDENT_REQUEST" });
       // update the url later
-      const { data } = await axios.get(
-        "https://localhost:5001/application/gethomework"
+      const {
+        data,
+      } = await axios.get(
+        "https://localhost:5001/application/homeworksummary",
+        { params: { courseId: "1", cohortId: "1" } }
       );
       dispatch({
         type: "HOMEWORK_SUMMARY_STUDENT_SUCCESS",
@@ -53,8 +56,11 @@ export const homeworkStudent = () => {
     try {
       dispatch({ type: "HOMEWORK_STUDENT_REQUEST" });
       // update the url later
-      const { data } = await axios.get(
-        "https://localhost:5001/application/gethomework"
+      const {
+        data,
+      } = await axios.get(
+        "https://localhost:5001/application/homeworksummary",
+        { params: { courseId: "1", cohortId: "1" } }
       );
       dispatch({
         type: "HOMEWORK_STUDENT_SUCCESS",
@@ -95,6 +101,49 @@ export const createTimeSheetStudent = (timeSheet) => {
     } catch (error) {
       dispatch({
         type: "CREATE_TIME_SHEET_STUDENT_FAIL",
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.response,
+      });
+    }
+  };
+};
+
+export const updateTimeSheetStudent = (solvingHrs, studyHrs) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: "UPDATE_TIME_SHEET_STUDENT_REQUEST",
+      });
+      //   const {
+      //     userLogin: { userInfo },
+      //   } = getState();
+      //   const config = {
+      //     headers: {
+      //       Authorization: `Bearer ${userInfo.token}`,
+      //     },
+      //   };
+      const {
+        data,
+      } = await axios.patch(
+        "https://localhost:5001/application/homeworksummary",
+        {
+          params: {
+            timesheetId: "1",
+            solvingTime: solvingHrs,
+            studyTime: studyHrs,
+          },
+        }
+      );
+
+      dispatch({
+        type: "UPDATE_TIME_SHEET_STUDENT_SUCCESS",
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: "UPDATE_TIME_SHEET_STUDENT_FAIL",
         payload:
           error.response && error.response.data.message
             ? error.response.data.message

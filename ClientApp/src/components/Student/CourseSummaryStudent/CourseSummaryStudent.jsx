@@ -26,35 +26,18 @@ const CourseSummaryStudent = () => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>React.js</td>
-              <td>
-                React Basicsfffffffffffffffffffffffffffffffffffffffffffffffffff
-              </td>
-              <td>10</td>
-              <td>Instructor A</td>
-              <td>
-                <a href="#">Homework</a>{" "}
-              </td>
-            </tr>
-            <tr>
-              <td>CSS</td>
-              <td>CSS Basics</td>
-              <td>10</td>
-              <td>Instructor B</td>
-              <td>
-                <a href="#">Homework</a>{" "}
-              </td>
-            </tr>
-            <tr>
-              <td>HTML</td>
-              <td>HTML Basics</td>
-              <td>10</td>
-              <td>Instructor B</td>
-              <td>
-                <a href="#">Homework</a>{" "}
-              </td>
-            </tr>
+            {courses.map((course, index) => (
+              <tr key={index}>
+                <td>{course.name}</td>
+                <td>{course.description}</td>
+                <td>{course.durationHrs}</td>
+                <td>{}</td>
+                <td>
+                  {" "}
+                  <a href="#">{course.homeworks[0]}</a>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </Table>
         <button type="button" className="btn btn-link">
