@@ -11,7 +11,8 @@ import CohortCreate from "./components/Instructor/CohortCreate/CohortCreate";
 import CohortEdit from "./components/Instructor/CohortEdit/CohortEdit";
 import CohortSummary from "./components/Instructor/CohortSummary/CohortSummary";
 import GradingSummary from "./components/Instructor/GradingSummary/GradingSummary";
-import CourseCreateEdit from "./components/Instructor/CourseCreate/CourseCreate";
+import CourseCreate from "./components/Instructor/CourseCreate/CourseCreate";
+import CourseEdit from "./components/Instructor/CourseEdit/CourseEdit";
 import GradesInstructorPage from "./screens/GradesInstructorPage/GradesInstructorPage";
 import ManageCourse from "./components/Instructor/ManageCourses/ManageCourses";
 
@@ -36,10 +37,11 @@ const App = () => {
           />
           <Route path="/gradesstudent" exact component={GradesStudent} />
           <Route path="/cohortcreate" exact component={CohortCreate} />
-          <Route path="/cohortedit" exact component={CohortEdit} />
+          <Route path="/cohortedit/:id" exact component={CohortEdit} />
           <Route path="/cohortsummary" exact component={CohortSummary} />
           <Route path="/gradingsummary" exact component={GradingSummary} />
-          <Route path="/coursecreate" exact component={CourseCreateEdit} />
+          <Route path="/coursecreate" exact component={CourseCreate} />
+          <Route path="/courseedit/:id" exact component={CourseEdit} />
           <Route
             path="/GradesInstructorPage"
             exact
