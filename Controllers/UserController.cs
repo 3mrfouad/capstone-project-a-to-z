@@ -138,6 +138,16 @@ namespace AZLearn.Controllers
             return instructors;
         }
 
+        /// <summary>
+        ///  CreateUser
+        ///    Description: Controller action that creates a user
+        ///     It expects below parameters, and would register a user the user information according to the parameter specified
+        /// </summary>
+        /// <param name="cohortId"></param>
+        /// <param name="name"></param>
+        /// <param name="passwordHash"></param>
+        /// <param name="email"></param>
+        /// <param name="isInstructor"></param>
         public static void CreateUser(string cohortId, string name, string passwordHash, string email,
             string isInstructor)
         {
