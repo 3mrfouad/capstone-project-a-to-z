@@ -169,11 +169,16 @@ namespace AZLearn.Controllers
             isInstructor=(string.IsNullOrEmpty(isInstructor)||string.IsNullOrWhiteSpace(isInstructor))
                 ? null
                 : isInstructor.Trim();
-            /*Link email Regex: https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript */
+            /*Link email Regex: https://stackoverflow.com/questions/16167983/best-regular-expression-for-email-validation-in-c-sharp/16168118 */
             /*Link Password Regex : @https://stackoverflow.com/questions/5859632/regular-expression-for-password-validation */
 
-            var emailRegex = new Regex(@"!/^\w+([.-] ?\w+)*@\w+([.-] ?\w+)*(\.\w{ 2,3})+$/");
-            var passwordHashRegex = new Regex(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,15}$");
+
+            var emailRegex = new Regex(@"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z");
+
+            var passwordHashRegex = new Regex(@"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$");
+
+            /*^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,15}$*/
+            /* At least one upper case english letter • At least one lower case english letter • At least one digit • At least one special character • Minimum 8 in length*/
 
             if ( string.IsNullOrWhiteSpace(cohortId) )
             {
@@ -205,7 +210,7 @@ namespace AZLearn.Controllers
 
                 }
             }
-            //Check on Duplicate Names for all archied and Not archived Users
+            //Check on Duplicate Names for all archived and Not archived Users
 
             if ( string.IsNullOrWhiteSpace(name) )
             {
@@ -241,8 +246,9 @@ namespace AZLearn.Controllers
 
             else
             {
-                var isEmailPatternMatch = (emailRegex.IsMatch(email));
-                if ( isEmailPatternMatch )
+
+                if ( !emailRegex.IsMatch(email) )
+
                     exception.ValidationExceptions.Add(new Exception("Email is not in appropriate format"));
             }
 
@@ -260,9 +266,8 @@ namespace AZLearn.Controllers
 
             else
             {
-                var isPasswordhashPatternMatch = (passwordHashRegex.IsMatch(passwordHash));
-                if ( isPasswordhashPatternMatch )
-                    exception.ValidationExceptions.Add(new Exception("Password in appropriate format"));
+                if ( !passwordHashRegex.IsMatch(passwordHash) )
+                    exception.ValidationExceptions.Add(new Exception("Password inappropriate format: Password must be: At least one upper case letter, At least one lower case letter, At least one digit , At least one special character, Minimum 8 in length"));
             }
 
             if ( !string.IsNullOrWhiteSpace(isInstructor) )

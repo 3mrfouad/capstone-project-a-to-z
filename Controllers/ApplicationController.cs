@@ -1031,7 +1031,7 @@ namespace AZLearn.Controllers
             }
             catch ( ValidationException e )
             {
-                var error = "Error(s) During Register User "+
+                var error = "Error(s) During Registering User: "+
                             e.ValidationExceptions.Select(x => x.Message)
                                 .Aggregate((x,y) => x+", "+y);
 
@@ -1046,11 +1046,6 @@ namespace AZLearn.Controllers
         }
 
         #endregion  
-
-
-
-
-
 
         #endregion
 
