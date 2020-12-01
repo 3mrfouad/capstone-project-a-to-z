@@ -756,10 +756,10 @@ namespace AZLearn.Controllers
 
                 result = BadRequest(error);
             }
-            catch (Exception e)
+            catch ( Exception e )
             {
-                result = StatusCode(500,
-                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
+                result=StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): "+e.Message);
             }
 
             return result;

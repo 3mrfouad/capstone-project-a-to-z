@@ -510,6 +510,10 @@ namespace AZLearn.Controllers
                 }
                 else if ( !context.Cohorts.Any(key => key.CohortId==parsedCohortId) )
                     exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
+                else if ( !context.Users.Any(key => key.IsInstructor==false&&key.CohortId==parsedCohortId) )
+                {
+                    exception.ValidationExceptions.Add(new Exception("There is no student registered in this cohort"));
+                }
             }
 
             if ( string.IsNullOrWhiteSpace(homeworkId) )
@@ -527,6 +531,14 @@ namespace AZLearn.Controllers
                 }
                 else if ( !context.Homeworks.Any(key => key.HomeworkId==parsedHomeworkId) )
                     exception.ValidationExceptions.Add(new Exception("Homework Id does not exist"));
+                else if ( (!string.IsNullOrWhiteSpace(cohortId))&&int.TryParse(cohortId,out parsedCohortId) )
+                {
+                    if ( !context.Homeworks.Any(key =>
+                         key.HomeworkId==parsedHomeworkId&&key.CohortId==parsedCohortId) )
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Homework does not exist for this cohort."));
+                    }
+                }
             }
 
             if ( exception.ValidationExceptions.Count>0 ) throw exception;
@@ -542,8 +554,7 @@ namespace AZLearn.Controllers
 
                 //If there are no challenges, then weight of challenge = 0 to avoid NullValueException
                 if ( rubricWeightByGroup.Length==1 )
-                    rubricWeightByGroup[1]=0;
-
+                    rubricWeightByGroup=rubricWeightByGroup.Concat(new int[] { 0 }).ToArray();
 
 
                 //Loop to get GradeSummary for all students in a Cohort
@@ -592,6 +603,7 @@ namespace AZLearn.Controllers
                     0);
                 gradeSummaries.Add(gradeSummary);
             }
+
 
             return gradeSummaries;
 
