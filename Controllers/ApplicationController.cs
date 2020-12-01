@@ -103,7 +103,14 @@ namespace AZLearn.Controllers
         #endregion
 
         #region /application/Cohort
-
+        /// <summary>
+        ///     GetCohortById
+        ///     Description:The API End Point looks for action GetCohortById in CohortController and retrieves the information of that Cohort
+        ///    
+        ///     EndPoint Testing : localhost:xxxxx/application/Cohort
+        ///     
+        /// </summary>
+        /// <returns>The API End Point returns Cohort record with matching CohortId.</returns>
         [HttpGet("Cohort")]
         public ActionResult<Cohort> GetCohortById(string cohortId)
         {
@@ -349,6 +356,42 @@ namespace AZLearn.Controllers
             catch (ValidationException e)
             {
                 var error = "Error(s) During GetCourses: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
+
+                result = BadRequest(error);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
+            }
+            return result;
+        }
+
+        #endregion
+
+        #region /application/Course
+
+        /// <summary>
+        ///     GetCourseById
+        ///     Description:The API End Point looks for action GetCourseById in CourseController and retrieves the information of that Course.
+        ///     
+        ///     EndPoint Testing : localhost:xxxxx/application/Course
+        ///     
+        /// </summary>
+        /// <returns>The API End Point returns Course record with matching CourseId.</returns>
+        [HttpGet("Course")]
+        public ActionResult<Course> GetCourseById(string courseId)
+        {
+            ActionResult<Course> result;
+            try
+            {
+                result = CourseController.GetCourseById(courseId);
+            }
+            catch (ValidationException e)
+            {
+                var error = "Error(s) During GetCourseById: " +
                             e.ValidationExceptions.Select(x => x.Message)
                                 .Aggregate((x, y) => x + ", " + y);
 

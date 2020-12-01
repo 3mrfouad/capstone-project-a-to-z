@@ -324,6 +324,11 @@ namespace AZLearn.Controllers
             return new AppDbContext().Cohorts.ToList();
         }
 
+        /// <summary>
+        ///     This Action takes in cohortId and returns the respective Cohort record
+        /// </summary>
+        /// <param name="cohortId"></param>
+        /// <returns> Single Cohort record</returns>
         public static Cohort GetCohortById(string cohortId)
         {
             var exception = new ValidationException();
