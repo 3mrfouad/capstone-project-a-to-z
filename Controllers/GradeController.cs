@@ -510,6 +510,10 @@ namespace AZLearn.Controllers
                 }
                 else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
                     exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
+                else if (!context.Users.Any(key => key.IsInstructor == false && key.CohortId == parsedCohortId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("There is no student registered in this cohort"));
+                }
             }
 
             if (string.IsNullOrWhiteSpace(homeworkId))
@@ -527,6 +531,14 @@ namespace AZLearn.Controllers
                 }
                 else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId))
                     exception.ValidationExceptions.Add(new Exception("Homework Id does not exist"));
+                else if((!string.IsNullOrWhiteSpace(cohortId)) && int.TryParse(cohortId, out parsedCohortId))
+                {
+                    if (!context.Homeworks.Any(key =>
+                        key.HomeworkId == parsedHomeworkId && key.CohortId == parsedCohortId))
+                    {
+                        exception.ValidationExceptions.Add(new Exception("Homework does not exist for this cohort."));
+                    }
+                }
             }
 
             if (exception.ValidationExceptions.Count > 0) throw exception;
