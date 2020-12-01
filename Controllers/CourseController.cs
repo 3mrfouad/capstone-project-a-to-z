@@ -205,6 +205,7 @@ namespace AZLearn.Controllers
             context.SaveChanges();
         }
 
+      
         /// <summary>
         ///     Get Courses
         ///     Description: Controller action that returns list of existing courses
@@ -335,6 +336,52 @@ namespace AZLearn.Controllers
                 context.Courses.Include(key => key.CohortCourses).SingleOrDefault(key => key.CohortCourses.Any(subKey => subKey.CohortId == parsedCohortId && subKey.CourseId == parsedCourseId));
             return courseByCohortId;
         }
+
+        /// <summary>
+        ///     This Action takes in CourseId and returns respective Course record
+        /// </summary>
+        /// <param name="courseId"></param>
+        /// <returns>Single Course record</returns>
+        public static Course GetCourseById(string courseId)
+        {
+            var parsedCourseId = 0;
+
+            #region Validation
+
+            var exception = new ValidationException();
+            using var context = new AppDbContext();
+
+            courseId=(string.IsNullOrEmpty(courseId)||string.IsNullOrWhiteSpace(courseId)) ? null : courseId.Trim();
+            if ( courseId==null )
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(courseId),nameof(courseId)+" is null."));
+            }
+            else
+            {
+                if ( !int.TryParse(courseId,out parsedCourseId) )
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Course Id"));
+                }
+                if ( parsedCourseId>2147483647||parsedCourseId<1 )
+                {
+                    exception.ValidationExceptions.Add(new Exception("Course Id value should be between 1 & 2147483647 inclusive"));
+                }
+                else if ( !context.Courses.Any(key => key.CourseId==parsedCourseId) )
+                {
+                    exception.ValidationExceptions.Add(new Exception("Course Id does not exist"));
+                }
+            }
+
+            if ( exception.ValidationExceptions.Count>0 )
+            {
+                throw exception;
+            }
+
+            #endregion
+
+            return context.Courses.SingleOrDefault(key => key.CourseId==parsedCourseId);
+        }
+
 
         /// <summary>
         /// ArchiveCourseById

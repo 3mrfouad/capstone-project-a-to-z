@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace AZLearn.Data.Migrations
+namespace AZLearn.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20201130183115_FirstMigration_By_Amr_20201130")]

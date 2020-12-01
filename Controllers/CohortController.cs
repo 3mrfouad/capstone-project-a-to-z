@@ -34,7 +34,7 @@ namespace AZLearn.Controllers
             var exception = new ValidationException();
             name = string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name) ? null : name.Trim().ToLower();
             capacity = string.IsNullOrEmpty(capacity) || string.IsNullOrWhiteSpace(capacity) ? null : capacity.Trim();
-            modeOfTeaching = string.IsNullOrEmpty(modeOfTeaching) || string.IsNullOrWhiteSpace(modeOfTeaching) ? null : modeOfTeaching.Trim();
+            modeOfTeaching = string.IsNullOrEmpty(modeOfTeaching) || string.IsNullOrWhiteSpace(modeOfTeaching) ? null : modeOfTeaching.Trim().ToLower();
             startDate = string.IsNullOrEmpty(startDate) || string.IsNullOrWhiteSpace(startDate) ? null : startDate.Trim();
             endDate = string.IsNullOrEmpty(endDate) || string.IsNullOrWhiteSpace(endDate) ? null : endDate.Trim();
             city = string.IsNullOrEmpty(city) || string.IsNullOrWhiteSpace(city) ? null : city.Trim().ToLower();
@@ -127,7 +127,7 @@ namespace AZLearn.Controllers
                 {
                     Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(name),
                     City = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(city),
-                    ModeOfTeaching = modeOfTeaching,
+                    ModeOfTeaching =CultureInfo.CurrentCulture.TextInfo.ToTitleCase(modeOfTeaching),
                     StartDate = parsedStartDate,
                     EndDate = parsedEndDate
                 });
@@ -139,8 +139,9 @@ namespace AZLearn.Controllers
                     Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(name),
                     Capacity = parsedCapacity,
                     City = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(city),
-                    ModeOfTeaching = modeOfTeaching,
-                    StartDate = parsedStartDate,
+                    ModeOfTeaching=CultureInfo.CurrentCulture.TextInfo.ToTitleCase(modeOfTeaching),
+
+                    StartDate= parsedStartDate,
                     EndDate = parsedEndDate
                 });
             }
@@ -177,16 +178,16 @@ namespace AZLearn.Controllers
             var exception = new ValidationException();
 
             cohortId = (string.IsNullOrEmpty(cohortId) || string.IsNullOrWhiteSpace(cohortId)) ? null : cohortId.Trim();
-            name = string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name) ? null : name.Trim();
+            name = string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name) ? null : name.Trim().ToLower();
             capacity = string.IsNullOrEmpty(capacity) || string.IsNullOrWhiteSpace(capacity) ? null : capacity.Trim();
             modeOfTeaching = string.IsNullOrEmpty(modeOfTeaching) || string.IsNullOrWhiteSpace(modeOfTeaching)
                 ? null
-                : modeOfTeaching.Trim();
+                : modeOfTeaching.Trim().ToLower();
             startDate = string.IsNullOrEmpty(startDate) || string.IsNullOrWhiteSpace(startDate)
                 ? null
                 : startDate.Trim();
             endDate = string.IsNullOrEmpty(endDate) || string.IsNullOrWhiteSpace(endDate) ? null : endDate.Trim();
-            city = string.IsNullOrEmpty(city) || string.IsNullOrWhiteSpace(city) ? null : city.Trim();
+            city = string.IsNullOrEmpty(city) || string.IsNullOrWhiteSpace(city) ? null : city.Trim().ToLower();
 
             using var context = new AppDbContext();
 
@@ -295,7 +296,7 @@ namespace AZLearn.Controllers
             {
                 cohort.Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(name);
                 cohort.City = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(city);
-                cohort.ModeOfTeaching = modeOfTeaching;
+                cohort.ModeOfTeaching =CultureInfo.CurrentCulture.TextInfo.ToTitleCase(modeOfTeaching); 
                 cohort.StartDate = parsedStartDate;
                 cohort.EndDate = parsedEndDate;
             }
@@ -304,7 +305,7 @@ namespace AZLearn.Controllers
                 cohort.Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(name);
                 cohort.Capacity = parsedCapacity;
                 cohort.City = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(city);
-                cohort.ModeOfTeaching = modeOfTeaching;
+                cohort.ModeOfTeaching=CultureInfo.CurrentCulture.TextInfo.ToTitleCase(modeOfTeaching);
                 cohort.StartDate = parsedStartDate;
                 cohort.EndDate = parsedEndDate;
             }
@@ -323,6 +324,48 @@ namespace AZLearn.Controllers
         {
             return new AppDbContext().Cohorts.ToList();
         }
+
+        /// <summary>
+        ///     This Action takes in cohortId and returns the respective Cohort record
+        /// </summary>
+        /// <param name="cohortId"></param>
+        /// <returns> Single Cohort record</returns>
+        public static Cohort GetCohortById(string cohortId)
+        {
+            var exception = new ValidationException();
+            using var context = new AppDbContext();
+            var parsedCohortId = 0;
+
+            #region Validation
+
+            cohortId=string.IsNullOrEmpty(cohortId)||string.IsNullOrWhiteSpace(cohortId) ? null : cohortId.Trim();
+            if ( cohortId==null )
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId),
+                    nameof(cohortId)+" is null."));
+            }
+            else
+            {
+                if ( !int.TryParse(cohortId,out parsedCohortId) )
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
+                }
+                if ( parsedCohortId>2147483647||parsedCohortId<1 )
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id value should be between 1 & 2147483647 inclusive"));
+                }
+                else if ( !context.Cohorts.Any(key => key.CohortId==parsedCohortId) )
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
+                }
+            }
+            if ( exception.ValidationExceptions.Count>0 ) throw exception;
+            #endregion
+
+
+            return context.Cohorts.SingleOrDefault(key => key.CohortId==parsedCohortId);
+        }
+
 
         /// <summary>
         ///     ArchiveCohortById
