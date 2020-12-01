@@ -210,7 +210,6 @@ namespace AZLearn.Controllers
 
                 }
             }
-            //Check on Duplicate Names for all archived and Not archived Users
 
             if ( string.IsNullOrWhiteSpace(name) )
             {
@@ -228,7 +227,6 @@ namespace AZLearn.Controllers
 
             }
 
-            //Check on Duplicate Email for all archied and Not archived Users
             if ( string.IsNullOrWhiteSpace(email) )
             {
                 exception.ValidationExceptions.Add(
