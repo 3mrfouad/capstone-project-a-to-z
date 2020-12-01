@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AZLearn.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201130012408_Homework_DueDate_Migration")]
-    partial class Homework_DueDate_Migration
+    [Migration("20201130183115_FirstMigration_By_Amr_20201130")]
+    partial class FirstMigration_By_Amr_20201130
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
