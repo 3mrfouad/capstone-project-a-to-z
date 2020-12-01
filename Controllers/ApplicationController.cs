@@ -120,6 +120,14 @@ namespace AZLearn.Controllers
             {
                 result=CohortController.GetCohortById(cohortId);
             }
+            catch ( ValidationException e )
+            {
+                var error = "Error(s) During Retrieving a Cohort: "+
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x,y) => x+", "+y);
+                result=BadRequest(error);
+            }
+
             catch ( Exception e )
             {
                 result=StatusCode(500,
@@ -379,7 +387,7 @@ namespace AZLearn.Controllers
         ///     GetCourseById
         ///     Description:The API End Point looks for action GetCourseById in CourseController and retrieves the information of that Course.
         ///     
-        ///     EndPoint Testing : localhost:xxxxx/application/GetCourse
+        ///     EndPoint Testing : localhost:xxxxx/application/GetCourse 
         ///     
         /// </summary>
         /// <returns>The API End Point returns Course record with matching CourseId.</returns>
@@ -1031,7 +1039,7 @@ namespace AZLearn.Controllers
             }
             catch ( ValidationException e )
             {
-                var error = "Error(s) During Register User "+
+                var error = "Error(s) During Registering User: "+
                             e.ValidationExceptions.Select(x => x.Message)
                                 .Aggregate((x,y) => x+", "+y);
 
@@ -1046,11 +1054,6 @@ namespace AZLearn.Controllers
         }
 
         #endregion  
-
-
-
-
-
 
         #endregion
 
