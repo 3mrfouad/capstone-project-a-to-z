@@ -951,6 +951,40 @@ namespace AZLearn.Controllers
 
         #endregion
 
+        #region /application/CreateUser
+
+        [HttpPost(nameof(CreateUser))]
+        public ActionResult CreateUser(string cohortId,string name,string passwordHash,string email,string isInstructor)
+        {
+            ActionResult result;
+            try
+            {
+                UserController.CreateUser(cohortId,name, passwordHash, email,isInstructor);
+                result=StatusCode(200,"Successfully Registered new User");
+            }
+            catch ( ValidationException e )
+            {
+                var error = "Error(s) During Register User "+
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x,y) => x+", "+y);
+
+                result=BadRequest(error);
+            }
+            catch ( Exception e )
+            {
+                result=StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): "+e.Message);
+            }
+            return result;
+        }
+
+        #endregion  
+
+
+
+
+
+
         #endregion
 
         #region Archive EndPoints
