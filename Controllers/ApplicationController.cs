@@ -155,8 +155,8 @@ namespace AZLearn.Controllers
         /// <returns></returns>
         [HttpPost(nameof(CreateCourse))]
         public ActionResult CreateCourse
-        (string name, string description,
-            string durationHrs)
+        ([FromQuery]string name, [FromQuery] string description,
+            [FromQuery] string durationHrs)
         {
             ActionResult result;
             try
@@ -201,8 +201,8 @@ namespace AZLearn.Controllers
         /// <param name="durationHrs"></param>
         /// <returns></returns>
         [HttpPatch("UpdateCourse")]
-        public ActionResult UpdateCourseById(string courseId, string name, string description,
-            string durationHrs)
+        public ActionResult UpdateCourseById([FromQuery]string courseId, [FromQuery] string name, [FromQuery] string description,
+            [FromQuery] string durationHrs)
         {
             ActionResult result;
             try

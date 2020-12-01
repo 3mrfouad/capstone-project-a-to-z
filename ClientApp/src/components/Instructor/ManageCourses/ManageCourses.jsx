@@ -14,34 +14,41 @@ const ManageCourseInstructor = () => {
   }, [dispatch]);
   return (
     <React.Fragment>
-      <Container>
-        <Table>
-          <thead>
-            <tr>
-              <th>Course Name</th>
-              <th>Description</th>
-              <th>Duration</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {courses.map((course, index) => (
-              <tr key={index}>
-                <td>{course.name}</td>
-                <td>{course.description}</td>
-                <td>{course.durationHrs}</td>
-                <td>
-                  <Link>Edit</Link> | <Link>Archive</Link>{" "}
-                </td>
+      {loading ? (
+        <Loader />
+      ) : (
+        <Container>
+          <Table>
+            <thead>
+              <tr>
+                <th>Course Name</th>
+                <th>Description</th>
+                <th>Duration</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
-        <button type="button" className="btn btn-link">
-          Back
-        </button>{" "}
-        <Button className="float-right mr-3">Create Course</Button>
-      </Container>
+            </thead>
+            <tbody>
+              {courses.map((course, index) => (
+                <tr key={index}>
+                  <td>{course.name}</td>
+                  <td>{course.description}</td>
+                  <td>{course.durationHrs}</td>
+                  <td>
+                    <Link to={`/courseedit/${course.courseId}`}>Edit</Link> |{" "}
+                    <Link>Archive</Link>{" "}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+          <button type="button" className="btn btn-link">
+            Back
+          </button>{" "}
+          <Button href="/coursecreate" className="float-right mr-3">
+            Create Course
+          </Button>
+        </Container>
+      )}
     </React.Fragment>
   );
 };

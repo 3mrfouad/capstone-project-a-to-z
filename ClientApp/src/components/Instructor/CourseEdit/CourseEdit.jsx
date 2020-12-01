@@ -1,73 +1,99 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Button, Row, Col, Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { editCourse } from "../../../actions/instructorActions";
+import { editCourse, getCourse } from "../../../actions/instructorActions";
+import Loader from "../../shared/Loader/Loader";
+import Message from "../../shared/Message/Message";
 
-const CourseEdit = () => {
+const CourseEdit = ({ match, history }) => {
+  const courseId = match.params.id;
   const [courseName, setCourseName] = useState("");
-  const [hours, setHours] = useState(0);
+  const [hours, setHours] = useState("");
   const [description, setDescription] = useState("");
   const dispatch = useDispatch();
-  useEffect(() => {
-    // get course by id
-    // populate the cohort data in here
-  }, []);
+
   const courseEdit = useSelector((state) => state.courseEdit);
-  const { loading, error, course } = courseEdit;
+  const getCourseDetail = useSelector((state) => state.getCourse);
+  const { success } = courseEdit;
+  const { loading, error, course } = getCourseDetail;
+
+  useEffect(() => {
+    if (success) {
+      dispatch({
+        type: "COURSE_EDIT_RESET",
+      });
+    } else {
+      if (!course || !course.name) {
+        dispatch(getCourse(courseId));
+      } else {
+        setCourseName(course.name);
+        setDescription(course.description);
+        setHours(course.durationHrs);
+      }
+    }
+  }, [dispatch, course, success]);
+
   const submitHandler = (e) => {
     e.preventDefault();
     console.log("edit course");
-    dispatch(editCourse());
+    dispatch(
+      editCourse({
+        courseId,
+        name: courseName,
+        description,
+        durationHrs: hours,
+      })
+    );
   };
   return (
     <React.Fragment>
-      <Container>
-        <Row className="justify-content-md-center">
-          <Col xs={12} md={6}>
-            <h2>Course</h2>
-            <Form onSubmit={submitHandler}>
-              <Form.Group controlId="">
-                <Form.Row className="mt-5">
+      {loading ? (
+        <Loader />
+      ) : (
+        <Container>
+          <Row className="justify-content-md-center">
+            <Col xs={12} md={6}>
+              <h2>Course</h2>
+              {success && (
+                <Message variant="success">Update Successfully</Message>
+              )}
+              <Form onSubmit={submitHandler}>
+                <Form.Group controlId="">
                   <Form.Label>Course Name</Form.Label>
-                  <Col>
-                    <Form.Control
-                      type="text"
-                      value={courseName}
-                      onChange={(e) => setCourseName(e.target.value)}
-                    ></Form.Control>
-                  </Col>
-                </Form.Row>
-                <Form.Row className="mt-5">
+
+                  <Form.Control
+                    type="text"
+                    value={courseName}
+                    onChange={(e) => setCourseName(e.target.value)}
+                  ></Form.Control>
+
                   <Form.Label className="mr-5">Hours</Form.Label>
-                  <Col>
-                    <Form.Control
-                      type="text"
-                      value={hours}
-                      onChange={(e) => setHours(e.target.value)}
-                    ></Form.Control>
-                  </Col>
-                </Form.Row>
-                <Form.Row className="mt-5">
+
+                  <Form.Control
+                    type="text"
+                    value={hours}
+                    onChange={(e) => setHours(e.target.value)}
+                  ></Form.Control>
+
                   <Form.Label>Description</Form.Label>
-                  <Col>
-                    <Form.Control
-                      type="text"
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
-                    ></Form.Control>
-                  </Col>
-                </Form.Row>
-              </Form.Group>
-              <button type="button" className="btn btn-link">
-                Back
-              </button>{" "}
-              <Button type="submit" className="float-right">
-                Create Course
-              </Button>
-            </Form>
-          </Col>
-        </Row>
-      </Container>
+
+                  <Form.Control
+                    type="text"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                  ></Form.Control>
+                </Form.Group>
+                <button type="button" className="btn btn-link">
+                  Back
+                </button>{" "}
+                <Button type="submit" className="float-right">
+                  Save
+                </Button>
+              </Form>
+            </Col>
+          </Row>
+        </Container>
+      )}
     </React.Fragment>
   );
 };

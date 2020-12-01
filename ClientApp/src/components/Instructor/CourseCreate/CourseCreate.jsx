@@ -5,7 +5,7 @@ import { createCourse } from "../../../actions/instructorActions";
 
 const CourseCreate = () => {
   const [courseName, setCourseName] = useState("");
-  const [hours, setHours] = useState(0);
+  const [hours, setHours] = useState("");
   const [description, setDescription] = useState("");
   const dispatch = useDispatch();
   useEffect(() => {
@@ -17,7 +17,13 @@ const CourseCreate = () => {
   const submitHandler = (e) => {
     e.preventDefault();
     console.log("create course");
-    dispatch(createCourse());
+    dispatch(
+      createCourse({
+        courseName,
+        hours,
+        description,
+      })
+    );
   };
   return (
     <React.Fragment>
@@ -26,37 +32,30 @@ const CourseCreate = () => {
           <Col xs={12} md={6}>
             <h2>Course</h2>
             <Form onSubmit={submitHandler}>
-              <Form.Group controlId="">
-                <Form.Row className="mt-5">
-                  <Form.Label>Course Name</Form.Label>
-                  <Col>
-                    <Form.Control
-                      type="text"
-                      value={courseName}
-                      onChange={(e) => setCourseName(e.target.value)}
-                    ></Form.Control>
-                  </Col>
-                </Form.Row>
-                <Form.Row className="mt-5">
-                  <Form.Label className="mr-5">Hours</Form.Label>
-                  <Col>
-                    <Form.Control
-                      type="text"
-                      value={hours}
-                      onChange={(e) => setHours(e.target.value)}
-                    ></Form.Control>
-                  </Col>
-                </Form.Row>
-                <Form.Row className="mt-5">
-                  <Form.Label>Description</Form.Label>
-                  <Col>
-                    <Form.Control
-                      type="text"
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
-                    ></Form.Control>
-                  </Col>
-                </Form.Row>
+              <Form.Group controlId="CourseName">
+                <Form.Label>Course Name</Form.Label>
+
+                <Form.Control
+                  type="text"
+                  value={courseName}
+                  onChange={(e) => setCourseName(e.target.value)}
+                ></Form.Control>
+
+                <Form.Label className="mr-5">Hours</Form.Label>
+
+                <Form.Control
+                  type="text"
+                  value={hours}
+                  onChange={(e) => setHours(e.target.value)}
+                ></Form.Control>
+
+                <Form.Label>Description</Form.Label>
+
+                <Form.Control
+                  type="text"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                ></Form.Control>
               </Form.Group>
               <button type="button" className="btn btn-link">
                 Back

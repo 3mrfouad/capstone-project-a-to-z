@@ -89,15 +89,31 @@ export const courseCreateReducer = (state = {}, action) => {
   }
 };
 
+export const getCourseReducer = (state = {}, action) => {
+  switch (action.type) {
+    case "COURSE_GET_REQUEST":
+      return { loading: true };
+    case "COURSE_GET_SUCCESS":
+      return { loading: false, course: action.payload };
+
+    case "COURSE_GET_FAIL":
+      return { loading: false, error: action.payload };
+
+    default:
+      return state;
+  }
+};
+
 export const courseEditReducer = (state = {}, action) => {
   switch (action.type) {
     case "COURSE_EDIT_REQUEST":
       return { loading: true };
     case "COURSE_EDIT_SUCCESS":
       return { loading: false, success: true, course: action.payload };
-
     case "COURSE_EDIT_FAIL":
       return { loading: false, error: action.payload };
+    case "COURSE_EDIT_RESET":
+      return {};
     default:
       return state;
   }
