@@ -510,24 +510,6 @@ namespace AZLearn.Controllers
                 result = StatusCode(500,
                     "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
-            try
-            {
-                timesheet = TimesheetController.GetTimesheetByHomeworkId(homeworkId,studentId);
-                result=new Tuple<Homework,Timesheet>(homework,timesheet);
-            }
-            catch ( ValidationException e )
-            {
-                var error = "Error(s) During GetHomeworkTimesheetForStudent: "+
-                            e.ValidationExceptions.Select(x => x.Message)
-                                .Aggregate((x,y) => x+", "+y);
-
-                result=BadRequest(error);
-            }
-            catch ( Exception e )
-            {
-                result=StatusCode(500,
-                    "Unexpected server/database error occurred. System error message(s): "+e.Message);
-            }
 
             return result;
         }
