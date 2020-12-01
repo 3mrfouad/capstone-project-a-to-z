@@ -211,9 +211,16 @@ namespace AZLearn.Controllers
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(name),nameof(name)+" is null."));
             }
-            else if ( name.Length>50 )
+            else 
             {
-                exception.ValidationExceptions.Add(new Exception("Name can only be 50 characters long."));
+                if (name.Length > 50)
+                    exception.ValidationExceptions.Add(new Exception("Name can only be 50 characters long."));
+
+                else if ( context.Users.Any(key => key.Name.ToLower()==name.ToLower()) )
+                {
+                    exception.ValidationExceptions.Add(new Exception("User with this name already exists."));
+                }
+
             }
 
             //Check on Duplicate Email for all archied and Not archived Users
@@ -223,9 +230,13 @@ namespace AZLearn.Controllers
                     new ArgumentNullException(nameof(email),nameof(email)+" is null."));
             }
 
-            else if ( email.Length>50 )
-            {
+            else 
+            if ( email.Length>50 )
                 exception.ValidationExceptions.Add(new Exception("Email can only be 50 characters long."));
+
+            else if ( context.Users.Any(key => key.Email.ToLower()==email.ToLower()) )
+            {
+                exception.ValidationExceptions.Add(new Exception("Email already exists,Please try to use a different email address."));
             }
 
             else
