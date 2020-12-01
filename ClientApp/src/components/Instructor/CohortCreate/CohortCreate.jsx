@@ -5,7 +5,7 @@ import { createCohort } from "../../../actions/instructorActions";
 
 const CohortCreate = () => {
   const [name, setName] = useState("");
-  const [capacity, setCapacity] = useState(0);
+  const [capacity, setCapacity] = useState("");
   const [modeOfTeaching, setModeOfTeaching] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -16,7 +16,7 @@ const CohortCreate = () => {
     // populate the cohort data in here
   }, []);
   const cohortCreate = useSelector((state) => state.cohortCreate);
-  const { loading, error, product } = cohortCreate;
+  const { loading, error, cohort, success } = cohortCreate;
   const dispatch = useDispatch();
 
   const submitHandler = (e) => {
@@ -89,12 +89,12 @@ const CohortCreate = () => {
                   onChange={(e) => setCity(e.target.value)}
                 ></Form.Control>
               </Form.Group>
-              <Button type="submit" variant="primary">
+              <a href="">Back</a>
+              <Button className="float-right" type="submit" variant="primary">
                 {" "}
                 Save
               </Button>
             </Form>
-            <a href="">Back</a>
           </Col>
         </Row>
       </Container>

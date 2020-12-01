@@ -78,7 +78,7 @@ export const homeworkStudent = () => {
   };
 };
 
-export const createTimeSheetStudent = (timeSheet) => {
+export const createTimeSheetStudent = (solvingHrs, studyHrs) => {
   return async (dispatch, getState) => {
     try {
       dispatch({
@@ -92,7 +92,23 @@ export const createTimeSheetStudent = (timeSheet) => {
       //       Authorization: `Bearer ${userInfo.token}`,
       //     },
       //   };
-      const { data } = await axios.post(`/api/products`, timeSheet);
+      const { data } = await axios.post(
+        "https://localhost:5001/application/createtimesheet",
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+
+          params: {
+            homeworkId: "1",
+            studentId: "4",
+            solvingTime: solvingHrs,
+            studyTime: studyHrs,
+          },
+        }
+      );
 
       dispatch({
         type: "CREATE_TIME_SHEET_STUDENT_SUCCESS",

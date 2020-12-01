@@ -95,6 +95,11 @@ namespace AZLearn.Controllers
                 }
             }
 
+            if ( rubrics.Count==0 )
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(rubrics),
+                    nameof(rubrics)+" is null."));
+            }
             #endregion
 
             foreach ( var (tempIsChallenge, tempCriteria, tempWeight) in rubrics )
@@ -169,6 +174,10 @@ namespace AZLearn.Controllers
                 });
             }
 
+            if ( exception.ValidationExceptions.Count>0 )
+            {
+                throw exception;
+            }
             context.SaveChanges();
         }
         /// <summary>
@@ -178,6 +187,13 @@ namespace AZLearn.Controllers
         public static void UpdateRubricsById(Dictionary<string, Tuple<string, string, string>> rubrics)
         {
             using var context = new AppDbContext();
+            ValidationException exception = new ValidationException();
+            if (rubrics.Count == 0)
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(rubrics),
+                    nameof(rubrics)+" is null."));
+            }
+
             foreach ( var (tempRubricId, (tempIsChallenge, tempCriteria, tempWeight)) in rubrics )
             {
                 var rubricId = string.IsNullOrEmpty(tempRubricId) || string.IsNullOrWhiteSpace(tempRubricId)
@@ -199,7 +215,6 @@ namespace AZLearn.Controllers
 
                 #region Validation
 
-                ValidationException exception = new ValidationException();
 
                 if (string.IsNullOrWhiteSpace(rubricId))
                 {
@@ -207,7 +222,7 @@ namespace AZLearn.Controllers
                 }
                 else
                 {
-                    if (!int.TryParse(rubricId.Trim(), out parsedRubricId))
+                    if (!int.TryParse(rubricId, out parsedRubricId))
                     {
                         exception.ValidationExceptions.Add(new Exception("Invalid value for Rubric Id"));
                     }
@@ -226,11 +241,12 @@ namespace AZLearn.Controllers
                 }
                 if (!string.IsNullOrWhiteSpace(isChallenge))
                 {
-                    if (!bool.TryParse(isChallenge.Trim(), out parsedIsChallenge))
+                    if (!bool.TryParse(isChallenge, out parsedIsChallenge))
                     {
                         exception.ValidationExceptions.Add(new Exception("Invalid value for isChallenge"));
                     }
                 }
+
                 if (string.IsNullOrWhiteSpace(criteria))
                 {
                     exception.ValidationExceptions.Add(new Exception("Criteria is null"));
@@ -241,17 +257,17 @@ namespace AZLearn.Controllers
                     {
                         exception.ValidationExceptions.Add(new Exception("Criteria should be max 250 characters long."));
                     }
-                    if ((!string.IsNullOrWhiteSpace(rubricId)) && int.TryParse(rubricId.Trim(), out parsedRubricId))
+                    if ((!string.IsNullOrWhiteSpace(rubricId)) && int.TryParse(rubricId, out parsedRubricId) && parsedRubricId >0 && context.Rubrics.Any(key => key.RubricId == parsedRubricId))
                     {
                         int matchingHomeworkId = context.Rubrics.SingleOrDefault(key => key.RubricId == parsedRubricId)
                             .HomeworkId;
-                        if (context.Rubrics.Any(key => key.Criteria.ToLower() == criteria.Trim().ToLower()))
+                        if (context.Rubrics.Any(key => key.Criteria.ToLower() == criteria.ToLower()))
                         {
                             if (!context.Rubrics.Any(key =>
-                                key.Criteria.ToLower() == criteria.Trim().ToLower() && key.RubricId == parsedRubricId))
+                                key.Criteria.ToLower() == criteria.ToLower() && key.RubricId == parsedRubricId))
                             {
                                 if (context.Rubrics.Any(key =>
-                                    key.Criteria.ToLower() == criteria.Trim().ToLower() &&
+                                    key.Criteria.ToLower() == criteria.ToLower() &&
                                     key.Homework.HomeworkId == matchingHomeworkId))
                                 {
                                     exception.ValidationExceptions.Add(
@@ -267,7 +283,7 @@ namespace AZLearn.Controllers
                 }
                 else
                 {
-                    if (!int.TryParse(weight.Trim(), out parsedWeight))
+                    if (!int.TryParse(weight, out parsedWeight))
                     {
                         exception.ValidationExceptions.Add(new Exception("Invalid value for weight"));
                     }
@@ -289,6 +305,10 @@ namespace AZLearn.Controllers
                 rubric.Weight=parsedWeight;
                 }
 
+            if ( exception.ValidationExceptions.Count>0 )
+            {
+                throw exception;
+            }
             context.SaveChanges();
             }
         public static void ArchiveRubricsById(List<string> rubrics)

@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   updateTimeSheetStudent,
   homeworkStudent,
+  createTimeSheetStudent,
 } from "../../../actions/studentActions";
 
 const HomeworkStudent = () => {
@@ -13,13 +14,29 @@ const HomeworkStudent = () => {
   const dispatch = useDispatch();
 
   const { homework, loading } = useSelector((state) => state.homeworkStudent);
+  const {
+    loading: loadingCreate,
+    success: successCreate,
+    timeSheet,
+    error,
+  } = useSelector((state) => state.createTimeSheetStudent);
   useEffect(() => {
     dispatch(homeworkStudent());
+    setSolvingHrs(homework[0].timesheets[0]);
+    setStudyHrs(homework[0].timesheets[1]);
   }, [dispatch]);
   // console.log(homework);
-  const summitHandler = (e) => {
-    e.preventDefault();
-    dispatch(updateTimeSheetStudent(solvingHrs, studyHrs));
+  const summitHandler = (event) => {
+    event.preventDefault();
+    // if (
+    //   homework[0].timesheets[0] == null &&
+    //   homework[0].timesheets[1] == null
+    // ) {
+    //   dispatch(createTimeSheetStudent(solvingHrs, studyHrs));
+    // }
+    // dispatch(updateTimeSheetStudent(solvingHrs, studyHrs));
+    dispatch(createTimeSheetStudent(solvingHrs, studyHrs));
+    console.log("create timesheet");
   };
   return (
     <React.Fragment>
@@ -30,7 +47,7 @@ const HomeworkStudent = () => {
           <Row className="justify-content-md-center">
             <Col xs={12} md={6}>
               <h3>Homework</h3>
-              <Form onSubmit={summitHandler}>
+              <Form>
                 <Form.Group controlId="title">
                   <Form.Label>Title</Form.Label>
                   <Form.Control
@@ -93,19 +110,19 @@ const HomeworkStudent = () => {
                   ></Form.Control>
                 </Form.Group>
               </Form>
-              <Form>
+              <Form onSubmit={summitHandler}>
                 <h3>Timesheet</h3>
                 <Form.Group controlId="Solving/Troubleshooting">
                   <Form.Label>Solving/Troubleshooting</Form.Label>
                   <Form.Control
-                    value={homework[0].timesheets[0]}
+                    value={solvingHrs ? solvingHrs : "0"}
                     onChange={(e) => setSolvingHrs(e.target.value)}
                   ></Form.Control>
                 </Form.Group>
                 <Form.Group controlId="Study/Research">
                   <Form.Label>Study/Research</Form.Label>
                   <Form.Control
-                    value={homework[0].timesheets[1]}
+                    value={studyHrs ? studyHrs : "0"}
                     onChange={(e) => setStudyHrs(e.target.value)}
                   ></Form.Control>
                 </Form.Group>

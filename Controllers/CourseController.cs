@@ -27,7 +27,7 @@ namespace AZLearn.Controllers
 
             #region Validation
 
-            name = string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name) ? null : name.Trim();
+            name = string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name) ? null : name.Trim().ToLower();
             description = string.IsNullOrEmpty(description) || string.IsNullOrWhiteSpace(description) ? null : description.Trim();
             durationHrs = string.IsNullOrEmpty(durationHrs) || string.IsNullOrWhiteSpace(durationHrs) ? null : durationHrs.Trim();
 
@@ -114,7 +114,7 @@ namespace AZLearn.Controllers
             #region Validation
 
             courseId = string.IsNullOrEmpty(courseId) || string.IsNullOrWhiteSpace(courseId) ? null : courseId.Trim();
-            name = string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name) ? null : name.Trim();
+            name = string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name) ? null : name.Trim().ToLower();
             description = string.IsNullOrEmpty(description) || string.IsNullOrWhiteSpace(description) ? null : description.Trim();
             durationHrs = string.IsNullOrEmpty(durationHrs) || string.IsNullOrWhiteSpace(durationHrs) ? null : durationHrs.Trim();
 
@@ -337,11 +337,56 @@ namespace AZLearn.Controllers
         }
 
         /// <summary>
-        /// ArchiveCourseById
-        /// Description: This action archives a course by courseId PK
+        ///     This Action takes in CourseId and returns respective Course record
         /// </summary>
         /// <param name="courseId"></param>
-        public static void ArchiveCourseById(string courseId)
+        /// <returns>Single Course record</returns>
+        public static Course GetCourseById(string courseId)
+        {
+            var parsedCourseId = 0;
+
+            #region Validation
+
+            var exception = new ValidationException();
+            using var context = new AppDbContext();
+
+            courseId = (string.IsNullOrEmpty(courseId) || string.IsNullOrWhiteSpace(courseId)) ? null : courseId.Trim();
+            if (courseId == null)
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(courseId), nameof(courseId) + " is null."));
+            }
+            else
+            {
+                if (!int.TryParse(courseId, out parsedCourseId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Course Id"));
+                }
+                if (parsedCourseId > 2147483647 || parsedCourseId < 1)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Course Id value should be between 1 & 2147483647 inclusive"));
+                }
+                else if (!context.Courses.Any(key => key.CourseId == parsedCourseId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Course Id does not exist"));
+                }
+            }
+
+            if (exception.ValidationExceptions.Count > 0)
+            {
+                throw exception;
+            }
+
+            #endregion
+
+            return context.Courses.SingleOrDefault(key => key.CourseId == parsedCourseId);
+        }
+
+        /// <summary>
+    /// ArchiveCourseById
+    /// Description: This action archives a course by courseId PK
+    /// </summary>
+    /// <param name="courseId"></param>
+    public static void ArchiveCourseById(string courseId)
         {
             var parsedCourseId = 0;
             var exception = new ValidationException();
@@ -370,6 +415,11 @@ namespace AZLearn.Controllers
                 {
                     exception.ValidationExceptions.Add(new Exception("Course is already archived"));
                 }
+            }
+
+            if (exception.ValidationExceptions.Count > 0)
+            {
+                throw exception;
             }
 
             var homeworks = context.Homeworks.Where(key => key.CourseId == parsedCourseId).ToList();
