@@ -594,9 +594,9 @@ namespace AZLearn.Controllers
         /// <param name="homeworkId"></param>
         /// <returns></returns>
         [HttpGet("GetHomework")]
-        public ActionResult<Tuple<Homework, List<Rubric>, List<User>, List<Course>>> GetHomeworkForInstructor(string homeworkId)
+        public ActionResult<Tuple<Homework, List<Rubric>, List<string>, List<Course>>> GetHomeworkForInstructor(string homeworkId)
         {
-            ActionResult<Tuple<Homework, List<Rubric>, List<User>, List<Course>>> result;
+            ActionResult<Tuple<Homework, List<Rubric>, List<string>, List<Course>>> result;
             try
             {
                 var homework = HomeworkController.GetHomeworkById(homeworkId);
@@ -605,9 +605,9 @@ namespace AZLearn.Controllers
 
                 var coursesList = CourseController.GetCourses();
 
-                var instructorsList = UserController.GetInstructors();
+                var instructorsList = UserController.GetInstructors().Select(key => key.Name).ToList();
 
-                result = new Tuple<Homework, List<Rubric>, List<User>, List<Course>>(homework, rubricsList, instructorsList, coursesList);
+                result = new Tuple<Homework, List<Rubric>, List<string>, List<Course>>(homework, rubricsList, instructorsList, coursesList);
             }
             catch (ValidationException e)
             {
