@@ -102,6 +102,27 @@ namespace AZLearn.Controllers
 
         #endregion
 
+        #region /application/Cohort
+
+        [HttpGet("Cohort")]
+        public ActionResult<Cohort> GetCohortById(string cohortId)
+        {
+            ActionResult<Cohort> result;
+            try
+            {
+                result = CohortController.GetCohortById(cohortId);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
+            }
+
+            return result;
+        }
+
+        #endregion
+
         #endregion
 
         #region CourseController

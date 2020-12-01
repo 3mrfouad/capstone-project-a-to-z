@@ -324,6 +324,42 @@ namespace AZLearn.Controllers
             return new AppDbContext().Cohorts.ToList();
         }
 
+        public static Cohort GetCohortById(string cohortId)
+        {
+            var exception = new ValidationException();
+            using var context = new AppDbContext();
+            var parsedCohortId = 0;
+
+            #region Validation
+
+            cohortId = string.IsNullOrEmpty(cohortId) || string.IsNullOrWhiteSpace(cohortId) ? null : cohortId.Trim();
+            if (cohortId == null)
+            {
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId),
+                    nameof(cohortId) + " is null."));
+            }
+            else
+            {
+                if (!int.TryParse(cohortId, out parsedCohortId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
+                }
+                if (parsedCohortId > 2147483647 || parsedCohortId < 1)
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id value should be between 1 & 2147483647 inclusive"));
+                }
+                else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
+                {
+                    exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
+                }
+            }
+            if (exception.ValidationExceptions.Count > 0) throw exception;
+            #endregion
+
+
+            return context.Cohorts.SingleOrDefault(key => key.CohortId == parsedCohortId);
+        }
+
         /// <summary>
         ///     ArchiveCohortById
         ///     Description: This action archives a cohort by cohortId PK
