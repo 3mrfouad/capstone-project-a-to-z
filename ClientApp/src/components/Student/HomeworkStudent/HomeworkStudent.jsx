@@ -114,7 +114,7 @@ const HomeworkStudent = () => {
                 <h3>Timesheet</h3>
                 <Form.Group controlId="Solving/Troubleshooting">
                   <Form.Label>Solving/Troubleshooting</Form.Label>
-                  <Form.Control
+                  <Form.Control 
                     value={solvingHrs ? solvingHrs : "0"}
                     onChange={(e) => setSolvingHrs(e.target.value)}
                   ></Form.Control>

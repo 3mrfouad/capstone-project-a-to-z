@@ -485,30 +485,31 @@ namespace AZLearn.Controllers
             var parsedHomeworkId = 0;
            
 
+
             #region Validation
 
             var exception = new ValidationException();
 
-            cohortId = string.IsNullOrEmpty(cohortId) || string.IsNullOrWhiteSpace(cohortId) ? null : cohortId.Trim();
-            homeworkId = string.IsNullOrEmpty(homeworkId) || string.IsNullOrWhiteSpace(homeworkId)
+            cohortId=string.IsNullOrEmpty(cohortId)||string.IsNullOrWhiteSpace(cohortId) ? null : cohortId.Trim();
+            homeworkId=string.IsNullOrEmpty(homeworkId)||string.IsNullOrWhiteSpace(homeworkId)
                 ? null
                 : homeworkId.Trim();
 
             using var context = new AppDbContext();
-            if (string.IsNullOrWhiteSpace(cohortId))
+            if ( string.IsNullOrWhiteSpace(cohortId) )
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId),
-                    nameof(cohortId) + " is null."));
+                    nameof(cohortId)+" is null."));
             }
             else
             {
-                if (!int.TryParse(cohortId, out parsedCohortId))
+                if ( !int.TryParse(cohortId,out parsedCohortId) )
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
-                if (parsedCohortId > 2147483647 || parsedCohortId < 1)
+                if ( parsedCohortId>2147483647||parsedCohortId<1 )
                 {
                     exception.ValidationExceptions.Add(new Exception("Cohort Id value should be between 1 & 2147483647 inclusive"));
                 }
-                else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
+                else if ( !context.Cohorts.Any(key => key.CohortId==parsedCohortId) )
                     exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
                 else if (!context.Users.Any(key => key.IsInstructor == false && key.CohortId == parsedCohortId))
                 {
@@ -516,20 +517,20 @@ namespace AZLearn.Controllers
                 }
             }
 
-            if (string.IsNullOrWhiteSpace(homeworkId))
+            if ( string.IsNullOrWhiteSpace(homeworkId) )
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(homeworkId),
-                    nameof(homeworkId) + " is null."));
+                    nameof(homeworkId)+" is null."));
             }
             else
             {
-                if (!int.TryParse(homeworkId, out parsedHomeworkId))
+                if ( !int.TryParse(homeworkId,out parsedHomeworkId) )
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Homework Id"));
-                if (parsedHomeworkId > 2147483647 || parsedHomeworkId < 1)
+                if ( parsedHomeworkId>2147483647||parsedHomeworkId<1 )
                 {
                     exception.ValidationExceptions.Add(new Exception("Homework Id value should be between 1 & 2147483647 inclusive"));
                 }
-                else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId))
+                else if ( !context.Homeworks.Any(key => key.HomeworkId==parsedHomeworkId) )
                     exception.ValidationExceptions.Add(new Exception("Homework Id does not exist"));
                 else if((!string.IsNullOrWhiteSpace(cohortId)) && int.TryParse(cohortId, out parsedCohortId))
                 {
@@ -541,7 +542,7 @@ namespace AZLearn.Controllers
                 }
             }
 
-            if (exception.ValidationExceptions.Count > 0) throw exception;
+            if ( exception.ValidationExceptions.Count>0 ) throw exception;
 
             #endregion
 
@@ -555,8 +556,6 @@ namespace AZLearn.Controllers
                 //If there are no challenges, then weight of challenge = 0 to avoid NullValueException
                 if (rubricWeightByGroup.Length == 1)
                     rubricWeightByGroup = rubricWeightByGroup.Concat(new int[] { 0 }).ToArray();
-
-
 
                 //Loop to get GradeSummary for all students in a Cohort
                 foreach (var student in studentsByCohort)
@@ -585,11 +584,13 @@ namespace AZLearn.Controllers
                             .Select(key => key.Sum(s => s.Mark))
                             .ToArray();
                         //In case there are no challenges, we will show 0/0 for challenges' marks
-                        if (marksByGroup.Length == 1) marksByGroup[1] = 0;
-
-                        gradeSummary = new GradeSummaryTypeForInstructor($"{total}",
+                        if ( marksByGroup.Length==1 )
+                        {
+                            marksByGroup = marksByGroup.Concat(new int[] { 0 }).ToArray();
+                        }
+                        gradeSummary=new GradeSummaryTypeForInstructor($"{total}",
                             $"{marksByGroup[0]}/{rubricWeightByGroup[0]}",
-                            $"{marksByGroup[1]}/{rubricWeightByGroup[1]}", totalTimeSpentOnHomework, studentName,
+                            $"{marksByGroup[1]}/{rubricWeightByGroup[1]}",totalTimeSpentOnHomework,studentName,
                             student.UserId);
                     }
 
@@ -600,10 +601,11 @@ namespace AZLearn.Controllers
             {
                 GradeSummaryTypeForInstructor gradeSummary = new GradeSummaryTypeForInstructor(" ",
                     " ",
-                    " ", " ", "No rubrics found for this homework ",
+                    " "," ","No rubrics found for this homework ",
                     0);
                 gradeSummaries.Add(gradeSummary);
             }
+
 
             return gradeSummaries;
         }

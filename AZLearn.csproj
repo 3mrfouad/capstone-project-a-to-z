@@ -39,6 +39,7 @@
     <Folder Include="ClientApp\src\reducers\" />
     <Folder Include="ClientApp\src\reducers\" />
     <Folder Include="ClientApp\src\reducers\" />
+    <Folder Include="Data\Migrations\" />
     <Folder Include="Models\CodeSnippets\ExceptionSnippets\" />
   </ItemGroup>
 
