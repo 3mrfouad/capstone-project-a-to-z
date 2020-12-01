@@ -554,7 +554,7 @@ namespace AZLearn.Controllers
 
                 //If there are no challenges, then weight of challenge = 0 to avoid NullValueException
                 if (rubricWeightByGroup.Length == 1)
-                    rubricWeightByGroup[1] = 0;
+                    rubricWeightByGroup = rubricWeightByGroup.Concat(new int[] { 0 }).ToArray();
 
 
 
