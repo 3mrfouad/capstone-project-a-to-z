@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO.Compression;
 using System.Linq;
 using AZLearn.Data;
 using AZLearn.Models;
@@ -24,15 +23,18 @@ namespace AZLearn.Controllers
         public static void CreateCourse(string name, string description, string durationHrs)
         {
             float parsedDurationHrs = 0;
+            using var context = new AppDbContext();
+            var exception = new ValidationException();
 
             #region Validation
 
             name = string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name) ? null : name.Trim().ToLower();
-            description = string.IsNullOrEmpty(description) || string.IsNullOrWhiteSpace(description) ? null : description.Trim();
-            durationHrs = string.IsNullOrEmpty(durationHrs) || string.IsNullOrWhiteSpace(durationHrs) ? null : durationHrs.Trim();
-
-            using var context = new AppDbContext();
-            ValidationException exception = new ValidationException();
+            description = string.IsNullOrEmpty(description) || string.IsNullOrWhiteSpace(description)
+                ? null
+                : description.Trim();
+            durationHrs = string.IsNullOrEmpty(durationHrs) || string.IsNullOrWhiteSpace(durationHrs)
+                ? null
+                : durationHrs.Trim();
 
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -41,54 +43,45 @@ namespace AZLearn.Controllers
             else
             {
                 if (name.Length > 50)
-                {
                     exception.ValidationExceptions.Add(new Exception("Course name can only be 50 characters long."));
-                }
                 else if (context.Courses.Any(key => key.Name.ToLower() == name.ToLower() && key.Archive == false))
-                {
                     exception.ValidationExceptions.Add(new Exception("Course with this name already exists."));
-                }
             }
+
             if (string.IsNullOrWhiteSpace(description))
-            {
-                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(description), nameof(description) + " is null."));
-            }
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(description),
+                    nameof(description) + " is null."));
             else if (description.Length > 250)
-            {
-                exception.ValidationExceptions.Add(new Exception("Course Description can only be 250 characters long."));
-            }
+                exception.ValidationExceptions.Add(
+                    new Exception("Course description can only be 250 characters long."));
             if (string.IsNullOrWhiteSpace(durationHrs))
             {
-                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(durationHrs), nameof(durationHrs) + " is null."));
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(durationHrs),
+                    nameof(durationHrs) + " is null."));
             }
             else
             {
                 if (!float.TryParse(durationHrs, out parsedDurationHrs))
-                {
-                    exception.ValidationExceptions.Add(new Exception("Invalid value for DurationHrs"));
-                }
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for durationHrs"));
                 else if (parsedDurationHrs > 999.99 || parsedDurationHrs < 0)
-                {
-                    exception.ValidationExceptions.Add(new Exception("DurationHrs value should be between 0 & 999.99 inclusive."));
-                }
+                    exception.ValidationExceptions.Add(
+                        new Exception("durationHrs value should be between 0 & 999.99 inclusive."));
             }
-            if (exception.ValidationExceptions.Count > 0)
-            {
-                throw exception;
-            }
+
+            if (exception.ValidationExceptions.Count > 0) throw exception;
 
             #endregion
 
             description = description.ToLower();
             var newCourse = new Course
             {
-                /*  Create a Course*/
                 Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(name),
                 Description = char.ToUpper(description[0]) + description.Substring(1),
-                DurationHrs = parsedDurationHrs,
+                DurationHrs = parsedDurationHrs
             };
 
             context.Courses.Add(newCourse);
+
             context.SaveChanges();
         }
 
@@ -108,42 +101,40 @@ namespace AZLearn.Controllers
         public static void UpdateCourseById(string courseId, string name, string description,
             string durationHrs)
         {
-            int parsedCourseId = 0;
+            var parsedCourseId = 0;
             float parsedDurationHrs = 0;
+            using var context = new AppDbContext();
+            var exception = new ValidationException();
 
             #region Validation
 
             courseId = string.IsNullOrEmpty(courseId) || string.IsNullOrWhiteSpace(courseId) ? null : courseId.Trim();
             name = string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name) ? null : name.Trim().ToLower();
-            description = string.IsNullOrEmpty(description) || string.IsNullOrWhiteSpace(description) ? null : description.Trim();
-            durationHrs = string.IsNullOrEmpty(durationHrs) || string.IsNullOrWhiteSpace(durationHrs) ? null : durationHrs.Trim();
-
-            using var context = new AppDbContext();
-            ValidationException exception = new ValidationException();
+            description = string.IsNullOrEmpty(description) || string.IsNullOrWhiteSpace(description)
+                ? null
+                : description.Trim();
+            durationHrs = string.IsNullOrEmpty(durationHrs) || string.IsNullOrWhiteSpace(durationHrs)
+                ? null
+                : durationHrs.Trim();
 
             if (string.IsNullOrWhiteSpace(courseId))
             {
-                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(courseId), nameof(courseId) + " is null."));
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(courseId),
+                    nameof(courseId) + " is null."));
             }
             else
             {
                 if (!int.TryParse(courseId, out parsedCourseId))
-                {
-                    exception.ValidationExceptions.Add(new Exception("Invalid value for Course Id"));
-                }
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for courseId"));
                 if (parsedCourseId > 2147483647 || parsedCourseId < 1)
-                {
-                    exception.ValidationExceptions.Add(new Exception("Course Id value should be between 1 & 2147483647 inclusive"));
-                }
+                    exception.ValidationExceptions.Add(
+                        new Exception("courseId value should be between 1 & 2147483647 inclusive"));
                 else if (!context.Courses.Any(key => key.CourseId == parsedCourseId))
-                {
-                    exception.ValidationExceptions.Add(new Exception("Course Id does not exist"));
-                }
+                    exception.ValidationExceptions.Add(new Exception("courseId does not exist"));
                 else if (!context.Courses.Any(key => key.CourseId == parsedCourseId && key.Archive == false))
-                {
                     exception.ValidationExceptions.Add(new Exception("Course is archived"));
-                }
             }
+
             if (string.IsNullOrWhiteSpace(name))
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(name), nameof(name) + " is null."));
@@ -156,43 +147,36 @@ namespace AZLearn.Controllers
                 }
                 else
                 {
-                    if ((!string.IsNullOrWhiteSpace(courseId)) && int.TryParse(courseId, out parsedCourseId))
-                    {
+                    if (!string.IsNullOrWhiteSpace(courseId) && int.TryParse(courseId, out parsedCourseId))
                         /* Two courses with same name should not be allowed */
-                        if (context.Courses.Any(key => key.Name.ToLower() == name.ToLower() && key.CourseId != parsedCourseId))
-                        {
-                            exception.ValidationExceptions.Add(new Exception("A Course with this name already exists."));
-                        }
-                    }
+                        if (context.Courses.Any(key =>
+                            key.Name.ToLower() == name.ToLower() && key.CourseId != parsedCourseId))
+                            exception.ValidationExceptions.Add(
+                                new Exception("A Course with this name already exists."));
                 }
             }
+
             if (string.IsNullOrWhiteSpace(description))
-            {
-                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(description), nameof(description) + " is null."));
-            }
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(description),
+                    nameof(description) + " is null."));
             else if (description.Length > 250)
-            {
-                exception.ValidationExceptions.Add(new Exception("Course Description can only be 250 characters long."));
-            }
+                exception.ValidationExceptions.Add(
+                    new Exception("Course description can only be 250 characters long."));
             if (string.IsNullOrWhiteSpace(durationHrs))
             {
-                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(durationHrs), nameof(durationHrs) + " is null."));
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(durationHrs),
+                    nameof(durationHrs) + " is null."));
             }
             else
             {
                 if (!float.TryParse(durationHrs, out parsedDurationHrs))
-                {
-                    exception.ValidationExceptions.Add(new Exception("Invalid value for DurationHrs"));
-                }
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for durationHrs"));
                 else if (parsedDurationHrs > 999.99 || parsedDurationHrs < 0)
-                {
-                    exception.ValidationExceptions.Add(new Exception("DurationHrs value should be between 0 & 999.99 inclusive."));
-                }
+                    exception.ValidationExceptions.Add(
+                        new Exception("durationHrs value should be between 0 & 999.99 inclusive."));
             }
-            if (exception.ValidationExceptions.Count > 0)
-            {
-                throw exception;
-            }
+
+            if (exception.ValidationExceptions.Count > 0) throw exception;
 
             #endregion
 
@@ -205,7 +189,6 @@ namespace AZLearn.Controllers
             context.SaveChanges();
         }
 
-      
         /// <summary>
         ///     Get Courses
         ///     Description: Controller action that returns list of existing courses
@@ -221,42 +204,35 @@ namespace AZLearn.Controllers
         /// <summary>
         ///     GetCoursesByCohortId
         ///     Description: Controller action that returns list of existing coursesByCohortId
-        ///     It expects below parameters, and would retrive courses list from the database.
+        ///     It expects below parameters, and would retrieve courses list from the database.
         /// </summary>
         /// <param name="cohortId"></param>
         /// <returns>List of Courses by Cohort Id</returns>
         public static List<Course> GetCoursesByCohortId(string cohortId)
         {
-            int parsedCohortId = 0;
+            var parsedCohortId = 0;
+            using var context = new AppDbContext();
+            var exception = new ValidationException();
 
             #region Validation
 
-            using var context = new AppDbContext();
-            ValidationException exception = new ValidationException();
-
             if (string.IsNullOrWhiteSpace(cohortId))
             {
-                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId), nameof(cohortId) + " is null."));
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId),
+                    nameof(cohortId) + " is null."));
             }
             else
             {
                 if (!int.TryParse(cohortId, out parsedCohortId))
-                {
-                    exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
-                }
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for cohortId"));
                 if (parsedCohortId > 2147483647 || parsedCohortId < 1)
-                {
-                    exception.ValidationExceptions.Add(new Exception("Cohort Id value should be between 1 & 2147483647 inclusive"));
-                }
+                    exception.ValidationExceptions.Add(
+                        new Exception("cohortId value should be between 1 & 2147483647 inclusive"));
                 else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
-                {
-                    exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
-                }
+                    exception.ValidationExceptions.Add(new Exception("cohortId does not exist"));
             }
-            if (exception.ValidationExceptions.Count > 0)
-            {
-                throw exception;
-            }
+
+            if (exception.ValidationExceptions.Count > 0) throw exception;
 
             #endregion
 
@@ -266,74 +242,66 @@ namespace AZLearn.Controllers
                     .Where(key => key.CohortCourses
                         .Any(subKey => subKey.CohortId == parsedCohortId)).ToList();
 
-            /* @Amr Fouad, demo on how to get to the instructor name on same above context call
-             foreach (var course in coursesListByCohortId)
-            {
-                var name = course.CohortCourses.Where(key => key.CourseId == course.CourseId).SingleOrDefault().Instructor.Name;
-            }*/
             return coursesListByCohortId;
         }
 
         /// <summary>
-        /// GetCourseByCohortId
-        /// Description: Controller action that returns a Courses by CohortId
-        /// It expects below parameters, and would return a course by cohort id from the database.
+        ///     GetCourseByCohortId
+        ///     Description: Controller action that returns a Courses by CohortId
+        ///     It expects below parameters, and would return a course by cohort id from the database.
         /// </summary>
         /// <param name="courseId"></param>
         /// <param name="cohortId"></param>
         /// <returns></returns>
         public static Course GetCourseByCohortId(string courseId, string cohortId)
         {
-            int parsedCohortId = 0;
-            int parsedCourseId = 0;
-            #region Validation
+            var parsedCohortId = 0;
+            var parsedCourseId = 0;
             using var context = new AppDbContext();
-            ValidationException exception = new ValidationException();
+            var exception = new ValidationException();
+
+            #region Validation
+
             if (string.IsNullOrWhiteSpace(cohortId))
             {
-                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId), nameof(cohortId) + " is null."));
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId),
+                    nameof(cohortId) + " is null."));
             }
             else
             {
                 if (!int.TryParse(cohortId, out parsedCohortId))
-                {
-                    exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
-                }
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for cohortId"));
                 if (parsedCohortId > 2147483647 || parsedCohortId < 1)
-                {
-                    exception.ValidationExceptions.Add(new Exception("Cohort Id value should be between 1 & 2147483647 inclusive"));
-                }
+                    exception.ValidationExceptions.Add(
+                        new Exception("cohortId value should be between 1 & 2147483647 inclusive"));
                 else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
-                {
-                    exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
-                }
+                    exception.ValidationExceptions.Add(new Exception("cohortId does not exist"));
             }
+
             if (string.IsNullOrWhiteSpace(courseId))
             {
-                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(courseId), nameof(courseId) + " is null."));
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(courseId),
+                    nameof(courseId) + " is null."));
             }
             else
             {
                 if (!int.TryParse(courseId, out parsedCourseId))
-                {
-                    exception.ValidationExceptions.Add(new Exception("Invalid value for Course Id"));
-                }
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for courseId"));
                 if (parsedCourseId > 2147483647 || parsedCourseId < 1)
-                {
-                    exception.ValidationExceptions.Add(new Exception("Course Id value should be between 1 & 2147483647 inclusive"));
-                }
+                    exception.ValidationExceptions.Add(
+                        new Exception("courseId value should be between 1 & 2147483647 inclusive"));
                 else if (!context.Courses.Any(key => key.CourseId == parsedCourseId))
-                {
-                    exception.ValidationExceptions.Add(new Exception("Course Id does not exist"));
-                }
+                    exception.ValidationExceptions.Add(new Exception("courseId does not exist"));
             }
-            if (exception.ValidationExceptions.Count > 0)
-            {
-                throw exception;
-            }
+
+            if (exception.ValidationExceptions.Count > 0) throw exception;
+
             #endregion
+
             var courseByCohortId =
-                context.Courses.Include(key => key.CohortCourses).SingleOrDefault(key => key.CohortCourses.Any(subKey => subKey.CohortId == parsedCohortId && subKey.CourseId == parsedCourseId));
+                context.Courses.Include(key => key.CohortCourses).SingleOrDefault(key =>
+                    key.CohortCourses.Any(subKey =>
+                        subKey.CohortId == parsedCohortId && subKey.CourseId == parsedCourseId));
             return courseByCohortId;
         }
 
@@ -345,47 +313,38 @@ namespace AZLearn.Controllers
         public static Course GetCourseById(string courseId)
         {
             var parsedCourseId = 0;
-
-            #region Validation
-
             var exception = new ValidationException();
             using var context = new AppDbContext();
 
-            courseId=(string.IsNullOrEmpty(courseId)||string.IsNullOrWhiteSpace(courseId)) ? null : courseId.Trim();
-            if ( courseId==null )
+            #region Validation
+
+            courseId = string.IsNullOrEmpty(courseId) || string.IsNullOrWhiteSpace(courseId) ? null : courseId.Trim();
+            if (courseId == null)
             {
-                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(courseId),nameof(courseId)+" is null."));
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(courseId),
+                    nameof(courseId) + " is null."));
             }
             else
             {
-                if ( !int.TryParse(courseId,out parsedCourseId) )
-                {
-                    exception.ValidationExceptions.Add(new Exception("Invalid value for Course Id"));
-                }
-                if ( parsedCourseId>2147483647||parsedCourseId<1 )
-                {
-                    exception.ValidationExceptions.Add(new Exception("Course Id value should be between 1 & 2147483647 inclusive"));
-                }
-                else if ( !context.Courses.Any(key => key.CourseId==parsedCourseId) )
-                {
-                    exception.ValidationExceptions.Add(new Exception("Course Id does not exist"));
-                }
+                if (!int.TryParse(courseId, out parsedCourseId))
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for courseId"));
+                if (parsedCourseId > 2147483647 || parsedCourseId < 1)
+                    exception.ValidationExceptions.Add(
+                        new Exception("courseId value should be between 1 & 2147483647 inclusive"));
+                else if (!context.Courses.Any(key => key.CourseId == parsedCourseId))
+                    exception.ValidationExceptions.Add(new Exception("courseId does not exist"));
             }
 
-            if ( exception.ValidationExceptions.Count>0 )
-            {
-                throw exception;
-            }
+            if (exception.ValidationExceptions.Count > 0) throw exception;
 
             #endregion
 
-            return context.Courses.SingleOrDefault(key => key.CourseId==parsedCourseId);
+            return context.Courses.SingleOrDefault(key => key.CourseId == parsedCourseId);
         }
 
-
         /// <summary>
-        /// ArchiveCourseById
-        /// Description: This action archives a course by courseId PK
+        ///     ArchiveCourseById
+        ///     Description: This action archives a course by courseId PK
         /// </summary>
         /// <param name="courseId"></param>
         public static void ArchiveCourseById(string courseId)
@@ -394,35 +353,30 @@ namespace AZLearn.Controllers
             var exception = new ValidationException();
             using var context = new AppDbContext();
 
-            courseId = (string.IsNullOrEmpty(courseId) || string.IsNullOrWhiteSpace(courseId)) ? null : courseId.Trim();
+            #region Validation
+
+            courseId = string.IsNullOrEmpty(courseId) || string.IsNullOrWhiteSpace(courseId) ? null : courseId.Trim();
             if (courseId == null)
             {
-                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(courseId), nameof(courseId) + " is null."));
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(courseId),
+                    nameof(courseId) + " is null."));
             }
             else
             {
                 if (!int.TryParse(courseId, out parsedCourseId))
-                {
-                    exception.ValidationExceptions.Add(new Exception("Invalid value for Course Id"));
-                }
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for courseId"));
                 if (parsedCourseId > 2147483647 || parsedCourseId < 1)
-                {
-                    exception.ValidationExceptions.Add(new Exception("Course Id value should be between 1 & 2147483647 inclusive"));
-                }
+                    exception.ValidationExceptions.Add(
+                        new Exception("courseId value should be between 1 & 2147483647 inclusive"));
                 else if (!context.Courses.Any(key => key.CourseId == parsedCourseId))
-                {
-                    exception.ValidationExceptions.Add(new Exception("Course Id does not exist"));
-                }
+                    exception.ValidationExceptions.Add(new Exception("courseId does not exist"));
                 else if (!context.Courses.Any(key => key.CourseId == parsedCourseId && key.Archive == false))
-                {
                     exception.ValidationExceptions.Add(new Exception("Course is already archived"));
-                }
             }
 
-            if (exception.ValidationExceptions.Count > 0)
-            {
-                throw exception;
-            }
+            if (exception.ValidationExceptions.Count > 0) throw exception;
+
+            #endregion
 
             var homeworks = context.Homeworks.Where(key => key.CourseId == parsedCourseId).ToList();
 
@@ -432,34 +386,24 @@ namespace AZLearn.Controllers
                 foreach (var rubric in rubrics)
                 {
                     var grades = context.Grades.Where(key => key.RubricId == rubric.RubricId).ToList();
-                    foreach (var grade in grades)
-                    {
-                        grade.Archive = true;
-                    }
-                    
+                    foreach (var grade in grades) grade.Archive = true;
+
                     rubric.Archive = true;
                 }
 
                 var timesheets = context.Timesheets.Where(key => key.HomeworkId == homework.HomeworkId).ToList();
-                foreach (var timesheet in timesheets)
-                {
-                    timesheet.Archive = true;
-                }
+                foreach (var timesheet in timesheets) timesheet.Archive = true;
 
                 homework.Archive = true;
             }
 
             var assignedCourses = context.CohortCourses.Where(key => key.CourseId == parsedCourseId).ToList();
-            foreach (var cohortCourse in assignedCourses)
-            {
-                cohortCourse.Archive = true;
-            }
+            foreach (var cohortCourse in assignedCourses) cohortCourse.Archive = true;
 
             var cohort = context.Courses.Find(parsedCourseId);
             cohort.Archive = true;
 
             context.SaveChanges();
-
         }
     }
 }
