@@ -285,7 +285,7 @@ namespace AZLearn.Controllers
         /// <param name="courseId"></param>
         /// <param name="cohortId"></param>
         /// <returns></returns>
-        public static Course GetCourseByCohortId(string courseId, string cohortId)
+        public static (Course, string) GetCourseByCohortId(string courseId, string cohortId)
         {
             int parsedCohortId = 0;
             int parsedCourseId = 0;
@@ -335,9 +335,16 @@ namespace AZLearn.Controllers
                 throw exception;
             }
             #endregion
+            //List<(Course, string)> courseInstructorByCohortId = new List<(Course, string)>();
             var courseByCohortId =
                 context.Courses.Include(key => key.CohortCourses).SingleOrDefault(key => key.CohortCourses.Any(subKey => subKey.CohortId == parsedCohortId && subKey.CourseId == parsedCourseId));
-            return courseByCohortId;
+
+            var instructorId = courseByCohortId.CohortCourses.SingleOrDefault(key => key.CourseId == courseByCohortId.CourseId && key.CohortId == parsedCohortId).InstructorId;
+
+            var instructorName = context.Users.Where(key => key.UserId == instructorId).Select(key => key.Name).Single();
+            //courseInstructorByCohortId.Add((courseByCohortId, instructorName));
+
+            return (courseByCohortId, instructorName);
         }
 
         /// <summary>

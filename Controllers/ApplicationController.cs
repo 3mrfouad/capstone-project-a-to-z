@@ -313,9 +313,9 @@ namespace AZLearn.Controllers
 
         #region /application/GetAssignedCourse
         [HttpGet(nameof(GetAssignedCourse))]
-        public ActionResult<Course> GetAssignedCourse(string courseId, string cohortId)
+        public ActionResult<(Course, string)> GetAssignedCourse(string courseId, string cohortId)
         {
-            ActionResult<Course> result;
+            ActionResult<(Course, string)> result;
             try
             {
                 result = CourseController.GetCourseByCohortId(courseId, cohortId);
