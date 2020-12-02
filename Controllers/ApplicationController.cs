@@ -651,20 +651,26 @@ namespace AZLearn.Controllers
         /// <param name="homeworkId"></param>
         /// <returns> A homework with List of rubric,user and course </returns>
         [HttpGet("GetHomework")]
-        public ActionResult<Tuple<Homework,List<Rubric>,List<string>,List<Course>>> GetHomeworkForInstructor(string homeworkId)
+        public ActionResult<Tuple<Homework,List<Rubric>,string,string>> GetHomeworkForInstructor(string homeworkId)
         {
-            ActionResult<Tuple<Homework,List<Rubric>,List<string>,List<Course>>> result;
+            //<Tuple<Homework,List<Rubric>,string,string>> the first string instructor name second is course name
+            ActionResult<Tuple<Homework,List<Rubric>,string,string>> result;
             try
             {
                 var homework = HomeworkController.GetHomeworkById(homeworkId);
 
                 var rubricsList = RubricController.GetRubricsByHomeworkId(homeworkId);
 
-                var coursesList = CourseController.GetCourses();
+                //Get CourseById not GetCourses
+                // var coursesList = CourseController.GetCourses();
+                var courseId = homework.CourseId.ToString();
+                var courseName = CourseController.GetCourseById(courseId).Name;
 
-                var instructorsList = UserController.GetInstructors().Select(key => key.Name).ToList();
-
-                result=new Tuple<Homework,List<Rubric>,List<string>,List<Course>>(homework,rubricsList,instructorsList,coursesList);
+                //GetUserById 
+                var instructorId = homework.InstructorId.ToString();
+                var instructorName = UserController.GetUserById(instructorId).Name;
+                // var instructorsList = UserController.GetInstructors().Select(key => key.Name).ToList();
+                 result =new Tuple<Homework,List<Rubric>,string,string>(homework,rubricsList,instructorName,courseName);
             }
             catch ( ValidationException e )
             {
