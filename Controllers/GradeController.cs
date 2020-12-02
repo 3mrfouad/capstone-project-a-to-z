@@ -23,7 +23,7 @@ namespace AZLearn.Controllers
         /// </param>
         public static void CreateGradingByStudentId(string studentId,
                 Dictionary<string, Tuple<string, string>> gradings)
-            /*Dictionary<rubricId,Tuple<mark ,instructorComment>>*/
+        /*Dictionary<rubricId,Tuple<mark ,instructorComment>>*/
         {
             using var context = new AppDbContext();
             var parsedRubricId = 0;
@@ -530,7 +530,7 @@ namespace AZLearn.Controllers
                 /*If there are no challenges, then weight of challenge = 0 to avoid NullValueException*/
 
                 if (rubricWeightByGroup.Length == 1)
-                    rubricWeightByGroup = rubricWeightByGroup.Concat(new[] {0}).ToArray();
+                    rubricWeightByGroup = rubricWeightByGroup.Concat(new[] { 0 }).ToArray();
 
                 /*Loop to get GradeSummary for all students in a Cohort*/
 
