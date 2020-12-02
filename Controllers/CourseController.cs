@@ -319,6 +319,7 @@ namespace AZLearn.Controllers
             #region Validation
 
             courseId = string.IsNullOrEmpty(courseId) || string.IsNullOrWhiteSpace(courseId) ? null : courseId.Trim();
+
             if (courseId == null)
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(courseId),
@@ -356,6 +357,7 @@ namespace AZLearn.Controllers
             #region Validation
 
             courseId = string.IsNullOrEmpty(courseId) || string.IsNullOrWhiteSpace(courseId) ? null : courseId.Trim();
+
             if (courseId == null)
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(courseId),

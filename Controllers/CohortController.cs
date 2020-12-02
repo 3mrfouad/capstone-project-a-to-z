@@ -305,6 +305,7 @@ namespace AZLearn.Controllers
             #region Validation
 
             cohortId = string.IsNullOrEmpty(cohortId) || string.IsNullOrWhiteSpace(cohortId) ? null : cohortId.Trim();
+
             if (cohortId == null)
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId),
@@ -342,6 +343,7 @@ namespace AZLearn.Controllers
             #region Validation
 
             cohortId = string.IsNullOrEmpty(cohortId) || string.IsNullOrWhiteSpace(cohortId) ? null : cohortId.Trim();
+
             if (cohortId == null)
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId),

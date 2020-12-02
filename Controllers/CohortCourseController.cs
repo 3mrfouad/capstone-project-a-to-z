@@ -121,7 +121,7 @@ namespace AZLearn.Controllers
                 {
                     /** Citation
                      *  https://stackoverflow.com/questions/161738/what-is-the-best-regular-expression-to-check-if-a-string-is-a-valid-url
-                     *  Referenced above source to validate the incoming Resources Link (URL) bafire saving to DB.
+                     *  Referenced above source to validate the incoming Resources Link (URL) before saving to DB.
                      */
                     Uri uri;
                     if (!(Uri.TryCreate(resourcesLink, UriKind.Absolute, out uri) &&
@@ -146,7 +146,7 @@ namespace AZLearn.Controllers
             /* Business Logic*/
             if (DateTime.TryParse(startDate, out parsedStartDate) && DateTime.TryParse(endDate, out parsedEndDate))
                 if (parsedEndDate < parsedStartDate)
-                    exception.ValidationExceptions.Add(new Exception("end date can not be before start Date."));
+                    exception.ValidationExceptions.Add(new Exception("endDate can not be before startDate."));
             if (exception.ValidationExceptions.Count > 0) throw exception;
 
             #endregion
@@ -279,7 +279,7 @@ namespace AZLearn.Controllers
                 {
                     /** Citation
                      *  https://stackoverflow.com/questions/161738/what-is-the-best-regular-expression-to-check-if-a-string-is-a-valid-url
-                     *  Referenced above source to validate the incoming Resources Link (URL) bafire saving to DB.
+                     *  Referenced above source to validate the incoming Resources Link (URL) before saving to DB.
                      */
                     Uri uri;
                     if (!(Uri.TryCreate(resourcesLink, UriKind.Absolute, out uri) &&
@@ -337,6 +337,7 @@ namespace AZLearn.Controllers
 
             courseId = string.IsNullOrEmpty(courseId) || string.IsNullOrWhiteSpace(courseId) ? null : courseId.Trim();
             cohortId = string.IsNullOrEmpty(cohortId) || string.IsNullOrWhiteSpace(cohortId) ? null : cohortId.Trim();
+
             if (courseId == null)
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(courseId),
@@ -419,6 +420,7 @@ namespace AZLearn.Controllers
             using var context = new AppDbContext();
 
             #region Validation
+
             cohortId= string.IsNullOrEmpty(cohortId) || string.IsNullOrWhiteSpace(cohortId) ? null : cohortId.Trim();
 
             if (cohortId == null)
