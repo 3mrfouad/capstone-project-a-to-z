@@ -225,10 +225,11 @@ namespace AZLearn.Controllers
         /// </summary>
         /// <param name="cohortId"></param>
         /// <returns>List of Courses by Cohort Id</returns>
-        public static List<(Course, string)> GetCoursesByCohortId(string cohortId)
+        public static List<Tuple<Course, string>> GetCoursesByCohortId(string cohortId)
         {
             int parsedCohortId = 0;
-            List<(Course, string)> coursesSummary = new List<(Course, string)>();
+            List<Tuple<Course, string>> coursesSummary = new List<Tuple<Course, string>>();
+            Tuple<Course, string> courseWithInstructorName;
             #region Validation
 
             using var context = new AppDbContext();
@@ -271,7 +272,8 @@ namespace AZLearn.Controllers
                 int id = course.CourseId;
                 var instructorId = course.CohortCourses.SingleOrDefault(key => key.CourseId == course.CourseId && key.CohortId == parsedCohortId).InstructorId;
                 var instructorName = context.Users.Where(key => key.UserId == instructorId).Select(key => key.Name).Single();
-                coursesSummary.Add((course, instructorName));
+                courseWithInstructorName = Tuple.Create(course, instructorName);
+                coursesSummary.Add(courseWithInstructorName);
             }
 
             return coursesSummary;
@@ -285,7 +287,7 @@ namespace AZLearn.Controllers
         /// <param name="courseId"></param>
         /// <param name="cohortId"></param>
         /// <returns></returns>
-        public static (Course, string) GetCourseByCohortId(string courseId, string cohortId)
+        public static Tuple<Course, string> GetCourseByCohortId(string courseId, string cohortId)
         {
             int parsedCohortId = 0;
             int parsedCourseId = 0;
@@ -335,16 +337,15 @@ namespace AZLearn.Controllers
                 throw exception;
             }
             #endregion
-            //List<(Course, string)> courseInstructorByCohortId = new List<(Course, string)>();
+          
             var courseByCohortId =
                 context.Courses.Include(key => key.CohortCourses).SingleOrDefault(key => key.CohortCourses.Any(subKey => subKey.CohortId == parsedCohortId && subKey.CourseId == parsedCourseId));
 
             var instructorId = courseByCohortId.CohortCourses.SingleOrDefault(key => key.CourseId == courseByCohortId.CourseId && key.CohortId == parsedCohortId).InstructorId;
 
             var instructorName = context.Users.Where(key => key.UserId == instructorId).Select(key => key.Name).Single();
-            //courseInstructorByCohortId.Add((courseByCohortId, instructorName));
 
-            return (courseByCohortId, instructorName);
+            return Tuple.Create(courseByCohortId, instructorName);
         }
 
         /// <summary>
