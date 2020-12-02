@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AZLearn.Controllers
 {
-    public class UserController :ControllerBase
+    public class UserController : ControllerBase
     {
         /// <summary>
         ///     GetStudentsByCohortId
@@ -21,47 +21,38 @@ namespace AZLearn.Controllers
         /// /application/InstructorGradeSummary
         public static List<User> GetStudentsByCohortId(string cohortId)
         {
-            int parsedCohortId = 0;
+            var parsedCohortId = 0;
+            var exception = new ValidationException();
+            using var context = new AppDbContext();
 
             #region Validation
 
-            ValidationException exception = new ValidationException();
+            cohortId = string.IsNullOrEmpty(cohortId) || string.IsNullOrWhiteSpace(cohortId) ? null : cohortId.Trim();
 
-            cohortId=(string.IsNullOrEmpty(cohortId)||string.IsNullOrWhiteSpace(cohortId)) ? null : cohortId.Trim();
-
-            using var context = new AppDbContext();
-            if ( string.IsNullOrWhiteSpace(cohortId) )
+            if (string.IsNullOrWhiteSpace(cohortId))
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId),
-                    nameof(cohortId)+" is null."));
+                    nameof(cohortId) + " is null."));
             }
             else
             {
-                if ( !int.TryParse(cohortId,out parsedCohortId) )
-                {
-                    exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
-                }
+                if (!int.TryParse(cohortId, out parsedCohortId))
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for cohortId"));
 
-                if ( parsedCohortId>2147483647||parsedCohortId<1 )
-                {
+                if (parsedCohortId > 2147483647 || parsedCohortId < 1)
                     exception.ValidationExceptions.Add(
-                        new Exception("Cohort Id value should be between 1 & 2147483647 inclusive"));
-                }
-                else if ( !context.Cohorts.Any(key => key.CohortId==parsedCohortId) )
-                {
-                    exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
-                }
+                        new Exception("cohortId value should be between 1 & 2147483647 inclusive"));
+                else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
+                    exception.ValidationExceptions.Add(new Exception("cohortId does not exist"));
             }
 
-            if ( exception.ValidationExceptions.Count>0 )
-            {
-                throw exception;
-            }
+            if (exception.ValidationExceptions.Count > 0) throw exception;
 
             #endregion
 
             var students = new List<User>();
-            students=context.Users.Where(key => key.CohortId==parsedCohortId&&key.IsInstructor==false).ToList();
+            students = context.Users.Where(key => key.CohortId == parsedCohortId && key.IsInstructor == false).ToList();
+
             return students;
         }
 
@@ -74,55 +65,43 @@ namespace AZLearn.Controllers
         /// <returns>It returns the User Information based on the user id </returns>
         public static User GetUserById(string userId)
         {
-
             User result;
             var parsedUserId = 0;
+            var exception = new ValidationException();
+            using var context = new AppDbContext();
 
             #region Validation
 
-            ValidationException exception = new ValidationException();
-            using var context = new AppDbContext();
+            userId = string.IsNullOrEmpty(userId) || string.IsNullOrWhiteSpace(userId) ? null : userId.Trim();
 
-            userId=(string.IsNullOrEmpty(userId)||string.IsNullOrWhiteSpace(userId)) ? null : userId.Trim();
-
-            if ( string.IsNullOrWhiteSpace(userId) )
+            if (string.IsNullOrWhiteSpace(userId))
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(userId),
-                    nameof(userId)+" is null."));
+                    nameof(userId) + " is null."));
             }
             else
             {
-                if ( !int.TryParse(userId,out parsedUserId) )
-                {
-                    exception.ValidationExceptions.Add(new Exception("Invalid value for User Id"));
-                }
+                if (!int.TryParse(userId, out parsedUserId))
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for userId"));
 
-                if ( parsedUserId>2147483647||parsedUserId<1 )
-                {
+                if (parsedUserId > 2147483647 || parsedUserId < 1)
                     exception.ValidationExceptions.Add(
-                        new Exception("User Id value should be between 1 & 2147483647 inclusive"));
-                }
-                else if ( !context.Users.Any(key => key.UserId==parsedUserId) )
-                {
-                    exception.ValidationExceptions.Add(new Exception("User Id does not exist"));
-                }
+                        new Exception("userId value should be between 1 & 2147483647 inclusive"));
+                else if (!context.Users.Any(key => key.UserId == parsedUserId))
+                    exception.ValidationExceptions.Add(new Exception("userId does not exist"));
+
                 //*****************This validation to be decided after Login**********************************************
-                else if ( !context.Users.Any(key => key.UserId==parsedUserId&&key.Archive==false) )
-                {
-                    exception.ValidationExceptions.Add(new Exception("Selected User Id is Archived"));
-                }
+                else if (!context.Users.Any(key => key.UserId == parsedUserId && key.Archive == false))
+                    exception.ValidationExceptions.Add(new Exception("Selected userId is Archived"));
 
                 //*****************************************************
             }
 
-            if ( exception.ValidationExceptions.Count>0 )
-            {
-                throw exception;
-            }
+            if (exception.ValidationExceptions.Count > 0) throw exception;
 
             #endregion
 
-            result=context.Users.Single(key => key.UserId==parsedUserId);
+            result = context.Users.Single(key => key.UserId == parsedUserId);
 
             return result;
         }
@@ -140,8 +119,8 @@ namespace AZLearn.Controllers
         }
 
         /// <summary>
-        ///  CreateUser
-        ///    Description: Controller action that creates a user
+        ///     CreateUser
+        ///     Description: Controller action that creates a user
         ///     It expects below parameters, and would register a user the user information according to the parameter specified
         /// </summary>
         /// <param name="cohortId"></param>
@@ -149,152 +128,134 @@ namespace AZLearn.Controllers
         /// <param name="passwordHash"></param>
         /// <param name="email"></param>
         /// <param name="isInstructor"></param>
-        public static void CreateUser(string cohortId,string name,string passwordHash,string email,
+        public static void CreateUser(string cohortId, string name, string passwordHash, string email,
             string isInstructor)
         {
-            int parsedCohortId = 0;
-            bool parsedIsInstructor = false;
+            var parsedCohortId = 0;
+            var parsedIsInstructor = false;
+            var exception = new ValidationException();
+            using var context = new AppDbContext();
 
             #region Validation
 
-            ValidationException exception = new ValidationException();
-            using var context = new AppDbContext();
-
-            cohortId=(string.IsNullOrEmpty(cohortId)||string.IsNullOrWhiteSpace(cohortId)) ? null : cohortId.Trim();
-            name=string.IsNullOrEmpty(name)||string.IsNullOrWhiteSpace(name) ? null : name.Trim().ToLower();
-            passwordHash=string.IsNullOrEmpty(passwordHash)||string.IsNullOrWhiteSpace(passwordHash)
+            cohortId = string.IsNullOrEmpty(cohortId) || string.IsNullOrWhiteSpace(cohortId) ? null : cohortId.Trim();
+            name = string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name) ? null : name.Trim().ToLower();
+            passwordHash = string.IsNullOrEmpty(passwordHash) || string.IsNullOrWhiteSpace(passwordHash)
                 ? null
                 : passwordHash.Trim();
-            email=string.IsNullOrEmpty(email)||string.IsNullOrWhiteSpace(email) ? null : email.Trim().ToLower();
-            isInstructor=(string.IsNullOrEmpty(isInstructor)||string.IsNullOrWhiteSpace(isInstructor))
+            email = string.IsNullOrEmpty(email) || string.IsNullOrWhiteSpace(email) ? null : email.Trim().ToLower();
+            isInstructor = string.IsNullOrEmpty(isInstructor) || string.IsNullOrWhiteSpace(isInstructor)
                 ? null
                 : isInstructor.Trim();
-            /*Link email Regex: https://stackoverflow.com/questions/16167983/best-regular-expression-for-email-validation-in-c-sharp/16168118 */
-            /*Link Password Regex : @https://stackoverflow.com/questions/5859632/regular-expression-for-password-validation */
 
+            /*@Link email Regex: https://stackoverflow.com/questions/16167983/best-regular-expression-for-email-validation-in-c-sharp/16168118 */
+            /*@Link Password Regex : https://stackoverflow.com/questions/5859632/regular-expression-for-password-validation */
 
-            var emailRegex = new Regex(@"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z");
+            var emailRegex =
+                new Regex(
+                    @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z");
 
             var passwordHashRegex = new Regex(@"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$");
 
-            /*^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,15}$*/
-            /* At least one upper case english letter • At least one lower case english letter • At least one digit • At least one special character • Minimum 8 in length*/
-
-            if ( string.IsNullOrWhiteSpace(cohortId) )
+            if (string.IsNullOrWhiteSpace(cohortId))
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId),
-                    nameof(cohortId)+" is null."));
+                    nameof(cohortId) + " is null."));
             }
             else
             {
-                if ( !int.TryParse(cohortId,out parsedCohortId) )
-                {
-                    exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
-                }
+                if (!int.TryParse(cohortId, out parsedCohortId))
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for cohortId"));
 
-                if ( parsedCohortId>2147483647||parsedCohortId<1 )
+                if (parsedCohortId > 2147483647 || parsedCohortId < 1)
                 {
                     exception.ValidationExceptions.Add(
-                        new Exception("Cohort Id value should be between 1 & 2147483647 inclusive"));
+                        new Exception("cohortId value should be between 1 & 2147483647 inclusive"));
                 }
                 else
                 {
-                    if ( !context.Cohorts.Any(key => key.CohortId==parsedCohortId) )
-                    {
-                        exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist."));
-                    }
-                    else if ( !context.Cohorts.Any(key => key.CohortId==parsedCohortId&&key.Archive==false) )
-                    {
+                    if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
+                        exception.ValidationExceptions.Add(new Exception("cohortId does not exist."));
+                    else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId && key.Archive == false))
                         exception.ValidationExceptions.Add(new Exception("Cohort has been archived"));
-                    }
-
                 }
             }
 
-            if ( string.IsNullOrWhiteSpace(name) )
+            if (string.IsNullOrWhiteSpace(name))
             {
-                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(name),nameof(name)+" is null."));
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(name), nameof(name) + " is null."));
             }
-            else 
+            else
             {
                 if (name.Length > 50)
                     exception.ValidationExceptions.Add(new Exception("Name can only be 50 characters long."));
 
-                else if ( context.Users.Any(key => key.Name.ToLower()==name.ToLower()) )
-                {
+                else if (context.Users.Any(key => key.Name.ToLower() == name.ToLower()))
                     exception.ValidationExceptions.Add(new Exception("User with this name already exists."));
-                }
-
             }
 
-            if ( string.IsNullOrWhiteSpace(email) )
+            if (string.IsNullOrWhiteSpace(email))
             {
                 exception.ValidationExceptions.Add(
-                    new ArgumentNullException(nameof(email),nameof(email)+" is null."));
+                    new ArgumentNullException(nameof(email), nameof(email) + " is null."));
             }
 
-            else 
-            if ( email.Length>50 )
-                exception.ValidationExceptions.Add(new Exception("Email can only be 50 characters long."));
-
-            else if ( context.Users.Any(key => key.Email.ToLower()==email.ToLower()) )
+            else if (email.Length > 50)
             {
-                exception.ValidationExceptions.Add(new Exception("Email already exists,Please try to use a different email address."));
+                exception.ValidationExceptions.Add(new Exception("Email can only be 50 characters long."));
+            }
+
+            else if (context.Users.Any(key => key.Email.ToLower() == email.ToLower()))
+            {
+                exception.ValidationExceptions.Add(
+                    new Exception("Email already exists,please try to use a different email address."));
             }
 
             else
             {
-
-                if ( !emailRegex.IsMatch(email) )
+                if (!emailRegex.IsMatch(email))
 
                     exception.ValidationExceptions.Add(new Exception("Email is not in appropriate format"));
             }
 
 
-            if ( string.IsNullOrWhiteSpace(passwordHash) )
+            if (string.IsNullOrWhiteSpace(passwordHash))
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(passwordHash),
-                    nameof(passwordHash)+" is null."));
+                    nameof(passwordHash) + " is null."));
             }
 
-            else if ( passwordHash.Length>250 )
+            else if (passwordHash.Length > 250)
             {
                 exception.ValidationExceptions.Add(new Exception("Password can only be 250 characters long."));
             }
 
             else
             {
-                if ( !passwordHashRegex.IsMatch(passwordHash) )
-                    exception.ValidationExceptions.Add(new Exception("Password inappropriate format: Password must be: At least one upper case letter, At least one lower case letter, At least one digit , At least one special character, Minimum 8 in length"));
+                if (!passwordHashRegex.IsMatch(passwordHash))
+                    exception.ValidationExceptions.Add(new Exception(
+                        "Password is in inappropriate format: Password must be: at least one upper case letter, at least one lower case letter, at least one digit , at least one special character, minimum 8 characters in length"));
             }
 
-            if ( !string.IsNullOrWhiteSpace(isInstructor) )
-            {
-                if ( !bool.TryParse(isInstructor,out parsedIsInstructor) )
-                {
+            if (!string.IsNullOrWhiteSpace(isInstructor))
+                if (!bool.TryParse(isInstructor, out parsedIsInstructor))
                     exception.ValidationExceptions.Add(new Exception("Invalid value for isInstructor."));
-                }
-            }
 
-            if ( exception.ValidationExceptions.Count>0 )
-            {
-                throw exception;
-            }
+            if (exception.ValidationExceptions.Count > 0) throw exception;
 
             #endregion
 
             var newUser = new User
             {
-                CohortId=parsedCohortId,
-                Name=CultureInfo.CurrentCulture.TextInfo.ToTitleCase(name),
-                PasswordHash=passwordHash,
-                Email=email,
-                IsInstructor=parsedIsInstructor
+                CohortId = parsedCohortId,
+                Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(name),
+                PasswordHash = passwordHash,
+                Email = email,
+                IsInstructor = parsedIsInstructor
             };
             context.Users.Add(newUser);
+
             context.SaveChanges();
-
-
         }
     }
 }
