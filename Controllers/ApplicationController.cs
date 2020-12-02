@@ -654,10 +654,9 @@ namespace AZLearn.Controllers
         /// <param name="homeworkId"></param>
         /// <returns> A homework with List of rubric,user and course </returns>
         [HttpGet("GetHomework")]
-        public ActionResult<Tuple<Homework, List<Rubric>, List<User>, List<Course>>> GetHomeworkForInstructor(
-            string homeworkId)
+        public ActionResult<Tuple<Homework,List<Rubric>,List<string>,List<Course>>> GetHomeworkForInstructor(string homeworkId)
         {
-            ActionResult<Tuple<Homework, List<Rubric>, List<User>, List<Course>>> result;
+            ActionResult<Tuple<Homework,List<Rubric>,List<string>,List<Course>>> result;
             try
             {
                 var homework = HomeworkController.GetHomeworkById(homeworkId);
@@ -666,28 +665,25 @@ namespace AZLearn.Controllers
 
                 var coursesList = CourseController.GetCourses();
 
-                var instructorsList = UserController.GetInstructors();
+                var instructorsList = UserController.GetInstructors().Select(key => key.Name).ToList();
 
-                result = new Tuple<Homework, List<Rubric>, List<User>, List<Course>>(homework, rubricsList,
-                    instructorsList, coursesList);
+                result=new Tuple<Homework,List<Rubric>,List<string>,List<Course>>(homework,rubricsList,instructorsList,coursesList);
             }
-            catch (ValidationException e)
+            catch ( ValidationException e )
             {
-                var error = "Error(s) During GetHomeworkForInstructor: " +
+                var error = "Error(s) During GetHomeworkForInstructor: "+
                             e.ValidationExceptions.Select(x => x.Message)
-                                .Aggregate((x, y) => x + ", " + y);
+                                .Aggregate((x,y) => x+", "+y);
 
-                result = BadRequest(error);
+                result=BadRequest(error);
             }
-            catch (Exception e)
+            catch ( Exception e )
             {
-                result = StatusCode(500,
-                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
+                result=StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): "+e.Message);
             }
-
             return result;
         }
-
         #endregion
 
         #region /application/HomeworkSummary
