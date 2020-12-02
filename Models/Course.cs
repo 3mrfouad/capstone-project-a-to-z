@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-
 namespace AZLearn.Models
 {
     [Table(nameof(Course))]
@@ -11,9 +10,11 @@ namespace AZLearn.Models
         public Course()
         {
             /* Initializing the Navigation Properties */
+
             Homeworks = new HashSet<Homework>();
             CohortCourses = new HashSet<CohortCourse>();
         }
+
         [Key]
         [Column(TypeName = "int(10)")]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -31,17 +32,14 @@ namespace AZLearn.Models
         [Column(TypeName = "float(5,2)")]
         public float DurationHrs { get; set; }
 
-
-        [Column(TypeName = "boolean")]
-        public bool Archive { get; set; } = false;
+        [Column(TypeName = "boolean")] public bool Archive { get; set; } = false;
 
         /*Navigation Properties*/
 
-        [InverseProperty(nameof(Models.Homework.Course))]
+        [InverseProperty(nameof(Homework.Course))]
         public virtual ICollection<Homework> Homeworks { get; set; }
 
-        [InverseProperty(nameof(Models.CohortCourse.Course))]
+        [InverseProperty(nameof(CohortCourse.Course))]
         public virtual ICollection<CohortCourse> CohortCourses { get; set; }
-
     }
 }

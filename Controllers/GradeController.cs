@@ -22,22 +22,21 @@ namespace AZLearn.Controllers
         ///     instructor comment
         /// </param>
         public static void CreateGradingByStudentId(string studentId,
-            Dictionary<string, Tuple<string, string>> gradings)
+                Dictionary<string, Tuple<string, string>> gradings)
+            /*Dictionary<rubricId,Tuple<mark ,instructorComment>>*/
         {
-            /*rubricid | mark | Instructor comment*/
-            /* 1       |  0    |    GoodJob    */
             using var context = new AppDbContext();
             var parsedRubricId = 0;
             var parsedStudentId = 0;
             var parsedMark = 0;
             var exception = new ValidationException();
 
-
             #region Validation
 
             studentId = string.IsNullOrEmpty(studentId) || string.IsNullOrWhiteSpace(studentId)
                 ? null
                 : studentId.Trim();
+
             if (string.IsNullOrWhiteSpace(studentId))
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(studentId),
@@ -46,15 +45,16 @@ namespace AZLearn.Controllers
             else
             {
                 if (!int.TryParse(studentId, out parsedStudentId))
-                    exception.ValidationExceptions.Add(new Exception("Invalid value for Student Id"));
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for studentId"));
                 if (parsedStudentId > 2147483647 || parsedStudentId < 1)
-                    exception.ValidationExceptions.Add(new Exception("Student Id value should be between 1 & 2147483647 inclusive"));
+                    exception.ValidationExceptions.Add(
+                        new Exception("studentId value should be between 1 & 2147483647 inclusive"));
                 else if (!context.Users.Any(key => key.UserId == parsedStudentId && key.IsInstructor == false))
-                    exception.ValidationExceptions.Add(new Exception("Student Id does not exist"));
+                    exception.ValidationExceptions.Add(new Exception("studentId does not exist"));
                 else if (!context.Users.Any(key => key.UserId == parsedStudentId && key.Archive == false))
-                    exception.ValidationExceptions.Add(new Exception("Student Id is Archived"));
+                    exception.ValidationExceptions.Add(new Exception("studentId is Archived"));
             }
-            
+
             if (gradings.Count == 0)
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(gradings),
                     nameof(gradings) + " is null."));
@@ -81,23 +81,22 @@ namespace AZLearn.Controllers
                 else
                 {
                     if (!int.TryParse(rubricId, out parsedRubricId))
-                        exception.ValidationExceptions.Add(new Exception("Invalid value for Rubric Id"));
+                        exception.ValidationExceptions.Add(new Exception("Invalid value for rubricId"));
                     if (parsedRubricId > 2147483647 || parsedRubricId < 1)
-                    {
-                        exception.ValidationExceptions.Add(new Exception("Rubric Id value should be between 1 & 2147483647 inclusive"));
-                    }
+                        exception.ValidationExceptions.Add(
+                            new Exception("rubricId value should be between 1 & 2147483647 inclusive"));
                     else if (!context.Rubrics.Any(key => key.RubricId == parsedRubricId))
-                        exception.ValidationExceptions.Add(new Exception("Rubric Id does not exist"));
+                        exception.ValidationExceptions.Add(new Exception("rubricId does not exist"));
 
                     else if (!context.Rubrics.Any(key => key.RubricId == parsedRubricId && key.Archive == false))
-                        exception.ValidationExceptions.Add(new Exception("Rubric Id is Archived"));
+                        exception.ValidationExceptions.Add(new Exception("rubricId is Archived"));
                 }
-                
+
                 /*To check whether Grade for  given Rubric id and student id already exists*/
 
                 if (context.Grades.Any(key => key.StudentId == parsedStudentId && key.RubricId == parsedRubricId))
                     exception.ValidationExceptions.Add(new Exception(
-                        "Grade Already Exists for this Rubric Id and Student Id"));
+                        "Grade Already Exists for this rubricId and studentId"));
 
                 if (string.IsNullOrWhiteSpace(mark))
                 {
@@ -108,7 +107,7 @@ namespace AZLearn.Controllers
                 {
                     if (!int.TryParse(mark, out parsedMark))
                     {
-                        exception.ValidationExceptions.Add(new Exception("Invalid value for Mark"));
+                        exception.ValidationExceptions.Add(new Exception("Invalid value for mark"));
                     }
                     else
                     {
@@ -123,9 +122,9 @@ namespace AZLearn.Controllers
                         exception.ValidationExceptions.Add(new Exception("Comment can only be 250 characters long."));
 
                 if (exception.ValidationExceptions.Count > 0) throw exception;
-               
+
                 #endregion
-               
+
                 if (instructorComment == null)
                 {
                     context.Grades.Add(new Grade
@@ -148,7 +147,8 @@ namespace AZLearn.Controllers
                 }
             }
 
-            if ( exception.ValidationExceptions.Count>0 ) throw exception;
+            if (exception.ValidationExceptions.Count > 0) throw exception;
+
             context.SaveChanges();
         }
 
@@ -162,12 +162,6 @@ namespace AZLearn.Controllers
         ///     Dictionary with rubricId as key and Tuple as value, the Tuple has two parameters i.e., mark and
         ///     instructor comment
         /// </param>
-        /// Test on Postman for Tuple: {
-        /*  "1":{
-              "Item1":"50",
-              "Item2":"Very Good"
-          }
-      }*/
         public static void UpdateGradingByStudentId(string studentId,
             Dictionary<string, Tuple<string, string>> gradings)
         {
@@ -175,7 +169,6 @@ namespace AZLearn.Controllers
             var parsedStudentId = 0;
             var parsedMark = 0;
             var exception = new ValidationException();
-
             using var context = new AppDbContext();
 
             #region Validation
@@ -191,15 +184,14 @@ namespace AZLearn.Controllers
             else
             {
                 if (!int.TryParse(studentId, out parsedStudentId))
-                    exception.ValidationExceptions.Add(new Exception("Invalid value for Student Id"));
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for studentId"));
                 if (parsedStudentId > 2147483647 || parsedStudentId < 1)
-                {
-                    exception.ValidationExceptions.Add(new Exception("Student Id value should be between 1 & 2147483647 inclusive"));
-                }
+                    exception.ValidationExceptions.Add(
+                        new Exception("studentId value should be between 1 & 2147483647 inclusive"));
                 else if (!context.Users.Any(key => key.UserId == parsedStudentId && key.IsInstructor == false))
-                    exception.ValidationExceptions.Add(new Exception("Student Id does not exist"));
+                    exception.ValidationExceptions.Add(new Exception("studentId does not exist"));
                 else if (!context.Users.Any(key => key.UserId == parsedStudentId && key.Archive == false))
-                    exception.ValidationExceptions.Add(new Exception("Student Id is Archived"));
+                    exception.ValidationExceptions.Add(new Exception("studentId is Archived"));
             }
 
             if (gradings.Count == 0)
@@ -208,7 +200,6 @@ namespace AZLearn.Controllers
 
             foreach (var (tempRubricId, (tempMark, tempInstructorComment)) in gradings)
             {
-               
                 var rubricId = string.IsNullOrEmpty(tempRubricId) || string.IsNullOrWhiteSpace(tempRubricId)
                     ? null
                     : tempRubricId.Trim();
@@ -228,25 +219,23 @@ namespace AZLearn.Controllers
                 else
                 {
                     if (!int.TryParse(rubricId, out parsedRubricId))
-                        exception.ValidationExceptions.Add(new Exception("Invalid value for Rubric Id"));
+                        exception.ValidationExceptions.Add(new Exception("Invalid value for rubricId"));
                     if (parsedRubricId > 2147483647 || parsedRubricId < 1)
-                    {
-                        exception.ValidationExceptions.Add(new Exception("Rubric Id value should be between 1 & 2147483647 inclusive"));
-                    }
+                        exception.ValidationExceptions.Add(
+                            new Exception("rubricId value should be between 1 & 2147483647 inclusive"));
 
                     else if (!context.Rubrics.Any(key => key.RubricId == parsedRubricId))
-                        exception.ValidationExceptions.Add(new Exception("Rubric Id does not exist"));
+                        exception.ValidationExceptions.Add(new Exception("rubricId does not exist"));
 
                     else if (!context.Rubrics.Any(key => key.RubricId == parsedRubricId && key.Archive == false))
-                        exception.ValidationExceptions.Add(new Exception("Rubric Id is Archived"));
+                        exception.ValidationExceptions.Add(new Exception("rubricId is Archived"));
                 }
 
                 /*To check whether Grade for  given Rubric id and student id already exists*/
-                //*****************************************************************
+
                 if (!context.Grades.Any(key => key.StudentId == parsedStudentId && key.RubricId == parsedRubricId))
                     exception.ValidationExceptions.Add(new Exception(
-                        "Grade that you are trying to Update doesn't Exists for this Rubric Id and Student Id"));
-                //*****************************************************************
+                        "Grade that you are trying to update doesn't exists for this rubricId and studentId"));
                 if (string.IsNullOrWhiteSpace(mark))
                 {
                     exception.ValidationExceptions.Add(new ArgumentNullException(nameof(mark),
@@ -256,7 +245,7 @@ namespace AZLearn.Controllers
                 {
                     if (!int.TryParse(mark, out parsedMark))
                     {
-                        exception.ValidationExceptions.Add(new Exception("Invalid value for Mark"));
+                        exception.ValidationExceptions.Add(new Exception("Invalid value for mark"));
                     }
                     else
                     {
@@ -275,16 +264,17 @@ namespace AZLearn.Controllers
                 #endregion
 
                 var grade = context.Grades.Find(parsedRubricId, parsedStudentId);
-                if ( instructorComment!=null )
+                if (instructorComment != null)
                 {
-                    instructorComment=instructorComment.ToLower();
-                    instructorComment=char.ToUpper(instructorComment[0])+instructorComment.Substring(1);
+                    instructorComment = instructorComment.ToLower();
+                    instructorComment = char.ToUpper(instructorComment[0]) + instructorComment.Substring(1);
                 }
-     
-                    grade.Mark = parsedMark;
-                    grade.InstructorComment =instructorComment;
+
+                grade.Mark = parsedMark;
+                grade.InstructorComment = instructorComment;
             }
-            if ( exception.ValidationExceptions.Count>0 ) throw exception;
+
+            if (exception.ValidationExceptions.Count > 0) throw exception;
             context.SaveChanges();
         }
 
@@ -295,25 +285,20 @@ namespace AZLearn.Controllers
         /// </summary>
         /// <param name="studentId"></param>
         /// <param name="studentComment">Dictionary with rubricId as key and studentComment as value</param>
-        /// Testing fpr Dictonary on Postman:  {
-        /* "1":"Thankyou for feedback"
-     }*/
         public static void UpdateGradingByStudentId(string studentId, Dictionary<string, string> studentComment)
         {
-
-            /*studentID, rubricId ,StudentComment*/
             var parsedRubricId = 0;
             var parsedStudentId = 0;
-            var exception = new ValidationException();
-
-            using var context = new AppDbContext();
             var grade = new Grade();
+            var exception = new ValidationException();
+            using var context = new AppDbContext();
 
             #region Validation
 
             studentId = string.IsNullOrEmpty(studentId) || string.IsNullOrWhiteSpace(studentId)
                 ? null
                 : studentId.Trim();
+
             if (string.IsNullOrWhiteSpace(studentId))
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(studentId),
@@ -322,13 +307,12 @@ namespace AZLearn.Controllers
             else
             {
                 if (!int.TryParse(studentId, out parsedStudentId))
-                    exception.ValidationExceptions.Add(new Exception("Invalid value for Student Id"));
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for studentId"));
                 if (parsedStudentId > 2147483647 || parsedStudentId < 1)
-                {
-                    exception.ValidationExceptions.Add(new Exception("Student Id value should be between 1 & 2147483647 inclusive"));
-                }
+                    exception.ValidationExceptions.Add(
+                        new Exception("studentId value should be between 1 & 2147483647 inclusive"));
+                /*To check if the user is an instructor or student*/
 
-                /*To check if user is an Instructor or Student*/
                 else if (!context.Users.Any(key => key.UserId == parsedStudentId && key.IsInstructor == false))
                     exception.ValidationExceptions.Add(new Exception("Student Id does not exist"));
                 else if (!context.Users.Any(key => key.UserId == parsedStudentId && key.Archive == false))
@@ -341,7 +325,6 @@ namespace AZLearn.Controllers
 
             foreach (var (tempRubricId, tempStudentComment) in studentComment)
             {
-               
                 var rubricId = string.IsNullOrEmpty(tempRubricId) || string.IsNullOrWhiteSpace(tempRubricId)
                     ? null
                     : tempRubricId.Trim();
@@ -359,40 +342,42 @@ namespace AZLearn.Controllers
                 else
                 {
                     if (!int.TryParse(rubricId, out parsedRubricId))
-                        exception.ValidationExceptions.Add(new Exception("Invalid value for Rubric Id"));
+                        exception.ValidationExceptions.Add(new Exception("Invalid value for rubricId"));
                     if (parsedRubricId > 2147483647 || parsedRubricId < 1)
-                    {
-                        exception.ValidationExceptions.Add(new Exception("Rubric Id value should be between 1 & 2147483647 inclusive"));
-                    }
+                        exception.ValidationExceptions.Add(
+                            new Exception("rubricId value should be between 1 & 2147483647 inclusive"));
                     else if (!context.Rubrics.Any(key => key.RubricId == parsedRubricId))
-                        exception.ValidationExceptions.Add(new Exception("Rubric Id does not exist"));
+                        exception.ValidationExceptions.Add(new Exception("rubricId does not exist"));
 
                     else if (!context.Rubrics.Any(key => key.RubricId == parsedRubricId && key.Archive == false))
-                        exception.ValidationExceptions.Add(new Exception("Rubric Id is Archived"));
+                        exception.ValidationExceptions.Add(new Exception("rubricId is Archived"));
                 }
 
-                /*To check whether Grade for  given Rubric id and student id already exists*/
+                /*To check whether Grade for given rubricId and studentId already exists*/
 
                 if (!context.Grades.Any(key => key.StudentId == parsedStudentId && key.RubricId == parsedRubricId))
                     exception.ValidationExceptions.Add(new Exception(
-                        "Grade that you are trying to Update doesn't Exists for this Rubric Id and Student Id"));
+                        "Grade that you are trying to update doesn't exists for this rubricId and studentId"));
 
                 if (!string.IsNullOrEmpty(comment))
                     if (comment.Length > 250)
                         exception.ValidationExceptions.Add(new Exception("Comment can only be 250 characters long."));
 
                 if (exception.ValidationExceptions.Count > 0) throw exception;
+
                 #endregion
 
                 if (comment != null)
                 {
                     comment = comment.ToLower();
-                    comment=char.ToUpper(comment[0])+comment.Substring(1);
+                    comment = char.ToUpper(comment[0]) + comment.Substring(1);
                 }
-                grade=context.Grades.Find(parsedRubricId,parsedStudentId);
-                grade.StudentComment=comment;
+
+                grade = context.Grades.Find(parsedRubricId, parsedStudentId);
+                grade.StudentComment = comment;
             }
-            if ( exception.ValidationExceptions.Count>0 ) throw exception;
+
+            if (exception.ValidationExceptions.Count > 0) throw exception;
 
             context.SaveChanges();
         }
@@ -409,10 +394,10 @@ namespace AZLearn.Controllers
         {
             var parsedStudentId = 0;
             var parsedHomeworkId = 0;
+            var exception = new ValidationException();
+            using var context = new AppDbContext();
 
             #region Validation
-
-            var exception = new ValidationException();
 
             studentId = string.IsNullOrEmpty(studentId) || string.IsNullOrWhiteSpace(studentId)
                 ? null
@@ -420,7 +405,7 @@ namespace AZLearn.Controllers
             homeworkId = string.IsNullOrEmpty(homeworkId) || string.IsNullOrWhiteSpace(homeworkId)
                 ? null
                 : homeworkId.Trim();
-            using var context = new AppDbContext();
+
             if (string.IsNullOrWhiteSpace(studentId))
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(studentId),
@@ -429,14 +414,12 @@ namespace AZLearn.Controllers
             else
             {
                 if (!int.TryParse(studentId, out parsedStudentId))
-                    exception.ValidationExceptions.Add(new Exception("Invalid value for Student Id"));
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for studentId"));
                 if (parsedStudentId > 2147483647 || parsedStudentId < 1)
-                {
-                    exception.ValidationExceptions.Add(new Exception("Student Id value should be between 1 & 2147483647 inclusive"));
-                }
+                    exception.ValidationExceptions.Add(
+                        new Exception("studentId value should be between 1 & 2147483647 inclusive"));
                 else if (!context.Users.Any(key => key.UserId == parsedStudentId && key.IsInstructor == false))
-                    exception.ValidationExceptions.Add(new Exception("Student Id does not exist"));
-
+                    exception.ValidationExceptions.Add(new Exception("studentId does not exist"));
             }
 
             if (string.IsNullOrWhiteSpace(homeworkId))
@@ -447,13 +430,12 @@ namespace AZLearn.Controllers
             else
             {
                 if (!int.TryParse(homeworkId, out parsedHomeworkId))
-                    exception.ValidationExceptions.Add(new Exception("Invalid value for Homework Id"));
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for homeworkId"));
                 if (parsedHomeworkId > 2147483647 || parsedHomeworkId < 1)
-                {
-                    exception.ValidationExceptions.Add(new Exception("Homework Id value should be between 1 & 2147483647 inclusive"));
-                }
+                    exception.ValidationExceptions.Add(
+                        new Exception("homeworkId value should be between 1 & 2147483647 inclusive"));
                 else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId))
-                    exception.ValidationExceptions.Add(new Exception("Homework Id does not exist"));
+                    exception.ValidationExceptions.Add(new Exception("homeworkId does not exist"));
             }
 
             if (exception.ValidationExceptions.Count > 0) throw exception;
@@ -463,12 +445,14 @@ namespace AZLearn.Controllers
             var grades = context.Grades.Include("Rubric.Homework")
                 .Where(key => key.Rubric.HomeworkId == parsedHomeworkId && key.StudentId == parsedStudentId)
                 .ToList();
+
             return grades;
         }
 
         /// <summary>
         ///     GetGradeSummaryForInstructor
-        ///     This action returns List of custom objects of data (related to a Homework and grades for all students in specified
+        ///     Description: This action returns List of custom objects of data (related to a Homework and grades for all students
+        ///     in specified
         ///     cohort) required in Grade Summary Screen for instructor.
         ///     The screen needs data as per the following Format:
         ///     Student Name, Total Marks, Marks Obtained in all requirements/ Total Requirement Marks, Marks obtained in all
@@ -483,81 +467,73 @@ namespace AZLearn.Controllers
             var gradeSummaries = new List<GradeSummaryTypeForInstructor>();
             var parsedCohortId = 0;
             var parsedHomeworkId = 0;
-           
-
+            var exception = new ValidationException();
+            using var context = new AppDbContext();
 
             #region Validation
 
-            var exception = new ValidationException();
-
-            cohortId=string.IsNullOrEmpty(cohortId)||string.IsNullOrWhiteSpace(cohortId) ? null : cohortId.Trim();
-            homeworkId=string.IsNullOrEmpty(homeworkId)||string.IsNullOrWhiteSpace(homeworkId)
+            cohortId = string.IsNullOrEmpty(cohortId) || string.IsNullOrWhiteSpace(cohortId) ? null : cohortId.Trim();
+            homeworkId = string.IsNullOrEmpty(homeworkId) || string.IsNullOrWhiteSpace(homeworkId)
                 ? null
                 : homeworkId.Trim();
 
-            using var context = new AppDbContext();
-            if ( string.IsNullOrWhiteSpace(cohortId) )
+            if (string.IsNullOrWhiteSpace(cohortId))
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId),
-                    nameof(cohortId)+" is null."));
+                    nameof(cohortId) + " is null."));
             }
             else
             {
-                if ( !int.TryParse(cohortId,out parsedCohortId) )
-                    exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
-                if ( parsedCohortId>2147483647||parsedCohortId<1 )
-                {
-                    exception.ValidationExceptions.Add(new Exception("Cohort Id value should be between 1 & 2147483647 inclusive"));
-                }
-                else if ( !context.Cohorts.Any(key => key.CohortId==parsedCohortId) )
-                    exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
+                if (!int.TryParse(cohortId, out parsedCohortId))
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for cohortId"));
+                if (parsedCohortId > 2147483647 || parsedCohortId < 1)
+                    exception.ValidationExceptions.Add(
+                        new Exception("cohortId value should be between 1 & 2147483647 inclusive"));
+                else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
+                    exception.ValidationExceptions.Add(new Exception("cohortId does not exist"));
                 else if (!context.Users.Any(key => key.IsInstructor == false && key.CohortId == parsedCohortId))
-                {
                     exception.ValidationExceptions.Add(new Exception("There is no student registered in this cohort"));
-                }
             }
 
-            if ( string.IsNullOrWhiteSpace(homeworkId) )
+            if (string.IsNullOrWhiteSpace(homeworkId))
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(homeworkId),
-                    nameof(homeworkId)+" is null."));
+                    nameof(homeworkId) + " is null."));
             }
             else
             {
-                if ( !int.TryParse(homeworkId,out parsedHomeworkId) )
-                    exception.ValidationExceptions.Add(new Exception("Invalid value for Homework Id"));
-                if ( parsedHomeworkId>2147483647||parsedHomeworkId<1 )
-                {
-                    exception.ValidationExceptions.Add(new Exception("Homework Id value should be between 1 & 2147483647 inclusive"));
-                }
-                else if ( !context.Homeworks.Any(key => key.HomeworkId==parsedHomeworkId) )
-                    exception.ValidationExceptions.Add(new Exception("Homework Id does not exist"));
-                else if((!string.IsNullOrWhiteSpace(cohortId)) && int.TryParse(cohortId, out parsedCohortId))
-                {
+                if (!int.TryParse(homeworkId, out parsedHomeworkId))
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for homeworkId"));
+                if (parsedHomeworkId > 2147483647 || parsedHomeworkId < 1)
+                    exception.ValidationExceptions.Add(
+                        new Exception("homeworkId value should be between 1 & 2147483647 inclusive"));
+                else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId))
+                    exception.ValidationExceptions.Add(new Exception("homeworkId does not exist"));
+                else if (!string.IsNullOrWhiteSpace(cohortId) && int.TryParse(cohortId, out parsedCohortId))
                     if (!context.Homeworks.Any(key =>
                         key.HomeworkId == parsedHomeworkId && key.CohortId == parsedCohortId))
-                    {
                         exception.ValidationExceptions.Add(new Exception("Homework does not exist for this cohort."));
-                    }
-                }
             }
 
-            if ( exception.ValidationExceptions.Count>0 ) throw exception;
+            if (exception.ValidationExceptions.Count > 0) throw exception;
 
             #endregion
 
             var studentsByCohort = UserController.GetStudentsByCohortId(cohortId);
             if (RubricController.GetRubricsByHomeworkId(homeworkId).Any())
             {
-                //rubricWeightByGroup is an array with first element- total weight of requirements, second element- total weight of challenges for a specified Homework
+                /*rubricWeightByGroup is an array with first element- total weight of requirements, second element- total weight of challenges for a specified Homework*/
+
                 var rubricWeightByGroup = RubricController.GetRubricsByHomeworkId(homeworkId)
                     .GroupBy(key => key.IsChallenge).Select(key => key.Sum(s => s.Weight)).ToArray();
 
-                //If there are no challenges, then weight of challenge = 0 to avoid NullValueException
-                if (rubricWeightByGroup.Length == 1)
-                    rubricWeightByGroup = rubricWeightByGroup.Concat(new int[] { 0 }).ToArray();
+                /*If there are no challenges, then weight of challenge = 0 to avoid NullValueException*/
 
-                //Loop to get GradeSummary for all students in a Cohort
+                if (rubricWeightByGroup.Length == 1)
+                    rubricWeightByGroup = rubricWeightByGroup.Concat(new[] {0}).ToArray();
+
+                /*Loop to get GradeSummary for all students in a Cohort*/
+
                 foreach (var student in studentsByCohort)
                 {
                     string totalTimeSpentOnHomework;
@@ -570,7 +546,9 @@ namespace AZLearn.Controllers
                         totalTimeSpentOnHomework = (timesheet.SolvingTime + timesheet.StudyTime).ToString();
 
                     var gradesOfStudent = GetGradesByStudentId($"{student.UserId}", homeworkId);
-                    //If grades do not exist for that student (in case Instructor has not added/marked grades for that student)- show empty string for grades 
+
+                    /*If grades do not exist for that student (in case Instructor has not added/marked grades for that student)- show empty string for grades */
+
                     if (gradesOfStudent.Count == 0)
                     {
                         gradeSummary = new GradeSummaryTypeForInstructor(" ", $" /{rubricWeightByGroup[0]}",
@@ -579,18 +557,20 @@ namespace AZLearn.Controllers
                     else
                     {
                         var total = gradesOfStudent.Sum(key => key.Mark);
-                        //Group marks of student in a homework by requirements and challenges and store them in array
+
+                        /*Group marks of student in a homework by requirements and challenges and store them in array*/
+
                         var marksByGroup = gradesOfStudent.GroupBy(key => key.Rubric.IsChallenge)
                             .Select(key => key.Sum(s => s.Mark))
                             .ToArray();
-                        //In case there are no challenges, we will show 0/0 for challenges' marks
-                        if ( marksByGroup.Length==1 )
-                        {
-                            marksByGroup = marksByGroup.Concat(new int[] { 0 }).ToArray();
-                        }
-                        gradeSummary=new GradeSummaryTypeForInstructor($"{total}",
+
+                        /*In case there are no challenges, we will show 0/0 for challenges' marks*/
+
+                        if (marksByGroup.Length == 1) marksByGroup[1] = 0;
+
+                        gradeSummary = new GradeSummaryTypeForInstructor($"{total}",
                             $"{marksByGroup[0]}/{rubricWeightByGroup[0]}",
-                            $"{marksByGroup[1]}/{rubricWeightByGroup[1]}",totalTimeSpentOnHomework,studentName,
+                            $"{marksByGroup[1]}/{rubricWeightByGroup[1]}", totalTimeSpentOnHomework, studentName,
                             student.UserId);
                     }
 
@@ -599,9 +579,9 @@ namespace AZLearn.Controllers
             }
             else
             {
-                GradeSummaryTypeForInstructor gradeSummary = new GradeSummaryTypeForInstructor(" ",
+                var gradeSummary = new GradeSummaryTypeForInstructor(" ",
                     " ",
-                    " "," ","No rubrics found for this homework ",
+                    " ", " ", "No rubrics found for this homework ",
                     0);
                 gradeSummaries.Add(gradeSummary);
             }
@@ -609,15 +589,23 @@ namespace AZLearn.Controllers
 
             return gradeSummaries;
         }
+
+        /// <summary>
+        ///     ArchiveGradingByStudentId
+        ///     Description: This action archives a course by studentId and rubricId
+        /// </summary>
+        /// <param name="studentId"></param>
+        /// <param name="rubrics"></param>
         public static void ArchiveGradingByStudentId(string studentId, List<string> rubrics)
         {
-            /*studentID, rubricId ,StudentComment*/
             var parsedRubricId = 0;
             var parsedStudentId = 0;
             var exception = new ValidationException();
             using var context = new AppDbContext();
 
-            studentId = string.IsNullOrEmpty(studentId) || string.IsNullOrWhiteSpace(studentId) ? null : studentId.Trim();
+            studentId = string.IsNullOrEmpty(studentId) || string.IsNullOrWhiteSpace(studentId)
+                ? null
+                : studentId.Trim();
 
             if (string.IsNullOrWhiteSpace(studentId))
             {
@@ -627,16 +615,17 @@ namespace AZLearn.Controllers
             else
             {
                 if (!int.TryParse(studentId, out parsedStudentId))
-                    exception.ValidationExceptions.Add(new Exception("Invalid value for Student Id"));
-                /*To check if user is an Instructor or Student*/
+                    exception.ValidationExceptions.Add(new Exception("Invalid value for studentId"));
+                /*To check if user is an instructor or student*/
+
                 else if (!context.Users.Any(key => key.UserId == parsedStudentId && key.IsInstructor == false))
-                    exception.ValidationExceptions.Add(new Exception("Student Id does not exist"));
+                    exception.ValidationExceptions.Add(new Exception("studentId does not exist"));
             }
+
             #region Validation
 
             foreach (var tempRubricId in rubrics)
             {
-
                 var rubricId = string.IsNullOrEmpty(tempRubricId) || string.IsNullOrWhiteSpace(tempRubricId)
                     ? null
                     : tempRubricId.Trim();
@@ -650,21 +639,22 @@ namespace AZLearn.Controllers
                 else
                 {
                     if (!int.TryParse(rubricId, out parsedRubricId))
-                        exception.ValidationExceptions.Add(new Exception("Invalid value for Rubric Id"));
+                        exception.ValidationExceptions.Add(new Exception("Invalid value for rubricId"));
 
                     else if (!context.Rubrics.Any(key => key.RubricId == parsedRubricId))
-                        exception.ValidationExceptions.Add(new Exception("Rubric Id does not exist"));
+                        exception.ValidationExceptions.Add(new Exception("rubricId does not exist"));
                 }
 
-                
                 /*To check whether Grade for given Rubric id and student id already exists*/
 
                 if (!context.Grades.Any(key => key.StudentId == parsedStudentId && key.RubricId == parsedRubricId))
                     exception.ValidationExceptions.Add(new Exception(
-                        "Grade that you are trying to archive doesn't Exists for this Rubric Id and Student Id"));
-                else if (context.Grades.Any(key => key.StudentId == parsedStudentId && key.RubricId == parsedRubricId && key.Archive == true))
+                        "Grade that you are trying to archive doesn't exists for this rubricId and studentId"));
+                else if (context.Grades.Any(key =>
+                    key.StudentId == parsedStudentId && key.RubricId == parsedRubricId && key.Archive))
                     exception.ValidationExceptions.Add(new Exception(
-                       "Grade that you are trying to archive for this Rubric Id and Student Id is already archived"));
+                        "Grade that you are trying to archive for this rubricId and studentId is already archived"));
+
                 #endregion
 
                 if (exception.ValidationExceptions.Count > 0) throw exception;
@@ -677,6 +667,5 @@ namespace AZLearn.Controllers
 
             context.SaveChanges();
         }
-
     }
 }

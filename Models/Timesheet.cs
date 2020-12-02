@@ -10,10 +10,12 @@ namespace AZLearn.Models
         [Column(TypeName = "int(10)")]
 
         /* Auto generates unique id number*/
+
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int TimesheetId { get; set; }
 
         /*Foreign Keys*/
+
         [Required]
         [Column(TypeName = "int(10)")]
         public int HomeworkId { get; set; }
@@ -26,11 +28,9 @@ namespace AZLearn.Models
         [Column(TypeName = "float(5,2)")]
         public float SolvingTime { get; set; }
 
-        [Column(TypeName = "float(5,2)")] 
-        public float StudyTime { get; set; } = 0;
+        [Column(TypeName = "float(5,2)")] public float StudyTime { get; set; } = 0;
 
-        [Column(TypeName = "boolean")]
-        public bool Archive { get; set; } = false;
+        [Column(TypeName = "boolean")] public bool Archive { get; set; } = false;
 
         /*Navigation properties:*/
 
@@ -39,7 +39,7 @@ namespace AZLearn.Models
         public virtual Homework Homework { get; set; }
 
         [ForeignKey(nameof(StudentId))]
-        [InverseProperty(nameof(Models.User.Timesheets))]
+        [InverseProperty(nameof(User.Timesheets))]
         public virtual User Student { get; set; }
     }
 }
