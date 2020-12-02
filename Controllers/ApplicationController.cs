@@ -1,26 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using AZLearn.Models;
 using AZLearn.Models.Exceptions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Server.IIS;
-using Microsoft.Data;
 
 namespace AZLearn.Controllers
 {
     [Route("[controller]")]
-    [ApiController] 
+    [ApiController]
     public class ApplicationController : Controller
     {
         #region CohortController
 
         #region /application/CreateCohort
 
+        /// <summary>
+        ///     CreateCohort
+        ///     Description: This End point returns a Success message upon creation of cohort otherwise returns an error message
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="capacity"></param>
+        /// <param name="city"></param>
+        /// <param name="modeOfTeaching"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <returns>Success/Error message</returns>
         [HttpPost(nameof(CreateCohort))]
-        public ActionResult CreateCohort([FromQuery] string name,[FromQuery] string capacity,[FromQuery] string city,
-            [FromQuery]  string modeOfTeaching,[FromQuery]  string startDate,[FromQuery] string endDate)
+        public ActionResult CreateCohort([FromQuery] string name, [FromQuery] string capacity, [FromQuery] string city,
+            [FromQuery] string modeOfTeaching, [FromQuery] string startDate, [FromQuery] string endDate)
 
         {
             ActionResult result;
@@ -51,9 +59,22 @@ namespace AZLearn.Controllers
 
         #region /application/UpdateCohort
 
+        /// <summary>
+        ///     UpdateCohort
+        ///     Description: This End point returns a Success message upon update of cohort otherwise returns an error message
+        /// </summary>
+        /// <param name="cohortId"></param>
+        /// <param name="name"></param>
+        /// <param name="capacity"></param>
+        /// <param name="city"></param>
+        /// <param name="modeOfTeaching"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <returns>Success/Error message</returns>
         [HttpPatch(nameof(UpdateCohort))]
-        public ActionResult UpdateCohort([FromQuery] string cohortId,[FromQuery] string name,[FromQuery] string capacity,[FromQuery] string city,
-            [FromQuery] string modeOfTeaching,[FromQuery] string startDate,[FromQuery] string endDate)
+        public ActionResult UpdateCohort([FromQuery] string cohortId, [FromQuery] string name,
+            [FromQuery] string capacity, [FromQuery] string city,
+            [FromQuery] string modeOfTeaching, [FromQuery] string startDate, [FromQuery] string endDate)
 
         {
             ActionResult result;
@@ -81,9 +102,13 @@ namespace AZLearn.Controllers
 
         #endregion
 
-
         #region /application/GetCohorts
 
+        /// <summary>
+        ///     GetCohorts
+        ///     Description: This Endpoint returns a list of cohorts
+        /// </summary>
+        /// <returns>List of cohorts</returns>
         [HttpGet(nameof(GetCohorts))]
         public ActionResult<List<Cohort>> GetCohorts()
         {
@@ -104,34 +129,33 @@ namespace AZLearn.Controllers
         #endregion
 
         #region /application/GetCohort
+
         /// <summary>
         ///     GetCohortById
-        ///     Description:The API End Point looks for action GetCohortById in CohortController and retrieves the information of that Cohort
-        ///    
-        ///     EndPoint Testing : localhost:xxxxx/application/GetCohort
-        ///     
+        ///     Description:The API End Point looks for action GetCohortById in CohortController and retrieves the information of
+        ///     that Cohort
         /// </summary>
-        /// <returns>The API End Point returns Cohort record with matching CohortId.</returns>
+        /// <returns>The API End Point returns a single Cohort record with matching CohortId.</returns>
         [HttpGet("GetCohort")]
         public ActionResult<Cohort> GetCohortById(string cohortId)
         {
             ActionResult<Cohort> result;
             try
             {
-                result=CohortController.GetCohortById(cohortId);
+                result = CohortController.GetCohortById(cohortId);
             }
-            catch ( ValidationException e )
+            catch (ValidationException e)
             {
-                var error = "Error(s) During Retrieving a Cohort: "+
+                var error = "Error(s) During Retrieving a Cohort: " +
                             e.ValidationExceptions.Select(x => x.Message)
-                                .Aggregate((x,y) => x+", "+y);
-                result=BadRequest(error);
+                                .Aggregate((x, y) => x + ", " + y);
+                result = BadRequest(error);
             }
 
-            catch ( Exception e )
+            catch (Exception e)
             {
-                result=StatusCode(500,
-                    "Unexpected server/database error occurred. System error message(s): "+e.Message);
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
 
             return result;
@@ -147,11 +171,8 @@ namespace AZLearn.Controllers
 
         /// <summary>
         ///     CreateCourseByCohortId
-        ///     Description:The API End Point looks for action CreateCourseByCohortId in CourseController and creates the course
-        ///     information on database with specified parameters as defined below.
-        ///     EndPoint Testing : localhost:xxxxx/application/CreateCourseByCohortId?cohortId=2&instructorId=1&name=PHP
-        ///     &description=Basics of PHP&durationHrs=5&resourcesLink=www.php.com&startDate=2020-10-04&endDate=2020-10-15
-        ///     Test Passed
+        ///     Description:This API End Point takes in below parameters and returns successful message upon creating a course
+        ///     otherwise returns an error message
         /// </summary>
         /// <param name="cohortId"></param>
         /// <param name="instructorId"></param>
@@ -161,10 +182,10 @@ namespace AZLearn.Controllers
         /// <param name="resourcesLink"></param>
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
-        /// <returns></returns>
+        /// <returns>Sucess/Error Message</returns>
         [HttpPost(nameof(CreateCourse))]
         public ActionResult CreateCourse
-        ([FromQuery] string name,[FromQuery] string description,
+        ([FromQuery] string name, [FromQuery] string description,
             [FromQuery] string durationHrs)
         {
             ActionResult result;
@@ -191,26 +212,23 @@ namespace AZLearn.Controllers
             return result;
         }
 
-
         #endregion
 
         #region /application/UpdateCourse
 
         /// <summary>
         ///     UpdateCourseById
-        ///     Description:The API End Point looks for action UpdateCourseById in CourseController and updates the information of
-        ///     the course on database as per specified requested edit parameters.
-        ///     EndPoint Testing :localhost:xxxxx/application/UpdateCourseById?courseId=6&instructorId=2&name=REDUX&description
-        ///     =Basics&durationHrs=2&resourcesLink=www.redux.com
-        ///     Test Passed
+        ///     Description: This API End Point takes in below parameters and returns successful message upon updating a course
+        ///     otherwise returns an error message
         /// </summary>
         /// <param name="courseId"></param>
         /// <param name="name"></param>
         /// <param name="description"></param>
         /// <param name="durationHrs"></param>
-        /// <returns></returns>
+        /// <returns>Success/Error message </returns>
         [HttpPatch("UpdateCourse")]
-        public ActionResult UpdateCourseById([FromQuery] string courseId,[FromQuery] string name,[FromQuery] string description,
+        public ActionResult UpdateCourseById([FromQuery] string courseId, [FromQuery] string name,
+            [FromQuery] string description,
             [FromQuery] string durationHrs)
         {
             ActionResult result;
@@ -239,26 +257,25 @@ namespace AZLearn.Controllers
 
         #endregion
 
-
         #region /application/UpdateAssignedCourse
 
         /// <summary>
         ///     UpdateAssignedCourse
-        ///     Description:The API End Point looks for action UpdateAssignedCourse in CourseController and update a
-        ///     course according to specified Course id and Cohort id .
-        ///     EndPoint Testing : //localhost:xxxxx/application/UpdateAssignedCourse
-        ///     Test Passed
+        ///     Description:This API End Point takes in below parameters and returns successful message upon updating a course
+        ///     otherwise returns an error message
         /// </summary>
         /// <param name="cohortId"></param>
         /// <param name="courseId"></param>
-        /// <returns> </returns>
+        /// <returns>Sucess/Error message </returns>
         [HttpPatch(nameof(UpdateAssignedCourse))]
-        public ActionResult UpdateAssignedCourse(string cohortId, string courseId, string instructorId, string startDate, string endDate, string resourcesLink)
+        public ActionResult UpdateAssignedCourse(string cohortId, string courseId, string instructorId,
+            string startDate, string endDate, string resourcesLink)
         {
             ActionResult result;
             try
             {
-                CohortCourseController.UpdateAssignedCourse(cohortId, courseId, instructorId, startDate, endDate, resourcesLink);
+                CohortCourseController.UpdateAssignedCourse(cohortId, courseId, instructorId, startDate, endDate,
+                    resourcesLink);
                 result = StatusCode(200, "Successfully Assigned Course to Cohort");
             }
             catch (ValidationException e)
@@ -276,29 +293,29 @@ namespace AZLearn.Controllers
             }
 
             return result;
-
         }
+
         #endregion
 
         #region /application/AssignCourse
 
         /// <summary>
         ///     AssignCourseByCohortId
-        ///     Description:The API End Point looks for action AssignCourseByCohortId in CourseController and assigns/creates a
-        ///     course according to specified Course id and Cohort id .
-        ///     EndPoint Testing : //localhost:xxxxx/application/AssignCourseByCohortId?cohortId=2&courseId=3
-        ///     Test Passed
+        ///     Description:This API End Point takes in below parameters and returns successful message upon assigning a course
+        ///     otherwise returns an error message.
         /// </summary>
         /// <param name="cohortId"></param>
         /// <param name="courseId"></param>
-        /// <returns>The End Point returns the Course according to the specified cohort id </returns>
+        /// <returns>Success/Error message </returns>
         [HttpPost("AssignCourse")]
-        public ActionResult AssignCourseByCohortId(string cohortId, string courseId, string instructorId, string startDate, string endDate, string resourcesLink)
+        public ActionResult AssignCourseByCohortId(string cohortId, string courseId, string instructorId,
+            string startDate, string endDate, string resourcesLink)
         {
             ActionResult result;
             try
             {
-                CohortCourseController.AssignCourseByCohortId(cohortId, courseId, instructorId, startDate, endDate, resourcesLink);
+                CohortCourseController.AssignCourseByCohortId(cohortId, courseId, instructorId, startDate, endDate,
+                    resourcesLink);
                 result = StatusCode(200, "Successfully Assigned Course to Cohort");
             }
             catch (ValidationException e)
@@ -317,9 +334,18 @@ namespace AZLearn.Controllers
 
             return result;
         }
+
         #endregion
 
         #region /application/GetAssignedCourse
+
+        /// <summary>
+        ///     GetAssignedCourse
+        ///     Description: This End point takes in below parameters and returns a course associated with a particular cohort
+        /// </summary>
+        /// <param name="courseId"></param>
+        /// <param name="cohortId"></param>
+        /// <returns>List of Course</returns>
         [HttpGet(nameof(GetAssignedCourse))]
         public ActionResult<Course> GetAssignedCourse(string courseId, string cohortId)
         {
@@ -341,18 +367,17 @@ namespace AZLearn.Controllers
                 result = StatusCode(500,
                     "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
+
             return result;
         }
+
         #endregion
 
         #region /application/GetCourses
 
         /// <summary>
         ///     GetCourses
-        ///     Description:The API End Point looks for action GetCourses in CourseController and retrieves the information of all
-        ///     courses from database.
-        ///     EndPoint Testing : localhost:xxxxx/application/GetCourses
-        ///     Test Passed
+        ///     Description:This end point looks for GetCourses Action in Course Controller and returns a list of all courses
         /// </summary>
         /// <returns>The API End Point returns list of all Courses in database.</returns>
         [HttpGet(nameof(GetCourses))]
@@ -376,6 +401,7 @@ namespace AZLearn.Controllers
                 result = StatusCode(500,
                     "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
+
             return result;
         }
 
@@ -385,10 +411,8 @@ namespace AZLearn.Controllers
 
         /// <summary>
         ///     GetCourseById
-        ///     Description:The API End Point looks for action GetCourseById in CourseController and retrieves the information of that Course.
-        ///     
-        ///     EndPoint Testing : localhost:xxxxx/application/GetCourse 
-        ///     
+        ///     Description:The API End Point looks for action GetCourseById in CourseController and retrieves the information of
+        ///     that Course.
         /// </summary>
         /// <returns>The API End Point returns Course record with matching CourseId.</returns>
         [HttpGet("GetCourse")]
@@ -397,38 +421,36 @@ namespace AZLearn.Controllers
             ActionResult<Course> result;
             try
             {
-                result=CourseController.GetCourseById(courseId);
+                result = CourseController.GetCourseById(courseId);
             }
-            catch ( ValidationException e )
+            catch (ValidationException e)
             {
-                var error = "Error(s) During GetCourseById: "+
+                var error = "Error(s) During GetCourseById: " +
                             e.ValidationExceptions.Select(x => x.Message)
-                                .Aggregate((x,y) => x+", "+y);
+                                .Aggregate((x, y) => x + ", " + y);
 
-                result=BadRequest(error);
+                result = BadRequest(error);
             }
-            catch ( Exception e )
+            catch (Exception e)
             {
-                result=StatusCode(500,
-                    "Unexpected server/database error occurred. System error message(s): "+e.Message);
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
+
             return result;
         }
 
         #endregion
 
-
         #region /application/GetCourseSummary
 
         /// <summary>
         ///     GetCourseSummary
-        ///     Description:The API End Point looks for action GetCoursesByCohortID in CourseController and retrieves the
+        ///     Description:The API End Point looks for action GetCoursesByCohortId in CourseController and retrieves the
         ///     information of all courses based on the Cohort id  from database.
-        ///     EndPoint Testing : localhost:xxxxx/application/getcoursesummary?cohortId=1
-        ///     /*Test Passed*/
         /// </summary>
         /// <param name="cohortId"></param>
-        /// <returns></returns>
+        /// <returns>List of Courses</returns>
         [HttpGet(nameof(GetCourseSummary))]
         public ActionResult<List<Course>> GetCourseSummary(string cohortId)
         {
@@ -450,6 +472,7 @@ namespace AZLearn.Controllers
                 result = StatusCode(500,
                     "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
+
             return result;
         }
 
@@ -461,6 +484,22 @@ namespace AZLearn.Controllers
 
         #region /application/CreateHomework
 
+        /// <summary>
+        ///     CreateHomework
+        ///     Description: This API End Point takes in below parameters and returns successful message upon creating a homework
+        ///     otherwise returns an error message.
+        /// </summary>
+        /// <param name="courseId"></param>
+        /// <param name="instructorId"></param>
+        /// <param name="cohortId"></param>
+        /// <param name="isAssignment"></param>
+        /// <param name="title"></param>
+        /// <param name="avgCompletionTime"></param>
+        /// <param name="dueDate"></param>
+        /// <param name="releaseDate"></param>
+        /// <param name="documentLink"></param>
+        /// <param name="gitHubClassRoomLink"></param>
+        /// <returns>Success/Error message</returns>
         [HttpPost(nameof(CreateHomework))]
         public ActionResult CreateHomework(string courseId, string instructorId, string cohortId,
             string isAssignment, string title, string avgCompletionTime, string dueDate, string releaseDate,
@@ -482,18 +521,36 @@ namespace AZLearn.Controllers
 
                 result = BadRequest(error);
             }
-            catch ( Exception e )
+            catch (Exception e)
             {
-                result=StatusCode(500,
-                    "Unexpected server/database error occurred. System error message(s): "+e.Message);
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
+
             return result;
         }
 
-        #endregion  
+        #endregion
 
         #region /application/UpdateHomework
 
+        /// <summary>
+        ///     UpdateHomework
+        ///     Description: This API End Point takes in below parameters and returns successful message upon updating a homework
+        ///     otherwise returns an error message.
+        /// </summary>
+        /// <param name="homeworkId"></param>
+        /// <param name="courseId"></param>
+        /// <param name="instructorId"></param>
+        /// <param name="cohortId"></param>
+        /// <param name="isAssignment"></param>
+        /// <param name="title"></param>
+        /// <param name="avgCompletionTime"></param>
+        /// <param name="dueDate"></param>
+        /// <param name="releaseDate"></param>
+        /// <param name="documentLink"></param>
+        /// <param name="gitHubClassRoomLink"></param>
+        /// <returns>Success/Error message</returns>
         [HttpPatch(nameof(UpdateHomework))]
         public ActionResult UpdateHomework(string homeworkId, string courseId, string instructorId, string cohortId,
             string isAssignment, string title, string avgCompletionTime, string dueDate, string releaseDate,
@@ -501,7 +558,7 @@ namespace AZLearn.Controllers
 
         {
             ActionResult result;
-            try  
+            try
             {
                 HomeworkController.UpdateHomeworkById(homeworkId, courseId, instructorId, cohortId,
                     isAssignment, title, avgCompletionTime, dueDate, releaseDate,
@@ -525,18 +582,14 @@ namespace AZLearn.Controllers
             return result;
         }
 
-        /*UpdateHomeworkById(string homeworkId, string courseId, string instructorId, string cohortId,
-                    string isAssignment, string title, string avgCompletionTime, string dueDate, string releaseDate,
-                    string documentLink, string gitHubClassRoomLink)*/
-
         #endregion
 
         #region /application/HomeworkTimesheet
 
         /// <summary>
         ///     GetHomeworkTimesheetForStudent
-        ///     Request Type: GET
-        ///     This End point takes in Homework Id from link clicked, Student Id from global store and return associated homework
+        ///     Description:This End point takes in Homework Id from link clicked, Student Id from global store and return
+        ///     associated homework
         ///     record and timesheet record.
         /// </summary>
         /// <param name="homeworkId"></param>
@@ -597,12 +650,12 @@ namespace AZLearn.Controllers
         ///     GetHomeworkForInstructor
         ///     Description:The API End Point looks for action GetHomeworkById in HomeworkController and GetRubricsByHomeworkId in
         ///     RubricController retrieves the information of the Homework with its rubrics from database.
-        ///     https://localhost:xxxxx/application/GetHomeworkForInstructor?homeworkId=-1
         /// </summary>
         /// <param name="homeworkId"></param>
-        /// <returns></returns>
+        /// <returns> A homework with List of rubric,user and course </returns>
         [HttpGet("GetHomework")]
-        public ActionResult<Tuple<Homework, List<Rubric>, List<User>, List<Course>>> GetHomeworkForInstructor(string homeworkId)
+        public ActionResult<Tuple<Homework, List<Rubric>, List<User>, List<Course>>> GetHomeworkForInstructor(
+            string homeworkId)
         {
             ActionResult<Tuple<Homework, List<Rubric>, List<User>, List<Course>>> result;
             try
@@ -615,7 +668,8 @@ namespace AZLearn.Controllers
 
                 var instructorsList = UserController.GetInstructors();
 
-                result = new Tuple<Homework, List<Rubric>, List<User>, List<Course>>(homework, rubricsList, instructorsList, coursesList);
+                result = new Tuple<Homework, List<Rubric>, List<User>, List<Course>>(homework, rubricsList,
+                    instructorsList, coursesList);
             }
             catch (ValidationException e)
             {
@@ -630,21 +684,23 @@ namespace AZLearn.Controllers
                 result = StatusCode(500,
                     "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
+
             return result;
         }
+
         #endregion
 
         #region /application/HomeworkSummary
 
-        /// <summary>     
+        /// <summary>
         ///     GetHomeworkSummary
-        ///     Request Type: GET
-        ///     This End point takes in Cohort Id and Course Id from global store and return List of homeworks associated with that
+        ///     Description:This End point takes in Cohort Id and Course Id from global store and return list of homework
+        ///     associated with that
         ///     Course for specified Cohort.
         /// </summary>
         /// <param name="courseId"></param>
         /// <param name="cohortId"></param>
-        /// <returns>List Of Homeworks related to specified Course and Cohort</returns>
+        /// <returns>List of Homeworks related to specified Course and Cohort</returns>
         [HttpGet("HomeworkSummary")]
         public ActionResult<IEnumerable<Homework>> GetHomeworkSummary(string courseId, string cohortId)
         {
@@ -678,6 +734,14 @@ namespace AZLearn.Controllers
 
         #region /application/CreateGrading
 
+        /// <summary>
+        ///     CreateGrading
+        ///     Description:This API End Point takes in below parameters and returns successful message upon creating a grade
+        ///     otherwise returns an error message.
+        /// </summary>
+        /// <param name="studentId"></param>
+        /// <param name="gradings"></param>
+        /// <returns>Success/Error message</returns>
         [HttpPost(nameof(CreateGrading))]
         public ActionResult CreateGrading(string studentId,
             [FromBody] Dictionary<string, Tuple<string, string>> gradings)
@@ -701,6 +765,7 @@ namespace AZLearn.Controllers
                 result = StatusCode(500,
                     "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
+
             return result;
         }
 
@@ -708,9 +773,17 @@ namespace AZLearn.Controllers
 
         #region /application/UpdateGrading
 
+        /// <summary>
+        ///     UpdateGrading
+        ///     Description: This API End Point takes in below parameters and returns successful message upon updating a grade
+        ///     otherwise returns an error message.
+        /// </summary>
+        /// <param name="studentId"></param>
+        /// <param name="gradings"></param>
+        /// <returns>Grades for a particular studentId</returns>
         [HttpPatch(nameof(UpdateGrading))]
-        public ActionResult UpdateGrading(string studentId, [FromBody]
-            Dictionary<string, Tuple<string, string>> gradings)
+        public ActionResult UpdateGrading(string studentId,
+            [FromBody] Dictionary<string, Tuple<string, string>> gradings)
         {
             ActionResult result;
             try
@@ -731,6 +804,7 @@ namespace AZLearn.Controllers
                 result = StatusCode(500,
                     "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
+
             return result;
         }
 
@@ -738,6 +812,14 @@ namespace AZLearn.Controllers
 
         #region /application/UpdateStudentFeedback
 
+        /// <summary>
+        ///     UpdateStudentFeedback
+        ///     Description: This API End Point takes in below parameters and returns successful message upon updating comment on a
+        ///     particular grade otherwise returns an error message.
+        /// </summary>
+        /// <param name="studentId"></param>
+        /// <param name="studentComment"></param>
+        /// <returns>Success/Error message</returns>
         [HttpPatch(nameof(UpdateStudentFeedback))]
         public ActionResult UpdateStudentFeedback(string studentId,
             [FromBody] Dictionary<string, string> studentComment)
@@ -771,8 +853,7 @@ namespace AZLearn.Controllers
 
         /// <summary>
         ///     GetGrades
-        ///     Request Type: GET
-        ///     This Endpoint returns Grades of a specified student for a specified course.
+        ///     Description:   This Endpoint returns Grades of a specified student for a specified course.
         /// </summary>
         /// <param name="studentId"></param>
         /// <param name="homeworkId"></param>
@@ -808,12 +889,12 @@ namespace AZLearn.Controllers
 
         /// <summary>
         ///     GetGradeSummaryForInstructor
-        ///     Request Type: GET
-        ///     This Endpoint returns Grade Summary and Timesheet Summary for all students in a cohort for a specified Homework.
+        ///     Description:  This Endpoint returns Grade Summary and Timesheet Summary for all students in a cohort for a
+        ///     specified Homework.
         /// </summary>
         /// <param name="cohortId"></param>
         /// <param name="homeworkId"></param>
-        /// <returns>custom object contains GradeSummery and Timesheet Summary for all students for a specified Homework</returns>
+        /// <returns>Custom object contains GradeSummery and Timesheet Summary for all students for a specified Homework</returns>
         [HttpGet("InstructorGradeSummary")]
         public ActionResult<List<GradeSummaryTypeForInstructor>> GetGradeSummaryForInstructor(string cohortId,
             string homeworkId)
@@ -831,14 +912,13 @@ namespace AZLearn.Controllers
 
                 result = BadRequest(error);
             }
-            catch ( Exception e )
+            catch (Exception e)
             {
-                result=StatusCode(500,
-                    "Unexpected server/database error occurred. System error message(s): "+e.Message);
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
 
             return result;
-
         }
 
         #endregion
@@ -851,15 +931,13 @@ namespace AZLearn.Controllers
 
         /// <summary>
         ///     CreateTimesheetByHomeworkId
-        ///     Request Type: POST
-        ///     Ths Endpoint takes in the below parameters and create a Timesheet record in the DB.
+        ///     Description: This Endpoint takes in the below parameters and create a Timesheet record in the database.
         /// </summary>
         /// <param name="homeworkId"></param>
         /// <param name="studentId"></param>
         /// <param name="solvingTime"></param>
         /// <param name="studyTime"></param>
         /// <returns>Success/Error message</returns>
-
         [HttpPost("CreateTimesheet")]
         public ActionResult CreateTimesheetByHomeworkId(string homeworkId, string studentId, string solvingTime,
             string studyTime)
@@ -891,18 +969,15 @@ namespace AZLearn.Controllers
 
         #region /application/UpdateTimesheet
 
-
         /// <summary>
         ///     UpdateTimesheetById
         ///     Description:The API End Point looks for action UpdateTimesheetById in TimesheetController and updates the
         ///     information of the timesheet on database as per specified requested edit parameters.
-        ///     EndPoint Testing : localhost:xxxxx/application/UpdateTimesheetById
-        ///     Test Passed
         /// </summary>
         /// <param name="timesheetId"></param>
         /// <param name="solvingTime"></param>
         /// <param name="studyTime"></param>
-        /// <returns>The End Point returns Success Message and Updates the Timesheet according to parameters specified </returns>
+        /// <returns>The End Point returns Success Message/Error Message</returns>
         [HttpPatch("UpdateTimesheet")]
         public ActionResult UpdateTimesheetById(string timesheetId, string solvingTime, string studyTime)
         {
@@ -937,6 +1012,14 @@ namespace AZLearn.Controllers
 
         #region /application/CreateRubrics
 
+        /// <summary>
+        ///     CreateRubrics
+        ///     Description: This API End Point takes in below parameters and returns successful message upon creating a rubric
+        ///     otherwise returns an error message.
+        /// </summary>
+        /// <param name="homeworkId"></param>
+        /// <param name="rubrics"></param>
+        /// <returns>Success/Error message</returns>
         [HttpPost(nameof(CreateRubrics))]
         public ActionResult CreateRubrics(string homeworkId, [FromBody] List<Tuple<string, string, string>> rubrics)
         {
@@ -960,6 +1043,7 @@ namespace AZLearn.Controllers
                 result = StatusCode(500,
                     "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
+
             return result;
         }
 
@@ -967,6 +1051,13 @@ namespace AZLearn.Controllers
 
         #region /application/UpdateRubrics
 
+        /// <summary>
+        ///     UpdateRubrics
+        ///     Description: This API End Point takes in below parameters and returns successful message upon updating a rubric
+        ///     otherwise returns an error message
+        /// </summary>
+        /// <param name="rubrics"></param>
+        /// <returns>Success/Error message </returns>
         [HttpPatch(nameof(UpdateRubrics))]
         public ActionResult UpdateRubrics([FromBody] Dictionary<string, Tuple<string, string, string>> rubrics)
         {
@@ -989,6 +1080,7 @@ namespace AZLearn.Controllers
                 result = StatusCode(500,
                     "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
+
             return result;
         }
 
@@ -1004,56 +1096,68 @@ namespace AZLearn.Controllers
         ///     GetCourses
         ///     Description:The API End Point looks for action GetInstructors in UserController and retrieves the information of
         ///     all instructors from database.
-        ///     EndPoint Testing : localhost:xxxxx/application/GetInstructors
-        ///     /*Test Passed*/
         /// </summary>
         /// <returns>The API End Point returns list of all Instructors in database</returns>
-     [HttpGet(nameof(GetInstructors))]
+        [HttpGet(nameof(GetInstructors))]
         public ActionResult<List<User>> GetInstructors()
         {
             ActionResult<List<User>> result;
             try
             {
                 result = UserController.GetInstructors();
-            } 
+            }
             catch (Exception e)
             {
-                result = StatusCode(500, "Unexpected server/database error occurred. System error message(s): " + e.Message);
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
-            return result;
 
+            return result;
         }
 
         #endregion
 
         #region /application/CreateUser
 
+        /// <summary>
+        ///     CreateUser
+        ///     This API End Point takes in below parameters and returns successful message upon creating a user otherwise returns
+        ///     an error message
+        /// </summary>
+        /// <param name="cohortId"></param>
+        /// <param name="name"></param>
+        /// <param name="passwordHash"></param>
+        /// <param name="email"></param>
+        /// <param name="isInstructor"></param>
+        /// <returns>Success/Error message</returns>
         [HttpPost(nameof(CreateUser))]
-        public ActionResult CreateUser(string cohortId,string name,string passwordHash,string email,string isInstructor)
+        public ActionResult CreateUser(string cohortId, string name, string passwordHash, string email,
+            string isInstructor)
         {
             ActionResult result;
             try
             {
-                UserController.CreateUser(cohortId,name, passwordHash, email,isInstructor);
-                result=StatusCode(200,"Successfully Registered new User");
+                UserController.CreateUser(cohortId, name, passwordHash, email, isInstructor);
+                result = StatusCode(200, "Successfully Registered new User");
             }
-            catch ( ValidationException e )
+            catch (ValidationException e)
             {
-                var error = "Error(s) During Registering User: "+
+                var error = "Error(s) During Registering User: " +
                             e.ValidationExceptions.Select(x => x.Message)
-                                .Aggregate((x,y) => x+", "+y);
+                                .Aggregate((x, y) => x + ", " + y);
 
-                result=BadRequest(error);
+                result = BadRequest(error);
             }
-            catch ( Exception e )
+            catch (Exception e)
             {
-                result=StatusCode(500,
-                    "Unexpected server/database error occurred. System error message(s): "+e.Message);
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
+
             return result;
         }
 
-        #endregion  
+        #endregion
 
         #endregion
 
@@ -1061,6 +1165,11 @@ namespace AZLearn.Controllers
 
         #region /application/ArchiveCohort
 
+        /// <summary>
+        ///     ArchiveCohort
+        ///     Description:This API End Point takes in below parameters and archives a cohortId PK
+        /// </summary>
+        /// <param name="cohortId"></param>
         [HttpPatch(nameof(ArchiveCohort))]
         public ActionResult ArchiveCohort(string cohortId)
         {
@@ -1092,6 +1201,11 @@ namespace AZLearn.Controllers
 
         #region /application/ArchiveCourse
 
+        /// <summary>
+        ///     ArchiveCourse
+        ///     Description:This API End Point takes in below parameters and archives a courseId PK
+        /// </summary>
+        /// <param name="courseId"></param>
         [HttpPatch(nameof(ArchiveCourse))]
         public ActionResult ArchiveCourse(string courseId)
         {
@@ -1117,13 +1231,18 @@ namespace AZLearn.Controllers
             }
 
             return result;
-
-
         }
+
         #endregion
 
         #region /application/ArchiveAssignedCourse
 
+        /// <summary>
+        ///     ArchiveAssignedCourse
+        ///     Description:This API End Point takes in below parameters and archives a courseId PK and cohortId as FK
+        /// </summary>
+        /// <param name="courseId"></param>
+        /// <param name="cohortId"></param>
         [HttpPatch(nameof(ArchiveAssignedCourse))]
         public ActionResult ArchiveAssignedCourse(string courseId, string cohortId)
         {
@@ -1133,7 +1252,8 @@ namespace AZLearn.Controllers
             {
                 CohortCourseController.ArchiveAssignedCourse(courseId, cohortId);
 
-                result = StatusCode(200, $"Successfully Archived course assignment. Course Id: {courseId.Trim()} | Cohort Id: {cohortId.Trim()}");
+                result = StatusCode(200,
+                    $"Successfully Archived course assignment. Course Id: {courseId.Trim()} | Cohort Id: {cohortId.Trim()}");
             }
             catch (ValidationException e)
             {
@@ -1149,15 +1269,19 @@ namespace AZLearn.Controllers
             }
 
             return result;
-
         }
 
         #endregion
 
         #region /application/ArchiveHomework
 
+        /// <summary>
+        ///     ArchiveHomework
+        ///     Description:This API End Point takes in below parameters and archives a homeworkId PK
+        /// </summary>
+        /// <param name="homeworkId"></param>
         [HttpPatch(nameof(ArchiveHomework))]
-        public ActionResult ArchiveHomework (string homeworkId)
+        public ActionResult ArchiveHomework(string homeworkId)
         {
             ActionResult result;
 
@@ -1179,6 +1303,7 @@ namespace AZLearn.Controllers
                 result = StatusCode(500,
                     "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
+
             return result;
         }
 
