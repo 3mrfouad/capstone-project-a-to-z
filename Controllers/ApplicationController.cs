@@ -452,27 +452,26 @@ namespace AZLearn.Controllers
         /// <param name="cohortId"></param>
         /// <returns>List of Courses</returns>
         [HttpGet(nameof(GetCourseSummary))]
-        public ActionResult<List<Course>> GetCourseSummary(string cohortId)
+        public ActionResult<List<(Course, string)>> GetCourseSummary(string cohortId)
         {
-            ActionResult<List<Course>> result;
+            ActionResult<List<(Course, string)>> result;
             try
             {
-                result = CourseController.GetCoursesByCohortId(cohortId);
+                result=CourseController.GetCoursesByCohortId(cohortId);
             }
-            catch (ValidationException e)
+            catch ( ValidationException e )
             {
-                var error = "Error(s) During GetCourseSummary: " +
+                var error = "Error(s) During GetCourseSummary: "+
                             e.ValidationExceptions.Select(x => x.Message)
-                                .Aggregate((x, y) => x + ", " + y);
+                                .Aggregate((x,y) => x+", "+y);
 
-                result = BadRequest(error);
+                result=BadRequest(error);
             }
-            catch (Exception e)
+            catch ( Exception e )
             {
-                result = StatusCode(500,
-                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
+                result=StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): "+e.Message);
             }
-
             return result;
         }
 
