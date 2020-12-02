@@ -1158,6 +1158,34 @@ namespace AZLearn.Controllers
 
         #endregion
 
+        #region /application/Login
+
+        [HttpGet("Login"]]
+        public ActionResult<Tuple<User,bool>> GetUserOnLogin(string email,string passwordHash)
+        {
+            ActionResult<Tuple<User,bool>> result;
+            try
+            {
+                result=UserController.GetUserOnLogin(email,passwordHash);
+            }
+            catch ( ValidationException e )
+            {
+                var error = "Error(s) During Login User "+
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x,y) => x+", "+y);
+
+                result=BadRequest(error);
+            }
+            catch ( Exception e )
+            {
+                result=StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): "+e.Message);
+            }
+            return result;
+        }
+
+        #endregion
+
         #endregion
 
         #region Archive EndPoints
