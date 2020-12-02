@@ -313,9 +313,9 @@ namespace AZLearn.Controllers
 
         #region /application/GetAssignedCourse
         [HttpGet(nameof(GetAssignedCourse))]
-        public ActionResult<(Course, string)> GetAssignedCourse(string courseId, string cohortId)
+        public ActionResult<Tuple<Course, string>> GetAssignedCourse(string courseId, string cohortId)
         {
-            ActionResult<(Course, string)> result;
+            ActionResult<Tuple<Course, string>> result;
             try
             {
                 result = CourseController.GetCourseByCohortId(courseId, cohortId);
@@ -422,9 +422,9 @@ namespace AZLearn.Controllers
         /// <param name="cohortId"></param>
         /// <returns></returns>
         [HttpGet(nameof(GetCourseSummary))]
-        public ActionResult<List<(Course, string)>> GetCourseSummary(string cohortId)
+        public ActionResult<List<Tuple<Course, string>>> GetCourseSummary(string cohortId)
         {
-            ActionResult<List<(Course, string)>> result;
+            ActionResult<List<Tuple<Course, string>>> result;
             try
             {
                 result = CourseController.GetCoursesByCohortId(cohortId);
@@ -1045,11 +1045,35 @@ namespace AZLearn.Controllers
             return result;
         }
 
-        #endregion  
+        #endregion
 
+        #region /application/User
 
+        [HttpPost(nameof(CreateUser))]
+        public ActionResult<Tuple<User, bool>> GetUserOnLogin(string email, string passwordHash)
+        {
+            ActionResult<Tuple<User, bool>> result;
+            try
+            {
+                result = UserController.GetUserOnLogin(email, passwordHash);
+            }
+            catch (ValidationException e)
+            {
+                var error = "Error(s) During Login User " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
 
+                result = BadRequest(error);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
+            }
+            return result;
+        }
 
+        #endregion
 
 
         #endregion
