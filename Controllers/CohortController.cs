@@ -328,7 +328,6 @@ namespace AZLearn.Controllers
             return context.Cohorts.SingleOrDefault(key => key.CohortId == parsedCohortId);
         }
 
-
         /// <summary>
         ///     ArchiveCohortById
         ///     Description: This action archives a cohort by cohortId PK

@@ -12,7 +12,6 @@ namespace AZLearn.Controllers
     public class HomeworkController : Controller
     {
         /// <summary>
-
         ///     GetHomeworksByCourseId
         ///     This action takes in Course Id and Cohort Id and returns List of Homeworks for specified course under the specified Cohort Id
         /// </summary>
