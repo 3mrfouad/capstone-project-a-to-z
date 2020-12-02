@@ -177,7 +177,6 @@ namespace AZLearn.Migrations
                         .HasAnnotation("MySql:Collation", "utf8mb4_general_ci");
 
                     b.Property<DateTime?>("DueDate")
-                        .IsRequired()
                         .HasColumnType("datetime");
 
                     b.Property<string>("GitHubClassRoomLink")

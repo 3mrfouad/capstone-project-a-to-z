@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace AZLearn.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class InitialMigration_Ayesha : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -134,7 +134,7 @@ namespace AZLearn.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4")
                         .Annotation("MySql:Collation", "utf8mb4_general_ci"),
                     AvgCompletionTime = table.Column<float>(type: "float(5,2)", nullable: false),
-                    DueDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    DueDate = table.Column<DateTime>(type: "datetime", nullable: true),
                     ReleaseDate = table.Column<DateTime>(type: "datetime", nullable: true),
                     DocumentLink = table.Column<string>(type: "varchar(250)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")

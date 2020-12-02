@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AZLearn.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201127020236_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20201201183209_InitialMigration_Ayesha")]
+    partial class InitialMigration_Ayesha
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -179,7 +179,6 @@ namespace AZLearn.Migrations
                         .HasAnnotation("MySql:Collation", "utf8mb4_general_ci");
 
                     b.Property<DateTime?>("DueDate")
-                        .IsRequired()
                         .HasColumnType("datetime");
 
                     b.Property<string>("GitHubClassRoomLink")

@@ -235,24 +235,6 @@ namespace AZLearn.Controllers
                     exception.ValidationExceptions.Add(new Exception("Instructor is archived"));
                 }
             }
-            if (string.IsNullOrWhiteSpace(title))
-            {
-                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(title), nameof(title) + " is null."));
-            }
-            else
-            {
-                if (title.Length > 100)
-                {
-                    exception.ValidationExceptions.Add(new Exception("Homework name can only be 100 characters long."));
-                }
-                else
-                {
-                    if (context.Homeworks.Any(key => key.Title.ToLower() == title.ToLower() && key.CohortId == parsedCohortId))
-                    {
-                        exception.ValidationExceptions.Add(new Exception("A Homework with this name already exists for this cohort."));
-                    }
-                }
-            }
             if (!string.IsNullOrWhiteSpace(isAssignment))
             {
                 if (!bool.TryParse(isAssignment, out parsedIsAssignment))
@@ -582,28 +564,7 @@ namespace AZLearn.Controllers
                     exception.ValidationExceptions.Add(new Exception("Instructor is archived"));
                 }
             }
-            if (string.IsNullOrWhiteSpace(title))
-            {
-                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(title), nameof(title) + " is null."));
-            }
-            else
-            {
-                if (title.Length > 100)
-                {
-                    exception.ValidationExceptions.Add(new Exception("Homework name can only be 100 characters long."));
-                }
-                else
-                {
-                    if ((!string.IsNullOrWhiteSpace(cohortId)) && int.TryParse(cohortId, out parsedCohortId))
-                    {
-                        /* Two courses with same name should not be allowed */
-                        if (context.Homeworks.Any(key => key.Title.ToLower() == title.ToLower() && key.CohortId != parsedCohortId))
-                        {
-                            exception.ValidationExceptions.Add(new Exception("A Homework with this name already exists for this cohort."));
-                        }
-                    }
-                }
-            }
+
             if (!string.IsNullOrWhiteSpace(isAssignment))
             {
                 if (!bool.TryParse(isAssignment, out parsedIsAssignment))

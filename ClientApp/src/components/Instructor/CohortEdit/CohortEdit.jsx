@@ -35,6 +35,10 @@ const CohortEdit = ({ match, history }) => {
 
   const submitHandler = (e) => {
     e.preventDefault();
+    // this is where we handle the user inputs
+    // this is where we need validation
+    // the dispatch call will be conditioned  if else statement or equivalent
+
     console.log("update cohort");
     dispatch(
       editCohort({
@@ -55,12 +59,14 @@ const CohortEdit = ({ match, history }) => {
       ) : (
         <Container>
           <Row className="justify-content-md-center">
+            {/* check the pagination */}
             <Col xs={12} md={6}>
               <h2>Cohort</h2>
               <Form onSubmit={submitHandler}>
                 <Form.Group controlId="name">
                   <Form.Label>Cohort Name</Form.Label>
                   <Form.Control
+                    required
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
