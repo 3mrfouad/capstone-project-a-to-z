@@ -225,10 +225,10 @@ namespace AZLearn.Controllers
         /// </summary>
         /// <param name="cohortId"></param>
         /// <returns>List of Courses by Cohort Id</returns>
-        public static List<Course> GetCoursesByCohortId(string cohortId)
+        public static List<(Course, string)> GetCoursesByCohortId(string cohortId)
         {
             int parsedCohortId = 0;
-
+            List<(Course, string)> coursesSummary = new List<(Course, string)>();
             #region Validation
 
             using var context = new AppDbContext();
@@ -266,12 +266,15 @@ namespace AZLearn.Controllers
                     .Where(key => key.CohortCourses
                         .Any(subKey => subKey.CohortId == parsedCohortId)).ToList();
 
-            /* @Amr Fouad, demo on how to get to the instructor name on same above context call
-             foreach (var course in coursesListByCohortId)
+            foreach (var course in coursesListByCohortId)
             {
-                var name = course.CohortCourses.Where(key => key.CourseId == course.CourseId).SingleOrDefault().Instructor.Name;
-            }*/
-            return coursesListByCohortId;
+                int id = course.CourseId;
+                var instructorId = course.CohortCourses.SingleOrDefault(key => key.CourseId == course.CourseId && key.CohortId == parsedCohortId).InstructorId;
+                var instructorName = context.Users.Where(key => key.UserId == instructorId).Select(key => key.Name).Single();
+                coursesSummary.Add((course, instructorName));
+            }
+
+            return coursesSummary;
         }
 
         /// <summary>

@@ -422,9 +422,9 @@ namespace AZLearn.Controllers
         /// <param name="cohortId"></param>
         /// <returns></returns>
         [HttpGet(nameof(GetCourseSummary))]
-        public ActionResult<List<Course>> GetCourseSummary(string cohortId)
+        public ActionResult<List<(Course, string)>> GetCourseSummary(string cohortId)
         {
-            ActionResult<List<Course>> result;
+            ActionResult<List<(Course, string)>> result;
             try
             {
                 result = CourseController.GetCoursesByCohortId(cohortId);
