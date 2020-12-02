@@ -73,11 +73,11 @@ namespace AZLearn.Data
                     .HasCollation("utf8mb4_general_ci");
 
             });
-
+            
             modelBuilder.Entity<CohortCourse>(entity =>
             {
                 /* Creating Composite Key with CohortId, CourseId  */
-                entity.HasKey(e => new { e.CohortId, e.CourseId });
+                entity.HasKey(e => new {e.CohortId, e.CourseId});
 
                 entity.Property(e => e.ResourcesLink)
                     .HasCharSet("utf8mb4")
@@ -93,7 +93,7 @@ namespace AZLearn.Data
                     .HasConstraintName("FK_CohortCourse_Instructor");
 
             });
-
+           
             modelBuilder.Entity<Homework>(entity =>
             {
                 entity.Property(e => e.Title)
@@ -268,4 +268,3 @@ namespace AZLearn.Data
         }
     }
 }
-

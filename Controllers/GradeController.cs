@@ -483,6 +483,7 @@ namespace AZLearn.Controllers
             var gradeSummaries = new List<GradeSummaryTypeForInstructor>();
             var parsedCohortId = 0;
             var parsedHomeworkId = 0;
+           
 
 
             #region Validation
@@ -510,7 +511,7 @@ namespace AZLearn.Controllers
                 }
                 else if ( !context.Cohorts.Any(key => key.CohortId==parsedCohortId) )
                     exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
-                else if ( !context.Users.Any(key => key.IsInstructor==false&&key.CohortId==parsedCohortId) )
+                else if (!context.Users.Any(key => key.IsInstructor == false && key.CohortId == parsedCohortId))
                 {
                     exception.ValidationExceptions.Add(new Exception("There is no student registered in this cohort"));
                 }
@@ -531,10 +532,10 @@ namespace AZLearn.Controllers
                 }
                 else if ( !context.Homeworks.Any(key => key.HomeworkId==parsedHomeworkId) )
                     exception.ValidationExceptions.Add(new Exception("Homework Id does not exist"));
-                else if ( (!string.IsNullOrWhiteSpace(cohortId))&&int.TryParse(cohortId,out parsedCohortId) )
+                else if((!string.IsNullOrWhiteSpace(cohortId)) && int.TryParse(cohortId, out parsedCohortId))
                 {
-                    if ( !context.Homeworks.Any(key =>
-                         key.HomeworkId==parsedHomeworkId&&key.CohortId==parsedCohortId) )
+                    if (!context.Homeworks.Any(key =>
+                        key.HomeworkId == parsedHomeworkId && key.CohortId == parsedCohortId))
                     {
                         exception.ValidationExceptions.Add(new Exception("Homework does not exist for this cohort."));
                     }
@@ -546,35 +547,34 @@ namespace AZLearn.Controllers
             #endregion
 
             var studentsByCohort = UserController.GetStudentsByCohortId(cohortId);
-            if ( RubricController.GetRubricsByHomeworkId(homeworkId).Any() )
+            if (RubricController.GetRubricsByHomeworkId(homeworkId).Any())
             {
                 //rubricWeightByGroup is an array with first element- total weight of requirements, second element- total weight of challenges for a specified Homework
                 var rubricWeightByGroup = RubricController.GetRubricsByHomeworkId(homeworkId)
                     .GroupBy(key => key.IsChallenge).Select(key => key.Sum(s => s.Weight)).ToArray();
 
                 //If there are no challenges, then weight of challenge = 0 to avoid NullValueException
-                if ( rubricWeightByGroup.Length==1 )
-                    rubricWeightByGroup=rubricWeightByGroup.Concat(new int[] { 0 }).ToArray();
-
+                if (rubricWeightByGroup.Length == 1)
+                    rubricWeightByGroup = rubricWeightByGroup.Concat(new int[] { 0 }).ToArray();
 
                 //Loop to get GradeSummary for all students in a Cohort
-                foreach ( var student in studentsByCohort )
+                foreach (var student in studentsByCohort)
                 {
                     string totalTimeSpentOnHomework;
                     GradeSummaryTypeForInstructor gradeSummary;
                     var studentName = student.Name;
-                    var timesheet = TimesheetController.GetTimesheetByHomeworkId(homeworkId,$"{student.UserId}");
-                    if ( timesheet==null )
-                        totalTimeSpentOnHomework=" ";
+                    var timesheet = TimesheetController.GetTimesheetByHomeworkId(homeworkId, $"{student.UserId}");
+                    if (timesheet == null)
+                        totalTimeSpentOnHomework = " ";
                     else
-                        totalTimeSpentOnHomework=(timesheet.SolvingTime+timesheet.StudyTime).ToString();
+                        totalTimeSpentOnHomework = (timesheet.SolvingTime + timesheet.StudyTime).ToString();
 
-                    var gradesOfStudent = GetGradesByStudentId($"{student.UserId}",homeworkId);
+                    var gradesOfStudent = GetGradesByStudentId($"{student.UserId}", homeworkId);
                     //If grades do not exist for that student (in case Instructor has not added/marked grades for that student)- show empty string for grades 
-                    if ( gradesOfStudent.Count==0 )
+                    if (gradesOfStudent.Count == 0)
                     {
-                        gradeSummary=new GradeSummaryTypeForInstructor(" ",$" /{rubricWeightByGroup[0]}",
-                            $" /{rubricWeightByGroup[1]}",totalTimeSpentOnHomework,studentName,student.UserId);
+                        gradeSummary = new GradeSummaryTypeForInstructor(" ", $" /{rubricWeightByGroup[0]}",
+                            $" /{rubricWeightByGroup[1]}", totalTimeSpentOnHomework, studentName, student.UserId);
                     }
                     else
                     {
@@ -584,8 +584,10 @@ namespace AZLearn.Controllers
                             .Select(key => key.Sum(s => s.Mark))
                             .ToArray();
                         //In case there are no challenges, we will show 0/0 for challenges' marks
-                        if ( marksByGroup.Length==1 ) marksByGroup[1]=0;
-
+                        if ( marksByGroup.Length==1 )
+                        {
+                            marksByGroup = marksByGroup.Concat(new int[] { 0 }).ToArray();
+                        }
                         gradeSummary=new GradeSummaryTypeForInstructor($"{total}",
                             $"{marksByGroup[0]}/{rubricWeightByGroup[0]}",
                             $"{marksByGroup[1]}/{rubricWeightByGroup[1]}",totalTimeSpentOnHomework,studentName,
@@ -606,7 +608,6 @@ namespace AZLearn.Controllers
 
 
             return gradeSummaries;
-
         }
         public static void ArchiveGradingByStudentId(string studentId, List<string> rubrics)
         {

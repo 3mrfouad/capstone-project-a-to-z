@@ -225,10 +225,10 @@ namespace AZLearn.Controllers
         /// </summary>
         /// <param name="cohortId"></param>
         /// <returns>List of Courses by Cohort Id</returns>
-        public static List<Course> GetCoursesByCohortId(string cohortId)
+        public static List<(Course, string)> GetCoursesByCohortId(string cohortId)
         {
             int parsedCohortId = 0;
-
+            List<(Course, string)> coursesSummary = new List<(Course, string)>();
             #region Validation
 
             using var context = new AppDbContext();
@@ -266,12 +266,15 @@ namespace AZLearn.Controllers
                     .Where(key => key.CohortCourses
                         .Any(subKey => subKey.CohortId == parsedCohortId)).ToList();
 
-            /* @Amr Fouad, demo on how to get to the instructor name on same above context call
-             foreach (var course in coursesListByCohortId)
+            foreach (var course in coursesListByCohortId)
             {
-                var name = course.CohortCourses.Where(key => key.CourseId == course.CourseId).SingleOrDefault().Instructor.Name;
-            }*/
-            return coursesListByCohortId;
+                int id = course.CourseId;
+                var instructorId = course.CohortCourses.SingleOrDefault(key => key.CourseId == course.CourseId && key.CohortId == parsedCohortId).InstructorId;
+                var instructorName = context.Users.Where(key => key.UserId == instructorId).Select(key => key.Name).Single();
+                coursesSummary.Add((course, instructorName));
+            }
+
+            return coursesSummary;
         }
 
         /// <summary>
@@ -282,7 +285,7 @@ namespace AZLearn.Controllers
         /// <param name="courseId"></param>
         /// <param name="cohortId"></param>
         /// <returns></returns>
-        public static Course GetCourseByCohortId(string courseId, string cohortId)
+        public static (Course, string) GetCourseByCohortId(string courseId, string cohortId)
         {
             int parsedCohortId = 0;
             int parsedCourseId = 0;
@@ -332,9 +335,16 @@ namespace AZLearn.Controllers
                 throw exception;
             }
             #endregion
+            //List<(Course, string)> courseInstructorByCohortId = new List<(Course, string)>();
             var courseByCohortId =
                 context.Courses.Include(key => key.CohortCourses).SingleOrDefault(key => key.CohortCourses.Any(subKey => subKey.CohortId == parsedCohortId && subKey.CourseId == parsedCourseId));
-            return courseByCohortId;
+
+            var instructorId = courseByCohortId.CohortCourses.SingleOrDefault(key => key.CourseId == courseByCohortId.CourseId && key.CohortId == parsedCohortId).InstructorId;
+
+            var instructorName = context.Users.Where(key => key.UserId == instructorId).Select(key => key.Name).Single();
+            //courseInstructorByCohortId.Add((courseByCohortId, instructorName));
+
+            return (courseByCohortId, instructorName);
         }
 
         /// <summary>
@@ -381,14 +391,13 @@ namespace AZLearn.Controllers
 
             return context.Courses.SingleOrDefault(key => key.CourseId==parsedCourseId);
         }
-
-
-        /// <summary>
-        /// ArchiveCourseById
-        /// Description: This action archives a course by courseId PK
-        /// </summary>
-        /// <param name="courseId"></param>
-        public static void ArchiveCourseById(string courseId)
+        
+    /// <summary>
+    /// ArchiveCourseById
+    /// Description: This action archives a course by courseId PK
+    /// </summary>
+    /// <param name="courseId"></param>
+    public static void ArchiveCourseById(string courseId)
         {
             var parsedCourseId = 0;
             var exception = new ValidationException();
