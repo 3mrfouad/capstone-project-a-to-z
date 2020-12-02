@@ -258,7 +258,7 @@ namespace AZLearn.Controllers
             context.SaveChanges();
         }
 
-        public static Tuple<User,bool> GetUserOnLogin(string userEmail,string password)
+        public static Tuple<User, bool> GetUserOnLogin(string userEmail, string password)
         {
 
             User userInfo;
@@ -269,35 +269,35 @@ namespace AZLearn.Controllers
             ValidationException exception = new ValidationException();
             using var context = new AppDbContext();
 
-            userEmail=(string.IsNullOrEmpty(userEmail)||string.IsNullOrWhiteSpace(userEmail)) ? null : userEmail.Trim().ToLower();
-            password=(string.IsNullOrEmpty(password)||string.IsNullOrWhiteSpace(password)) ? null : password.Trim();
+            userEmail = (string.IsNullOrEmpty(userEmail) || string.IsNullOrWhiteSpace(userEmail)) ? null : userEmail.Trim().ToLower();
+            password = (string.IsNullOrEmpty(password) || string.IsNullOrWhiteSpace(password)) ? null : password.Trim();
 
-            if ( string.IsNullOrWhiteSpace(userEmail) )
+            if (string.IsNullOrWhiteSpace(userEmail))
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(userEmail),
-                    nameof(userEmail)+" is null."));
+                    nameof(userEmail) + " is null."));
             }
             else
             {
-                if ( !context.Users.Any(key => key.Email==userEmail) )
+                if (!context.Users.Any(key => key.Email == userEmail))
                 {
                     exception.ValidationExceptions.Add(new Exception("User account with this email does not exist."));
                 }
 
-                else if ( !context.Users.Any(key => key.Email==userEmail&&key.Archive==false) )
+                else if (!context.Users.Any(key => key.Email == userEmail && key.Archive == false))
                 {
                     exception.ValidationExceptions.Add(new Exception("This user account has been archived in the system."));
                 }
                 else
                 {
-                    if ( string.IsNullOrWhiteSpace(password) )
+                    if (string.IsNullOrWhiteSpace(password))
                     {
                         exception.ValidationExceptions.Add(new ArgumentNullException(nameof(password),
-                            nameof(password)+" is null."));
+                            nameof(password) + " is null."));
                     }
                     else
                     {
-                        if ( !context.Users.Any(key => key.PasswordHash==password&&key.Email==userEmail) )
+                        if (!context.Users.Any(key => key.PasswordHash == password && key.Email == userEmail))
                         {
                             exception.ValidationExceptions.Add(new Exception("Invalid Password for this account."));
                         }
@@ -306,16 +306,16 @@ namespace AZLearn.Controllers
 
             }
 
-            if ( exception.ValidationExceptions.Count>0 )
+            if (exception.ValidationExceptions.Count > 0)
             {
                 throw exception;
             }
 
             #endregion
 
-            userInfo=context.Users.Single(key => key.PasswordHash==password&&key.Email==userEmail&&key.Archive==false);
-            isAuthenticated=true;
-            return Tuple.Create(userInfo,isAuthenticated);
+            userInfo = context.Users.Single(key => key.PasswordHash == password && key.Email == userEmail && key.Archive == false);
+            isAuthenticated = true;
+            return Tuple.Create(userInfo, isAuthenticated);
         }
 
     }

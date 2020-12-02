@@ -182,7 +182,7 @@ namespace AZLearn.Controllers
         /// <param name="resourcesLink"></param>
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
-        /// <returns>Sucess/Error Message</returns>
+        /// <returns>Success/Error Message</returns>
         [HttpPost(nameof(CreateCourse))]
         public ActionResult CreateCourse
         ([FromQuery] string name, [FromQuery] string description,
@@ -347,25 +347,25 @@ namespace AZLearn.Controllers
         /// <param name="cohortId"></param>
         /// <returns>List of Course</returns>
         [HttpGet(nameof(GetAssignedCourse))]
-        public ActionResult<(Course, string)> GetAssignedCourse(string courseId,string cohortId)
+        public ActionResult<Tuple<Course, string>> GetAssignedCourse(string courseId, string cohortId)
         {
-            ActionResult<(Course, string)> result;
+            ActionResult<Tuple<Course, string>> result;
             try
             {
-                result=CourseController.GetCourseByCohortId(courseId,cohortId);
+                result = CourseController.GetCourseByCohortId(courseId, cohortId);
             }
-            catch ( ValidationException e )
+            catch (ValidationException e)
             {
-                var error = "Error(s) During GetAssignedCourse: "+
+                var error = "Error(s) During GetAssignedCourse: " +
                             e.ValidationExceptions.Select(x => x.Message)
-                                .Aggregate((x,y) => x+", "+y);
+                                .Aggregate((x, y) => x + ", " + y);
 
-                result=BadRequest(error);
+                result = BadRequest(error);
             }
-            catch ( Exception e )
+            catch (Exception e)
             {
-                result=StatusCode(500,
-                    "Unexpected server/database error occurred. System error message(s): "+e.Message);
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
             return result;
         }
@@ -450,25 +450,25 @@ namespace AZLearn.Controllers
         /// <param name="cohortId"></param>
         /// <returns>List of Courses</returns>
         [HttpGet(nameof(GetCourseSummary))]
-        public ActionResult<List<(Course, string)>> GetCourseSummary(string cohortId)
+        public ActionResult<List<Tuple<Course, string>>> GetCourseSummary(string cohortId)
         {
-            ActionResult<List<(Course, string)>> result;
+            ActionResult<List<Tuple<Course, string>>> result;
             try
             {
-                result=CourseController.GetCoursesByCohortId(cohortId);
+                result = CourseController.GetCoursesByCohortId(cohortId);
             }
-            catch ( ValidationException e )
+            catch (ValidationException e)
             {
-                var error = "Error(s) During GetCourseSummary: "+
+                var error = "Error(s) During GetCourseSummary: " +
                             e.ValidationExceptions.Select(x => x.Message)
-                                .Aggregate((x,y) => x+", "+y);
+                                .Aggregate((x, y) => x + ", " + y);
 
-                result=BadRequest(error);
+                result = BadRequest(error);
             }
-            catch ( Exception e )
+            catch (Exception e)
             {
-                result=StatusCode(500,
-                    "Unexpected server/database error occurred. System error message(s): "+e.Message);
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
             return result;
         }
@@ -651,16 +651,15 @@ namespace AZLearn.Controllers
         /// <param name="homeworkId"></param>
         /// <returns> A homework with List of rubric,user and course </returns>
         [HttpGet("GetHomework")]
-        public ActionResult<Tuple<Homework,List<Rubric>,string,string>> GetHomeworkForInstructor(string homeworkId)
+        public ActionResult<Tuple<Homework, List<Rubric>, string, string>> GetHomeworkForInstructor(string homeworkId)
         {
             //<Tuple<Homework,List<Rubric>,string,string>> the first string instructor name second is course name
-            ActionResult<Tuple<Homework,List<Rubric>,string,string>> result;
+            ActionResult<Tuple<Homework, List<Rubric>, string, string>> result;
             try
             {
                 var homework = HomeworkController.GetHomeworkById(homeworkId);
 
                 var rubricsList = RubricController.GetRubricsByHomeworkId(homeworkId);
-
                 //Get CourseById not GetCourses
                 // var coursesList = CourseController.GetCourses();
                 var courseId = homework.CourseId.ToString();
@@ -670,20 +669,20 @@ namespace AZLearn.Controllers
                 var instructorId = homework.InstructorId.ToString();
                 var instructorName = UserController.GetUserById(instructorId).Name;
                 // var instructorsList = UserController.GetInstructors().Select(key => key.Name).ToList();
-                 result =new Tuple<Homework,List<Rubric>,string,string>(homework,rubricsList,instructorName,courseName);
+                result = new Tuple<Homework, List<Rubric>, string, string>(homework, rubricsList, instructorName, courseName);
             }
-            catch ( ValidationException e )
+            catch (ValidationException e)
             {
-                var error = "Error(s) During GetHomeworkForInstructor: "+
+                var error = "Error(s) During GetHomeworkForInstructor: " +
                             e.ValidationExceptions.Select(x => x.Message)
-                                .Aggregate((x,y) => x+", "+y);
+                                .Aggregate((x, y) => x + ", " + y);
 
-                result=BadRequest(error);
+                result = BadRequest(error);
             }
-            catch ( Exception e )
+            catch (Exception e)
             {
-                result=StatusCode(500,
-                    "Unexpected server/database error occurred. System error message(s): "+e.Message);
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
             return result;
         }
@@ -1160,26 +1159,26 @@ namespace AZLearn.Controllers
 
         #region /application/Login
 
-        [HttpGet("Login"]]
-        public ActionResult<Tuple<User,bool>> GetUserOnLogin(string email,string passwordHash)
+        [HttpGet("Login")]
+        public ActionResult<Tuple<User, bool>> GetUserOnLogin(string email, string passwordHash)
         {
-            ActionResult<Tuple<User,bool>> result;
+            ActionResult<Tuple<User, bool>> result;
             try
             {
-                result=UserController.GetUserOnLogin(email,passwordHash);
+                result = UserController.GetUserOnLogin(email, passwordHash);
             }
-            catch ( ValidationException e )
+            catch (ValidationException e)
             {
-                var error = "Error(s) During Login User "+
+                var error = "Error(s) During Login User " +
                             e.ValidationExceptions.Select(x => x.Message)
-                                .Aggregate((x,y) => x+", "+y);
+                                .Aggregate((x, y) => x + ", " + y);
 
-                result=BadRequest(error);
+                result = BadRequest(error);
             }
-            catch ( Exception e )
+            catch (Exception e)
             {
-                result=StatusCode(500,
-                    "Unexpected server/database error occurred. System error message(s): "+e.Message);
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
             return result;
         }
