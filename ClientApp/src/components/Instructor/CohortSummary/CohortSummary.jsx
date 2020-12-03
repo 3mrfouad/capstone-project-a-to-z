@@ -2,7 +2,10 @@ import React from "react";
 import { Table, Container, Button, Modal } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { cohortSummaryInstructor } from "../../../actions/instructorActions";
+import {
+  cohortSummaryInstructor,
+  archiveCohort,
+} from "../../../actions/instructorActions";
 import { Link } from "react-router-dom";
 import Loader from "../../shared/Loader/Loader";
 
@@ -11,12 +14,17 @@ const CohortSummaryInstructor = () => {
   const { cohorts, loading } = useSelector(
     (state) => state.cohortSummaryInstructor
   );
+  const { success } = useSelector((state) => state.cohortArchive);
   useEffect(() => {
     dispatch(cohortSummaryInstructor());
-  }, [dispatch]);
+  }, [dispatch, success]);
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const onArchive = (id) => {
+    setShow(false);
+    dispatch(archiveCohort(id));
+  };
   return (
     <React.Fragment>
       {loading ? (
@@ -37,23 +45,44 @@ const CohortSummaryInstructor = () => {
                 </tr>
               </thead>
               <tbody>
-                {cohorts.map((cohort, index) => (
-                  <tr key={index}>
-                    <td>{cohort.name}</td>
-                    <td>{cohort.capacity}</td>
-                    <td>{cohort.modeOfTeaching}</td>
-                    <td>{cohort.startDate}</td>
-                    <td>{cohort.endDate}</td>
-                    <td>{cohort.city}</td>
-                    <td>
-                      <Link to={`/cohortedit/${cohort.cohortId}`}>Edit</Link> |{" "}
-                      <Link to="#" onClick={handleShow}>
-                        {" "}
-                        Retire{" "}
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
+                {cohorts
+                  .filter((cohort) => cohort.archive == false)
+                  .map((cohort, index) => (
+                    <tr key={index}>
+                      <td>
+                        <Link to={`/coursesummary/${cohort.cohortId}`}>
+                          {cohort.name}
+                        </Link>
+                      </td>
+                      <td>{cohort.capacity}</td>
+                      <td>{cohort.modeOfTeaching}</td>
+                      <td>{cohort.startDate}</td>
+                      <td>{cohort.endDate}</td>
+                      <td>{cohort.city}</td>
+                      <td>
+                        <Link to={`/cohortedit/${cohort.cohortId}`}>Edit</Link>{" "}
+                        |{" "}
+                        <Link to="#" onClick={handleShow}>
+                          {" "}
+                          Archive{" "}
+                        </Link>
+                        <Modal show={show} onHide={handleClose}>
+                          <Modal.Body>Retire: Are you sure?</Modal.Body>
+                          <Modal.Footer>
+                            <Button variant="secondary" onClick={handleClose}>
+                              No
+                            </Button>
+                            <Button
+                              variant="primary"
+                              onClick={() => onArchive(cohort.cohortId)}
+                            >
+                              Yes
+                            </Button>
+                          </Modal.Footer>
+                        </Modal>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </Table>
             <button type="button" className="btn btn-link">
@@ -62,24 +91,13 @@ const CohortSummaryInstructor = () => {
             <Button href="/cohortcreate" className="float-right mr-3">
               Create Cohort
             </Button>
-            <Button href="/cohortcreate" className="float-right mr-3">
+            <Button href="/registeruser" className="float-right mr-3">
               Register Users
             </Button>{" "}
             <Button href="/managecourse" className="float-right mr-3">
               Manage Course
             </Button>{" "}
           </Container>
-          <Modal show={show} onHide={handleClose}>
-            <Modal.Body>Retire: Are you sure?</Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleClose}>
-                No
-              </Button>
-              <Button variant="primary" onClick={handleClose}>
-                Yes
-              </Button>
-            </Modal.Footer>
-          </Modal>
         </React.Fragment>
       )}
     </React.Fragment>
