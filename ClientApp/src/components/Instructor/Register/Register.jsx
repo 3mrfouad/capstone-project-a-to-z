@@ -78,7 +78,8 @@ const Register = () => {
                 <Form.Control
                   required
                   type="password"
-                  maxlength ="250"
+                  minlength ="8"
+                  pattern = "(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}"                  
                   placeholder="Enter Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -89,11 +90,11 @@ const Register = () => {
               </Form.Group>
               <Form.Group controlId="cohort">
                 <Form.Label>Cohort</Form.Label>
-                <Form.Control
-                  as="select"
+                <Form.Control                
+                  as="select"                 
                   value={cohort}
                   onChange={(e) => setCohort(e.target.value)}
-                ><option></option>
+                ><option value="">Select</option>
                   <option value="1">1</option>
                   <option value="2">2</option>
                   <option value="3">3</option>

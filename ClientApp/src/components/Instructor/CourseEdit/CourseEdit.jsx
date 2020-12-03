@@ -70,7 +70,7 @@ const [validated, setValidated] = useState(false);
                 <Message variant="success">Update Successfully</Message>
               )}
               <Form noValidate validated={validated} onSubmit={submitHandler}>
-                <Form.Group controlId="">
+                <Form.Group controlId="CourseName">
                   <Form.Label>Course Name</Form.Label>
 
                   <Form.Control
@@ -83,7 +83,8 @@ const [validated, setValidated] = useState(false);
                   <Form.Control.Feedback type="invalid">
                     Please enter a course name.
                 </Form.Control.Feedback>
-
+                </Form.Group>
+                <Form.Group controlId="Hours">
                   <Form.Label className="mr-5">Hours</Form.Label>
                   
                   <Form.Control
@@ -98,13 +99,14 @@ const [validated, setValidated] = useState(false);
                   <Form.Control.Feedback type="invalid">
                     Please fill in the Hours field.
                   </Form.Control.Feedback>
-
+                  </Form.Group>
+                  <Form.Group controlId="Description">
                   <Form.Label>Description</Form.Label>
-                  
+
                   <Form.Control
                     required
                     type="text"
-                    max={250}
+                    maxlength={250}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                   ></Form.Control>
