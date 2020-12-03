@@ -13,6 +13,11 @@ const HomeworkStudent = () => {
   const [studyHrs, setStudyHrs] = useState("");
   const dispatch = useDispatch();
 
+ //(1) Add validation states
+ const [validated, setValidated] = useState(false);   
+ //----------------------------
+
+
   const { homework, loading } = useSelector((state) => state.homeworkStudent);
   const {
     loading: loadingCreate,
@@ -25,16 +30,17 @@ const HomeworkStudent = () => {
     setSolvingHrs(homework[0].timesheets[0]);
     setStudyHrs(homework[0].timesheets[1]);
   }, [dispatch]);
-  // console.log(homework);
-  const summitHandler = (event) => {
-    event.preventDefault();
-    // if (
-    //   homework[0].timesheets[0] == null &&
-    //   homework[0].timesheets[1] == null
-    // ) {
-    //   dispatch(createTimeSheetStudent(solvingHrs, studyHrs));
-    // }
-    // dispatch(updateTimeSheetStudent(solvingHrs, studyHrs));
+  console.log(homework);
+  const summitHandler = (e) => {
+    //(2) Add form validation condition block if-else
+    const form = e.currentTarget;
+    if (form.checkValidity() === false) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    setValidated(true); 
+
+    e.preventDefault();    
     dispatch(createTimeSheetStudent(solvingHrs, studyHrs));
     console.log("create timesheet");
   };
@@ -75,7 +81,7 @@ const HomeworkStudent = () => {
                   <Form.Label>Avg Completion Time</Form.Label>
                   <Form.Control
                     disabled
-                    value={homework[0].avgCompletionTime}
+                   value={homework[0].avgCompletionTime}
                   ></Form.Control>
                 </Form.Group>
 
@@ -106,7 +112,7 @@ const HomeworkStudent = () => {
                   <Form.Label>GitHubLink</Form.Label>
                   <Form.Control
                     disabled
-                    value={homework[0].gitHubClassRoomLink}
+                   value={homework[0].gitHubClassRoomLink}
                   ></Form.Control>
                 </Form.Group>
               </Form>
@@ -115,25 +121,43 @@ const HomeworkStudent = () => {
                 <Form.Group controlId="Solving/Troubleshooting">
                   <Form.Label>Solving/Troubleshooting</Form.Label>
                   <Form.Control
-                    value={solvingHrs ? solvingHrs : "0"}
-                    onChange={(e) => setSolvingHrs(e.target.value)}
+                    required
+                    type="number"
+                    min={0}
+                    max={999.99}
+                    step="0.1"
+                    value={solvingHrs}
+                    onChange={(e) => setSolvingHrs(String(e.target.value))}
                   ></Form.Control>
+                  <Form.Control.Feedback type="invalid">
+                    Please fill in Solving/Troubleshooting Hours.
+                </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="Study/Research">
                   <Form.Label>Study/Research</Form.Label>
                   <Form.Control
-                    value={studyHrs ? studyHrs : "0"}
-                    onChange={(e) => setStudyHrs(e.target.value)}
+                   type="number"
+                   min={0}
+                   max={999.99}
+                   step="0.1"
+                    value={studyHrs}
+                    onChange={(e) => setStudyHrs(String(e.target.value))}
                   ></Form.Control>
+                   <Form.Control.Feedback type="invalid">
+                    Please fil in Study/Research Hours.
+                </Form.Control.Feedback>
+
                 </Form.Group>
                 <Form.Group controlId="Total">
                   <Form.Label>Total</Form.Label>
                   <Form.Control
                     disabled
                     value={
-                      homework[0].timesheets[0] + homework[0].timesheets[1]
+                      studyHrs + solvingHrs
+                      // homework[0].timesheets[0] + homework[0].timesheets[1]
                     }
-                  ></Form.Control>
+                  ></Form.Control>                 
+
                 </Form.Group>
 
                 <a href="">Back</a>

@@ -14,6 +14,11 @@ const CohortCreate = () => {
     //(1) Add validation states
     const [validated, setValidated] = useState(false);
     const [invalidDatesBL, setInvalidDatesBl] = useState(false);
+    const [submitFeedbackAlert, setSubmitFeedbackAlert] = useState("");
+    const [validData, setValidData] = useState(true);
+    const [validStartDate,setValidStartDate]=useState(false);
+    const [validEndDate,setValidEndDate]=useState(false);
+    let temp = false;
     //----------------------------
 
     useEffect(() => {
@@ -24,57 +29,133 @@ const CohortCreate = () => {
     const { loading, error, cohort, success } = cohortCreate;
     const dispatch = useDispatch();
 
+    function Validate (name,
+        capacity,
+        city,
+        modeOfTeaching,
+        startDate,
+        endDate) {
+       
+        /* Name validation */
+        name = (!name.trim())? null:name.trim().toLowerCase();
+        (!name)? setValidData(false):setValidData(true);
+        (name.Length > 50)? setValidData(false):setValidData(true);
+    
+        /* Capacity validation */
+        capacity = (!capacity.trim())? null: capacity.trim().toLowerCase();
+        if (!capacity){
+        (parseInt(capacity) > 999 || parseInt(capacity) < 0)? setValidData(false):setValidData(true); }
+       
+        /* City validation */
+        city = (!city.trim())? null:city.trim().toLowerCase();
+        (!city)? setValidData(false):setValidData(true);
+        (city.Length > 50)? setValidData(false):setValidData(true);
+    
+        /* ModeOfTeaching validation */
+       modeOfTeaching = (!modeOfTeaching.trim())? null: modeOfTeaching.trim().toLowerCase();
+       (!modeOfTeaching)? setValidData(false):setValidData(true);
+       (modeOfTeaching.Length > 50)? setValidData(false):setValidData(true);
+       (modeOfTeaching.toLowerCase() === "online"|| modeOfTeaching.toLowerCase() === "in-person")? setValidData(false):setValidData(true);
+    
+        /* Start date validation */
+       startDate = (!startDate.trim())? null: modeOfTeaching.trim().toLowerCase();
+      if (!startDate) setValidData(false)
+      else
+      {
+        try
+        {
+            const parsedDate = Date.parse(startDate);
+            setValidStartDate(true) ;
+        }
+        catch (ParseException)
+        {
+            setValidStartDate(false);
+            setValidData(false) ;
+        }
+      }
+      
+      /* End date validation */
+      endDate = (!endDate.trim())? null: endDate.trim().toLowerCase();
+      if (!endDate) setValidData(false)
+      else
+      {
+        try
+        {
+            const parsedDate = Date.parse(startDate); 
+            setValidEndDate(true) ;
+        }
+        catch (ParseException)
+        {
+            setValidEndDate(false);        
+            setValidData(false) ;
+        }
+      }
+        
+        /* Dates business logic */
+            if (validStartDate && validEndDate)
+            {
+                (endDate < startDate)? setValidData(false):setValidData(true); 
+            }
+ };
+
     const submitHandler = (e) => {
 
         //(2) Add form validation condition block if-else
         const form = e.currentTarget;
-        if (form.checkValidity() === false) {
+        if (form.checkValidity() === false) 
+        {
             e.preventDefault();
             e.stopPropagation();
         }
+        
         setValidated(true);
 
         //(3) Add business logic
-        if (endDate === "" || startDate==="" || Date.parse(endDate) < Date.parse(startDate)) {
+        if (endDate === "" || startDate==="" || Date.parse(endDate) < Date.parse(startDate)) 
+        {
             e.preventDefault();
             Date.parse(endDate) < Date.parse(startDate) ? setInvalidDatesBl(true) : setInvalidDatesBl(false);
             setEndDate("");
         }
-        else {
-
+        else 
+        {
+            e.preventDefault();
             setInvalidDatesBl(false);
             //----------------------------
 
-
             /*
              ---------------------------------------------------------------------------------
-             Post HTML5 regular validation (Frontend validation / BL)
-             if (ValidationCreateCohort(name,capacity,city,modeOfTeaching,startDate,endDate))
+             Post HTML5 regular validation (Frontend validation / BL)*/
+             Validate (name,
+                capacity,
+                city,
+                modeOfTeaching,
+                startDate,
+                endDate);
+             if (validData)
             {
-
+                   setSubmitFeedbackAlert("Error: Form were submitted with invalid data fields")
             }
              else
             {
-                //Return error on front\end view
+/*----------------------------------------------------------------------------------
+                    */
+
+                    console.log("create cohort");
+                    dispatch(
+                        createCohort({
+                            name,
+                            capacity,
+                            city,
+                            modeOfTeaching,
+                            startDate,
+                            endDate,
+                        })
+                    );
+/*----------------------------------------------------------------------------------
+                    */
+                 if (!loading) error? setSubmitFeedbackAlert("Unsuccessful attempt to create a cohort"):setSubmitFeedbackAlert("Cohort was successfully created");
             }
-
-// Do it but test first the time require Amr(1), Ayesha (1), Atinder (1)
-// Dont it ... If time consuming
-            ----------------------------------------------------------------------------------
-            */
-
-            e.preventDefault();
-            console.log("create cohort");
-            dispatch(
-                createCohort({
-                    name,
-                    capacity,
-                    city,
-                    modeOfTeaching,
-                    startDate,
-                    endDate,
-                })
-            );
         }
     };
     return (
@@ -83,6 +164,9 @@ const CohortCreate = () => {
                 <Row className="justify-content-md-center">
                     <Col xs={12} md={6}>
                         <h2>Cohort</h2>
+                        <div class= {loading? (error? "alert alert-danger":"alert alert-success"):""} role="alert">
+                        {submitFeedbackAlert}
+                        </div>
                         <Form noValidate validated={validated} onSubmit={submitHandler}>
                             <Form.Group controlId="name">
                                 <Form.Label>Name</Form.Label>
