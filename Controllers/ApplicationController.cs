@@ -322,7 +322,7 @@ namespace AZLearn.Controllers
         #region /application/GetAssignedCourse
         [HttpGet(nameof(GetAssignedCourse))]
 
-        public ActionResult<(Course, string)> GetAssignedCourse([FromQuery]string courseId, [FromQuery] string cohortId)
+        public ActionResult<Tuple<Course, string>> GetAssignedCourse([FromQuery]string courseId, [FromQuery] string cohortId)
 
         {
             ActionResult<Tuple<Course, string>> result;
@@ -653,7 +653,7 @@ namespace AZLearn.Controllers
         /// <param name="cohortId"></param>
         /// <returns>List Of Homeworks related to specified Course and Cohort</returns>
         [HttpGet("HomeworkSummary")]
-        public ActionResult<IEnumerable<Homework>> GetHomeworkSummary(string courseId, string cohortId)
+        public ActionResult<IEnumerable<Homework>> GetHomeworkSummary([FromQuery]string courseId, [FromQuery] string cohortId)
         {
             ActionResult<IEnumerable<Homework>> result;
             try

@@ -10,6 +10,10 @@ const CourseSummaryInstructor = ({ match }) => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const onArchive = (id) => {
+    setShow(false);
+    // dispatch(archiveCohort(id));
+  };
   const dispatch = useDispatch();
   const { loading, courses } = useSelector(
     (state) => state.getCoursesByCohortId
@@ -43,7 +47,11 @@ const CourseSummaryInstructor = ({ match }) => {
                   <td>{course.item1.durationHrs}</td>
                   <td>{course.item2}</td>
                   <td>
-                    <Link to="#">Homework</Link>
+                    <Link
+                      to={`/instructorhomework/${cohortId}/${course.item1.courseId}`}
+                    >
+                      Homework
+                    </Link>
                   </td>
                   <td>
                     {" "}
@@ -53,6 +61,20 @@ const CourseSummaryInstructor = ({ match }) => {
                       Edit
                     </Link>{" "}
                     | <Link onClick={handleShow}>Remove</Link>{" "}
+                    <Modal show={show} onHide={handleClose}>
+                      <Modal.Body>Retire: Are you sure?</Modal.Body>
+                      <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClose}>
+                          No
+                        </Button>
+                        <Button
+                          variant="primary"
+                          onClick={() => onArchive(course.item1.courseId)}
+                        >
+                          Yes
+                        </Button>
+                      </Modal.Footer>
+                    </Modal>
                   </td>
                 </tr>
               ))}
@@ -67,17 +89,6 @@ const CourseSummaryInstructor = ({ match }) => {
           Add Course
         </Button>
       </Container>
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Body>Archive: Are you sure?</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            No
-          </Button>
-          <Button variant="primary" onClick={handleClose}>
-            Yes
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </React.Fragment>
   );
 };
