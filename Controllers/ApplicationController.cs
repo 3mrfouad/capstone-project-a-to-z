@@ -644,7 +644,7 @@ namespace AZLearn.Controllers
         /// <param name="cohortId"></param>
         /// <returns>List Of Homeworks related to specified Course and Cohort</returns>
         [HttpGet("HomeworkSummary")]
-        public ActionResult<IEnumerable<Homework>> GetHomeworkSummary(string courseId, string cohortId)
+        public ActionResult<IEnumerable<Homework>> GetHomeworkSummary([FromQuery]string courseId, [FromQuery] string cohortId)
         {
             ActionResult<IEnumerable<Homework>> result;
             try

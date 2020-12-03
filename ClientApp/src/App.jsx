@@ -18,6 +18,7 @@ import GradesInstructorPage from "./screens/GradesInstructorPage/GradesInstructo
 import ManageCourse from "./components/Instructor/ManageCourses/ManageCourses";
 import CourseEditAssigned from "./components/Instructor/CourseEditAssigned/CourseEditAssigned";
 import CourseAssign from "./components/Instructor/CourseAssign/CourseAssign";
+import HomeworkSummaryInstructor from "./components/Instructor/HomeworkSummaryInstructor/HomeworkSummaryInstructor";
 const App = () => {
   return (
     <React.Fragment>
@@ -35,6 +36,11 @@ const App = () => {
             path="/studenthomework"
             exact
             component={HomeworkSummaryStudent}
+          />
+          <Route
+            path="/instructorhomework/:id/:courseId"
+            exact
+            component={HomeworkSummaryInstructor}
           />
           <Route
             path="/homeworkcardstudent"
