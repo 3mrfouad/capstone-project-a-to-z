@@ -50,7 +50,7 @@ const dummyData = [
 const GradesInstructor = () => {
   return (
     <React.Fragment>
-      <BootstrapTable
+      {/* <BootstrapTable
         keyField="id"
         data={products}
         columns={columns}
@@ -58,7 +58,7 @@ const GradesInstructor = () => {
           mode: "click",
           blurToSave: true,
         })}
-      />
+      /> */}
     </React.Fragment>
   );
 };
