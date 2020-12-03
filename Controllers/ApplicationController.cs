@@ -252,7 +252,7 @@ namespace AZLearn.Controllers
         /// <param name="courseId"></param>
         /// <returns> </returns>
         [HttpPatch(nameof(UpdateAssignedCourse))]
-        public ActionResult UpdateAssignedCourse(string cohortId, string courseId, string instructorId, string startDate, string endDate, string resourcesLink)
+        public ActionResult UpdateAssignedCourse([FromQuery]string cohortId, [FromQuery] string courseId, [FromQuery] string instructorId, [FromQuery] string startDate, [FromQuery] string endDate, [FromQuery] string resourcesLink)
         {
             ActionResult result;
             try
@@ -292,7 +292,7 @@ namespace AZLearn.Controllers
         /// <param name="courseId"></param>
         /// <returns>The End Point returns the Course according to the specified cohort id </returns>
         [HttpPost("AssignCourse")]
-        public ActionResult AssignCourseByCohortId(string cohortId, string courseId, string instructorId, string startDate, string endDate, string resourcesLink)
+        public ActionResult AssignCourseByCohortId([FromQuery] string cohortId, [FromQuery] string courseId, [FromQuery] string instructorId, [FromQuery] string startDate, [FromQuery] string endDate, [FromQuery] string resourcesLink)
         {
             ActionResult result;
             try
@@ -320,7 +320,9 @@ namespace AZLearn.Controllers
 
         #region /application/GetAssignedCourse
         [HttpGet(nameof(GetAssignedCourse))]
-        public ActionResult<Tuple<Course, string>> GetAssignedCourse(string courseId, string cohortId)
+
+        public ActionResult<Tuple<Course, string>> GetAssignedCourse([FromQuery]string courseId, [FromQuery] string cohortId)
+
         {
             ActionResult<Tuple<Course, string>> result;
             try
@@ -642,7 +644,7 @@ namespace AZLearn.Controllers
         /// <param name="cohortId"></param>
         /// <returns>List Of Homeworks related to specified Course and Cohort</returns>
         [HttpGet("HomeworkSummary")]
-        public ActionResult<IEnumerable<Homework>> GetHomeworkSummary(string courseId, string cohortId)
+        public ActionResult<IEnumerable<Homework>> GetHomeworkSummary([FromQuery]string courseId, [FromQuery] string cohortId)
         {
             ActionResult<IEnumerable<Homework>> result;
             try

@@ -1,58 +1,71 @@
-import React from "react";
-import { Table, Container, Button } from "react-bootstrap";
+import React, { useEffect } from "react";
+import { Table, Container, Button, Nav, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { homeworkSummaryInstructor } from "../../../actions/instructorActions";
+import {
+  getHomeworkSummaryInstructor,
+  getCoursesByCohortId,
+} from "../../../actions/instructorActions";
 
-const HomeworkSummaryInstructor = () => {
+const HomeworkSummaryInstructor = ({ match }) => {
+  const cohortId = match.params.id;
+  const courseId = match.params.courseId;
   const dispatch = useDispatch();
   useEffect(() => {
     // get cohort by id
     // populate the cohort data in here
-  }, []);
+    dispatch(getHomeworkSummaryInstructor(courseId, cohortId));
+    dispatch(getCoursesByCohortId(cohortId));
+  }, [dispatch]);
   const homeworkSummaryInstructor = useSelector(
     (state) => state.homeworkSummaryInstructor
   );
   const { loading, error, homeworkSummary } = homeworkSummaryInstructor;
-
+  const { courses } = useSelector((state) => state.getCoursesByCohortId);
   return (
     <React.Fragment>
       <Container>
-        <Table>
-          <thead>
-            <tr>
-              <th>Homework Name</th>
-              <th>Due Date</th>
-              <th>Release Date</th>
-              <th>GitHub</th>
-              <th>Category</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>React101</td>
-              <td>2020-11-19</td>
-              <td>2020-11-29</td>
-              <td>
-                {" "}
-                <a href="#">GitHubLink</a>{" "}
-              </td>
-              <td>Practice</td>
-              <td>Grades | Details | Edit | Archive</td>
-            </tr>
-            <tr>
-              <td>React102</td>
-              <td>2020-11-29</td>
-              <td>2020-12-19</td>
-              <td>
-                <a href="#">GitHubLink</a>
-              </td>
-              <td>Assignment</td>
-              <td>Grades | Details | Edit | Archive</td>
-            </tr>
-          </tbody>
-        </Table>
-        <Button>Back</Button> <Button>Create</Button>
+        <Row>
+          <Col xs={2}>
+            <Nav defaultActiveKey="/home" className="flex-column">
+              {courses.map((course, index) => (
+                <Nav.Link
+                  href={`/instructorhomework/${cohortId}/${course.item1.courseId}`}
+                  key={index}
+                >
+                  {course.item1.name}
+                </Nav.Link>
+              ))}
+            </Nav>
+          </Col>
+          <Col xs={10}>
+            <Table>
+              <thead>
+                <tr>
+                  <th>Homework Name</th>
+                  <th>Due Date</th>
+                  <th>Release Date</th>
+                  <th>GitHub</th>
+                  <th>Category</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {homeworkSummary.map((homework, index) => (
+                  <tr key={index}>
+                    <td>{homework.title}</td>
+                    <td>{homework.dueDate}</td>
+                    <td>{homework.releaseDate}</td>
+                    <td>{homework.documentLink}</td>
+                    <td>{homework.isAssignment ? "Assignment" : "Practice"}</td>
+                    <td>Grades | Details | Edit | Archive</td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+            <Button>Back</Button>{" "}
+            <Button className="float-right">Create</Button>
+          </Col>
+        </Row>
       </Container>
     </React.Fragment>
   );

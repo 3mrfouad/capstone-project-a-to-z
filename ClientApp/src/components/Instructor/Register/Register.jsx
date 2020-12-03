@@ -1,9 +1,10 @@
 import React from "react";
 import { useState } from "react";
-import { Form, Button, Row, Col, Container } from "react-bootstrap";
+import { Form, Button, Row, Col, Container, Modal } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 
 const Register = () => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [cohort, setCohort] = useState("");
@@ -11,6 +12,9 @@ const Register = () => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const handleChange = () => {
+    setIsInstructor(!isInstructor);
+  };
   const submitHandler = (e) => {
     e.preventDefault();
     // dispatch(login(email, password));
@@ -21,10 +25,18 @@ const Register = () => {
       <Container>
         <Row className="justify-content-md-center">
           <Col xs={12} md={6}>
-            <h1>Sign In</h1>
             {/* {error && <Message variant="danger">{error}</Message>}
             {loading && <Loader />} */}
             <Form onSubmit={submitHandler}>
+              <Form.Group controlId="name">
+                <Form.Label>Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                ></Form.Control>
+              </Form.Group>
               <Form.Group controlId="email">
                 <Form.Label>Email Address</Form.Label>
                 <Form.Control
@@ -47,13 +59,22 @@ const Register = () => {
               <Form.Group controlId="cohort">
                 <Form.Label>Cohort</Form.Label>
                 <Form.Control
-                  type="text"
+                  as="select"
                   value={cohort}
                   onChange={(e) => setCohort(e.target.value)}
-                ></Form.Control>
+                >
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                </Form.Control>
               </Form.Group>
               <Form.Group controlId="isInstructor">
-                <Form.Check type="checkbox" label="Instructor" />
+                <Form.Check
+                  type="checkbox"
+                  label="Instructor"
+                  value={isInstructor}
+                  onChange={handleChange}
+                />
               </Form.Group>
               <Button type="submit" variant="primary">
                 {" "}

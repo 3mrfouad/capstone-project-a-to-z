@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Header from "./components/shared/Header/Header";
 import Login from "./screens/Login/Login";
+import Register from "./components/Instructor/Register/Register";
 import CourseSummaryStudent from "./components/Student/CourseSummaryStudent/CourseSummaryStudent";
 import CourseSummaryInstructor from "./components/Instructor/CourseSummaryInstructor/CourseSummaryInstructor";
 import HomeworkSummaryStudent from "./components/Student/HomeworkSummaryStudent/HomeworkSummaryStudent";
@@ -15,7 +16,9 @@ import CourseCreate from "./components/Instructor/CourseCreate/CourseCreate";
 import CourseEdit from "./components/Instructor/CourseEdit/CourseEdit";
 import GradesInstructorPage from "./screens/GradesInstructorPage/GradesInstructorPage";
 import ManageCourse from "./components/Instructor/ManageCourses/ManageCourses";
-
+import CourseEditAssigned from "./components/Instructor/CourseEditAssigned/CourseEditAssigned";
+import CourseAssign from "./components/Instructor/CourseAssign/CourseAssign";
+import HomeworkSummaryInstructor from "./components/Instructor/HomeworkSummaryInstructor/HomeworkSummaryInstructor";
 const App = () => {
   return (
     <React.Fragment>
@@ -24,11 +27,20 @@ const App = () => {
         <Switch>
           <Route path="/" exact component={Login} />
           <Route path="/student" exact component={CourseSummaryStudent} />
-          <Route path="/instructor" exact component={CourseSummaryInstructor} />
+          <Route
+            path="/coursesummary/:id"
+            exact
+            component={CourseSummaryInstructor}
+          />
           <Route
             path="/studenthomework"
             exact
             component={HomeworkSummaryStudent}
+          />
+          <Route
+            path="/instructorhomework/:id/:courseId"
+            exact
+            component={HomeworkSummaryInstructor}
           />
           <Route
             path="/homeworkcardstudent"
@@ -53,6 +65,13 @@ const App = () => {
             component={CourseSummaryStudent}
           />
           <Route path="/managecourse" exact component={ManageCourse} />
+          <Route path="/registeruser" exact component={Register} />
+          <Route path="/courseassign/:id" exact component={CourseAssign} />
+          <Route
+            path="/courseeditassigned/:id/:courseId"
+            exact
+            component={CourseEditAssigned}
+          />
         </Switch>
       </Router>
     </React.Fragment>
