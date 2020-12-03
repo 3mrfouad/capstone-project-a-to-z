@@ -68,7 +68,7 @@ const Register = () => {
                   onChange={(e) => setEmail(e.target.value)}
                 ></Form.Control>
                 <Form.Control.Feedback type="invalid">
-                    Please enter an email.
+                    Please enter a valid email.  e.g. youremailaddress@domain.com
                 </Form.Control.Feedback>
 
               </Form.Group>
@@ -85,7 +85,7 @@ const Register = () => {
                   onChange={(e) => setPassword(e.target.value)}
                 ></Form.Control>
                 <Form.Control.Feedback type="invalid">
-                    Please enter a password.
+                    Please enter a valid password. Format: atleast- 1 small letter, 1 capital letter, 1 digit & 1 special character required
                 </Form.Control.Feedback>
               </Form.Group>
               <Form.Group controlId="cohort">

@@ -130,7 +130,7 @@ const HomeworkStudent = () => {
                     onChange={(e) => setSolvingHrs(String(e.target.value))}
                   ></Form.Control>
                   <Form.Control.Feedback type="invalid">
-                    Please fill in Solving/Troubleshooting Hours.
+                    Please fill in Solving/Troubleshooting Hours. It can be a number or a decimal(upto 2 decimal places)
                 </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="Study/Research">
@@ -144,7 +144,7 @@ const HomeworkStudent = () => {
                     onChange={(e) => setStudyHrs(String(e.target.value))}
                   ></Form.Control>
                    <Form.Control.Feedback type="invalid">
-                    Please fill in Study/Research Hours.
+                    Please fill Study/Research Hours in a valid format. It can be a number or a decimal(upto 2 decimal places).
                 </Form.Control.Feedback>
 
                 </Form.Group>
