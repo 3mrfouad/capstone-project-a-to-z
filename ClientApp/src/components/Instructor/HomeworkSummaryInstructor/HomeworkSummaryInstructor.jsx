@@ -5,6 +5,7 @@ import {
   getHomeworkSummaryInstructor,
   getCoursesByCohortId,
 } from "../../../actions/instructorActions";
+import { Link } from "react-router-dom";
 
 const HomeworkSummaryInstructor = ({ match }) => {
   const cohortId = match.params.id;
@@ -57,7 +58,15 @@ const HomeworkSummaryInstructor = ({ match }) => {
                     <td>{homework.releaseDate}</td>
                     <td>{homework.documentLink}</td>
                     <td>{homework.isAssignment ? "Assignment" : "Practice"}</td>
-                    <td>Grades | Details | Edit | Archive</td>
+                    <td>
+                      Grades |{" "}
+                      <Link
+                        to={`/homeworkviewinstructor/${homework.homeworkId}`}
+                      >
+                        Details
+                      </Link>{" "}
+                      | Edit | Archive
+                    </td>
                   </tr>
                 ))}
               </tbody>

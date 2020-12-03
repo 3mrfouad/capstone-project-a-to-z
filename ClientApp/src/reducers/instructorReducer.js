@@ -250,3 +250,18 @@ export const manageCourseReducer = (state = { courses: [] }, action) => {
       return state;
   }
 };
+
+export const homeworkDetailInstructorReducer = (state = {}, action) => {
+  switch (action.type) {
+    case "GET_HOMEWORK_DETAIL_INSTRUCTOR_REQUEST":
+      return { loading: true };
+    case "GET_HOMEWORK_DETAIL_INSTRUCTOR_SUCCESS":
+      return { loading: false, homework: action.payload };
+
+    case "GET_HOMEWORK_DETAIL_INSTRUCTOR_FAIL":
+      return { loading: false, error: action.payload };
+
+    default:
+      return state;
+  }
+};
