@@ -239,7 +239,6 @@ namespace AZLearn.Controllers
 
         #endregion
 
-
         #region /application/UpdateAssignedCourse
 
         /// <summary>
@@ -417,7 +416,6 @@ namespace AZLearn.Controllers
 
         #endregion
 
-
         #region /application/GetCourseSummary
 
         /// <summary>
@@ -425,7 +423,6 @@ namespace AZLearn.Controllers
         ///     Description:The API End Point looks for action GetCoursesByCohortID in CourseController and retrieves the
         ///     information of all courses based on the Cohort id  from database.
         ///     EndPoint Testing : localhost:xxxxx/application/getcoursesummary?cohortId=1
-        ///     /*Test Passed*/
         /// </summary>
         /// <param name="cohortId"></param>
         /// <returns></returns>
@@ -600,26 +597,20 @@ namespace AZLearn.Controllers
         ///     https://localhost:xxxxx/application/GetHomeworkForInstructor?homeworkId=-1
         /// </summary>
         /// <param name="homeworkId"></param>
-        /// <returns></returns>
+        /// <returns>A homework with list of rubrics,instructor name ,course name</returns>
         [HttpGet("GetHomework")]
         public ActionResult<Tuple<Homework, List<Rubric>, string, string>> GetHomeworkForInstructor(string homeworkId)
         {
-            //<Tuple<Homework,List<Rubric>,string,string>> the first string instructor name second is course name
             ActionResult<Tuple<Homework, List<Rubric>, string, string>> result;
             try
             {
                 var homework = HomeworkController.GetHomeworkById(homeworkId);
-
                 var rubricsList = RubricController.GetRubricsByHomeworkId(homeworkId);
-                //Get CourseById not GetCourses
-                // var coursesList = CourseController.GetCourses();
                 var courseId = homework.CourseId.ToString();
                 var courseName = CourseController.GetCourseById(courseId).Name;
-
-                //GetUserById 
                 var instructorId = homework.InstructorId.ToString();
                 var instructorName = UserController.GetUserById(instructorId).Name;
-                // var instructorsList = UserController.GetInstructors().Select(key => key.Name).ToList();
+                
                 result = new Tuple<Homework, List<Rubric>, string, string>(homework, rubricsList, instructorName, courseName);
             }
             catch (ValidationException e)
@@ -1006,7 +997,7 @@ namespace AZLearn.Controllers
         #region /application/GetInstructors
 
         /// <summary>
-        ///     GetCourses
+        ///     GetInstructors
         ///     Description:The API End Point looks for action GetInstructors in UserController and retrieves the information of
         ///     all instructors from database.
         ///     EndPoint Testing : localhost:xxxxx/application/GetInstructors
@@ -1032,7 +1023,16 @@ namespace AZLearn.Controllers
         #endregion
 
         #region /application/CreateUser
-
+        /// <summary>
+        /// CreateUser
+        /// Description: This endpoint will look for CreateUser action in User control and would create a user otherwise displays an error message
+        /// </summary>
+        /// <param name="cohortId"></param>
+        /// <param name="name"></param>
+        /// <param name="passwordHash"></param>
+        /// <param name="email"></param>
+        /// <param name="isInstructor"></param>
+        /// <returns>Success/Error message</returns>
         [HttpPost(nameof(CreateUser))]
         public ActionResult CreateUser(string cohortId,string name,string passwordHash,string email,string isInstructor)
         {
@@ -1062,7 +1062,13 @@ namespace AZLearn.Controllers
         #endregion
 
         #region /application/Login
-
+        /// <summary>
+        /// GetUserOnLogin
+        /// Description: This endpoint will retrieve the user information  and lets user log in if correct input fields(email and password) have been provided by the user otherwise an error message is displayed
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="passwordHash"></param>
+        /// <returns>Login Successful/Error message </returns>
         [HttpGet("Login")]
         public ActionResult<Tuple<User, bool>> GetUserOnLogin(string email, string passwordHash)
         {

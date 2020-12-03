@@ -135,7 +135,7 @@ namespace AZLearn.Controllers
             var parsedIsInstructor = false;
             var exception = new ValidationException();
             using var context = new AppDbContext();
-
+            
             #region Validation
 
             cohortId = string.IsNullOrEmpty(cohortId) || string.IsNullOrWhiteSpace(cohortId) ? null : cohortId.Trim();
@@ -218,7 +218,6 @@ namespace AZLearn.Controllers
                     exception.ValidationExceptions.Add(new Exception("Email is not in appropriate format"));
             }
 
-
             if (string.IsNullOrWhiteSpace(passwordHash))
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(passwordHash),
@@ -258,16 +257,23 @@ namespace AZLearn.Controllers
             context.SaveChanges();
         }
 
+        /// <summary>
+        /// GetUserOnLogin
+        /// Description:This action takes below parameters and retrieves the user information if input fields are correct otherwise displays error
+        /// </summary>
+        /// <param name="userEmail"></param>
+        /// <param name="password"></param>
+        /// <returns>Sucess/Error message</returns>
         public static Tuple<User, bool> GetUserOnLogin(string userEmail, string password)
         {
 
             User userInfo;
             var parsedUserId = 0;
             bool isAuthenticated = false;
-            #region Validation
-
             ValidationException exception = new ValidationException();
             using var context = new AppDbContext();
+
+            #region Validation
 
             userEmail = (string.IsNullOrEmpty(userEmail) || string.IsNullOrWhiteSpace(userEmail)) ? null : userEmail.Trim().ToLower();
             password = (string.IsNullOrEmpty(password) || string.IsNullOrWhiteSpace(password)) ? null : password.Trim();
@@ -315,6 +321,7 @@ namespace AZLearn.Controllers
 
             userInfo = context.Users.Single(key => key.PasswordHash == password && key.Email == userEmail && key.Archive == false);
             isAuthenticated = true;
+
             return Tuple.Create(userInfo, isAuthenticated);
         }
 
