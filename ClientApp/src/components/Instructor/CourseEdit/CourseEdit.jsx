@@ -15,10 +15,46 @@ const CourseEdit = ({ match, history }) => {
 const [validated, setValidated] = useState(false);   
 //----------------------------
 
+// ! (10.1) Anti-tamper validation - States and Variables
+const [validData, setValidData] = useState(false);
+const [formSubmitted, setFormSubmitted] = useState(false);
+let validFormData = false;
+let formSubmitIndicator = false;
+// ! ------------------------------------------------------
+
   const courseEdit = useSelector((state) => state.courseEdit);
   const getCourseDetail = useSelector((state) => state.getCourse);
   const { success } = courseEdit;
   const { loading, error, course } = getCourseDetail;
+
+// ! (10.2) Anti-tamper validation - Validate (parameters)
+function Validate(courseName,
+  hours,  
+  description
+  ) {
+
+  formSubmitIndicator = true;
+
+  try {
+      
+    courseName = courseName.trim().toLowerCase();
+    hours = hours.trim().toLowerCase();
+    description = description.trim().toLowerCase();     
+
+      if (!courseName) { validFormData = false; }
+      else if (courseName.Length > 50) { validFormData = false; }
+      else if (!hours) { validFormData = false; }
+      else if (parseFloat(hours) > 999.99 || parseFloat(hours) < 0) { validFormData = false; console.log("hours: ", parseFloat(hours)); }
+      else if (!description) { validFormData = false; console.log("description"); }
+      else if (description.Length > 250) { validFormData = false; console.log("description length"); }      
+     
+      else { validFormData = true; console.log("All good :", validFormData); }
+        }
+    catch (Exception) {
+      validFormData = false;
+  }
+};
+// ! ------------------------------------------------------
 
   useEffect(() => {
     if (success) {
@@ -47,6 +83,15 @@ const [validated, setValidated] = useState(false);
   //(3) Add business logic- No business Logic for now
 
     e.preventDefault();
+  // ! (10.4) Anti-tamper validation - calling Validate     
+  Validate(courseName,
+    hours,
+    description,
+    );
+  if (validFormData) {
+    setValidData(validFormData);
+    // ! ------------------------------------------------------
+
     console.log("edit course");
     dispatch(
       editCourse({
@@ -56,7 +101,16 @@ const [validated, setValidated] = useState(false);
         durationHrs: hours,
       })
     );
-  };
+  }
+  else {
+    // ! (10.5) Anti-tamper validation - Alert message conditions  
+    setValidData(validFormData);
+  }
+
+// ! (10.6) Anti-tamper validation - Alert message conditions  
+setFormSubmitted(formSubmitIndicator);
+// ! 
+};
   return (
     <React.Fragment>
       {loading ? (
@@ -69,6 +123,21 @@ const [validated, setValidated] = useState(false);
               {success && (
                 <Message variant="success">Update Successfully</Message>
               )}
+               {/* (10.7) Anti-tamper validation - Alert message conditions   */}
+               <p className=
+                            {
+                                formSubmitted ? (validData ? ((!loading && error) ? "alert alert-danger" :
+                                    ((!loading && !error ) ? "alert alert-success" : "")) :
+                                    "alert alert-danger") : ""
+                            }
+                            role="alert">
+                            {
+                                formSubmitted ? (validData ? ((!loading && error) ? "Unsuccessful attempt to create a cohort" :
+                                    ((!loading && !error) ? "Cohort was successfully created" : "")) :
+                                    "Error: Form were submitted with invalid data fields") : ""
+                            }
+                        </p>
+                         {/* -----------------------------------------------  */}
               <Form noValidate validated={validated} onSubmit={submitHandler}>
                 <Form.Group controlId="CourseName">
                   <Form.Label>Course Name</Form.Label>
