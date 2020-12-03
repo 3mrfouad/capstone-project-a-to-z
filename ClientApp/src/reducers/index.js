@@ -9,6 +9,14 @@ import {
   cohortGetStateReducer,
   manageCourseReducer,
   getCourseReducer,
+  cohortArchiveReducer,
+  courseArchiveReducer,
+  getCoursesByCohortIdReducer,
+  getAllCoursesReducer,
+  getAllInstructorsReducer,
+  courseAssignReducer,
+  editAssignedCourseReducer,
+  getAssignedCourseReducer,
 } from "./instructorReducer";
 import {
   courseSummaryStudentReducer,
@@ -33,6 +41,14 @@ const rootReducers = combineReducers({
   cohortGetState: cohortGetStateReducer,
   manageCourse: manageCourseReducer,
   getCourse: getCourseReducer,
+  cohortArchive: cohortArchiveReducer,
+  courseArchive: courseArchiveReducer,
+  getCoursesByCohortId: getCoursesByCohortIdReducer,
+  getAllCourses: getAllCoursesReducer,
+  getAllInstructors: getAllInstructorsReducer,
+  courseAssign: courseAssignReducer,
+  editAssignedCourse: editAssignedCourseReducer,
+  getAssignedCourse: getAssignedCourseReducer,
 });
 
 export default rootReducers;
