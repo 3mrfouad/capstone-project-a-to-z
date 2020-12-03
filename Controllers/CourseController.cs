@@ -324,7 +324,7 @@ namespace AZLearn.Controllers
             var courseByCohortId =
                 context.Courses.Include(key => key.CohortCourses).SingleOrDefault(key => key.CohortCourses.Any(subKey => subKey.CohortId == parsedCohortId && subKey.CourseId == parsedCourseId));
 
-            var instructorId = courseByCohortId.CohortCourses.SingleOrDefault(key => key.CourseId == courseByCohortId.CourseId && key.CohortId == parsedCohortId).InstructorId;
+            var instructorId = courseByCohortId.CohortCourses.SingleOrDefault(key => key.CourseId == parsedCourseId && key.CohortId == parsedCohortId).InstructorId;
 
             var instructorName = context.Users.Where(key => key.UserId == instructorId).Select(key => key.Name).Single();
 
