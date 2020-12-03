@@ -24,23 +24,6 @@ const Login = () => {
         e.preventDefault();
     // dispatch(login(email, password));
         console.log("login");
-        //Business Logic
-        if (password === ("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$")) {
-            e.preventDefault();
-            password ? setInvalidPasswordBl(true) : setInvalidPasswordBl(false);
-        } else {
-            setInvalidPasswordBl(false);
-            e.preventDefault();
-
-        }
-     /*   if (typeof input["password"] !== "undefined") {
-
-            var pattern = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$");
-            if (!pattern.test(input["password"])) {
-                isValid = false;
-                errors["password"] = "Please enter valid Password.";
-            }
-        }*/
     };
   return (
     <React.Fragment>
@@ -57,7 +40,7 @@ const Login = () => {
                                   required
                                   type="email"
                                   maxlength="50"
-                  placeholder="Enter Email"
+                                  placeholder="Enter Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                               ></Form.Control>

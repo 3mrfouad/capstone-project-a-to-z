@@ -68,7 +68,7 @@ const CourseAssign = ({ match }) => {
                             <Form.Group controlId="name">
                                 <Form.Label>Course Name</Form.Label>
                                 <Form.Control
-                                    as="select"
+                                    as="Select"
                                     required
                                     value={courseId}
                                     onChange={(e) => setCourseId(e.target.value)}
@@ -133,6 +133,7 @@ const CourseAssign = ({ match }) => {
                             <Form.Group controlId="link">
                                 <Form.Label>Resource Link</Form.Label>
                                 <Form.Control
+                                    maxlength="250"
                                     type="url"
                                     value={resourcesLink}
                                     onChange={(e) => setResourcesLink(e.target.value)}
