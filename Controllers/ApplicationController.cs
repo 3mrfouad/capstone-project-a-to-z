@@ -253,7 +253,7 @@ namespace AZLearn.Controllers
         /// <param name="courseId"></param>
         /// <returns> </returns>
         [HttpPatch(nameof(UpdateAssignedCourse))]
-        public ActionResult UpdateAssignedCourse(string cohortId, string courseId, string instructorId, string startDate, string endDate, string resourcesLink)
+        public ActionResult UpdateAssignedCourse([FromQuery]string cohortId, [FromQuery] string courseId, [FromQuery] string instructorId, [FromQuery] string startDate, [FromQuery] string endDate, [FromQuery] string resourcesLink)
         {
             ActionResult result;
             try
@@ -321,7 +321,9 @@ namespace AZLearn.Controllers
 
         #region /application/GetAssignedCourse
         [HttpGet(nameof(GetAssignedCourse))]
-        public ActionResult<Tuple<Course, string>> GetAssignedCourse(string courseId, string cohortId)
+
+        public ActionResult<Tuple<Course, string>> GetAssignedCourse([FromQuery]string courseId, [FromQuery] string cohortId)
+
         {
             ActionResult<Tuple<Course, string>> result;
             try
