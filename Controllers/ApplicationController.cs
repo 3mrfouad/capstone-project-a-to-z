@@ -161,7 +161,7 @@ namespace AZLearn.Controllers
         /// <param name="resourcesLink"></param>
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
-        /// <returns></returns>
+        /// <returns>Success/Error Message</returns>
         [HttpPost(nameof(CreateCourse))]
         public ActionResult CreateCourse
         ([FromQuery] string name,[FromQuery] string description,
@@ -321,9 +321,11 @@ namespace AZLearn.Controllers
 
         #region /application/GetAssignedCourse
         [HttpGet(nameof(GetAssignedCourse))]
+
         public ActionResult<(Course, string)> GetAssignedCourse([FromQuery]string courseId, [FromQuery] string cohortId)
+
         {
-            ActionResult<(Course, string)> result;
+            ActionResult<Tuple<Course, string>> result;
             try
             {
                 result = CourseController.GetCourseByCohortId(courseId, cohortId);
@@ -430,9 +432,9 @@ namespace AZLearn.Controllers
         /// <param name="cohortId"></param>
         /// <returns></returns>
         [HttpGet(nameof(GetCourseSummary))]
-        public ActionResult<List<(Course, string)>> GetCourseSummary(string cohortId)
+        public ActionResult<List<Tuple<Course, string>>> GetCourseSummary(string cohortId)
         {
-            ActionResult<List<(Course, string)>> result;
+            ActionResult<List<Tuple<Course, string>>> result;
             try
             {
                 result = CourseController.GetCoursesByCohortId(cohortId);
@@ -602,20 +604,25 @@ namespace AZLearn.Controllers
         /// <param name="homeworkId"></param>
         /// <returns></returns>
         [HttpGet("GetHomework")]
-        public ActionResult<Tuple<Homework, List<Rubric>, List<string>, List<Course>>> GetHomeworkForInstructor(string homeworkId)
+        public ActionResult<Tuple<Homework, List<Rubric>, string, string>> GetHomeworkForInstructor(string homeworkId)
         {
-            ActionResult<Tuple<Homework, List<Rubric>, List<string>, List<Course>>> result;
+            //<Tuple<Homework,List<Rubric>,string,string>> the first string instructor name second is course name
+            ActionResult<Tuple<Homework, List<Rubric>, string, string>> result;
             try
             {
                 var homework = HomeworkController.GetHomeworkById(homeworkId);
 
                 var rubricsList = RubricController.GetRubricsByHomeworkId(homeworkId);
+                //Get CourseById not GetCourses
+                // var coursesList = CourseController.GetCourses();
+                var courseId = homework.CourseId.ToString();
+                var courseName = CourseController.GetCourseById(courseId).Name;
 
-                var coursesList = CourseController.GetCourses();
-
-                var instructorsList = UserController.GetInstructors().Select(key => key.Name).ToList();
-
-                result = new Tuple<Homework, List<Rubric>, List<string>, List<Course>>(homework, rubricsList, instructorsList, coursesList);
+                //GetUserById 
+                var instructorId = homework.InstructorId.ToString();
+                var instructorName = UserController.GetUserById(instructorId).Name;
+                // var instructorsList = UserController.GetInstructors().Select(key => key.Name).ToList();
+                result = new Tuple<Homework, List<Rubric>, string, string>(homework, rubricsList, instructorName, courseName);
             }
             catch (ValidationException e)
             {
@@ -1034,21 +1041,50 @@ namespace AZLearn.Controllers
             ActionResult result;
             try
             {
-                UserController.CreateUser(cohortId,name, passwordHash, email,isInstructor);
-                result=StatusCode(200,"Successfully Registered new User");
+                UserController.CreateUser(cohortId, name, passwordHash, email, isInstructor);
+                result = StatusCode(200, "Successfully Registered new User");
             }
-            catch ( ValidationException e )
+            catch (ValidationException e)
             {
-                var error = "Error(s) During Registering User: "+
+                var error = "Error(s) During Registering User: " +
                             e.ValidationExceptions.Select(x => x.Message)
-                                .Aggregate((x,y) => x+", "+y);
+                                .Aggregate((x, y) => x + ", " + y);
 
-                result=BadRequest(error);
+                result = BadRequest(error);
             }
-            catch ( Exception e )
+            catch (Exception e)
             {
-                result=StatusCode(500,
-                    "Unexpected server/database error occurred. System error message(s): "+e.Message);
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
+            }
+
+            return result;
+        }
+
+        #endregion
+
+        #region /application/Login
+
+        [HttpGet("Login")]
+        public ActionResult<Tuple<User, bool>> GetUserOnLogin(string email, string passwordHash)
+        {
+            ActionResult<Tuple<User, bool>> result;
+            try
+            {
+                result = UserController.GetUserOnLogin(email, passwordHash);
+            }
+            catch (ValidationException e)
+            {
+                var error = "Error(s) During Login User " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
+
+                result = BadRequest(error);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
             }
             return result;
         }

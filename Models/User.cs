@@ -10,6 +10,7 @@ namespace AZLearn.Models
         public User()
         {
             /*Constructor to Initialize ICollections defined below*/
+
             CohortCourses = new HashSet<CohortCourse>();
             Homeworks = new HashSet<Homework>();
             Notifications = new HashSet<Notification>();
@@ -21,16 +22,16 @@ namespace AZLearn.Models
 
         [Key]
         [Column(TypeName = "int(10)")]
+
         /*Auto generates unique id number*/
+
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int UserId { get; set; }
 
         /*Foreign Keys*/
 
-        [Column(TypeName = "int(10)")] 
-        public int? CohortId { get; set; } 
+        [Column(TypeName = "int(10)")] public int? CohortId { get; set; }
 
-        /*General Properties:*/
         [Required]
         [Column(TypeName = "varchar(50)")]
         public string Name { get; set; }
@@ -49,8 +50,7 @@ namespace AZLearn.Models
         [Column(TypeName = "boolean")]
         public bool IsInstructor { get; set; } = false;
 
-        [Column(TypeName = "boolean")]
-        public bool Archive { get; set; } = false;
+        [Column(TypeName = "boolean")] public bool Archive { get; set; } = false;
 
         /*   Navigation properties:*/
 
@@ -59,38 +59,38 @@ namespace AZLearn.Models
         public virtual Cohort Cohort { get; set; }
 
         /*Creating and inverse property of Course to User*/
-        [InverseProperty(nameof(Models.CohortCourse.Instructor))]
+
+        [InverseProperty(nameof(CohortCourse.Instructor))]
         public virtual ICollection<CohortCourse> CohortCourses { get; set; }
 
         /*Creating and inverse property of Homework to User*/
-        [InverseProperty(nameof(Models.Homework.Instructor))]
+
+        [InverseProperty(nameof(Homework.Instructor))]
         public virtual ICollection<Homework> Homeworks { get; set; }
 
         /*Creating and inverse property of Notification to User*/
-        [InverseProperty(nameof(Models.Notification.Student))]
+
+        [InverseProperty(nameof(Notification.Student))]
         public virtual ICollection<Notification> Notifications { get; set; }
 
         /*Creating and inverse property of ShoutOutsStudent to User*/
-        [InverseProperty(nameof(Models.ShoutOut.Student))]
+
+        [InverseProperty(nameof(ShoutOut.Student))]
         public virtual ICollection<ShoutOut> ShoutOutsStudent { get; set; }
 
         /*Creating and inverse property of ShoutOutsPeer to User*/
-        [InverseProperty(nameof(Models.ShoutOut.Peer))]
+
+        [InverseProperty(nameof(ShoutOut.Peer))]
         public virtual ICollection<ShoutOut> ShoutOutsPeer { get; set; }
 
         /*Creating and inverse property of Timesheets to User*/
-        [InverseProperty(nameof(Models.Timesheet.Student))]
+
+        [InverseProperty(nameof(Timesheet.Student))]
         public virtual ICollection<Timesheet> Timesheets { get; set; }
 
         /*Creating and inverse property of Grade to User*/
-        [InverseProperty(nameof(Models.Grade.Student))]
+
+        [InverseProperty(nameof(Grade.Student))]
         public virtual ICollection<Grade> Grades { get; set; }
-
-
-
-
-
-
-
     }
 }

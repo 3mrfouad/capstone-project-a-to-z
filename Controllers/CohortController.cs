@@ -305,6 +305,7 @@ namespace AZLearn.Controllers
             #region Validation
 
             cohortId = string.IsNullOrEmpty(cohortId) || string.IsNullOrWhiteSpace(cohortId) ? null : cohortId.Trim();
+
             if (cohortId == null)
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId),
@@ -328,7 +329,6 @@ namespace AZLearn.Controllers
             return context.Cohorts.SingleOrDefault(key => key.CohortId == parsedCohortId);
         }
 
-
         /// <summary>
         ///     ArchiveCohortById
         ///     Description: This action archives a cohort by cohortId PK
@@ -343,6 +343,7 @@ namespace AZLearn.Controllers
             #region Validation
 
             cohortId = string.IsNullOrEmpty(cohortId) || string.IsNullOrWhiteSpace(cohortId) ? null : cohortId.Trim();
+
             if (cohortId == null)
             {
                 exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId),

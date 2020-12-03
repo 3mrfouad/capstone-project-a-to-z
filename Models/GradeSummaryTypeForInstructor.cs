@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Xml.Schema;
-
-namespace AZLearn.Models
+﻿namespace AZLearn.Models
 {
     /// <summary>
-    /// Purpose of this class is to define a custom type for dat object retrieved to show in Grade Summary page for     Instructors;
+    ///     Purpose of this class is to define a custom type for dat object retrieved to show in Grade Summary page for
+    ///     Instructors;
     /// </summary>
     public class GradeSummaryTypeForInstructor
     {
-        public GradeSummaryTypeForInstructor(string totalMarks, string marksInRequirement, string marksInChallenge, string totalTimeSpentOnHomework, string studentName, int studentId)
+        public GradeSummaryTypeForInstructor(string totalMarks, string marksInRequirement, string marksInChallenge,
+            string totalTimeSpentOnHomework, string studentName, int studentId)
         {
             TotalMarks = totalMarks;
             MarksInRequirement = marksInRequirement;
@@ -20,6 +16,7 @@ namespace AZLearn.Models
             StudentName = studentName;
             StudentId = studentId;
         }
+
         public string TotalMarks { get; set; }
         public string MarksInRequirement { get; set; }
         public string MarksInChallenge { get; set; }
