@@ -173,7 +173,7 @@ const CohortCreate = () => {
                 <Row className="justify-content-md-center">
                     <Col xs={12} md={6}>
                         <h2>Cohort</h2>
-                        {/* ! (10.7) Anti-tamper validation - Alert message conditions   */}
+                       // ! (10.7) Anti-tamper validation - Alert message conditions  
                         <p className=
                             {
                                 formSubmitted ? (validData ? ((!loading && error) ? "alert alert-danger" :
@@ -187,7 +187,7 @@ const CohortCreate = () => {
                                     "Error: Form were submitted with invalid data fields") : ""
                             }
                         </p>
-                        {/* ! ------------------------------------------------------  */}
+                        //! ------------------------------------------------------ 
                         <Form noValidate validated={validated} onSubmit={submitHandler}>
                             <Form.Group controlId="name">
                                 <Form.Label>Name</Form.Label>
