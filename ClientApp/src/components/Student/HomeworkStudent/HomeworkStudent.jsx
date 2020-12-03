@@ -116,7 +116,7 @@ const HomeworkStudent = () => {
                   ></Form.Control>
                 </Form.Group>
               </Form>
-              <Form onSubmit={summitHandler}>
+              <Form noValidate validated={validated} onSubmit={summitHandler}>
                 <h3>Timesheet</h3>
                 <Form.Group controlId="Solving/Troubleshooting">
                   <Form.Label>Solving/Troubleshooting</Form.Label>

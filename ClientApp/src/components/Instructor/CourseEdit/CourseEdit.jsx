@@ -69,7 +69,7 @@ const [validated, setValidated] = useState(false);
               {success && (
                 <Message variant="success">Update Successfully</Message>
               )}
-              <Form onSubmit={submitHandler}>
+              <Form noValidate validated={validated} onSubmit={submitHandler}>
                 <Form.Group controlId="">
                   <Form.Label>Course Name</Form.Label>
 

@@ -45,7 +45,7 @@ const CourseCreate = () => {
         <Row className="justify-content-md-center">
           <Col xs={12} md={6}>
             <h2>Course</h2>
-            <Form onSubmit={submitHandler}>
+            <Form noValidate validated={validated} onSubmit={submitHandler}>
               <Form.Group controlId="CourseName">
                 <Form.Label>Course Name</Form.Label>
 
