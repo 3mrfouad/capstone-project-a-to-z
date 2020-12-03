@@ -59,7 +59,8 @@ const CourseCreate = () => {
                 <Form.Control.Feedback type="invalid">
                     Please enter a course name.
                 </Form.Control.Feedback>
-
+                </Form.Group>
+                <Form.Group controlId="Hours">
                 <Form.Label className="mr-5">Hours</Form.Label>
 
                 <Form.Control
@@ -74,6 +75,8 @@ const CourseCreate = () => {
                 <Form.Control.Feedback type="invalid">
                     Please fill in the Hours field.
                 </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group controlId="Description">
                 <Form.Label>Description</Form.Label>
 
                 <Form.Control

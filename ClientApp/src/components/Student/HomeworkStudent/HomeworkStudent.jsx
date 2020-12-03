@@ -144,7 +144,7 @@ const HomeworkStudent = () => {
                     onChange={(e) => setStudyHrs(String(e.target.value))}
                   ></Form.Control>
                    <Form.Control.Feedback type="invalid">
-                    Please fil in Study/Research Hours.
+                    Please fill in Study/Research Hours.
                 </Form.Control.Feedback>
 
                 </Form.Group>
