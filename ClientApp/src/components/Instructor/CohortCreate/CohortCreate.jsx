@@ -239,6 +239,7 @@ const CohortCreate = () => {
                                 <Form.Control
                                     required
                                     type="date"
+                                    min={startDate}
                                     value={endDate}
                                     onChange={(e) => setEndDate(String(e.target.value))}
                                 ></Form.Control>
