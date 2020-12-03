@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Form, Button, Row, Col, Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { createCohort } from "../../../actions/instructorActions";
-//import ValidateCreateCohort from "../../../functions/ValidateCreateCohort";
 
 const CohortCreate = () => {
     const [name, setName] = useState("");
@@ -30,7 +29,7 @@ const CohortCreate = () => {
     const { loading, error, cohort, success } = cohortCreate;
     const dispatch = useDispatch();
 
-    function ValidateCreateCohort (name,
+    function Validate (name,
         capacity,
         city,
         modeOfTeaching,
@@ -127,7 +126,7 @@ const CohortCreate = () => {
             /*
              ---------------------------------------------------------------------------------
              Post HTML5 regular validation (Frontend validation / BL)*/
-             ValidateCreateCohort (name,
+             Validate (name,
                 capacity,
                 city,
                 modeOfTeaching,
@@ -155,7 +154,7 @@ const CohortCreate = () => {
                     );
 /*----------------------------------------------------------------------------------
                     */
-                  error? setSubmitFeedbackAlert("Unsuccessful attempt to create a cohort"):setSubmitFeedbackAlert("Cohort was successfully created");
+                 if (!loading) error? setSubmitFeedbackAlert("Unsuccessful attempt to create a cohort"):setSubmitFeedbackAlert("Cohort was successfully created");
             }
         }
     };
@@ -165,10 +164,7 @@ const CohortCreate = () => {
                 <Row className="justify-content-md-center">
                     <Col xs={12} md={6}>
                         <h2>Cohort</h2>
-                        <div class= "alert alert-danger" role="alert">
-                        {submitFeedbackAlert}
-                        </div>
-                        <div class= "alert alert-success" role="alert">
+                        <div class= {loading? (error? "alert alert-danger":"alert alert-success"):""} role="alert">
                         {submitFeedbackAlert}
                         </div>
                         <Form noValidate validated={validated} onSubmit={submitHandler}>
