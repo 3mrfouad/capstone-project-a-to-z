@@ -93,7 +93,7 @@ const Register = () => {
                   as="select"
                   value={cohort}
                   onChange={(e) => setCohort(e.target.value)}
-                >
+                ><option></option>
                   <option value="1">1</option>
                   <option value="2">2</option>
                   <option value="3">3</option>
