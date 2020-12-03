@@ -15,7 +15,22 @@ const Register = () => {
   const handleChange = () => {
     setIsInstructor(!isInstructor);
   };
+
+ //(1) Add validation states
+ const [validated, setValidated] = useState(false);   
+   
+ //----------------------------
+
   const submitHandler = (e) => {
+    //(2) Add form validation condition block if-else
+    const form = e.currentTarget;
+    if (form.checkValidity() === false) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    setValidated(true); 
+  //(3) Add business logic- No business Logic for now
+
     e.preventDefault();
     // dispatch(login(email, password));
     console.log("register");
@@ -27,34 +42,50 @@ const Register = () => {
           <Col xs={12} md={6}>
             {/* {error && <Message variant="danger">{error}</Message>}
             {loading && <Loader />} */}
-            <Form onSubmit={submitHandler}>
+            <Form noValidate validated={validated} onSubmit={submitHandler}>
               <Form.Group controlId="name">
                 <Form.Label>Name</Form.Label>
                 <Form.Control
+                  required
                   type="text"
+                  maxlength ="50"
                   placeholder="Enter Name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 ></Form.Control>
+                 <Form.Control.Feedback type="invalid">
+                    Please enter a name.
+                </Form.Control.Feedback>
               </Form.Group>
               <Form.Group controlId="email">
                 <Form.Label>Email Address</Form.Label>
                 <Form.Control
+                  required
                   type="email"
+                  maxlength ="50"
                   placeholder="Enter Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 ></Form.Control>
+                <Form.Control.Feedback type="invalid">
+                    Please enter an email.
+                </Form.Control.Feedback>
+
               </Form.Group>
 
               <Form.Group controlId="password">
                 <Form.Label>Password</Form.Label>
                 <Form.Control
+                  required
                   type="password"
+                  maxlength ="250"
                   placeholder="Enter Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 ></Form.Control>
+                <Form.Control.Feedback type="invalid">
+                    Please enter a password.
+                </Form.Control.Feedback>
               </Form.Group>
               <Form.Group controlId="cohort">
                 <Form.Label>Cohort</Form.Label>

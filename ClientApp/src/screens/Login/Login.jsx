@@ -7,7 +7,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const submitHandler = (e) => {
+  const submitHandler = (e) => {  
     e.preventDefault();
     // dispatch(login(email, password));
     console.log("login");
@@ -24,7 +24,7 @@ const Login = () => {
               <Form.Group controlId="email">
                 <Form.Label>Email Address</Form.Label>
                 <Form.Control
-                  type="email"
+                  type="email"                  
                   placeholder="Enter Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
