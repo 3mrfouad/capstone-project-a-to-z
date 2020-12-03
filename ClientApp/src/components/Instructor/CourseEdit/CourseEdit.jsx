@@ -76,7 +76,7 @@ const [validated, setValidated] = useState(false);
                   <Form.Control
                     required
                     type="text"
-                    maxlength ="50"
+                    maxLength ="50"
                     value={courseName}
                     onChange={(e) => setCourseName(e.target.value)}
                   ></Form.Control>
@@ -106,7 +106,7 @@ const [validated, setValidated] = useState(false);
                   <Form.Control
                     required
                     type="text"
-                    maxlength={250}
+                    maxlength="250"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                   ></Form.Control>
