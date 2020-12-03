@@ -83,8 +83,9 @@ const [validated, setValidated] = useState(false);
                   <Form.Control.Feedback type="invalid">
                     Please enter a course name.
                 </Form.Control.Feedback>
-                  <Form.Label className="mr-5">Hours</Form.Label>
 
+                  <Form.Label className="mr-5">Hours</Form.Label>
+                  
                   <Form.Control
                     required
                     type="number"
@@ -94,9 +95,12 @@ const [validated, setValidated] = useState(false);
                     value={hours}
                     onChange={(e) => setHours(e.target.value)}
                   ></Form.Control>
+                  <Form.Control.Feedback type="invalid">
+                    Please fill in the Hours field.
+                  </Form.Control.Feedback>
 
                   <Form.Label>Description</Form.Label>
-
+                  
                   <Form.Control
                     required
                     type="text"
