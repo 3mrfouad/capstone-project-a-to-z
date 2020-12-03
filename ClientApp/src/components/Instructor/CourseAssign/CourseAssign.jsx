@@ -69,10 +69,11 @@ const CourseAssign = ({ match }) => {
                                 <Form.Label>Course Name</Form.Label>
                                 <Form.Control
                                     as="select"
+                                    required
                                     value={courseId}
                                     onChange={(e) => setCourseId(e.target.value)}
                                 >
-                                    <option value="">select</option>
+                                    <option value="">Select</option>
                                     {courses.map((course, index) => (
                                         <option value={course.courseId} key={index}>
                                             {course.name}
@@ -85,10 +86,11 @@ const CourseAssign = ({ match }) => {
                                 <Form.Label>Instructor</Form.Label>
                                 <Form.Control
                                     as="select"
+                                    required
                                     value={instructorId}
                                     onChange={(e) => setInstructorId(e.target.value)}
                                 >
-                                    <option value="">select</option>
+                                    <option value="">Select</option>
                                     {instructors.map((instructor, index) => (
                                         <option value={instructor.userId} key={index}>
                                             {instructor.name}
