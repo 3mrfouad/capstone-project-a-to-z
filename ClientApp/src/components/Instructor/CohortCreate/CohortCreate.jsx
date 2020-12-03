@@ -174,7 +174,7 @@ const CohortCreate = () => {
                     <Col xs={12} md={6}>
                         <h2>Cohort</h2>
                         {/* ! (10.7) Anti-tamper validation - Alert message conditions   */}
-                        <p class=
+                        <p className=
                             {
                                 formSubmitted ? (validData ? ((!loading && error) ? "alert alert-danger" :
                                     ((!loading && !error && success) ? "alert alert-success" : "")) :
@@ -203,7 +203,7 @@ const CohortCreate = () => {
                                 <Form.Control
                                     required
                                     type="text"
-                                    maxlength="50"
+                                    maxLength="50"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                 ></Form.Control>
