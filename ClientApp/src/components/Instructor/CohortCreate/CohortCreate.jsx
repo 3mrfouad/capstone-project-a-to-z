@@ -205,8 +205,8 @@ const CohortCreate = () => {
                     ? !loading && error
                       ? "alert alert-danger"
                       : !loading && !error && success
-                      ? "alert alert-success"
-                      : ""
+                        ? "alert alert-success"
+                        : ""
                     : "alert alert-danger"
                   : ""
               }
@@ -217,8 +217,8 @@ const CohortCreate = () => {
                   ? !loading && error
                     ? "Unsuccessful attempt to create a cohort"
                     : !loading && !error && success
-                    ? "Cohort was successfully created"
-                    : ""
+                      ? "Cohort was successfully created"
+                      : ""
                   : "Error: Form were submitted with invalid data fields"
                 : ""}
             </p>
@@ -244,131 +244,82 @@ const CohortCreate = () => {
                 <Form.Control.Feedback type="invalid">
                   Please enter a cohort name.
                 </Form.Control.Feedback>
+                {/*---------------------------------------*/}
+              </Form.Group>
 
-    };
-    return (
-        <React.Fragment>
-            <Container>
-                <Row className="justify-content-md-center">
-                    <Col xs={12} md={6}>
-                        <h2>Cohort</h2>
-                        {/* ! (10.7) Anti-tamper validation - Alert message conditions   */}
-                        <p className=
-                            {
-                                formSubmitted ? (validData ? ((!loading && error) ? "alert alert-danger" :
-                                    ((!loading && !error && success) ? "alert alert-success" : "")) :
-                                    "alert alert-danger") : ""
-                            }
-                            role="alert">
-                            {
-                                formSubmitted ? (validData ? ((!loading && error) ? "Unsuccessful attempt to create a cohort" :
-                                    ((!loading && !error && success) ? "Cohort was successfully created" : "")) :
-                                    "Error: Form were submitted with invalid data fields") : ""
-                            }
-                        </p>
-                        {/* ! ------------------------------------------------------  */}
-                        <Form noValidate validated={validated} onSubmit={submitHandler}>
-                            <Form.Group controlId="name">
-                                <Form.Label>Name</Form.Label>
-                                {
-                                    /*
-                                     * (4) Add required to all required input fields
-                                     * (5) For type = "text", use maxlength ={50} i.e., according to the actual length from ERD
-                                     * (5) If type is not "text", add String(e.target.value) to the onchange
-                                     * (6) If type is "number", add min={0}, and max={999} i.e., according to actual range from ERD
-                                     * (7) For dropdown menu, use as="select", and add one empty option above other options <option></option>
-                                     */
-                                }
-                                <Form.Control
-                                    required
-                                    type="text"
-                                    maxLength="50"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                ></Form.Control>
-                                {
-                                    /*(8) Add Form control feedback.*/
-                                }
-                                <Form.Control.Feedback type="invalid">
-                                    Please enter a cohort name.
+              <Form.Group controlId="Capacity">
+                <Form.Label>Capacity</Form.Label>
+                <Form.Control
+                  type="number"
+                  min={0}
+                  max={999}
+                  step="1"
+                  value={capacity}
+                  onChange={(e) => setCapacity(String(e.target.value))}
+                ></Form.Control>
+              </Form.Group>
+              <Form.Group controlId="Mode of Teaching">
+                <Form.Label>Mode of Teaching</Form.Label>
+                <Form.Control
+                  as="select"
+                  required
+                  value={modeOfTeaching}
+                  onChange={(e) => setModeOfTeaching(String(e.target.value))}
+                ><option value="">Select</option>
+                  <option>Online</option>
+                  <option>In Person</option>
+                </Form.Control>
+                <Form.Control.Feedback type="invalid">
+                  Please choose a mode of teaching.
                                 </Form.Control.Feedback>
-
-                                {/*---------------------------------------*/}
-                            </Form.Group>
-
-                            <Form.Group controlId="Capacity">
-                                <Form.Label>Capacity</Form.Label>
-                                <Form.Control
-                                    type="number"
-                                    min={0}
-                                    max={999}
-                                    step="1"
-                                    value={capacity}
-                                    onChange={(e) => setCapacity(String(e.target.value))}
-                                ></Form.Control>
-                            </Form.Group>
-                            <Form.Group controlId="Mode of Teaching">
-                                <Form.Label>Mode of Teaching</Form.Label>
-                                <Form.Control
-                                    as="select"
-                                    required
-                                    value={modeOfTeaching}
-                                    onChange={(e) => setModeOfTeaching(String(e.target.value))}
-                                ><option value="">Select</option>
-                                    <option>Online</option>
-                                    <option>In Person</option>
-                                </Form.Control>
-                                <Form.Control.Feedback type="invalid">
-                                    Please choose a mode of teaching.
+              </Form.Group>
+              <Form.Group controlId="Start Date">
+                <Form.Label>Start Date</Form.Label>
+                <Form.Control
+                  required
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(String(e.target.value))}
+                ></Form.Control>
+                <Form.Control.Feedback type="invalid">
+                  Please choose a start date.
                                 </Form.Control.Feedback>
-                            </Form.Group>
-                            <Form.Group controlId="Start Date">
-                                <Form.Label>Start Date</Form.Label>
-                                <Form.Control
-                                    required
-                                    type="date"
-                                    value={startDate}
-                                    onChange={(e) => setStartDate(String(e.target.value))}
-                                ></Form.Control>
-                                <Form.Control.Feedback type="invalid">
-                                    Please choose a start date.
+              </Form.Group>
+              <Form.Group controlId="End Date">
+                <Form.Label>End Date</Form.Label>
+                <Form.Control
+                  required
+                  type="date"
+                  min={startDate}
+                  value={endDate}
+                  onChange={(e) => setEndDate(String(e.target.value))}
+                ></Form.Control>
+                <Form.Control.Feedback type="invalid">
+                  Please choose an end date.
                                 </Form.Control.Feedback>
-                            </Form.Group>
-                            <Form.Group controlId="End Date">
-                                <Form.Label>End Date</Form.Label>
-                                <Form.Control
-                                    required
-                                    type="date"
-                                    min={startDate}
-                                    value={endDate}
-                                    onChange={(e) => setEndDate(String(e.target.value))}
-                                ></Form.Control>
-                                <Form.Control.Feedback type="invalid">
-                                    Please choose an end date.
+                {/* (9) Add business logic validation message. */}
+                <p className="text-danger small">{invalidDatesBL ? "End date can't be before start date" : ""}</p>
+                {/*---------------------------------------*/}
+              </Form.Group>
+              <Form.Group controlId="City">
+                <Form.Label>City</Form.Label>
+                <Form.Control as="select"
+                  required
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                >
+                  <option value="">Select</option>
+                  <option>Edmonton</option>
+                  <option>Calgary</option>
+                  <option>Other</option>
+                </Form.Control>
+                <Form.Control.Feedback type="invalid">
+                  Please choose a city.
                                 </Form.Control.Feedback>
-                                {/* (9) Add business logic validation message. */}
-                                <p className="text-danger small">{invalidDatesBL ? "End date can't be before start date" : ""}</p>
-                                {/*---------------------------------------*/}
-                            </Form.Group>
-                            <Form.Group controlId="City">
-                                <Form.Label>City</Form.Label>
-                                <Form.Control as="select"
-                                    required
-                                    value={city}
-                                    onChange={(e) => setCity(e.target.value)}
-                                >
-                                    <option value="">Select</option>
-                                    <option>Edmonton</option>
-                                    <option>Calgary</option>
-                                    <option>Other</option>
-                                </Form.Control>
-                                <Form.Control.Feedback type="invalid">
-                                    Please choose a city.
-                                </Form.Control.Feedback>
-                            </Form.Group>
-                            <a href="">Back</a>
-                            <Button className="float-right" type="submit" variant="primary">
-                                {" "}
+              </Form.Group>
+              <a href="">Back</a>
+              <Button className="float-right" type="submit" variant="primary">
+                {" "}
                 Save
               </Button>
             </Form>
