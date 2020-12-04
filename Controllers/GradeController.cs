@@ -509,7 +509,7 @@ namespace AZLearn.Controllers
                         new Exception("homeworkId value should be between 1 & 2147483647 inclusive"));
                 else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId))
                     exception.ValidationExceptions.Add(new Exception("homeworkId does not exist"));
-                else if (!string.IsNullOrWhiteSpace(cohortId) && int.TryParse(cohortId, out parsedCohortId))
+                else if ((!string.IsNullOrWhiteSpace(cohortId)) && int.TryParse(cohortId, out parsedCohortId))
                     if (!context.Homeworks.Any(key =>
                         key.HomeworkId == parsedHomeworkId && key.CohortId == parsedCohortId))
                         exception.ValidationExceptions.Add(new Exception("Homework does not exist for this cohort."));
@@ -566,7 +566,11 @@ namespace AZLearn.Controllers
 
                         /*In case there are no challenges, we will show 0/0 for challenges' marks*/
 
-                        if (marksByGroup.Length == 1) marksByGroup.Concat(new[] { 0 }).ToArray();
+                        if (marksByGroup.Length == 1)
+                        {
+                            marksByGroup = marksByGroup.Concat(new[] { 0 }).ToArray();
+                        }
+                            
 
                         gradeSummary = new GradeSummaryTypeForInstructor($"{total}",
                             $"{marksByGroup[0]}/{rubricWeightByGroup[0]}",
