@@ -11,15 +11,19 @@ const CohortCreate = () => {
     const [endDate, setEndDate] = useState("");
     const [city, setCity] = useState("");
 
-    //(1) Add validation states
+    //(1) Add validation states and variables
     const [validated, setValidated] = useState(false);
     const [invalidDatesBL, setInvalidDatesBl] = useState(false);
-    const [submitFeedbackAlert, setSubmitFeedbackAlert] = useState("");
-    const [validData, setValidData] = useState(true);
-    const [validStartDate,setValidStartDate]=useState(false);
-    const [validEndDate,setValidEndDate]=useState(false);
-    let temp = false;
-    //----------------------------
+    // ------------------------------------------------------
+
+    // ! (10.1) Anti-tamper validation - States and Variables
+    const [validData, setValidData] = useState(false);
+    const [formSubmitted, setFormSubmitted] = useState(false);
+    let validFormData = false;;
+    let validStartDate = false;
+    let validEndDate = false;
+    let formSubmitIndicator = false;
+    // ! ------------------------------------------------------
 
     useEffect(() => {
         // get cohort by id
@@ -29,134 +33,139 @@ const CohortCreate = () => {
     const { loading, error, cohort, success } = cohortCreate;
     const dispatch = useDispatch();
 
-    function Validate (name,
+    // ! (10.2) Anti-tamper validation - Validate (parameters)
+    function Validate(name,
         capacity,
         city,
         modeOfTeaching,
         startDate,
         endDate) {
-       
-        /* Name validation */
-        name = (!name.trim())? null:name.trim().toLowerCase();
-        (!name)? setValidData(false):setValidData(true);
-        (name.Length > 50)? setValidData(false):setValidData(true);
-    
-        /* Capacity validation */
-        capacity = (!capacity.trim())? null: capacity.trim().toLowerCase();
-        if (!capacity){
-        (parseInt(capacity) > 999 || parseInt(capacity) < 0)? setValidData(false):setValidData(true); }
-       
-        /* City validation */
-        city = (!city.trim())? null:city.trim().toLowerCase();
-        (!city)? setValidData(false):setValidData(true);
-        (city.Length > 50)? setValidData(false):setValidData(true);
-    
-        /* ModeOfTeaching validation */
-       modeOfTeaching = (!modeOfTeaching.trim())? null: modeOfTeaching.trim().toLowerCase();
-       (!modeOfTeaching)? setValidData(false):setValidData(true);
-       (modeOfTeaching.Length > 50)? setValidData(false):setValidData(true);
-       (modeOfTeaching.toLowerCase() === "online"|| modeOfTeaching.toLowerCase() === "in-person")? setValidData(false):setValidData(true);
-    
-        /* Start date validation */
-       startDate = (!startDate.trim())? null: modeOfTeaching.trim().toLowerCase();
-      if (!startDate) setValidData(false)
-      else
-      {
-        try
-        {
-            const parsedDate = Date.parse(startDate);
-            setValidStartDate(true) ;
-        }
-        catch (ParseException)
-        {
-            setValidStartDate(false);
-            setValidData(false) ;
-        }
-      }
-      
-      /* End date validation */
-      endDate = (!endDate.trim())? null: endDate.trim().toLowerCase();
-      if (!endDate) setValidData(false)
-      else
-      {
-        try
-        {
-            const parsedDate = Date.parse(startDate); 
-            setValidEndDate(true) ;
-        }
-        catch (ParseException)
-        {
-            setValidEndDate(false);        
-            setValidData(false) ;
-        }
-      }
-        
-        /* Dates business logic */
-            if (validStartDate && validEndDate)
-            {
-                (endDate < startDate)? setValidData(false):setValidData(true); 
+
+        let parsedEndDate = 0;
+        let parsedStartDate = 0;
+        formSubmitIndicator = true;
+
+        try {
+            
+            name = name.trim().toLowerCase();
+            capacity = capacity.trim().toLowerCase();
+            city = city.trim().toLowerCase();
+            modeOfTeaching = modeOfTeaching.trim().toLowerCase();
+            startDate = startDate.trim().toLowerCase();
+            endDate = endDate.trim().toLowerCase();
+
+            if (!name) { validFormData = false; }
+            else if (name.Length > 50) { validFormData = false; }
+            else if (parseInt(capacity) > 999 || parseInt(capacity) < 0) { validFormData = false; console.log("capacity: ", parseInt(capacity)); }
+            else if (!city) { validFormData = false; console.log("city"); }
+            else if (city.Length > 50) { validFormData = false; console.log("city length"); }
+            else if (!(city === "edmonton" || city === "calgary" || city === "other")) { validFormData = false; console.log("modeOfTeaching value:", modeOfTeaching.toLowerCase(), "original:", modeOfTeaching); }
+            else if (!modeOfTeaching) { validFormData = false; console.log("modeOfTeaching"); }
+            else if (modeOfTeaching.Length > 50) { validFormData = false; console.log("modeOfTeaching length"); }
+            else if (!(modeOfTeaching === "online" || modeOfTeaching === "in person")) { validFormData = false; console.log("modeOfTeaching value:", modeOfTeaching.toLowerCase(), "original:", modeOfTeaching); }
+            else if (!startDate || !endDate) { validFormData = false; console.log("startDate/endDate"); }
+            else {
+                try {
+                    parsedStartDate = Date.parse(startDate);
+                    validStartDate = true;
+                    console.log("startDate parse");
+                }
+                catch (ParseException) {
+                    validStartDate = false;
+                    console.log("startDate parse exception");
+                    validFormData = false;
+                }
+                try {
+                    parsedEndDate = Date.parse(startDate);
+                    validEndDate = true;
+                    console.log("endDate purse");
+                }
+                catch (ParseException) {
+                    validEndDate = false;
+                    console.log("endDate parse exception");
+                    validFormData = false;
+                }
+                /* Dates business logic */
+
+                console.log("parsed start date validation: ", validStartDate, "parsed end date validation: ", validEndDate);
+                if (validStartDate && validEndDate) {
+                    console.log("Dates are both pursed ok");
+                    if (parsedEndDate < parsedStartDate) {
+                        validFormData = false;
+                        console.log("parsedEndDate < parsedStartDate");
+                    }
+                    else { validFormData = true; console.log("All good :", validFormData); }
+                }
             }
- };
+
+        }
+        catch (Exception) {
+            validFormData = false;
+        }
+    };
+    // ! ------------------------------------------------------
 
     const submitHandler = (e) => {
 
         //(2) Add form validation condition block if-else
         const form = e.currentTarget;
-        if (form.checkValidity() === false) 
-        {
+        if (form.checkValidity() === false) {
             e.preventDefault();
             e.stopPropagation();
         }
-        
+        console.log("pass initial validation 100");
         setValidated(true);
 
         //(3) Add business logic
-        if (endDate === "" || startDate==="" || Date.parse(endDate) < Date.parse(startDate)) 
-        {
+        if (endDate === "" || startDate === "" || Date.parse(endDate) < Date.parse(startDate)) {
             e.preventDefault();
             Date.parse(endDate) < Date.parse(startDate) ? setInvalidDatesBl(true) : setInvalidDatesBl(false);
             setEndDate("");
+            console.log("pass initial validation 100", validFormData);
+
+            // ! (10.3) Anti-tamper validation - Alert message conditions     
+            validFormData = false;
+            formSubmitIndicator = true;
+            setValidData(validFormData);
+            // ! ------------------------------------------------------
+
         }
-        else 
-        {
+        else {
             e.preventDefault();
             setInvalidDatesBl(false);
             //----------------------------
 
-            /*
-             ---------------------------------------------------------------------------------
-             Post HTML5 regular validation (Frontend validation / BL)*/
-             Validate (name,
+            // ! (10.4) Anti-tamper validation - calling Validate     
+            Validate(name,
                 capacity,
                 city,
                 modeOfTeaching,
                 startDate,
                 endDate);
-             if (validData)
-            {
-                   setSubmitFeedbackAlert("Error: Form were submitted with invalid data fields")
+            if (validFormData) {
+                setValidData(validFormData);
+                // ! ------------------------------------------------------
+                console.log("create cohort");
+                dispatch(
+                    createCohort({
+                        name,
+                        capacity,
+                        city,
+                        modeOfTeaching,
+                        startDate,
+                        endDate,
+                    })
+                );
             }
-             else
-            {
-/*----------------------------------------------------------------------------------
-                    */
-
-                    console.log("create cohort");
-                    dispatch(
-                        createCohort({
-                            name,
-                            capacity,
-                            city,
-                            modeOfTeaching,
-                            startDate,
-                            endDate,
-                        })
-                    );
-/*----------------------------------------------------------------------------------
-                    */
-                 if (!loading) error? setSubmitFeedbackAlert("Unsuccessful attempt to create a cohort"):setSubmitFeedbackAlert("Cohort was successfully created");
+            else {
+                // ! (10.5) Anti-tamper validation - Alert message conditions  
+                setValidData(validFormData);
             }
         }
+        // ! (10.6) Anti-tamper validation - Alert message conditions  
+        setFormSubmitted(formSubmitIndicator);
+        // ! ------------------------------------------------------
+
     };
     return (
         <React.Fragment>
@@ -164,9 +173,21 @@ const CohortCreate = () => {
                 <Row className="justify-content-md-center">
                     <Col xs={12} md={6}>
                         <h2>Cohort</h2>
-                        <div class= {loading? (error? "alert alert-danger":"alert alert-success"):""} role="alert">
-                        {submitFeedbackAlert}
-                        </div>
+                        {/* ! (10.7) Anti-tamper validation - Alert message conditions   */}
+                        <p class=
+                            {
+                                formSubmitted ? (validData ? ((!loading && error) ? "alert alert-danger" :
+                                    ((!loading && !error && success) ? "alert alert-success" : "")) :
+                                    "alert alert-danger") : ""
+                            }
+                            role="alert">
+                            {
+                                formSubmitted ? (validData ? ((!loading && error) ? "Unsuccessful attempt to create a cohort" :
+                                    ((!loading && !error && success) ? "Cohort was successfully created" : "")) :
+                                    "Error: Form were submitted with invalid data fields") : ""
+                            }
+                        </p>
+                        {/* ! ------------------------------------------------------  */}
                         <Form noValidate validated={validated} onSubmit={submitHandler}>
                             <Form.Group controlId="name">
                                 <Form.Label>Name</Form.Label>
@@ -182,7 +203,7 @@ const CohortCreate = () => {
                                 <Form.Control
                                     required
                                     type="text"
-                                    maxlength ="50"
+                                    maxlength="50"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                 ></Form.Control>
@@ -214,7 +235,7 @@ const CohortCreate = () => {
                                     required
                                     value={modeOfTeaching}
                                     onChange={(e) => setModeOfTeaching(String(e.target.value))}
-                                ><option></option>
+                                ><option value="">Select</option>
                                     <option>Online</option>
                                     <option>In Person</option>
                                 </Form.Control>
@@ -243,7 +264,7 @@ const CohortCreate = () => {
                                     onChange={(e) => setEndDate(String(e.target.value))}
                                 ></Form.Control>
                                 <Form.Control.Feedback type="invalid">
-                                    Please choose an end date. 
+                                    Please choose an end date.
                                 </Form.Control.Feedback>
                                 {/* (9) Add business logic validation message. */}
                                 <p className="text-danger small">{invalidDatesBL ? "End date can't be before start date" : ""}</p>
@@ -256,7 +277,7 @@ const CohortCreate = () => {
                                     value={city}
                                     onChange={(e) => setCity(e.target.value)}
                                 >
-                                    <option></option>
+                                    <option value="">Select</option>
                                     <option>Edmonton</option>
                                     <option>Calgary</option>
                                     <option>Other</option>
