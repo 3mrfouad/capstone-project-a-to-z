@@ -104,7 +104,7 @@ const HomeworkStudent = () => {
                     ? validData
                       ? !loading && error
                         ? "alert alert-danger"
-                        : !loading && !error && success
+                        : !loading && !error && successCreate
                         ? "alert alert-success"
                         : ""
                       : "alert alert-danger"
@@ -116,7 +116,7 @@ const HomeworkStudent = () => {
                   ? validData
                     ? !loading && error
                       ? "Unsuccessful attempt to update Timesheet"
-                      : !loading && !error && success
+                      : !loading && !error && successCreate
                       ? "Timesheet was successfully updated"
                       : ""
                     : "Error: Form were submitted with invalid data fields"
