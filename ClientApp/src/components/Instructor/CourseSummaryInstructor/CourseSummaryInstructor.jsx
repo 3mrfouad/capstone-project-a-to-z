@@ -3,25 +3,26 @@ import { Table, Container, Button, Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getCoursesByCohortId } from "../../../actions/instructorActions";
+import {
+  getCoursesByCohortId,
+  archiveAssignedCourse,
+} from "../../../actions/instructorActions";
 
 const CourseSummaryInstructor = ({ match }) => {
   const cohortId = match.params.id;
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-  const onArchive = (id) => {
-    setShow(false);
-    // dispatch(archiveCohort(id));
-  };
   const dispatch = useDispatch();
+  const onArchive = (courseId) => {
+    dispatch(archiveAssignedCourse({ courseId, cohortId }));
+  };
+
   const { loading, courses } = useSelector(
     (state) => state.getCoursesByCohortId
   );
+  const { success } = useSelector((state) => state.assignedCourseArchive);
 
   useEffect(() => {
     dispatch(getCoursesByCohortId(cohortId));
-  }, [dispatch]);
+  }, [dispatch, success]);
   return (
     <React.Fragment>
       <Container>
@@ -60,21 +61,10 @@ const CourseSummaryInstructor = ({ match }) => {
                     >
                       Edit
                     </Link>{" "}
-                    | <Link onClick={handleShow}>Remove</Link>{" "}
-                    <Modal show={show} onHide={handleClose}>
-                      <Modal.Body>Retire: Are you sure?</Modal.Body>
-                      <Modal.Footer>
-                        <Button variant="secondary" onClick={handleClose}>
-                          No
-                        </Button>
-                        <Button
-                          variant="primary"
-                          onClick={() => onArchive(course.item1.courseId)}
-                        >
-                          Yes
-                        </Button>
-                      </Modal.Footer>
-                    </Modal>
+                    |{" "}
+                    <Link onClick={() => onArchive(course.item1.courseId)}>
+                      Remove
+                    </Link>{" "}
                   </td>
                 </tr>
               ))}

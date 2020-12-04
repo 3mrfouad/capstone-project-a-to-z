@@ -32,6 +32,8 @@ const CourseEditAssigned = ({ match }) => {
   const { loading, course, success, error } = useSelector(
     (state) => state.getAssignedCourse
   );
+  const courseName = course.item1.name;
+  // console.log(courseName);
 
   useEffect(() => {
     if (!success) {

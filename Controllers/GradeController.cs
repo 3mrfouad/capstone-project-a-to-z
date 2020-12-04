@@ -594,6 +594,7 @@ namespace AZLearn.Controllers
             return gradeSummaries;
         }
 
+
         /// <summary>
         ///     ArchiveGradingByStudentId
         ///     Description: This action archives a course by studentId and rubricId

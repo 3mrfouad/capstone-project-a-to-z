@@ -1,5 +1,5 @@
 import axios from "axios";
-import querystring from "querystring";  
+import querystring from "querystring";
 
 export const cohortSummaryInstructor = () => {
   return async (dispatch) => {
@@ -583,10 +583,52 @@ export const editAssignedCourse = (course) => {
   };
 };
 
+export const archiveAssignedCourse = (ids) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: "ASSIGNED_COURSE_ARCHIVE_REQUEST",
+      });
+      // const {
+      //   userLogin: { userInfo },
+      // } = getState();
+      // const config = {
+      //   headers: {
+      //     Authorization: `Bearer ${userInfo.token}`,
+      //   },
+      // };
+      const params = {
+        courseId: ids.courseId,
+        cohortId: ids.cohortId,
+      };
+      const { data } = await axios.request({
+        url:
+          "https://localhost:5001/application/archiveassignedcourse?" +
+          querystring.stringify(params),
+        method: "patch",
+        data: params,
+      });
+
+      dispatch({
+        type: "ASSIGNED_COURSE_ARCHIVE_SUCCESS",
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: "ASSIGNED_COURSE_ARCHIVE_FAIL",
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.response,
+      });
+    }
+  };
+};
+
 export const getHomeworkDetailInstructor = (homeworkId) => {
   return async (dispatch) => {
     try {
-      dispatch({ type: "GET_HOMEWORK_DETAIL_INSTRUCTOR_REQUEST" });
+      await dispatch({ type: "GET_HOMEWORK_DETAIL_INSTRUCTOR_REQUEST" });
       const params = { homeworkId };
       const { data } = await axios.request({
         url:
@@ -595,13 +637,94 @@ export const getHomeworkDetailInstructor = (homeworkId) => {
         method: "get",
         data: params,
       });
-      dispatch({
+      await dispatch({
         type: "GET_HOMEWORK_DETAIL_INSTRUCTOR_SUCCESS",
         payload: data,
       });
     } catch (error) {
+      await dispatch({
+        type: "GET_HOMEWORK_DETAIL_INSTRUCTOR_FAIL",
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.response,
+      });
+    }
+  };
+};
+
+export const getGradeSummaryInstructor = (ids) => {
+  return async (dispatch) => {
+    try {
+      await dispatch({ type: "GET_GRADE_SUMMARY_INSTRUCTOR_REQUEST" });
+      const params = {
+        cohortId: ids.cohortId,
+        homeworkId: ids.homeworkId,
+      };
+      const { data } = await axios.request({
+        url:
+          "https://localhost:5001/application/InstructorGradeSummary?" +
+          querystring.stringify(params),
+        method: "get",
+        data: params,
+      });
+      await dispatch({
+        type: "GET_GRADE_SUMMARY_INSTRUCTOR_SUCCESS",
+        payload: data,
+      });
+    } catch (error) {
+      await dispatch({
+        type: "GET_GRADE_SUMMARY_INSTRUCTOR_FAIL",
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.response,
+      });
+    }
+  };
+};
+
+export const createHomeworkInstructor = (homework) => {
+  return async (dispatch, getState) => {
+    try {
       dispatch({
-        type: "GGET_HOMEWORK_DETAIL_INSTRUCTOR_FAIL",
+        type: "HOMEWORK_INSTRUCTOR_CREATE_REQUEST",
+      });
+      // const {
+      //   userLogin: { userInfo },
+      // } = getState();
+      // const config = {
+      //   headers: {
+      //     Authorization: `Bearer ${userInfo.token}`,
+      //   },
+      // };
+      const params = {
+        courseId: homework.courseId,
+        instructorId: homework.instructorId,
+        cohortId: homework.cohortId,
+        isAssignment: "true",
+        title: homework.title,
+        avgCompletionTime: homework.avgCompletionTime,
+        dueDate: homework.dueDate,
+        releaseDate: homework.releaseDate,
+        documentLink: homework.documentLink,
+        gitHubClassRoomLink: homework.gitHubClassRoomLink,
+      };
+      const { data } = await axios.request({
+        url:
+          "https://localhost:5001/application/CreateHomework?" +
+          querystring.stringify(params),
+        method: "post",
+        data: params,
+      });
+
+      dispatch({
+        type: "HOMEWORK_INSTRUCTOR_CREATE_SUCCESS",
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: "HOMEWORK_INSTRUCTOR_CREATE_FAIL",
         payload:
           error.response && error.response.data.message
             ? error.response.data.message

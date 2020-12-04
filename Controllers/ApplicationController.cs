@@ -461,9 +461,9 @@ namespace AZLearn.Controllers
         #region /application/CreateHomework
 
         [HttpPost(nameof(CreateHomework))]
-        public ActionResult CreateHomework(string courseId, string instructorId, string cohortId,
-            string isAssignment, string title, string avgCompletionTime, string dueDate, string releaseDate,
-            string documentLink, string gitHubClassRoomLink)
+        public ActionResult CreateHomework([FromQuery]string courseId, [FromQuery] string instructorId, [FromQuery] string cohortId,
+            [FromQuery] string isAssignment, [FromQuery] string title, [FromQuery] string avgCompletionTime, [FromQuery] string dueDate, [FromQuery] string releaseDate,
+            [FromQuery] string documentLink, [FromQuery] string gitHubClassRoomLink)
         {
             ActionResult result;
             try
@@ -802,7 +802,7 @@ namespace AZLearn.Controllers
 
         #endregion
 
-        #region /application/InstructorGradeSummary
+          #region /application/InstructorGradeSummary
 
         /// <summary>
         ///     GetGradeSummaryForInstructor
@@ -813,8 +813,8 @@ namespace AZLearn.Controllers
         /// <param name="homeworkId"></param>
         /// <returns>custom object contains GradeSummery and Timesheet Summary for all students for a specified Homework</returns>
         [HttpGet("InstructorGradeSummary")]
-        public ActionResult<List<GradeSummaryTypeForInstructor>> GetGradeSummaryForInstructor(string cohortId,
-            string homeworkId)
+        public ActionResult<List<GradeSummaryTypeForInstructor>> GetGradeSummaryForInstructor([FromQuery]string cohortId,
+            [FromQuery] string homeworkId)
         {
             ActionResult<List<GradeSummaryTypeForInstructor>> result;
             try
@@ -1164,7 +1164,7 @@ namespace AZLearn.Controllers
         #region /application/ArchiveAssignedCourse
 
         [HttpPatch(nameof(ArchiveAssignedCourse))]
-        public ActionResult ArchiveAssignedCourse(string courseId, string cohortId)
+        public ActionResult ArchiveAssignedCourse([FromQuery]string courseId, [FromQuery] string cohortId)
         {
             ActionResult result;
 

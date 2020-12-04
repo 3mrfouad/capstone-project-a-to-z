@@ -20,6 +20,7 @@ import CourseEditAssigned from "./components/Instructor/CourseEditAssigned/Cours
 import CourseAssign from "./components/Instructor/CourseAssign/CourseAssign";
 import HomeworkSummaryInstructor from "./components/Instructor/HomeworkSummaryInstructor/HomeworkSummaryInstructor";
 import HomeworkViewInstructor from "./components/Instructor/HomeworkViewInstructor/HomeworkViewInstructor";
+import HomeworkCreateInstructor from "./components/Instructor/HomeworkCreateInstructor/HomeworkCreateInstructor";
 const App = () => {
   return (
     <React.Fragment>
@@ -44,6 +45,11 @@ const App = () => {
             component={HomeworkSummaryInstructor}
           />
           <Route
+            path="/instructorcreatehomework/:id"
+            exact
+            component={HomeworkCreateInstructor}
+          />
+          <Route
             path="/homeworkcardstudent"
             exact
             component={HomeworkStudent}
@@ -52,7 +58,11 @@ const App = () => {
           <Route path="/cohortcreate" exact component={CohortCreate} />
           <Route path="/cohortedit/:id" exact component={CohortEdit} />
           <Route path="/cohortsummary" exact component={CohortSummary} />
-          <Route path="/gradingsummary" exact component={GradingSummary} />
+          <Route
+            path="/gradingsummary/:cohortId/:homeworkId"
+            exact
+            component={GradingSummary}
+          />
           <Route path="/coursecreate" exact component={CourseCreate} />
           <Route path="/courseedit/:id" exact component={CourseEdit} />
           <Route

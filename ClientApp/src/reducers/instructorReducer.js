@@ -236,6 +236,19 @@ export const courseArchiveReducer = (state = {}, action) => {
   }
 };
 
+export const assignedCourseArchiveReducer = (state = {}, action) => {
+  switch (action.type) {
+    case "ASSIGNED_COURSE_ARCHIVE_REQUEST":
+      return { loading: true };
+    case "ASSIGNED_COURSE_ARCHIVE_SUCCESS":
+      return { loading: false, success: true };
+    case "ASSIGNED_COURSE_ARCHIVE_FAIL":
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
 export const manageCourseReducer = (state = { courses: [] }, action) => {
   switch (action.type) {
     case "MANAGE_COURSE_REQUEST":
@@ -251,7 +264,10 @@ export const manageCourseReducer = (state = { courses: [] }, action) => {
   }
 };
 
-export const homeworkDetailInstructorReducer = (state = {}, action) => {
+export const homeworkDetailInstructorReducer = (
+  state = { homework: {} },
+  action
+) => {
   switch (action.type) {
     case "GET_HOMEWORK_DETAIL_INSTRUCTOR_REQUEST":
       return { loading: true };
@@ -261,6 +277,34 @@ export const homeworkDetailInstructorReducer = (state = {}, action) => {
     case "GET_HOMEWORK_DETAIL_INSTRUCTOR_FAIL":
       return { loading: false, error: action.payload };
 
+    default:
+      return state;
+  }
+};
+
+export const gradeSummaryInstructorReducer = (state = {}, action) => {
+  switch (action.type) {
+    case "GET_GRADE_SUMMARY_INSTRUCTOR_REQUEST":
+      return { loading: true };
+    case "GET_GRADE_SUMMARY_INSTRUCTOR_SUCCESS":
+      return { loading: false, grade: action.payload };
+
+    case "GET_GRADE_SUMMARY_INSTRUCTOR_FAIL":
+      return { loading: false, error: action.payload };
+
+    default:
+      return state;
+  }
+};
+
+export const createHomeworkInstructorReducer = (state = {}, action) => {
+  switch (action.type) {
+    case "HOMEWORK_INSTRUCTOR_CREATE_REQUEST":
+      return { loading: true };
+    case "HOMEWORK_INSTRUCTOR_CREATE_SUCCESS":
+      return { loading: false, success: true, homework: action.payload };
+    case "HOMEWORK_INSTRUCTOR_CREATE_FAIL":
+      return { loading: false, error: action.payload };
     default:
       return state;
   }
