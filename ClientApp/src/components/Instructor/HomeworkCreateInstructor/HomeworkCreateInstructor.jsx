@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getAllCourses,
   getAllInstructors,
+  createHomeworkInstructor,
 } from "../../../actions/instructorActions";
 
 const HomeworkCreateInstructor = ({ match, history }) => {
@@ -12,6 +13,13 @@ const HomeworkCreateInstructor = ({ match, history }) => {
 
   const [courseId, setCourseId] = useState("");
   const [instructorId, setInstructorId] = useState("");
+  const [isAssignment, setIsAssignment] = useState("");
+  const [title, setTitle] = useState("");
+  const [avgCompletionTime, setAvgCompletionTime] = useState("");
+  const [dueDate, setDueDate] = useState("");
+  const [releaseDate, setReleaseDate] = useState("");
+  const [documentLink, setDocumentLink] = useState("");
+  const [gitHubClassRoomLink, setGitHubClassRoomLink] = useState("");
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getAllCourses());
@@ -23,6 +31,23 @@ const HomeworkCreateInstructor = ({ match, history }) => {
   const goBack = () => {
     history.goBack();
   };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(
+      createHomeworkInstructor({
+        courseId,
+        instructorId,
+        cohortId,
+        // isAssignment,
+        title,
+        avgCompletionTime,
+        dueDate,
+        releaseDate,
+        documentLink,
+        gitHubClassRoomLink,
+      })
+    );
+  };
 
   return (
     <React.Fragment>
@@ -33,12 +58,13 @@ const HomeworkCreateInstructor = ({ match, history }) => {
           <Row className="justify-content-md-center">
             <Col xs={12} md={6}>
               <h3>Homework</h3>
-              <Form>
+              <Form onSubmit={handleSubmit}>
                 <Form.Group controlId="title">
                   <Form.Label>Title</Form.Label>
                   <Form.Control
                     type="text"
-                    // value={homework.item3}
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
                   ></Form.Control>
                 </Form.Group>
                 <Form.Group controlId="Course">
@@ -77,15 +103,17 @@ const HomeworkCreateInstructor = ({ match, history }) => {
                   <Form.Label>Avg Completion Time</Form.Label>
                   <Form.Control
                     type="text"
-                    // value={homework.item3}
+                    value={avgCompletionTime}
+                    onChange={(e) => setAvgCompletionTime(e.target.value)}
                   ></Form.Control>
                 </Form.Group>
 
                 <Form.Group controlId="Due Date">
                   <Form.Label>Due Date</Form.Label>
                   <Form.Control
-                    type="number"
-                    // value={homework.item3}
+                    type="text"
+                    value={dueDate}
+                    onChange={(e) => setDueDate(e.target.value)}
                   ></Form.Control>
                 </Form.Group>
 
@@ -93,7 +121,8 @@ const HomeworkCreateInstructor = ({ match, history }) => {
                   <Form.Label>Release Date</Form.Label>
                   <Form.Control
                     type="text"
-                    // value={homework.item3}
+                    value={releaseDate}
+                    onChange={(e) => setReleaseDate(e.target.value)}
                   ></Form.Control>
                 </Form.Group>
 
@@ -101,20 +130,21 @@ const HomeworkCreateInstructor = ({ match, history }) => {
                   <Form.Label>DocLink</Form.Label>
                   <Form.Control
                     type="text"
-                    //   placeholder="Enter Description"
-                    // value={homework.item3}
+                    value={documentLink}
+                    placeholder="https://www.google.com "
+                    onChange={(e) => setDocumentLink(e.target.value)}
                   ></Form.Control>
                 </Form.Group>
                 <Form.Group controlId="GitHubLink">
                   <Form.Label>GitHubLink</Form.Label>
                   <Form.Control
                     type="text"
-                    //   placeholder="Enter Description"
-                    // value={homework.item3}
+                    value={gitHubClassRoomLink}
+                    placeholder="https://www.google.com"
+                    onChange={(e) => setGitHubClassRoomLink(e.target.value)}
                   ></Form.Control>
                 </Form.Group>
-              </Form>
-              <Form>
+
                 <h3>Rubric</h3>
                 <Form.Group controlId="Challenge">
                   <Form.Label>Challenge</Form.Label>

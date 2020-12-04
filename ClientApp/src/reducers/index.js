@@ -20,6 +20,7 @@ import {
   homeworkDetailInstructorReducer,
   assignedCourseArchiveReducer,
   gradeSummaryInstructorReducer,
+  createHomeworkInstructorReducer,
 } from "./instructorReducer";
 import {
   courseSummaryStudentReducer,
@@ -55,6 +56,7 @@ const rootReducers = combineReducers({
   homeworkDetailInstructor: homeworkDetailInstructorReducer,
   assignedCourseArchive: assignedCourseArchiveReducer,
   gradeSummaryInstructor: gradeSummaryInstructorReducer,
+  createHomeworkInstructor: createHomeworkInstructorReducer,
 });
 
 export default rootReducers;

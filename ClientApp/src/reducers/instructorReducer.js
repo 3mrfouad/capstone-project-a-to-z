@@ -296,3 +296,16 @@ export const gradeSummaryInstructorReducer = (state = {}, action) => {
       return state;
   }
 };
+
+export const createHomeworkInstructorReducer = (state = {}, action) => {
+  switch (action.type) {
+    case "HOMEWORK_INSTRUCTOR_CREATE_REQUEST":
+      return { loading: true };
+    case "HOMEWORK_INSTRUCTOR_CREATE_SUCCESS":
+      return { loading: false, success: true, homework: action.payload };
+    case "HOMEWORK_INSTRUCTOR_CREATE_FAIL":
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};

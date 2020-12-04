@@ -461,9 +461,9 @@ namespace AZLearn.Controllers
         #region /application/CreateHomework
 
         [HttpPost(nameof(CreateHomework))]
-        public ActionResult CreateHomework(string courseId, string instructorId, string cohortId,
-            string isAssignment, string title, string avgCompletionTime, string dueDate, string releaseDate,
-            string documentLink, string gitHubClassRoomLink)
+        public ActionResult CreateHomework([FromQuery]string courseId, [FromQuery] string instructorId, [FromQuery] string cohortId,
+            [FromQuery] string isAssignment, [FromQuery] string title, [FromQuery] string avgCompletionTime, [FromQuery] string dueDate, [FromQuery] string releaseDate,
+            [FromQuery] string documentLink, [FromQuery] string gitHubClassRoomLink)
         {
             ActionResult result;
             try
