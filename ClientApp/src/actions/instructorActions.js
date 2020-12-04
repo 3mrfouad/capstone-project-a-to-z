@@ -733,3 +733,48 @@ export const createHomeworkInstructor = (homework) => {
     }
   };
 };
+
+export const registerUser = (userInfo) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: "REGISTER_USER_REQUEST",
+      });
+      // const {
+      //   userLogin: { userInfo },
+      // } = getState();
+      // const config = {
+      //   headers: {
+      //     Authorization: `Bearer ${userInfo.token}`,
+      //   },
+      // };
+      const params = {
+        cohortId: userInfo.cohort,
+        name: userInfo.name,
+        passwordHash: userInfo.password,
+        email: userInfo.email,
+        isInstructor: userInfo.isInstructor.toString(),
+      };
+      const { data } = await axios.request({
+        url:
+          "https://localhost:5001/application/CreateUser?" +
+          querystring.stringify(params),
+        method: "post",
+        data: params,
+      });
+
+      dispatch({
+        type: "REGISTER_USER_SUCCESS",
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: "REGISTER_USER_FAIL",
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.response,
+      });
+    }
+  };
+};

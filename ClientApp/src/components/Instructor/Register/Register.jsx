@@ -1,9 +1,11 @@
 import React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Form, Button, Row, Col, Container, Modal } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
-
+import { registerUser } from "../../../actions/instructorActions";
 const Register = () => {
+  const dispatch = useDispatch();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,11 +17,38 @@ const Register = () => {
   const handleChange = () => {
     setIsInstructor(!isInstructor);
   };
+  const { success } = useSelector((state) => state.userRegisterState);
   const submitHandler = (e) => {
     e.preventDefault();
     // dispatch(login(email, password));
-    console.log("register");
+    if (isInstructor) {
+      handleShow();
+    } else {
+      dispatch(
+        registerUser({
+          cohort,
+          name,
+          password,
+          email,
+          isInstructor,
+        })
+      );
+    }
   };
+
+  const handleRegisterInstructor = () => {
+    dispatch(
+      registerUser({
+        cohort,
+        name,
+        password,
+        email,
+        isInstructor,
+      })
+    );
+    handleClose();
+  };
+
   return (
     <>
       <Container>
@@ -95,7 +124,7 @@ const Register = () => {
           sure?
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button variant="secondary" onClick={handleRegisterInstructor}>
             Proceed
           </Button>
           <Button variant="primary" onClick={handleClose}>

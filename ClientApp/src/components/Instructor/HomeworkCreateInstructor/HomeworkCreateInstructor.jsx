@@ -28,6 +28,7 @@ const HomeworkCreateInstructor = ({ match, history }) => {
 
   const { loading, courses } = useSelector((state) => state.getAllCourses);
   const { instructors } = useSelector((state) => state.getAllInstructors);
+
   const goBack = () => {
     history.goBack();
   };
