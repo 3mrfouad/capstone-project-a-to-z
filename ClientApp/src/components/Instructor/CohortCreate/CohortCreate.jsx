@@ -102,7 +102,7 @@ const CohortCreate = () => {
         try {
           parsedEndDate = Date.parse(startDate);
           validEndDate = true;
-          console.log("endDate purse");
+          console.log("endDate parse");
         } catch (ParseException) {
           validEndDate = false;
           console.log("endDate parse exception");
