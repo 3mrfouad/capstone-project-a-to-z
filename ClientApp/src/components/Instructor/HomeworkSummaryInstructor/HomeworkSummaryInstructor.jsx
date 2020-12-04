@@ -56,10 +56,18 @@ const HomeworkSummaryInstructor = ({ match }) => {
                     <td>{homework.title}</td>
                     <td>{homework.dueDate}</td>
                     <td>{homework.releaseDate}</td>
-                    <td>{homework.documentLink}</td>
+                    <td>
+                      <a target="_blank" href={homework.documentLink}>
+                        GitHubLink
+                      </a>
+                    </td>
                     <td>{homework.isAssignment ? "Assignment" : "Practice"}</td>
                     <td>
-                      Grades |{" "}
+                      <Link
+                        to={`/gradingsummary/${homework.cohortId}/${homework.homeworkId}`}
+                      >
+                        Grades |{" "}
+                      </Link>
                       <Link
                         to={`/homeworkviewinstructor/${homework.homeworkId}`}
                       >

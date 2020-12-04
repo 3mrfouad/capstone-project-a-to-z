@@ -52,7 +52,11 @@ const App = () => {
           <Route path="/cohortcreate" exact component={CohortCreate} />
           <Route path="/cohortedit/:id" exact component={CohortEdit} />
           <Route path="/cohortsummary" exact component={CohortSummary} />
-          <Route path="/gradingsummary" exact component={GradingSummary} />
+          <Route
+            path="/gradingsummary/:cohortId/:homeworkId"
+            exact
+            component={GradingSummary}
+          />
           <Route path="/coursecreate" exact component={CourseCreate} />
           <Route path="/courseedit/:id" exact component={CourseEdit} />
           <Route

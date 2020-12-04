@@ -813,8 +813,8 @@ namespace AZLearn.Controllers
         /// <param name="homeworkId"></param>
         /// <returns>custom object contains GradeSummery and Timesheet Summary for all students for a specified Homework</returns>
         [HttpGet("InstructorGradeSummary")]
-        public ActionResult<List<GradeSummaryTypeForInstructor>> GetGradeSummaryForInstructor(string cohortId,
-            string homeworkId)
+        public ActionResult<List<GradeSummaryTypeForInstructor>> GetGradeSummaryForInstructor([FromQuery]string cohortId,
+            [FromQuery] string homeworkId)
         {
             ActionResult<List<GradeSummaryTypeForInstructor>> result;
             try
@@ -1167,7 +1167,7 @@ namespace AZLearn.Controllers
         #region /application/ArchiveAssignedCourse
 
         [HttpPatch(nameof(ArchiveAssignedCourse))]
-        public ActionResult ArchiveAssignedCourse(string courseId, string cohortId)
+        public ActionResult ArchiveAssignedCourse([FromQuery]string courseId, [FromQuery] string cohortId)
         {
             ActionResult result;
 
