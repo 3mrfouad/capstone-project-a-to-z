@@ -13,11 +13,17 @@ const HomeworkStudent = () => {
   const [studyHrs, setStudyHrs] = useState("");
   const dispatch = useDispatch();
 
- //(1) Add validation states
- const [validated, setValidated] = useState(false);   
- //----------------------------
-
-
+  //(1) Add validation states
+  const [validated, setValidated] = useState(false);
+  //----------------------------
+  // ! (10.1) Anti-tamper validation - States and Variables
+  const [validData, setValidData] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  let validFormData = false;
+  //let validStartDate = false;
+  // let validEndDate = false;
+  let formSubmitIndicator = false;
+  // ! ------------------------------------------------------
   const { homework, loading } = useSelector((state) => state.homeworkStudent);
   const {
     loading: loadingCreate,
@@ -31,18 +37,56 @@ const HomeworkStudent = () => {
     setStudyHrs(homework[0].timesheets[1]);
   }, [dispatch]);
   console.log(homework);
+
+  // ! (10.2) Anti-tamper validation - Validate (parameters)
+  function Validate(solvingHrs, studyHrs) {
+    formSubmitIndicator = true;
+    try {
+      solvingHrs = solvingHrs.trim().toLowerCase();
+      studyHrs = studyHrs.trim().toLowerCase();
+
+      if (!solvingHrs) {
+        validFormData = false;
+      } else if (
+        parseFloat(solvingHrs) > 999.99 ||
+        parseFloat(solvingHrs) < 0
+      ) {
+        validFormData = false;
+        console.log("solvingHrs: ", parseFloat(solvingHrs));
+      } else if (parseFloat(studyHrs) > 999.99 || parseFloat(studyHrs) < 0) {
+        validFormData = false;
+        console.log("studyHrs: ", parseFloat(studyHrs));
+      }
+    } catch (Exception) {
+      validFormData = false;
+    }
+  }
+  // ! ------------------------------------------------------
+
   const summitHandler = (e) => {
     //(2) Add form validation condition block if-else
     const form = e.currentTarget;
     if (form.checkValidity() === false) {
-        e.preventDefault();
-        e.stopPropagation();
+      e.preventDefault();
+      e.stopPropagation();
+    } else {
+      setValidated(true);
+      e.preventDefault();
+      // ! (10.4) Anti-tamper validation - calling Validate
+      Validate(solvingHrs, studyHrs);
+      if (validFormData) {
+        setValidData(validFormData);
+        // ! -------------------------------------------------
+        dispatch(createTimeSheetStudent(solvingHrs, studyHrs));
+        console.log("create timesheet");
+      } else {
+        // ! (10.5) Anti-tamper validation - Alert message conditions
+        setValidData(validFormData);
+      }
     }
-    setValidated(true); 
-
-    e.preventDefault();    
-    dispatch(createTimeSheetStudent(solvingHrs, studyHrs));
-    console.log("create timesheet");
+    // ! (10.6) Anti-tamper validation - Alert message conditions
+    setFormSubmitted(formSubmitIndicator);
+    // ! ------------------------------------------------------
   };
   return (
     <React.Fragment>
@@ -53,6 +97,32 @@ const HomeworkStudent = () => {
           <Row className="justify-content-md-center">
             <Col xs={12} md={6}>
               <h3>Homework</h3>
+              {/* ! (10.7) Anti-tamper validation - Alert message conditions   */}
+              <p
+                class={
+                  formSubmitted
+                    ? validData
+                      ? !loading && error
+                        ? "alert alert-danger"
+                        : !loading && !error && success
+                        ? "alert alert-success"
+                        : ""
+                      : "alert alert-danger"
+                    : ""
+                }
+                role="alert"
+              >
+                {formSubmitted
+                  ? validData
+                    ? !loading && error
+                      ? "Unsuccessful attempt to update Timesheet"
+                      : !loading && !error && success
+                      ? "Timesheet was successfully updated"
+                      : ""
+                    : "Error: Form were submitted with invalid data fields"
+                  : ""}
+              </p>
+              {/* ! ------------------------------------------------------  */}
               <Form>
                 <Form.Group controlId="title">
                   <Form.Label>Title</Form.Label>
@@ -68,7 +138,6 @@ const HomeworkStudent = () => {
                     value={homework[0].courseId}
                   ></Form.Control>
                 </Form.Group>
-
                 <Form.Group controlId="instructor">
                   <Form.Label>Instructor</Form.Label>
                   <Form.Control
@@ -81,7 +150,7 @@ const HomeworkStudent = () => {
                   <Form.Label>Avg Completion Time</Form.Label>
                   <Form.Control
                     disabled
-                   value={homework[0].avgCompletionTime}
+                    value={homework[0].avgCompletionTime}
                   ></Form.Control>
                 </Form.Group>
 
@@ -112,11 +181,11 @@ const HomeworkStudent = () => {
                   <Form.Label>GitHubLink</Form.Label>
                   <Form.Control
                     disabled
-                   value={homework[0].gitHubClassRoomLink}
+                    value={homework[0].gitHubClassRoomLink}
                   ></Form.Control>
                 </Form.Group>
               </Form>
-              <Form onSubmit={summitHandler}>
+              <Form noValidate validated={validated} onSubmit={summitHandler}>
                 <h3>Timesheet</h3>
                 <Form.Group controlId="Solving/Troubleshooting">
                   <Form.Label>Solving/Troubleshooting</Form.Label>
@@ -130,23 +199,24 @@ const HomeworkStudent = () => {
                     onChange={(e) => setSolvingHrs(String(e.target.value))}
                   ></Form.Control>
                   <Form.Control.Feedback type="invalid">
-                    Please fill in Solving/Troubleshooting Hours.
-                </Form.Control.Feedback>
+                    Please fill in Solving/Troubleshooting Hours. It can be a
+                    number or a decimal(upto 2 decimal places)
+                  </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="Study/Research">
                   <Form.Label>Study/Research</Form.Label>
                   <Form.Control
-                   type="number"
-                   min={0}
-                   max={999.99}
-                   step="0.1"
+                    type="number"
+                    min={0}
+                    max={999.99}
+                    step="0.1"
                     value={studyHrs}
                     onChange={(e) => setStudyHrs(String(e.target.value))}
                   ></Form.Control>
-                   <Form.Control.Feedback type="invalid">
-                    Please fil in Study/Research Hours.
-                </Form.Control.Feedback>
-
+                  <Form.Control.Feedback type="invalid">
+                    Please fill Study/Research Hours in a valid format. It can
+                    be a number or a decimal(upto 2 decimal places).
+                  </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="Total">
                   <Form.Label>Total</Form.Label>
@@ -156,8 +226,7 @@ const HomeworkStudent = () => {
                       studyHrs + solvingHrs
                       // homework[0].timesheets[0] + homework[0].timesheets[1]
                     }
-                  ></Form.Control>                 
-
+                  ></Form.Control>
                 </Form.Group>
 
                 <a href="">Back</a>

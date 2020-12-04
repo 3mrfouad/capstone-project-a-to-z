@@ -15,9 +15,21 @@ const CourseEditAssigned = ({ match }) => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [resourcesLink, setResourcesLink] = useState("");
-
+  //(1) Add validation states
+  const [validated, setValidated] = useState(false);
+  const [invalidDatesBL, setInvalidDatesBl] = useState(false);
+  // ! (10.1) Anti-tamper validation - States and Variables
+  //const [courseName, setCourseName] = useState(""); //Added by Ayesha for validation
+  //const [instructor, setInstructor] = useState(""); //Added by Ayesha for validation
+  const [validData, setValidData] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  let validFormData = false;
+  let validStartDate = false;
+  let validEndDate = false;
+  let formSubmitIndicator = false;
+  // ! ------------------------------------------------------
   const { instructors } = useSelector((state) => state.getAllInstructors);
-  const { loading, course, success } = useSelector(
+  const { loading, course, success, error } = useSelector(
     (state) => state.getAssignedCourse
   );
   const courseName = course.item1.name;
@@ -27,21 +39,147 @@ const CourseEditAssigned = ({ match }) => {
     if (!success) {
       dispatch(getAssignedCourse(courseId, cohortId));
     }
-
     dispatch(getAllInstructors());
   }, [dispatch, courseId, cohortId, success]);
+  // ! (10.2) Anti-tamper validation - Validate (parameters)
+  function Validate(
+    cohortId,
+    courseId,
+    instructorId,
+    resourcesLink,
+    startDate,
+    endDate
+  ) {
+    let parsedEndDate = 0;
+    let parsedStartDate = 0;
+    formSubmitIndicator = true;
+    try {
+      cohortId = cohortId.trim().toLowerCase();
+      courseId = courseId.trim().toLowerCase();
+      instructorId = instructorId.trim().toLowerCase();
+      resourcesLink = resourcesLink.trim().toLowerCase();
+      startDate = startDate.trim().toLowerCase();
+      endDate = endDate.trim().toLowerCase();
+
+      if (!cohortId) {
+        validFormData = false;
+      } else if (!courseId) {
+        validFormData = false;
+      } else if (!instructorId) {
+        validFormData = false;
+      } else if (resourcesLink > 250) {
+        validFormData = false;
+      }
+      //@Link:https://stackoverflow.com/questions/1410311/regular-expression-for-url-validation-in-javascript
+      else if (
+        !/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(
+          resourcesLink
+        )
+      ) {
+        validFormData = false;
+      } else if (!startDate || !endDate) {
+        validFormData = false;
+        console.log("startDate/endDate");
+      } else {
+        try {
+          parsedStartDate = Date.parse(startDate);
+          validStartDate = true;
+          console.log("startDate parse");
+        } catch (ParseException) {
+          validStartDate = false;
+          console.log("startDate parse exception");
+          validFormData = false;
+        }
+        try {
+          parsedEndDate = Date.parse(startDate);
+          validEndDate = true;
+          console.log("endDate purse");
+        } catch (ParseException) {
+          validEndDate = false;
+          console.log("endDate parse exception");
+          validFormData = false;
+        }
+        /* Dates business logic */
+
+        console.log(
+          "parsed start date validation: ",
+          validStartDate,
+          "parsed end date validation: ",
+          validEndDate
+        );
+        if (validStartDate && validEndDate) {
+          console.log("Dates are both pursed ok");
+          if (parsedEndDate < parsedStartDate) {
+            validFormData = false;
+            console.log("parsedEndDate < parsedStartDate");
+          } else {
+            validFormData = true;
+            console.log("All good :", validFormData);
+          }
+        }
+      }
+    } catch (Exception) {
+      validFormData = false;
+    }
+  }
+  // ! ------------------------------------------------------
   const submitHandler = (e) => {
-    e.preventDefault();
-    dispatch(
-      editAssignedCourse({
+    //(2) Add form validation condition block if-else
+    const form = e.currentTarget;
+    if (form.checkValidity() === false) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    setValidated(true);
+    //(3) Add business logic
+    if (
+      endDate === "" ||
+      startDate === "" ||
+      Date.parse(endDate) < Date.parse(startDate)
+    ) {
+      e.preventDefault();
+      Date.parse(endDate) < Date.parse(startDate)
+        ? setInvalidDatesBl(true)
+        : setInvalidDatesBl(false);
+      setEndDate("");
+      // ! (10.3) Anti-tamper validation - Alert message conditions
+      validFormData = false;
+      formSubmitIndicator = true;
+      setValidData(validFormData);
+      // ! ------------------------------------------------------
+    } else {
+      e.preventDefault();
+      setInvalidDatesBl(false);
+      // ! (10.4) Anti-tamper validation - calling Validate
+      Validate(
         cohortId,
         courseId,
         instructorId,
-        startDate,
-        endDate,
         resourcesLink,
-      })
-    );
+        startDate,
+        endDate
+      );
+      if (validFormData) {
+        setValidData(validFormData);
+        // ! ------------------------------------------------------
+        dispatch(
+          editAssignedCourse({
+            cohortId,
+            courseId,
+            instructorId,
+            startDate,
+            endDate,
+            resourcesLink,
+          })
+        );
+      } else {
+        // ! (10.5) Anti-tamper validation - Alert message conditions
+        setValidData(validFormData);
+      }
+    }
+    // ! (10.6) Anti-tamper validation - Alert message conditions
+    setFormSubmitted(formSubmitIndicator);
+    // ! ------------------------------------------------------
   };
   return (
     <React.Fragment>
@@ -52,7 +190,32 @@ const CourseEditAssigned = ({ match }) => {
           <Row className="justify-content-md-center">
             <Col xs={12} md={6}>
               <h2>Course</h2>
-              <Form onSubmit={submitHandler}>
+              {/* ! (10.7) Anti-tamper validation - Alert message conditions   */}
+              <p
+                class={
+                  formSubmitted
+                    ? validData
+                      ? !loading && error
+                        ? "alert alert-danger"
+                        : !loading && !error && success
+                        ? "alert alert-success"
+                        : ""
+                      : "alert alert-danger"
+                    : ""
+                }
+                role="alert"
+              >
+                {formSubmitted
+                  ? validData
+                    ? !loading && error
+                      ? "Unsuccessful attempt to assign a course"
+                      : !loading && !error && success
+                      ? "Cohort was successfully created"
+                      : ""
+                    : "Error: Form was submitted with invalid data fields"
+                  : ""}
+              </p>
+              <Form noValidate validated={validated} onSubmit={submitHandler}>
                 <Form.Group controlId="course name">
                   <Form.Label>Course Name</Form.Label>
                   <Form.Control value={course.item1} disabled>
@@ -68,10 +231,11 @@ const CourseEditAssigned = ({ match }) => {
                   <Form.Label>Instructor</Form.Label>
                   <Form.Control
                     as="select"
+                    required
                     value={instructorId}
                     onChange={(e) => setInstructorId(e.target.value)}
                   >
-                    <option value="">select</option>
+                    <option value="">Select</option>
                     {instructors.map((instructor, index) => (
                       <option value={instructor.userId} key={index}>
                         {instructor.name}
@@ -82,18 +246,29 @@ const CourseEditAssigned = ({ match }) => {
                 <Form.Group controlId="startdate">
                   <Form.Label>Start Date</Form.Label>
                   <Form.Control
-                    type="text"
+                    required
+                    type="date"
                     value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
+                    onChange={(e) => setStartDate(String(e.target.value))}
                   ></Form.Control>
                 </Form.Group>
                 <Form.Group controlId="enddate">
                   <Form.Label>End Date</Form.Label>
                   <Form.Control
-                    type="text"
+                    required
+                    type="date"
                     value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
+                    onChange={(e) => setEndDate(String(e.target.value))}
                   ></Form.Control>
+                  <Form.Control.Feedback type="invalid">
+                    Please choose an end date.
+                  </Form.Control.Feedback>
+                  {/* (9) Add business logic validation message. */}
+                  <p className="text-danger small">
+                    {invalidDatesBL
+                      ? "End date can't be before start date"
+                      : ""}
+                  </p>
                 </Form.Group>
                 <Form.Group controlId="hours">
                   <Form.Label>Hours</Form.Label>
@@ -106,7 +281,8 @@ const CourseEditAssigned = ({ match }) => {
                 <Form.Group controlId="link">
                   <Form.Label>Resource Link</Form.Label>
                   <Form.Control
-                    type="text"
+                    maxlength="250"
+                    type="url"
                     value={resourcesLink}
                     onChange={(e) => setResourcesLink(e.target.value)}
                   ></Form.Control>
