@@ -189,11 +189,9 @@ const HomeworkCreateInstructor = ({ match, history }) => {
                     // value={homework.item3} //use String() - this is number
                     ></Form.Control>
                   </Form.Group>
-
                   <Button variant="primary" onClick={goBack}>
                     Back
                 </Button>
-
                   <Button type="submit" variant="primary" className="float-right">
                     Save
                 </Button>
