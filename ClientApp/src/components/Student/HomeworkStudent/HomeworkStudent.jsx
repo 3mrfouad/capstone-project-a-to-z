@@ -104,7 +104,7 @@ const HomeworkStudent = () => {
                     ? validData
                       ? !loading && error
                         ? "alert alert-danger"
-                        : !loading && !error && success
+                        : !loading && !error && successCreate
                         ? "alert alert-success"
                         : ""
                       : "alert alert-danger"
@@ -116,7 +116,7 @@ const HomeworkStudent = () => {
                   ? validData
                     ? !loading && error
                       ? "Unsuccessful attempt to update Timesheet"
-                      : !loading && !error && success
+                      : !loading && !error && successCreate
                       ? "Timesheet was successfully updated"
                       : ""
                     : "Error: Form were submitted with invalid data fields"
@@ -194,7 +194,7 @@ const HomeworkStudent = () => {
                     type="number"
                     min={0}
                     max={999.99}
-                    step="0.1"
+                    step="0.25"
                     value={solvingHrs}
                     onChange={(e) => setSolvingHrs(String(e.target.value))}
                   ></Form.Control>
@@ -209,7 +209,7 @@ const HomeworkStudent = () => {
                     type="number"
                     min={0}
                     max={999.99}
-                    step="0.1"
+                    step="0.25"
                     value={studyHrs}
                     onChange={(e) => setStudyHrs(String(e.target.value))}
                   ></Form.Control>
