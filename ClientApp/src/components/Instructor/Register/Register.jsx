@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { Form, Button, Row, Col, Container, Modal } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
-//! Uncomment th efollowing to test wihout backend connection
+//! Uncomment the following to test wihout backend connection
 // let loading = false;
 // let error = false;
 // let success = true;
