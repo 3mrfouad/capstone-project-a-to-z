@@ -582,3 +582,31 @@ export const editAssignedCourse = (course) => {
     }
   };
 };
+
+export const getHomeworkDetailInstructor = (homeworkId) => {
+  return async (dispatch) => {
+    try {
+      dispatch({ type: "GET_HOMEWORK_DETAIL_INSTRUCTOR_REQUEST" });
+      const params = { homeworkId };
+      const { data } = await axios.request({
+        url:
+          "https://localhost:5001/application/gethomework?" +
+          querystring.stringify(params),
+        method: "get",
+        data: params,
+      });
+      dispatch({
+        type: "GET_HOMEWORK_DETAIL_INSTRUCTOR_SUCCESS",
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: "GGET_HOMEWORK_DETAIL_INSTRUCTOR_FAIL",
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.response,
+      });
+    }
+  };
+};

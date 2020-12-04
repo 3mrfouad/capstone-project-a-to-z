@@ -1,7 +1,16 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Table, Container, Button, Form, Row, Col } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { getHomeworkDetailInstructor } from "../../../actions/instructorActions";
 
-const HomeworkViewInstructor = () => {
+const HomeworkViewInstructor = ({ match }) => {
+  const homeworkId = match.params.id;
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getHomeworkDetailInstructor(homeworkId));
+  }, [dispatch]);
+
+  const { homework } = useSelector((state) => state.homeworkDetailInstructor);
   return (
     <React.Fragment>
       <Container>

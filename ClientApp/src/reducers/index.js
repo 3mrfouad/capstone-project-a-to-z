@@ -17,6 +17,7 @@ import {
   courseAssignReducer,
   editAssignedCourseReducer,
   getAssignedCourseReducer,
+  homeworkDetailInstructorReducer,
 } from "./instructorReducer";
 import {
   courseSummaryStudentReducer,
@@ -49,6 +50,7 @@ const rootReducers = combineReducers({
   courseAssign: courseAssignReducer,
   editAssignedCourse: editAssignedCourseReducer,
   getAssignedCourse: getAssignedCourseReducer,
+  homeworkDetailInstructor: homeworkDetailInstructorReducer,
 });
 
 export default rootReducers;
