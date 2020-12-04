@@ -565,9 +565,7 @@ namespace AZLearn.Controllers
                             .ToArray();
 
                         /*In case there are no challenges, we will show 0/0 for challenges' marks*/
-
-                        if (marksByGroup.Length == 1) marksByGroup[1] = 0;
-
+                        if (marksByGroup.Length == 1) marksByGroup.Concat(new[] { 0 }).ToArray();
                         gradeSummary = new GradeSummaryTypeForInstructor($"{total}",
                             $"{marksByGroup[0]}/{rubricWeightByGroup[0]}",
                             $"{marksByGroup[1]}/{rubricWeightByGroup[1]}", totalTimeSpentOnHomework, studentName,

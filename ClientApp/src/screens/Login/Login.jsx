@@ -74,7 +74,7 @@ const Login = () => {
           <Col xs={12} md={6}>
             <h1>Sign In</h1>
             {/* ! (10.7) Anti-tamper validation - Alert message conditions   */}
-            <p
+            {/*  <p
               class={
                 formSubmitted
                   ? validData
@@ -97,7 +97,7 @@ const Login = () => {
                     : ""
                   : "Error: Form was submitted with invalid data fields"
                 : ""}
-            </p>
+              </p>*/}
             {/* {error && <Message variant="danger">{error}</Message>}
             {loading && <Loader />} */}
             <Form noValidate validated={validated} onSubmit={submitHandler}>
