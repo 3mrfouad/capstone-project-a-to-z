@@ -80,7 +80,12 @@ const HomeworkSummaryInstructor = ({ match }) => {
               </tbody>
             </Table>
             <Button>Back</Button>{" "}
-            <Button className="float-right">Create</Button>
+            <Button
+              className="float-right"
+              href={`/instructorcreatehomework/${cohortId}`}
+            >
+              Create
+            </Button>
           </Col>
         </Row>
       </Container>
