@@ -3,9 +3,9 @@ import { useState } from "react";
 import { Form, Button, Row, Col, Container, Modal } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 //! Uncomment the following to test wihout backend connection
-// let loading = false;
-// let error = false;
-// let success = true;
+let loading = false;
+let error = false;
+let success = true;
 
 const Register = () => {
   const [name, setName] = useState("");
