@@ -8,7 +8,7 @@ import {
 
 const HomeworkViewInstructor = ({ match }) => {
   const homeworkId = match.params.id;
-  const [courseId, setCourseId];
+  const [courseId, setCourseId] = useState("");
   const [instructorId, setInstructorId] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
