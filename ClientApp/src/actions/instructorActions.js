@@ -734,6 +734,56 @@ export const createHomeworkInstructor = (homework) => {
   };
 };
 
+export const editHomeworkInstructor = (homework) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: "HOMEWORK_INSTRUCTOR_EDIT_REQUEST",
+      });
+      // const {
+      //   userLogin: { userInfo },
+      // } = getState();
+      // const config = {
+      //   headers: {
+      //     Authorization: `Bearer ${userInfo.token}`,
+      //   },
+      // };
+      const params = {
+        courseId: homework.courseId,
+        instructorId: homework.instructorId,
+        cohortId: homework.cohortId,
+        isAssignment: "true",
+        title: homework.title,
+        avgCompletionTime: homework.avgCompletionTime,
+        dueDate: homework.dueDate,
+        releaseDate: homework.releaseDate,
+        documentLink: homework.documentLink,
+        gitHubClassRoomLink: homework.gitHubClassRoomLink,
+      };
+      const { data } = await axios.request({
+        url:
+          "https://localhost:5001/application/updateHomework?" +
+          querystring.stringify(params),
+        method: "patch",
+        data: params,
+      });
+
+      dispatch({
+        type: "HOMEWORK_INSTRUCTOR_EDIT_SUCCESS",
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: "HOMEWORK_INSTRUCTOR_EDIT_FAIL",
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.response,
+      });
+    }
+  };
+};
+
 export const registerUser = (userInfo) => {
   return async (dispatch, getState) => {
     try {

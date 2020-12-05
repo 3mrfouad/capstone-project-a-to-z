@@ -1,19 +1,34 @@
 import React, { useState, useEffect } from "react";
 import { Table, Container, Button, Form, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { getHomeworkDetailInstructor } from "../../../actions/instructorActions";
+import {
+  getHomeworkDetailInstructor,
+  editHomeworkInstructor,
+} from "../../../actions/instructorActions";
 
 const HomeworkViewInstructor = ({ match }) => {
   const homeworkId = match.params.id;
+  const [courseId, setCourseId] = useState("");
+  const [instructorId, setInstructorId] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [resourcesLink, setResourcesLink] = useState("");
+  const [gitHubClassRoomLink, setGitHubClassRoomLink] = useState("");
+  const [isAssignment, setIsAssignment] = useState("");
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getHomeworkDetailInstructor(homeworkId));
   }, [dispatch]);
 
+  const submitHandler = (e) => {
+    e.preventDefault();
+    dispatch(editHomeworkInstructor({}));
+  };
+
   const { loading, homework } = useSelector(
     (state) => state.homeworkDetailInstructor
   );
-
+  const { success } = useSelector((state) => state.editHomeworkInstructorState);
   return (
     <React.Fragment>
       {loading ? (
@@ -23,7 +38,7 @@ const HomeworkViewInstructor = ({ match }) => {
           <Row className="justify-content-md-center">
             <Col xs={12} md={6}>
               <h3>Homework</h3>
-              <Form>
+              <Form onSubmit={submitHandler}>
                 <Form.Group controlId="title">
                   <Form.Label>Title</Form.Label>
                   <Form.Control
