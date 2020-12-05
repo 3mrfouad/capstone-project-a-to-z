@@ -101,7 +101,8 @@ namespace AZLearn.Controllers
         /// <param name="releaseDate">Release Date of this Homework</param>
         /// <param name="documentLink">Link To Google Drive where this Homework Document can be accessed</param>
         /// <param name="gitHubClassRoomLink">Link To GitHub Classroom where students can create repository to submit this Homework</param>
-        public static void CreateHomeworkByCourseId(string courseId, string instructorId, string cohortId,
+        /// <returns>The newly create homeworkId</returns>
+        public static string CreateHomeworkByCourseId(string courseId, string instructorId, string cohortId,
             string isAssignment, string title, string avgCompletionTime, string dueDate, string releaseDate,
             string documentLink, string gitHubClassRoomLink)
         {
@@ -310,9 +311,10 @@ namespace AZLearn.Controllers
 
             #endregion
 
+            var newHomework = new Homework();
             if (dueDate != null && releaseDate != null)
             {
-                var newHomework = new Homework
+                newHomework = new Homework
                 {
                     CourseId = parsedCourseId,
                     InstructorId = parsedInstructorId,
@@ -329,7 +331,7 @@ namespace AZLearn.Controllers
             }
             else if (dueDate == null && releaseDate == null)
             {
-                var newHomework = new Homework
+                newHomework = new Homework
                 {
                     CourseId = parsedCourseId,
                     InstructorId = parsedInstructorId,
@@ -344,7 +346,7 @@ namespace AZLearn.Controllers
             }
             else if (dueDate == null)
             {
-                var newHomework = new Homework
+                newHomework = new Homework
                 {
                     CourseId = parsedCourseId,
                     InstructorId = parsedInstructorId,
@@ -360,7 +362,7 @@ namespace AZLearn.Controllers
             }
             else if (releaseDate == null)
             {
-                var newHomework = new Homework
+                newHomework = new Homework
                 {
                     CourseId = parsedCourseId,
                     InstructorId = parsedInstructorId,
@@ -374,8 +376,11 @@ namespace AZLearn.Controllers
                 };
                 context.Homeworks.Add(newHomework);
             }
-
             context.SaveChanges();
+
+            var homeworkId = newHomework.HomeworkId.ToString();
+
+            return homeworkId;
         }
 
         /// <summary>

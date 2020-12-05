@@ -116,7 +116,7 @@ const Login = () => {
                 <Form.Control
                   required
                   type="email"
-                  maxlength="50"
+                  maxLength="50"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 ></Form.Control>
@@ -134,7 +134,10 @@ const Login = () => {
                   value={password}
                   maxLength="250"
                   onChange={(e) => setPassword(e.target.value)}
-                ></Form.Control>
+                              ></Form.Control>
+                  <Form.Control.Feedback type="invalid">
+                                  Please enter a valid password.Password is in inappropriate format: Password must be: at least one upper case letter, at least one lower case letter, at least one digit , at least one special character, minimum 8 characters in length.
+                  </Form.Control.Feedback>
               </Form.Group>
               <Button type="submit" variant="primary">
                 {" "}

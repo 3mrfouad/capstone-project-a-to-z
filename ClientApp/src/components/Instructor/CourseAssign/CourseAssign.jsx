@@ -224,7 +224,7 @@ const CourseAssign = ({ match }) => {
                   ? !loading && error
                     ? "Unsuccessful attempt to assign a course"
                     : !loading && !error && success
-                    ? "Cohort was successfully created"
+                    ? "Course was successfully assigned"
                     : ""
                   : "Error: Form was submitted with invalid data fields"
                 : ""}
@@ -246,7 +246,10 @@ const CourseAssign = ({ match }) => {
                       {course.name}
                     </option>
                   ))}
-                </Form.Control>
+                              </Form.Control>
+                  <Form.Control.Feedback type="invalid">
+                      Please select a course
+                  </Form.Control.Feedback>
               </Form.Group>
 
               <Form.Group controlId="instructor">
@@ -263,7 +266,11 @@ const CourseAssign = ({ match }) => {
                       {instructor.name}
                     </option>
                   ))}
-                </Form.Control>
+                              </Form.Control>
+                  <Form.Control.Feedback type="invalid">
+                      Please choose an instructor
+                  </Form.Control.Feedback>
+
               </Form.Group>
               <Form.Group controlId="startdate">
                 <Form.Label>Start Date</Form.Label>
@@ -272,13 +279,17 @@ const CourseAssign = ({ match }) => {
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(String(e.target.value))}
-                ></Form.Control>
+                              ></Form.Control>
+                  <Form.Control.Feedback type="invalid">
+                      Please choose a start date.
+                  </Form.Control.Feedback>
               </Form.Group>
               <Form.Group controlId="enddate">
                 <Form.Label>End Date</Form.Label>
                 <Form.Control
-                  required
-                  type="date"
+                                  required
+                                  type="date"
+                  min={startDate}
                   value={endDate}
                   onChange={(e) => setEndDate(String(e.target.value))}
                 ></Form.Control>

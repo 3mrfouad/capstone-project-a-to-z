@@ -78,7 +78,7 @@ const Register = () => {
           )
         ) {
           validFormData = false;
-          console.log("password does not match the criteria");
+          console.log("password does not match the pattern");
         } else if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
           validFormData = false;
           console.log("email does not match the email format");
@@ -151,15 +151,14 @@ const Register = () => {
   };
 
   return (
-    <>
+    <React.Fragment>
       <Container>
         <Row className="justify-content-md-center">
-          <Col xs={12} md={6}>
+                  <Col xs={12} md={6}>
+                      <h2>Register</h2>
             {/* {error && <Message variant="danger">{error}</Message>}
             {loading && <Loader />} */}
             {/* ! (10.7) Anti-tamper validation - Alert message conditions   */}
-            <br></br>
-            <br></br>
             <p
               className={
                 formSubmitted
@@ -177,11 +176,11 @@ const Register = () => {
               {formSubmitted
                 ? validData
                   ? !loading && error
-                    ? "Unsuccessful attempt to create a cohort"
+                    ? "Unsuccessful attempt to register the user"
                     : !loading && !error && success
-                    ? "Cohort was successfully created"
+                    ? "Successfully registered the user"
                     : ""
-                  : "Error: Form were submitted with invalid data fields"
+                  : "Error: Form was submitted with invalid data fields"
                 : ""}
             </p>
             {/* ! ------------------------------------------------------  */}
@@ -191,7 +190,7 @@ const Register = () => {
                 <Form.Control
                   required
                   type="text"
-                  maxlength="50"
+                  maxLength="50"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 ></Form.Control>
@@ -204,7 +203,7 @@ const Register = () => {
                 <Form.Control
                   required
                   type="email"
-                  maxlength="50"
+                                  maxlength="50"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 ></Form.Control>
@@ -224,9 +223,7 @@ const Register = () => {
                   onChange={(e) => setPassword(e.target.value)}
                 ></Form.Control>
                 <Form.Control.Feedback type="invalid">
-                  Please enter a valid password. Format: atleast- 1 small
-                  letter, 1 capital letter, 1 digit & 1 special character
-                  required
+                                  Please enter a valid password.Password is in inappropriate format: Password must be: at least one upper case letter, at least one lower case letter, at least one digit , at least one special character, minimum 8 characters in length.
                 </Form.Control.Feedback>
               </Form.Group>
               <Form.Group controlId="cohort">
@@ -277,7 +274,7 @@ const Register = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-    </>
+    </React.Fragment>
   );
 };
 
