@@ -275,7 +275,7 @@ const CohortEdit = ({ match, history }) => {
                       : !loading && !error && success
                       ? "Cohort details were successfully updated"
                       : ""
-                    : "Error: Form were submitted with invalid data fields"
+                    : "Error: Form was submitted with invalid data fields"
                   : ""}
               </p>
               {/* ! ------------------------------------------------------  */}
@@ -335,7 +335,8 @@ const CohortEdit = ({ match, history }) => {
                   <Form.Label>End Date</Form.Label>
                   <Form.Control
                     required
-                    type="date"
+                                          type="date"
+                    min={startDate}
                     value={endDate.split("T")[0]}
                     onChange={(e) =>
                       setEndDate(String(e.target.value).split("T")[0])
