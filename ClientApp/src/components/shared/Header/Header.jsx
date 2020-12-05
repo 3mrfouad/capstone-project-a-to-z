@@ -9,15 +9,10 @@ import {
   Container,
 } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
-// import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const Header = () => {
-//   const userLogin = useSelector((state) => state.userLogin);
-//   const { userInfo } = userLogin;
-//   const dispatch = useDispatch();
-//   const logoutHandler = () => {
-//     dispatch(logout());
-//   };
+  const { user, success } = useSelector((state) => state.userLoginState);
   return (
     <React.Fragment>
       <Navbar bg="light" expand="lg" collapseOnSelect>
@@ -31,7 +26,10 @@ const Header = () => {
               <LinkContainer to="/">
                 <Nav.Link>
                   {" "}
-                  <i className="fas fa-shopping-cart"></i> <strong>Hello</strong>{" "}
+                  <i className="fas fa-shopping-cart"></i>{" "}
+                  <strong>
+                    Hello {user.item1.isInstructor ? "Instructor" : "Student"}
+                  </strong>{" "}
                 </Nav.Link>
               </LinkContainer>
               {/* {userInfo ? (
@@ -70,7 +68,7 @@ const Header = () => {
           </Navbar.Collapse>
         </Container>
       </Navbar>
-      </React.Fragment>
+    </React.Fragment>
   );
 };
 

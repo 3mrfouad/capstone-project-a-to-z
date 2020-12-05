@@ -1,4 +1,3 @@
-
 import axios from "axios";
 
 export const courseSummaryStudent = () => {
@@ -6,8 +5,11 @@ export const courseSummaryStudent = () => {
     try {
       dispatch({ type: "COURSE_SUMMARY_STUDENT_REQUEST" });
       // update the url later
-      const { data } = await axios.get(
-        "https://localhost:5001/application/getcourses"
+      const {
+        data,
+      } = await axios.get(
+        "https://localhost:5001/application/GetCourseSummary",
+        { params: { cohortId: "3" } }
       );
       dispatch({
         type: "COURSE_SUMMARY_STUDENT_SUCCESS",

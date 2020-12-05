@@ -1,9 +1,12 @@
 import React from "react";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Form, Button, Row, Col, Container } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
+import { loginUser } from "../../actions/instructorActions";
 
 const Login = () => {
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [validated, setValidated] = useState(false);
@@ -11,6 +14,8 @@ const Login = () => {
   // ! (10.1) Anti-tamper validation - States and Variables
   const [validData, setValidData] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
+
+  const { user, success } = useSelector((state) => state.userLoginState);
   let validFormData = false;
   let formSubmitIndicator = false;
   //! -------Created by Ayesha(For Store that needs to be created)---
@@ -49,7 +54,12 @@ const Login = () => {
     }
     setValidated(true);
     e.preventDefault();
-
+    dispatch(
+      loginUser({
+        email,
+        password,
+      })
+    );
     // ! (10.4) Anti-tamper validation - calling Validate  -Created by ayesha need to uncomment it once store is created
     // Validate(email,password);
     //if (validFormData) {

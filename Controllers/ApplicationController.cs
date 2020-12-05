@@ -1033,7 +1033,7 @@ namespace AZLearn.Controllers
         /// <param name="isInstructor"></param>
         /// <returns>Success/Error message</returns>
         [HttpPost(nameof(CreateUser))]
-        public ActionResult CreateUser(string cohortId, string name, string passwordHash, string email, string isInstructor)
+        public ActionResult CreateUser([FromQuery]string cohortId, [FromQuery] string name, [FromQuery] string passwordHash, [FromQuery] string email, [FromQuery] string isInstructor)
         {
             ActionResult result;
             try

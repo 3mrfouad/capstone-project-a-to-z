@@ -31,6 +31,7 @@ const CohortCreate = () => {
   }, []);
   const cohortCreate = useSelector((state) => state.cohortCreate);
   const { loading, error, cohort, success } = cohortCreate;
+
   const dispatch = useDispatch();
 
   // ! (10.2) Anti-tamper validation - Validate (parameters)
@@ -102,7 +103,7 @@ const CohortCreate = () => {
         try {
           parsedEndDate = Date.parse(startDate);
           validEndDate = true;
-          console.log("endDate parse");
+          console.log("endDate purse");
         } catch (ParseException) {
           validEndDate = false;
           console.log("endDate parse exception");
@@ -197,6 +198,7 @@ const CohortCreate = () => {
         <Row className="justify-content-md-center">
           <Col xs={12} md={6}>
             <h2>Cohort</h2>
+
             {/* ! (10.7) Anti-tamper validation - Alert message conditions   */}
             <p
               class={
@@ -205,8 +207,8 @@ const CohortCreate = () => {
                     ? !loading && error
                       ? "alert alert-danger"
                       : !loading && !error && success
-                        ? "alert alert-success"
-                        : ""
+                      ? "alert alert-success"
+                      : ""
                     : "alert alert-danger"
                   : ""
               }
@@ -217,8 +219,8 @@ const CohortCreate = () => {
                   ? !loading && error
                     ? "Unsuccessful attempt to create a cohort"
                     : !loading && !error && success
-                      ? "Cohort was successfully created"
-                      : ""
+                    ? "Cohort was successfully created"
+                    : ""
                   : "Error: Form were submitted with invalid data fields"
                 : ""}
             </p>
@@ -244,6 +246,7 @@ const CohortCreate = () => {
                 <Form.Control.Feedback type="invalid">
                   Please enter a cohort name.
                 </Form.Control.Feedback>
+
                 {/*---------------------------------------*/}
               </Form.Group>
 
@@ -265,13 +268,14 @@ const CohortCreate = () => {
                   required
                   value={modeOfTeaching}
                   onChange={(e) => setModeOfTeaching(String(e.target.value))}
-                ><option value="">Select</option>
+                >
+                  <option value="">Select</option>
                   <option>Online</option>
                   <option>In Person</option>
                 </Form.Control>
                 <Form.Control.Feedback type="invalid">
                   Please choose a mode of teaching.
-                                </Form.Control.Feedback>
+                </Form.Control.Feedback>
               </Form.Group>
               <Form.Group controlId="Start Date">
                 <Form.Label>Start Date</Form.Label>
@@ -283,27 +287,29 @@ const CohortCreate = () => {
                 ></Form.Control>
                 <Form.Control.Feedback type="invalid">
                   Please choose a start date.
-                                </Form.Control.Feedback>
+                </Form.Control.Feedback>
               </Form.Group>
               <Form.Group controlId="End Date">
                 <Form.Label>End Date</Form.Label>
                 <Form.Control
                   required
                   type="date"
-                  min={startDate}
                   value={endDate}
                   onChange={(e) => setEndDate(String(e.target.value))}
                 ></Form.Control>
                 <Form.Control.Feedback type="invalid">
                   Please choose an end date.
-                                </Form.Control.Feedback>
+                </Form.Control.Feedback>
                 {/* (9) Add business logic validation message. */}
-                <p className="text-danger small">{invalidDatesBL ? "End date can't be before start date" : ""}</p>
+                <p className="text-danger small">
+                  {invalidDatesBL ? "End date can't be before start date" : ""}
+                </p>
                 {/*---------------------------------------*/}
               </Form.Group>
               <Form.Group controlId="City">
                 <Form.Label>City</Form.Label>
-                <Form.Control as="select"
+                <Form.Control
+                  as="select"
                   required
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
@@ -315,7 +321,7 @@ const CohortCreate = () => {
                 </Form.Control>
                 <Form.Control.Feedback type="invalid">
                   Please choose a city.
-                                </Form.Control.Feedback>
+                </Form.Control.Feedback>
               </Form.Group>
               <a href="">Back</a>
               <Button className="float-right" type="submit" variant="primary">

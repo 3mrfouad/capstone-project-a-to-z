@@ -9,7 +9,7 @@ import {
 import Loader from "../../shared/Loader/Loader";
 import { Link } from "react-router-dom";
 
-const ManageCourseInstructor = () => {
+const ManageCourseInstructor = ({ history }) => {
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -20,6 +20,9 @@ const ManageCourseInstructor = () => {
   };
   const { courses, loading } = useSelector((state) => state.manageCourse);
   const { success } = useSelector((state) => state.courseArchive);
+  const goBack = () => {
+    history.goBack();
+  };
   useEffect(() => {
     dispatch(manageCourseInstructor());
   }, [dispatch, success]);
@@ -70,7 +73,7 @@ const ManageCourseInstructor = () => {
                 ))}
             </tbody>
           </Table>
-          <button type="button" className="btn btn-link">
+          <button type="button" className="btn btn-link" onClick={goBack}>
             Back
           </button>{" "}
           <Button href="/coursecreate" className="float-right mr-3">
