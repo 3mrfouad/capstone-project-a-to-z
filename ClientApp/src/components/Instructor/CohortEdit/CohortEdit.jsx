@@ -285,7 +285,7 @@ const CohortEdit = ({ match, history }) => {
                   <Form.Control
                     required
                     type="date"
-                    value={startDate}
+                    value={startDate.split("T")[0]}
                     onChange={(e) =>
                       setStartDate(String(e.target.value).split("T")[0])
                     }
@@ -299,7 +299,7 @@ const CohortEdit = ({ match, history }) => {
                   <Form.Control
                     required
                     type="date"
-                    value={endDate}
+                    value={endDate.split("T")[0]}
                     onChange={(e) =>
                       setEndDate(String(e.target.value).split("T")[0])
                     }
