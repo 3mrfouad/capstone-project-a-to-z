@@ -264,12 +264,11 @@ namespace AZLearn.Controllers
         /// <param name="userEmail"></param>
         /// <param name="password"></param>
         /// <returns>Sucess/Error message</returns>
-        public static Tuple<User, bool> GetUserOnLogin(string userEmail, string password)
+        public static User GetUserOnLogin(string userEmail, string password)
         {
 
             User userInfo;
             var parsedUserId = 0;
-            bool isAuthenticated = false;
             ValidationException exception = new ValidationException();
             using var context = new AppDbContext();
 
@@ -320,9 +319,8 @@ namespace AZLearn.Controllers
             #endregion
 
             userInfo = context.Users.Single(key => key.PasswordHash == password && key.Email == userEmail && key.Archive == false);
-            isAuthenticated = true;
 
-            return Tuple.Create(userInfo, isAuthenticated);
+            return userInfo;
         }
 
     }
