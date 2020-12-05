@@ -111,9 +111,9 @@ const CourseCreate = () => {
               }
               role="alert">
               {
-                formSubmitted ? (validData ? ((!loading && error) ? "Unsuccessful attempt to create a cohort" :
-                  ((!loading && !error) ? "Cohort was successfully created" : "")) :
-                  "Error: Form were submitted with invalid data fields") : ""
+                formSubmitted ? (validData ? ((!loading && error) ? "Unsuccessful attempt to create a course" :
+                  ((!loading && !error) ? "Course was successfully created" : "")) :
+                  "Error: Form was submitted with invalid data fields") : ""
               }
             </p>
             {/* -----------------------------------------------  */}
@@ -141,7 +141,8 @@ const CourseCreate = () => {
                   min={0}
                   max={999.99}
                   step="0.25"
-                  value={hours}
+                                  value={hours}
+
                   onChange={(e) => setHours(String(e.target.value))}
                 ></Form.Control>
                 <Form.Control.Feedback type="invalid">
