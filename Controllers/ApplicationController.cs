@@ -690,9 +690,50 @@ namespace AZLearn.Controllers
         ///     https://localhost:xxxxx/application/GetHomeworkForInstructor?homeworkId=-1
         /// </summary>
         /// <param name="homeworkId"></param>
-        /// <returns>A homework with list of rubrics,instructor name ,course name</returns>
+        /// <returns>A homework ,instructor name and course name</returns>
         [HttpGet("GetHomework")]
-        public ActionResult<Tuple<Homework, List<Rubric>, string, string>> GetHomeworkForInstructor(string homeworkId)
+        public ActionResult<Tuple<Homework, string, string>> GetHomeworkForInstructor(string homeworkId)
+        {
+            ActionResult<Tuple<Homework, string, string>> result;
+            try
+            {
+                var homework = HomeworkController.GetHomeworkById(homeworkId);
+                var courseId = homework.CourseId.ToString();
+                var courseName = CourseController.GetCourseById(courseId).Name;
+                var instructorId = homework.InstructorId.ToString();
+                var instructorName = UserController.GetUserById(instructorId).Name;
+
+                result = new Tuple<Homework, string, string>(homework, instructorName, courseName);
+            }
+            catch (ValidationException e)
+            {
+                var error = "Error(s) During GetHomeworkForInstructor: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
+
+                result = BadRequest(error);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
+            }
+            return result;
+        }
+        #endregion
+
+        #region /application/GetHomeworkRubrics
+
+        /// <summary>
+        ///     GetHomeworkRubricsForInstructor
+        ///     Description:The API End Point looks for action GetHomeworkById in HomeworkController and GetRubricsByHomeworkId in
+        ///     RubricController retrieves the information of the Homework with its rubrics from database.
+        ///     https://localhost:xxxxx/application/GetHomeworkForInstructor?homeworkId=-1
+        /// </summary>
+        /// <param name="homeworkId"></param>
+        /// <returns>A homework with list of rubrics,instructor name ,course name</returns>
+        [HttpGet("GetHomeworkRubrics")]
+        public ActionResult<Tuple<Homework, List<Rubric>, string, string>> GetHomeworkRubricsForInstructor(string homeworkId)
         {
             ActionResult<Tuple<Homework, List<Rubric>, string, string>> result;
             try
