@@ -190,7 +190,7 @@ const Register = () => {
                 <Form.Control
                   required
                   type="text"
-                  maxlength="50"
+                  maxLength="50"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 ></Form.Control>
