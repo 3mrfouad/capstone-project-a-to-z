@@ -266,9 +266,6 @@ namespace AZLearn.Controllers
         /// <returns>Sucess/Error message</returns>
         public static User GetUserOnLogin(string userEmail, string password)
         {
-
-            User userInfo;
-            var parsedUserId = 0;
             ValidationException exception = new ValidationException();
             using var context = new AppDbContext();
 
@@ -318,7 +315,7 @@ namespace AZLearn.Controllers
 
             #endregion
 
-            userInfo = context.Users.Single(key => key.PasswordHash == password && key.Email == userEmail && key.Archive == false);
+            var userInfo = context.Users.Single(key => key.PasswordHash == password && key.Email == userEmail && key.Archive == false);
 
             return userInfo;
         }
