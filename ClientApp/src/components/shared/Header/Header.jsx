@@ -29,9 +29,18 @@ const Header = () => {
             {user && user.isInstructor ? (
               <React.Fragment>
                 <LinkContainer to="/cohortsummary">
-                  <Navbar.Brand>cohorts</Navbar.Brand>
+                  <Navbar.Brand>Cohorts</Navbar.Brand>
                 </LinkContainer>
                 <LinkContainer to="/coursesummary/3">
+                  <Navbar.Brand>Courses</Navbar.Brand>
+                </LinkContainer>
+              </React.Fragment>
+            ) : (
+              ""
+            )}
+            {user && !user.isInstructor ? (
+              <React.Fragment>
+                <LinkContainer to="/student">
                   <Navbar.Brand>Courses</Navbar.Brand>
                 </LinkContainer>
               </React.Fragment>
