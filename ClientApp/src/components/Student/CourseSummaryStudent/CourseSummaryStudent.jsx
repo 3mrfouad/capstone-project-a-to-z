@@ -28,13 +28,13 @@ const CourseSummaryStudent = () => {
           <tbody>
             {courses.map((course, index) => (
               <tr key={index}>
-                <td>{course.name}</td>
-                <td>{course.description}</td>
-                <td>{course.durationHrs}</td>
+                <td>{course.item1.name}</td>
+                <td>{course.item1.description}</td>
+                <td>{course.item1.durationHrs}</td>
                 <td>{}</td>
                 <td>
                   {" "}
-                  <a href="#">{course.homeworks[0]}</a>
+                  <a href="#">Homework</a>
                 </td>
               </tr>
             ))}

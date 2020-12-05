@@ -778,3 +778,45 @@ export const registerUser = (userInfo) => {
     }
   };
 };
+
+export const loginUser = (userInfo) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: "LOGIN_USER_REQUEST",
+      });
+      // const {
+      //   userLogin: { userInfo },
+      // } = getState();
+      // const config = {
+      //   headers: {
+      //     Authorization: `Bearer ${userInfo.token}`,
+      //   },
+      // };
+      const params = {
+        passwordHash: userInfo.password,
+        email: userInfo.email,
+      };
+      const { data } = await axios.request({
+        url:
+          "https://localhost:5001/application/login?" +
+          querystring.stringify(params),
+        method: "get",
+        data: params,
+      });
+
+      dispatch({
+        type: "LOGIN_USER_SUCCESS",
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: "LOGIN_USER_FAIL",
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.response,
+      });
+    }
+  };
+};

@@ -4,6 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { Form, Button, Row, Col, Container, Modal } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 import { registerUser } from "../../../actions/instructorActions";
+let loading = false;
+let error = false;
+// let success = true;
 const Register = () => {
   const dispatch = useDispatch();
   const [name, setName] = useState("");
