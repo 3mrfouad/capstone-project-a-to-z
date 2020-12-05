@@ -192,7 +192,7 @@ const CourseEdit = ({ match, history }) => {
                   <Form.Control
                     as="textarea"
                     required
-                    maxlength="250"
+                    maxLength="250"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                   ></Form.Control>

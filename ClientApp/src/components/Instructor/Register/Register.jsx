@@ -203,7 +203,9 @@ const Register = () => {
                 <Form.Control
                   required
                   type="email"
-                                  maxlength="50"
+                                  maxLength="50"
+
+
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 ></Form.Control>
