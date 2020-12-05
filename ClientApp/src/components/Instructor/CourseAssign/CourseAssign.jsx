@@ -50,6 +50,8 @@ const CourseAssign = ({ match }) => {
     let parsedEndDate = 0;
     let parsedStartDate = 0;
     formSubmitIndicator = true;
+    console.log("FUNCTION");
+
     try {
       cohortId = cohortId.trim().toLowerCase();
       courseId = courseId.trim().toLowerCase();
@@ -57,23 +59,32 @@ const CourseAssign = ({ match }) => {
       resourcesLink = resourcesLink.trim().toLowerCase();
       startDate = startDate.trim().toLowerCase();
       endDate = endDate.trim().toLowerCase();
+      console.log("TRY");
 
       if (!cohortId) {
         validFormData = false;
+        console.log("cohortid");
       } else if (!courseId) {
         validFormData = false;
+        console.log("courseid");
       } else if (!instructorId) {
         validFormData = false;
+        console.log("instructorid");
       } else if (resourcesLink > 250) {
         validFormData = false;
+        console.log("resource length");
       }
       //@Link:https://stackoverflow.com/questions/1410311/regular-expression-for-url-validation-in-javascript
       else if (
+        resourcesLink &&
         !/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(
           resourcesLink
         )
       ) {
-        validFormData = false;
+        {
+          validFormData = false;
+          console.log("Resource pattern");
+        }
       } else if (!startDate || !endDate) {
         validFormData = false;
         console.log("startDate/endDate");
@@ -117,6 +128,7 @@ const CourseAssign = ({ match }) => {
       }
     } catch (Exception) {
       validFormData = false;
+      console.log("CATCH ");
     }
   }
   // ! ------------------------------------------------------
@@ -146,11 +158,15 @@ const CourseAssign = ({ match }) => {
       validFormData = false;
       formSubmitIndicator = true;
       setValidData(validFormData);
+
       // ! ------------------------------------------------------
     } else {
+      console.log("BL ELse");
+
       e.preventDefault();
       setInvalidDatesBl(false);
       // ! (10.4) Anti-tamper validation - calling Validate
+
       Validate(
         cohortId,
         courseId,
