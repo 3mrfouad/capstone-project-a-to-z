@@ -9,7 +9,7 @@ import {
 import { Link } from "react-router-dom";
 import Loader from "../../shared/Loader/Loader";
 
-const CohortSummaryInstructor = () => {
+const CohortSummaryInstructor = ({ history }) => {
   const dispatch = useDispatch();
   const { cohorts, loading } = useSelector(
     (state) => state.cohortSummaryInstructor
@@ -24,6 +24,9 @@ const CohortSummaryInstructor = () => {
   const onArchive = (id) => {
     setShow(false);
     dispatch(archiveCohort(id));
+  };
+  const goBack = () => {
+    history.goBack();
   };
   return (
     <React.Fragment>
@@ -56,8 +59,8 @@ const CohortSummaryInstructor = () => {
                       </td>
                       <td>{cohort.capacity}</td>
                       <td>{cohort.modeOfTeaching}</td>
-                      <td>{cohort.startDate}</td>
-                      <td>{cohort.endDate}</td>
+                      <td>{cohort.startDate.split("T")[0]}</td>
+                      <td>{cohort.endDate.split("T")[0]}</td>
                       <td>{cohort.city}</td>
                       <td>
                         <Link to={`/cohortedit/${cohort.cohortId}`}>Edit</Link>{" "}
@@ -66,7 +69,11 @@ const CohortSummaryInstructor = () => {
                           {" "}
                           Archive{" "}
                         </Link>
-                        <Modal show={show} onHide={handleClose}>
+                        <Modal
+                          key={cohort.cohortId}
+                          show={show}
+                          onHide={handleClose}
+                        >
                           <Modal.Body>Retire: Are you sure?</Modal.Body>
                           <Modal.Footer>
                             <Button variant="secondary" onClick={handleClose}>
@@ -74,7 +81,7 @@ const CohortSummaryInstructor = () => {
                             </Button>
                             <Button
                               variant="primary"
-                              onClick={() => onArchive(cohort.cohortId)}
+                              onClick={() => onArchive()}
                             >
                               Yes
                             </Button>
@@ -85,7 +92,7 @@ const CohortSummaryInstructor = () => {
                   ))}
               </tbody>
             </Table>
-            <button type="button" className="btn btn-link">
+            <button type="button" className="btn btn-link" onClick={goBack}>
               Back
             </button>{" "}
             <Button href="/cohortcreate" className="float-right mr-3">

@@ -10,29 +10,45 @@ import {
 } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
+import Loader from "../Loader/Loader";
 
 const Header = () => {
-  const { user, success } = useSelector((state) => state.userLoginState);
+  const { user, success, loading } = useSelector(
+    (state) => state.userLoginState
+  );
   return (
     <React.Fragment>
-      <Navbar bg="light" expand="lg" collapseOnSelect>
-        <Container>
-          <LinkContainer to="/">
-            <Navbar.Brand>XXXXX SYSTEM</Navbar.Brand>
-          </LinkContainer>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="ml-auto">
-              <LinkContainer to="/">
-                <Nav.Link>
-                  {" "}
-                  <i className="fas fa-shopping-cart"></i>{" "}
-                  <strong>
-                    Hello {user.item1.isInstructor ? "Instructor" : "Student"}
-                  </strong>{" "}
-                </Nav.Link>
-              </LinkContainer>
-              {/* {userInfo ? (
+      {loading ? (
+        <Loader />
+      ) : (
+        <Navbar bg="light" expand="lg" collapseOnSelect>
+          <Container>
+            <LinkContainer to="/">
+              <Navbar.Brand>XXXXX SYSTEM</Navbar.Brand>
+            </LinkContainer>
+            {user && user.isInstructor ? (
+              <React.Fragment>
+                <LinkContainer to="/cohortsummary">
+                  <Navbar.Brand>cohorts</Navbar.Brand>
+                </LinkContainer>
+                <LinkContainer to="/coursesummary/3">
+                  <Navbar.Brand>Courses</Navbar.Brand>
+                </LinkContainer>
+              </React.Fragment>
+            ) : (
+              ""
+            )}
+            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <Navbar.Collapse id="basic-navbar-nav">
+              <Nav className="ml-auto">
+                <LinkContainer to="/">
+                  <Nav.Link>
+                    {" "}
+                    <i className="fas fa-shopping-cart"></i>{" "}
+                    <strong>Hello {user ? user.name : ""}</strong>{" "}
+                  </Nav.Link>
+                </LinkContainer>
+                {/* {userInfo ? (
                 <NavDropdown title={userInfo.name} id="username">
                   <LinkContainer to="/profile">
                     <NavDropdown.Item>Profile</NavDropdown.Item>
@@ -49,7 +65,7 @@ const Header = () => {
                   </Nav.Link>
                 </LinkContainer>
               )} */}
-              {/* {
+                {/* {
                 userInfo && userInfo.isAdmin && (
                   <NavDropdown title='Admin' id="adminmenu">
                   <LinkContainer to="/admin/userlist">
@@ -64,10 +80,11 @@ const Header = () => {
                 </NavDropdown>
                 )
               } */}
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
+              </Nav>
+            </Navbar.Collapse>
+          </Container>
+        </Navbar>
+      )}
     </React.Fragment>
   );
 };
