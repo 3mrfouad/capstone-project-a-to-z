@@ -6,7 +6,7 @@ import Loader from "../../shared/Loader/Loader";
 
 const CohortEdit = ({ match, history }) => {
   const cohortId = match.params.id;
-  console.log(cohortId);
+  console.log("cohort edit", cohortId);
   const [name, setName] = useState("");
   const [capacity, setCapacity] = useState("");
   const [modeOfTeaching, setModeOfTeaching] = useState("");
@@ -19,7 +19,7 @@ const CohortEdit = ({ match, history }) => {
   // ! (10.1) Anti-tamper validation - States and Variables
   const [validData, setValidData] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
-  let validFormData = false;;
+  let validFormData = false;
   let validStartDate = false;
   let validEndDate = false;
   let formSubmitIndicator = false;
@@ -41,47 +41,99 @@ const CohortEdit = ({ match, history }) => {
       setStartDate(cohort.startDate);
       setModeOfTeaching(cohort.modeOfTeaching);
     }
-  },
-    [dispatch, cohort]);
+  }, [dispatch, cohort]);
 
   // ! (10.2) Anti-tamper validation - Validate (parameters)
-  function Validate(name,
+  function Validate(
+    cohortId,
+    name,
     capacity,
     city,
     modeOfTeaching,
     startDate,
-    endDate) {
-
+    endDate
+  ) {
     let parsedEndDate = 0;
     let parsedStartDate = 0;
     formSubmitIndicator = true;
 
     try {
+      console.log("try");
+      cohortId = cohortId.trim().toLowerCase();
+      console.log("cohortID: ", cohortId);
 
       name = name.trim().toLowerCase();
-      capacity = capacity.trim().toLowerCase();
-      city = city.trim().toLowerCase();
-      modeOfTeaching = modeOfTeaching.trim().toLowerCase();
-      startDate = startDate.trim().toLowerCase();
-      endDate = endDate.trim().toLowerCase();
+      console.log("name trim : ", name);
 
-      if (!name) { validFormData = false; }
-      else if (name.Length > 50) { validFormData = false; }
-      else if (parseInt(capacity) > 999 || parseInt(capacity) < 0) { validFormData = false; console.log("capacity: ", parseInt(capacity)); }
-      else if (!city) { validFormData = false; console.log("city"); }
-      else if (city.Length > 50) { validFormData = false; console.log("city length"); }
-      else if (!(city === "edmonton" || city === "calgary" || city === "other")) { validFormData = false; console.log("modeOfTeaching value:", modeOfTeaching.toLowerCase(), "original:", modeOfTeaching); }
-      else if (!modeOfTeaching) { validFormData = false; console.log("modeOfTeaching"); }
-      else if (modeOfTeaching.Length > 50) { validFormData = false; console.log("modeOfTeaching length"); }
-      else if (!(modeOfTeaching === "online" || modeOfTeaching === "in person")) { validFormData = false; console.log("modeOfTeaching value:", modeOfTeaching.toLowerCase(), "original:", modeOfTeaching); }
-      else if (!startDate || !endDate) { validFormData = false; console.log("startDate/endDate"); }
-      else {
+      capacity = capacity.trim().toLowerCase();
+      console.log("cap trim");
+
+      city = city.trim().toLowerCase();
+      console.log("city trim");
+
+      modeOfTeaching = modeOfTeaching.trim().toLowerCase();
+      console.log("mode trim");
+
+      startDate = startDate.trim().toLowerCase();
+      console.log("start trim");
+
+      endDate = endDate.trim().toLowerCase();
+      console.log("enddate trim");
+
+      if (!cohortId) {
+        validFormData = false;
+      } else if (cohortId < 0 || cohortId > 2147483647) {
+        validFormData = false;
+      } else if (!name) {
+        validFormData = false;
+        console.log("name validate");
+      } else if (name.Length > 50) {
+        validFormData = false;
+        console.log("namelength");
+      } else if (parseInt(capacity) > 999 || parseInt(capacity) < 0) {
+        validFormData = false;
+        console.log("capacity: ", parseInt(capacity));
+      } else if (!city) {
+        validFormData = false;
+        console.log("city");
+      } else if (city.Length > 50) {
+        validFormData = false;
+        console.log("city length");
+      } else if (
+        !(city === "edmonton" || city === "calgary" || city === "other")
+      ) {
+        validFormData = false;
+        console.log(
+          "modeOfTeaching value:",
+          modeOfTeaching.toLowerCase(),
+          "original:",
+          modeOfTeaching
+        );
+      } else if (!modeOfTeaching) {
+        validFormData = false;
+        console.log("modeOfTeaching");
+      } else if (modeOfTeaching.Length > 50) {
+        validFormData = false;
+        console.log("modeOfTeaching length");
+      } else if (
+        !(modeOfTeaching === "online" || modeOfTeaching === "in person")
+      ) {
+        validFormData = false;
+        console.log(
+          "modeOfTeaching value:",
+          modeOfTeaching.toLowerCase(),
+          "original:",
+          modeOfTeaching
+        );
+      } else if (!startDate || !endDate) {
+        validFormData = false;
+        console.log("startDate/endDate");
+      } else {
         try {
           parsedStartDate = Date.parse(startDate);
           validStartDate = true;
           console.log("startDate parse");
-        }
-        catch (ParseException) {
+        } catch (ParseException) {
           validStartDate = false;
           console.log("startDate parse exception");
           validFormData = false;
@@ -90,31 +142,36 @@ const CohortEdit = ({ match, history }) => {
           parsedEndDate = Date.parse(startDate);
           validEndDate = true;
           console.log("endDate purse");
-        }
-        catch (ParseException) {
+        } catch (ParseException) {
           validEndDate = false;
           console.log("endDate parse exception");
           validFormData = false;
         }
         /* Dates business logic */
 
-        console.log("parsed start date validation: ", validStartDate, "parsed end date validation: ", validEndDate);
+        console.log(
+          "parsed start date validation: ",
+          validStartDate,
+          "parsed end date validation: ",
+          validEndDate
+        );
         if (validStartDate && validEndDate) {
           console.log("Dates are both pursed ok");
           if (parsedEndDate < parsedStartDate) {
             validFormData = false;
             console.log("parsedEndDate < parsedStartDate");
+          } else {
+            validFormData = true;
+            console.log("All good :", validFormData);
           }
-          else { validFormData = true; console.log("All good :", validFormData); }
         }
       }
+    } catch (Exception) {
+      console.log("catch");
 
-    }
-    catch (Exception) {
       validFormData = false;
     }
-  };
-
+  }
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -130,32 +187,35 @@ const CohortEdit = ({ match, history }) => {
     setValidated(true);
 
     //(3) Add business logic
-    if (endDate === "" ||
+    if (
+      endDate === "" ||
       startDate === "" ||
-      Date.parse(endDate) < Date.parse(startDate)) {
+      Date.parse(endDate) < Date.parse(startDate)
+    ) {
       e.preventDefault();
       Date.parse(endDate) < Date.parse(startDate)
         ? setInvalidDatesBl(true)
         : setInvalidDatesBl(false);
       setEndDate("");
       console.log("pass initial validation 100", validFormData);
-      // ! (10.3) Anti-tamper validation - Alert message conditions     
+      // ! (10.3) Anti-tamper validation - Alert message conditions
       validFormData = false;
       formSubmitIndicator = true;
       setValidData(validFormData);
       // ! ------------------------------------------------------
-
-    }
-    else {
+    } else {
       e.preventDefault();
       setInvalidDatesBl(false);
-      // ! (10.4) Anti-tamper validation - calling Validate     
-      Validate(name,
-        capacity,
+      // ! (10.4) Anti-tamper validation - calling Validate
+      Validate(
+        cohortId,
+        name,
+        String(capacity),
         city,
         modeOfTeaching,
         startDate,
-        endDate);
+        endDate
+      );
       if (validFormData) {
         setValidData(validFormData);
         // ! ------------------------------------------------------
@@ -171,44 +231,52 @@ const CohortEdit = ({ match, history }) => {
             endDate,
           })
         );
-      }
-      else {
-        // ! (10.5) Anti-tamper validation - Alert message conditions  
+      } else {
+        // ! (10.5) Anti-tamper validation - Alert message conditions
         setValidData(validFormData);
       }
     }
-    // ! (10.6) Anti-tamper validation - Alert message conditions  
+    // ! (10.6) Anti-tamper validation - Alert message conditions
     setFormSubmitted(formSubmitIndicator);
     // ! ------------------------------------------------------
-
   };
   return (
     <React.Fragment>
-      {loading
-        ? (<Loader />)
-        : (<Container>
+      {loading ? (
+        <Loader />
+      ) : (
+        <Container>
           <Row className="justify-content-md-center">
-            { /* check the pagination */
-            }
+            {/* check the pagination */}
             <Col xs={12} md={6}>
               <h2>Cohort</h2>
               {/* ! (10.7) Anti-tamper validation - Alert message conditions   */}
-              <p class=
-                {
-                  formSubmitted ? (validData ? ((!loading && error) ? "alert alert-danger" :
-                    ((!loading && !error && success) ? "alert alert-success" : "")) :
-                    "alert alert-danger") : ""
+              <p
+                class={
+                  formSubmitted
+                    ? validData
+                      ? !loading && error
+                        ? "alert alert-danger"
+                        : !loading && !error && success
+                        ? "alert alert-success"
+                        : ""
+                      : "alert alert-danger"
+                    : ""
                 }
-                role="alert">
-                {
-                  formSubmitted ? (validData ? ((!loading && error) ? "Unsuccessful attempt to create a cohort" :
-                    ((!loading && !error && success) ? "Cohort details were successfully updated" : "")) :
-                    "Error: Form were submitted with invalid data fields") : ""
-                }
+                role="alert"
+              >
+                {formSubmitted
+                  ? validData
+                    ? !loading && error
+                      ? "Unsuccessful attempt to create a cohort"
+                      : !loading && !error && success
+                      ? "Cohort details were successfully updated"
+                      : ""
+                    : "Error: Form were submitted with invalid data fields"
+                  : ""}
               </p>
               {/* ! ------------------------------------------------------  */}
-              <Form noValidate validated={validated} onSubmit={
-                submitHandler}>
+              <Form noValidate validated={validated} onSubmit={submitHandler}>
                 <Form.Group controlId="name">
                   <Form.Label>Cohort Name</Form.Label>
                   <Form.Control
@@ -216,12 +284,11 @@ const CohortEdit = ({ match, history }) => {
                     type="text"
                     maxlength="50"
                     value={name}
-                    onChange={(e) => setName(e.target.value)
-                    }>
-                  </Form.Control>
+                    onChange={(e) => setName(e.target.value)}
+                  ></Form.Control>
                   <Form.Control.Feedback type="invalid">
                     Please enter a cohort name.
-                       </Form.Control.Feedback>
+                  </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="Capacity">
                   <Form.Label>Capacity</Form.Label>
@@ -230,10 +297,9 @@ const CohortEdit = ({ match, history }) => {
                     min={0}
                     max={999}
                     step="1"
-                    value={capacity ? capacity : 0} 
-                    onChange={(e) => setCapacity(String(e.target.value))
-                    }>
-                  </Form.Control>
+                    value={capacity ? capacity : 0}
+                    onChange={(e) => setCapacity(String(e.target.value))}
+                  ></Form.Control>
                 </Form.Group>
                 <Form.Group controlId="Mode of Teaching">
                   <Form.Label>Mode of Teaching</Form.Label>
@@ -241,8 +307,8 @@ const CohortEdit = ({ match, history }) => {
                     as="select"
                     required
                     value={modeOfTeaching}
-                    onChange={(e) => setModeOfTeaching(
-                      String(e.target.value))}>
+                    onChange={(e) => setModeOfTeaching(String(e.target.value))}
+                  >
                     <option></option>
                     <option>Online</option>
                     <option>In Person</option>
@@ -254,12 +320,11 @@ const CohortEdit = ({ match, history }) => {
                     required
                     type="date"
                     value={startDate}
-                    onChange={(e) => setStartDate(String(e.target.value))
-                    }>
-                  </Form.Control>
+                    onChange={(e) => setStartDate(String(e.target.value))}
+                  ></Form.Control>
                   <Form.Control.Feedback type="invalid">
                     Please choose a start date.
-                       </Form.Control.Feedback>
+                  </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="End Date">
                   <Form.Label>End Date</Form.Label>
@@ -267,15 +332,16 @@ const CohortEdit = ({ match, history }) => {
                     required
                     type="date"
                     value={endDate}
-                    onChange={(e) => setEndDate(String(e.target.value))
-                    }>
-                  </Form.Control>
+                    onChange={(e) => setEndDate(String(e.target.value))}
+                  ></Form.Control>
                   <Form.Control.Feedback type="invalid">
                     Please choose an end date.
-                       </Form.Control.Feedback>
-                  <p className="text-danger small">{invalidDatesBL
-                    ? "End date can't be before start date"
-                    : ""}</p>
+                  </Form.Control.Feedback>
+                  <p className="text-danger small">
+                    {invalidDatesBL
+                      ? "End date can't be before start date"
+                      : ""}
+                  </p>
                 </Form.Group>
                 <Form.Group controlId="City">
                   <Form.Label>City</Form.Label>
@@ -283,7 +349,8 @@ const CohortEdit = ({ match, history }) => {
                     as="select"
                     required
                     value={city}
-                    onChange={(e) => setCity(e.target.value)}>
+                    onChange={(e) => setCity(e.target.value)}
+                  >
                     <option></option>
                     <option>Edmonton</option>
                     <option>Calgary</option>
@@ -291,19 +358,19 @@ const CohortEdit = ({ match, history }) => {
                   </Form.Control>
                   <Form.Control.Feedback type="invalid">
                     Please choose a city.
-                       </Form.Control.Feedback>
+                  </Form.Control.Feedback>
                 </Form.Group>
                 <a href="">Back</a>
                 <Button type="submit" variant="primary" className="float-right">
                   {" "}
-                       Save
-                     </Button>
+                  Save
+                </Button>
               </Form>
             </Col>
           </Row>
-        </Container>)}
+        </Container>
+      )}
     </React.Fragment>
   );
 };
-export default
-  CohortEdit;;
+export default CohortEdit;

@@ -32,7 +32,7 @@ const CourseEditAssigned = ({ match }) => {
   const { loading, course, success, error } = useSelector(
     (state) => state.getAssignedCourse
   );
-  const courseName = course.item1.name;
+  const courseName = course.item1; /* .name */ //Item1 is CourseName
   // console.log(courseName);
 
   useEffect(() => {
@@ -50,6 +50,7 @@ const CourseEditAssigned = ({ match }) => {
     startDate,
     endDate
   ) {
+    console.log("function");
     let parsedEndDate = 0;
     let parsedStartDate = 0;
     formSubmitIndicator = true;
@@ -63,15 +64,23 @@ const CourseEditAssigned = ({ match }) => {
 
       if (!cohortId) {
         validFormData = false;
+      } else if (cohortId < 0 || cohortId > 2147483647) {
+        validFormData = false;
       } else if (!courseId) {
+        validFormData = false;
+      } else if (courseId < 0 || courseId > 2147483647) {
         validFormData = false;
       } else if (!instructorId) {
         validFormData = false;
+      } else if (instructorId < 0 || instructorId > 2147483647) {
+        validFormData = false;
+        console.log("instructor out of range", instructorId);
       } else if (resourcesLink > 250) {
         validFormData = false;
       }
       //@Link:https://stackoverflow.com/questions/1410311/regular-expression-for-url-validation-in-javascript
       else if (
+        resourcesLink &&
         !/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(
           resourcesLink
         )
@@ -160,6 +169,7 @@ const CourseEditAssigned = ({ match }) => {
         endDate
       );
       if (validFormData) {
+        console.log("pass validate form data");
         setValidData(validFormData);
         // ! ------------------------------------------------------
         dispatch(
@@ -210,7 +220,7 @@ const CourseEditAssigned = ({ match }) => {
                     ? !loading && error
                       ? "Unsuccessful attempt to assign a course"
                       : !loading && !error && success
-                      ? "Cohort was successfully created"
+                      ? "Assigned Cohort was successfully updated"
                       : ""
                     : "Error: Form was submitted with invalid data fields"
                   : ""}
