@@ -6,7 +6,7 @@ import Loader from "../../shared/Loader/Loader";
 
 const CohortEdit = ({ match, history }) => {
   const cohortId = match.params.id;
-  console.log(cohortId);
+  console.log("cohort edit", cohortId);
   const [name, setName] = useState("");
   const [capacity, setCapacity] = useState("");
   const [modeOfTeaching, setModeOfTeaching] = useState("");
@@ -44,23 +44,52 @@ const CohortEdit = ({ match, history }) => {
   }, [dispatch, cohort]);
 
   // ! (10.2) Anti-tamper validation - Validate (parameters)
-  function Validate(name, capacity, city, modeOfTeaching, startDate, endDate) {
+  function Validate(
+    cohortId,
+    name,
+    capacity,
+    city,
+    modeOfTeaching,
+    startDate,
+    endDate
+  ) {
     let parsedEndDate = 0;
     let parsedStartDate = 0;
     formSubmitIndicator = true;
 
     try {
-      name = name.trim().toLowerCase();
-      capacity = capacity.trim().toLowerCase();
-      city = city.trim().toLowerCase();
-      modeOfTeaching = modeOfTeaching.trim().toLowerCase();
-      startDate = startDate.trim().toLowerCase();
-      endDate = endDate.trim().toLowerCase();
+      console.log("try");
+      cohortId = cohortId.trim().toLowerCase();
+      console.log("cohortID: ", cohortId);
 
-      if (!name) {
+      name = name.trim().toLowerCase();
+      console.log("name trim : ", name);
+
+      capacity = capacity.trim().toLowerCase();
+      console.log("cap trim");
+
+      city = city.trim().toLowerCase();
+      console.log("city trim");
+
+      modeOfTeaching = modeOfTeaching.trim().toLowerCase();
+      console.log("mode trim");
+
+      startDate = startDate.trim().toLowerCase();
+      console.log("start trim");
+
+      endDate = endDate.trim().toLowerCase();
+      console.log("enddate trim");
+
+      if (!cohortId) {
         validFormData = false;
+      } else if (cohortId < 0 || cohortId > 2147483647) {
+        validFormData = false;
+      } else if (!name) {
+        validFormData = false;
+        console.log("name validate");
       } else if (name.Length > 50) {
         validFormData = false;
+        console.log("namelength");
       } else if (parseInt(capacity) > 999 || parseInt(capacity) < 0) {
         validFormData = false;
         console.log("capacity: ", parseInt(capacity));
@@ -180,7 +209,15 @@ const CohortEdit = ({ match, history }) => {
       e.preventDefault();
       setInvalidDatesBl(false);
       // ! (10.4) Anti-tamper validation - calling Validate
-      Validate(name, capacity, city, modeOfTeaching, startDate, endDate);
+      Validate(
+        cohortId,
+        name,
+        String(capacity),
+        city,
+        modeOfTeaching,
+        startDate,
+        endDate
+      );
       if (validFormData) {
         setValidData(validFormData);
         // ! ------------------------------------------------------
