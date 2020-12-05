@@ -321,10 +321,10 @@ namespace AZLearn.Controllers
         #region /application/GetAssignedCourse
         [HttpGet(nameof(GetAssignedCourse))]
 
-        public ActionResult<Tuple<Course, string>> GetAssignedCourse([FromQuery] string courseId, [FromQuery] string cohortId)
+        public ActionResult<Tuple< string , string, string, string, string, string, string>> GetAssignedCourse([FromQuery] string courseId, [FromQuery] string cohortId)
 
         {
-            ActionResult<Tuple<Course, string>> result;
+            ActionResult<Tuple<string, string, string, string, string, string, string>> result;
             try
             {
                 result = CourseController.GetCourseByCohortId(courseId, cohortId);
@@ -1069,9 +1069,9 @@ namespace AZLearn.Controllers
         /// <param name="passwordHash"></param>
         /// <returns>Login Successful/Error message </returns>
         [HttpGet("Login")]
-        public ActionResult<Tuple<User, bool>> GetUserOnLogin(string email, string passwordHash)
+        public ActionResult<User> GetUserOnLogin(string email, string passwordHash)
         {
-            ActionResult<Tuple<User, bool>> result;
+            ActionResult<User> result;
             try
             {
                 result = UserController.GetUserOnLogin(email, passwordHash);

@@ -172,9 +172,9 @@ setFormSubmitted(formSubmitIndicator);
                   <Form.Group controlId="Description">
                   <Form.Label>Description</Form.Label>
 
-                  <Form.Control
+                  <Form.Control as="textarea"
                     required
-                    type="text"
+                    
                     maxlength="250"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
