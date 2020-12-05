@@ -24,12 +24,20 @@
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
     <Compile Remove="ClientApp\Models\**" />
+    <Compile Remove="ClientApp\src\components\Instructor\HomeworkCreateInstructor\**" />
     <Content Remove="$(SpaRoot)**" />
     <Content Remove="ClientApp\Models\**" />
+    <Content Remove="ClientApp\src\components\Instructor\HomeworkCreateInstructor\**" />
     <EmbeddedResource Remove="ClientApp\Models\**" />
+    <EmbeddedResource Remove="ClientApp\src\components\Instructor\HomeworkCreateInstructor\**" />
     <None Remove="$(SpaRoot)**" />
     <None Remove="ClientApp\Models\**" />
+    <None Remove="ClientApp\src\components\Instructor\HomeworkCreateInstructor\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="ClientApp\src\components\Instructor\HomeworkCreateInstructor\HomeworkCreateInstructor.jsx" />
   </ItemGroup>
 
   <ItemGroup>

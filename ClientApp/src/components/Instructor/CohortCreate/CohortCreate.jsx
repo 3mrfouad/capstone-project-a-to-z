@@ -221,7 +221,7 @@ const CohortCreate = () => {
                     : !loading && !error && success
                     ? "Cohort was successfully created"
                     : ""
-                  : "Error: Form were submitted with invalid data fields"
+                  : "Error: Form was submitted with invalid data fields"
                 : ""}
             </p>
             {/* ! ------------------------------------------------------  */}
@@ -293,7 +293,8 @@ const CohortCreate = () => {
                 <Form.Label>End Date</Form.Label>
                 <Form.Control
                   required
-                  type="date"
+                                  type="date"
+                                  min={startDate}
                   value={endDate}
                   onChange={(e) => setEndDate(String(e.target.value))}
                 ></Form.Control>
