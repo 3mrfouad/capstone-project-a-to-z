@@ -28,7 +28,7 @@ const CourseEdit = ({ match, history }) => {
   const { loading, error, course } = getCourseDetail;
 
   // ! (10.2) Anti-tamper validation - Validate (parameters)
-  function Validate(courseName, hours, description) {
+  function Validate(courseId, courseName, hours, description) {
     formSubmitIndicator = true;
 
     try {
@@ -94,7 +94,7 @@ const CourseEdit = ({ match, history }) => {
 
     e.preventDefault();
     // ! (10.4) Anti-tamper validation - calling Validate
-    Validate(courseName, hours, description);
+    Validate(courseId, courseName, hours, description);
     if (validFormData) {
       setValidData(validFormData);
       // ! ------------------------------------------------------
@@ -127,7 +127,7 @@ const CourseEdit = ({ match, history }) => {
             <Col xs={12} md={6}>
               <h2>Course</h2>
               {success && (
-                <Message variant="success">Update Successfully</Message>
+                <Message variant="success">Course Updated Successfully</Message>
               )}
               {/* (10.7) Anti-tamper validation - Alert message conditions   */}
               <p
@@ -147,11 +147,11 @@ const CourseEdit = ({ match, history }) => {
                 {formSubmitted
                   ? validData
                     ? !loading && error
-                      ? "Unsuccessful attempt to create a cohort"
+                      ? "Unsuccessful attempt to update a course"
                       : !loading && !error
-                      ? "Cohort was successfully created"
+                      ? "Course was successfully updated"
                       : ""
-                    : "Error: Form were submitted with invalid data fields"
+                    : "Error: Form was submitted with invalid data fields"
                   : ""}
               </p>
               {/* -----------------------------------------------  */}
