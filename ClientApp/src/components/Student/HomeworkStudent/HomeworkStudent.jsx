@@ -119,7 +119,7 @@ const HomeworkStudent = () => {
                       : !loading && !error && successCreate
                       ? "Timesheet was successfully updated"
                       : ""
-                    : "Error: Form were submitted with invalid data fields"
+                    : "Error: Form was submitted with invalid data fields"
                   : ""}
               </p>
               {/* ! ------------------------------------------------------  */}

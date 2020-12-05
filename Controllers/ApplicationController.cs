@@ -471,7 +471,55 @@ namespace AZLearn.Controllers
                 HomeworkController.CreateHomeworkByCourseId(courseId, instructorId, cohortId,
                     isAssignment, title, avgCompletionTime, dueDate, releaseDate,
                     documentLink, gitHubClassRoomLink);
+
                 result = StatusCode(200, "Successfully created new Homework");
+            }
+            catch (ValidationException e)
+            {
+                var error = "Error(s) During CreateHomework: " +
+                            e.ValidationExceptions.Select(x => x.Message)
+                                .Aggregate((x, y) => x + ", " + y);
+
+                result = BadRequest(error);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(500,
+                    "Unexpected server/database error occurred. System error message(s): " + e.Message);
+            }
+            return result;
+        }
+
+        #endregion
+
+        #region /application/CreateHomeworkRubrics
+
+        [HttpPost(nameof(CreateHomeworkRubrics))]
+        public ActionResult CreateHomeworkRubrics([FromQuery] string courseId, [FromQuery] string instructorId, [FromQuery] string cohortId, [FromQuery] string isAssignment, [FromQuery] string title, [FromQuery] string avgCompletionTime, [FromQuery] string dueDate, [FromQuery] string releaseDate,
+            [FromQuery] string documentLink, [FromQuery] string gitHubClassRoomLink, [FromBody] List<Tuple<string, string, string>> rubrics)
+        {
+            ActionResult result;
+            var practiceRubric = new List<Tuple<string, string, string>>();
+            try
+            {
+                var homeworkId = HomeworkController.CreateHomeworkByCourseId(courseId, instructorId, cohortId,
+                    isAssignment, title, avgCompletionTime, dueDate, releaseDate,
+                    documentLink, gitHubClassRoomLink);
+
+                if (rubrics.Count == 0)
+                {
+                    var practiceRubricTuple = new Tuple<string, string, string>("false",
+                        "Practice submitted on due date to GitHub classroom", "1");
+                    practiceRubric.Add(practiceRubricTuple);
+
+                    RubricController.CreateRubricsByHomeworkId(homeworkId, practiceRubric);
+                }
+                else
+                {
+                    RubricController.CreateRubricsByHomeworkId(homeworkId, rubrics);
+                }
+
+                result = StatusCode(200, "Successfully created new Homework and Rubrics");
             }
             catch (ValidationException e)
             {
@@ -670,6 +718,7 @@ namespace AZLearn.Controllers
 
         #endregion
 
+    
         #endregion
 
         #region GradeController
