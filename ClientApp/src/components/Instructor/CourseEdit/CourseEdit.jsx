@@ -161,7 +161,7 @@ setFormSubmitted(formSubmitIndicator);
                     type="number"
                     min={0}
                     max={999.99}
-                    step="0.1"
+                    step="0.25"
                     value={hours}
                     onChange={(e) => setHours(e.target.value)}
                   ></Form.Control>

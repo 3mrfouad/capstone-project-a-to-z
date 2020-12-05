@@ -117,15 +117,15 @@ const HomeworkCreateInstructor = ({ match, history }) => {
                       min={0}
                       max={999.99}
                       step="0.25"
-                      value={avgCompletionTime}
-                      onChange={(e) => setAvgCompletionTime(String(e.target.value))}
+                      value={avgCompletionTime ? avgCompletionTime : 0} 
+                      onChange= {(e) => setAvgCompletionTime(String(e.target.value))}
                     ></Form.Control>
                   </Form.Group>
 
                   <Form.Group controlId="Due Date">
                     <Form.Label>Due Date</Form.Label>
                     <Form.Control
-                      type="datetime"
+                      type="date"
                       min={releaseDate}
                       value={dueDate}
                       onChange={(e) => setDueDate(String(e.target.value))}
@@ -135,7 +135,7 @@ const HomeworkCreateInstructor = ({ match, history }) => {
                   <Form.Group controlId="Release Date">
                     <Form.Label>Release Date</Form.Label>
                     <Form.Control
-                      type="datetime"
+                      type="date"
                       value={releaseDate}
                       onChange={(e) => setReleaseDate(String(e.target.value))}
                     ></Form.Control>

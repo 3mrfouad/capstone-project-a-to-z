@@ -194,8 +194,8 @@ const HomeworkStudent = () => {
                     type="number"
                     min={0}
                     max={999.99}
-                    step="0.1"
-                    value={solvingHrs}
+                    step="0.25"
+                    value={solvingHrs? solvingHrs: 0}
                     onChange={(e) => setSolvingHrs(String(e.target.value))}
                   ></Form.Control>
                   <Form.Control.Feedback type="invalid">
@@ -209,8 +209,8 @@ const HomeworkStudent = () => {
                     type="number"
                     min={0}
                     max={999.99}
-                    step="0.1"
-                    value={studyHrs}
+                    step="0.25"
+                    value={studyHrs? studyHrs: 0 }
                     onChange={(e) => setStudyHrs(String(e.target.value))}
                   ></Form.Control>
                   <Form.Control.Feedback type="invalid">

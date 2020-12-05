@@ -22,7 +22,6 @@ const HomeworkEditInstructor = () => {
                   required
                   type="text"
                   maxLength="100"
-                  placeholder="Title of the Homework"
                   value={name}
                 ></Form.Control>
               </Form.Group>
@@ -53,14 +52,14 @@ const HomeworkEditInstructor = () => {
                  min={0}
                  max={999.99}
                  step="0.1"
-                 value={avgCompletionTime ? avgCompletionTime : "0"}                 
+                 value={avgCompletionTime ? avgCompletionTime : 0}                 
                 ></Form.Control>
               </Form.Group>
 
               <Form.Group controlId="Due Date">
                 <Form.Label>Due Date</Form.Label>
                 <Form.Control
-                  type="datetime"
+                  type="date"
                   min={releaseDate}
                   value={dueDate}
                 ></Form.Control>
@@ -69,7 +68,7 @@ const HomeworkEditInstructor = () => {
               <Form.Group controlId="Release Date">
                 <Form.Label>Release Date</Form.Label>
                 <Form.Control
-                type="datetime"      
+                type="date"      
                 value={releaseDate}
                 ></Form.Control>
               </Form.Group>
@@ -104,7 +103,6 @@ const HomeworkEditInstructor = () => {
                 <Form.Label>Criteria</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Enter Criteria of Rubrics"
                   value={criteria}
                 ></Form.Control>
               </Form.Group>
