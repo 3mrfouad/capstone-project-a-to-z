@@ -5,8 +5,9 @@ import {
   getHomeworkDetailInstructor,
   editHomeworkInstructor,
 } from "../../../actions/instructorActions";
+import { Link } from "react-router-dom";
 
-const HomeworkViewInstructor = ({ match }) => {
+const HomeworkViewInstructor = ({ match, history }) => {
   const homeworkId = match.params.id;
   const [courseId, setCourseId] = useState("");
   const [instructorId, setInstructorId] = useState("");
@@ -25,6 +26,9 @@ const HomeworkViewInstructor = ({ match }) => {
     dispatch(editHomeworkInstructor({}));
   };
 
+  const goBack = () => {
+    history.goBack();
+  };
   const { loading, homework } = useSelector(
     (state) => state.homeworkDetailInstructor
   );
@@ -43,7 +47,7 @@ const HomeworkViewInstructor = ({ match }) => {
                   <Form.Label>Title</Form.Label>
                   <Form.Control
                     type="text"
-                    value={homework.item3}
+                    value={homework.item1.title}
                   ></Form.Control>
                 </Form.Group>
                 <Form.Group controlId="Course">
@@ -102,37 +106,9 @@ const HomeworkViewInstructor = ({ match }) => {
                     value={homework.item3}
                   ></Form.Control>
                 </Form.Group>
-              </Form>
-              <Form>
-                <h3>Rubric</h3>
-                <Form.Group controlId="Challenge">
-                  <Form.Label>Challenge</Form.Label>
-                  <Form.Control
-                  //   type="text"
-                  //   placeholder="Enter Description"
-                  //   value={description}
-                  ></Form.Control>
-                </Form.Group>
-                <Form.Group controlId="Criteria">
-                  <Form.Label>Criteria</Form.Label>
-                  <Form.Control
-                    type="text"
-                    //   placeholder="Enter Description"
-                    value={homework.item3}
-                  ></Form.Control>
-                </Form.Group>
-                <Form.Group controlId="Weight">
-                  <Form.Label>Weight</Form.Label>
-                  <Form.Control
-                    type="text"
-                    //   placeholder="Enter Description"
-                    value={homework.item3}
-                  ></Form.Control>
-                </Form.Group>
+                <Link onClick={goBack}>Back</Link>
 
-                <a href="">Back</a>
-
-                <Button type="submit" variant="primary">
+                <Button type="submit" variant="primary" className="float-right">
                   Save
                 </Button>
               </Form>

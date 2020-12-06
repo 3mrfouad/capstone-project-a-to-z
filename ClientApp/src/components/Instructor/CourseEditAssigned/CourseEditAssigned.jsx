@@ -243,7 +243,7 @@ const CourseEditAssigned = ({ match }) => {
                     value={instructorId}
                     onChange={(e) => setInstructorId(e.target.value)}
                   >
-                    <option value="">Select</option>
+                    <option value="">{course.item2}</option>
                     {instructors.map((instructor, index) => (
                       <option value={instructor.userId} key={index}>
                         {instructor.name}
@@ -280,18 +280,18 @@ const CourseEditAssigned = ({ match }) => {
                 </Form.Group>
                 <Form.Group controlId="hours">
                   <Form.Label>Hours</Form.Label>
-                  <Form.Control disabled></Form.Control>
+                  <Form.Control disabled value={course.item5}></Form.Control>
                 </Form.Group>
                 <Form.Group controlId="description">
                   <Form.Label>Description</Form.Label>
-                  <Form.Control disabled></Form.Control>
+                  <Form.Control disabled value={course.item6}></Form.Control>
                 </Form.Group>
                 <Form.Group controlId="link">
                   <Form.Label>Resource Link</Form.Label>
                   <Form.Control
                     maxlength="250"
                     type="url"
-                    value={resourcesLink}
+                    value={course.item7}
                     onChange={(e) => setResourcesLink(e.target.value)}
                   ></Form.Control>
                 </Form.Group>

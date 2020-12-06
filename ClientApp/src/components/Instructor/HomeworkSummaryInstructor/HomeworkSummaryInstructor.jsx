@@ -83,9 +83,8 @@ const HomeworkSummaryInstructor = ({ match }) => {
                         <Link
                           to={`/homeworkviewinstructor/${homework.homeworkId}`}
                         >
-                          Details
+                          Details&&Edit
                         </Link>{" "}
-                        | Edit |{" "}
                         <Link to={"#"} onClick={onArchive(homework.homeworkId)}>
                           Archive
                         </Link>
