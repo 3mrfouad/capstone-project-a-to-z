@@ -82,8 +82,10 @@ const CohortEdit = ({ match, history }) => {
 
       if (!cohortId) {
         validFormData = false;
+        console.log("no cohortId");
       } else if (cohortId < 0 || cohortId > 2147483647) {
         validFormData = false;
+        console.log("out of range cohort Id");
       } else if (!name) {
         validFormData = false;
         console.log("name validate");
@@ -103,12 +105,7 @@ const CohortEdit = ({ match, history }) => {
         !(city === "edmonton" || city === "calgary" || city === "other")
       ) {
         validFormData = false;
-        console.log(
-          "modeOfTeaching value:",
-          modeOfTeaching.toLowerCase(),
-          "original:",
-          modeOfTeaching
-        );
+        console.log("city value:", city.toLowerCase(), "original:", city);
       } else if (!modeOfTeaching) {
         validFormData = false;
         console.log("modeOfTeaching");
@@ -285,7 +282,7 @@ const CohortEdit = ({ match, history }) => {
                   <Form.Control
                     required
                     type="text"
-                    maxLength="50"
+                    maxlength="50"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                   ></Form.Control>
@@ -313,8 +310,8 @@ const CohortEdit = ({ match, history }) => {
                     onChange={(e) => setModeOfTeaching(String(e.target.value))}
                   >
                     <option></option>
-                    <option value="Remote">Online</option>
-                    <option value="In-person">In Person</option>
+                    <option>Online</option>
+                    <option>In Person</option>
                   </Form.Control>
                 </Form.Group>
                 <Form.Group controlId="Start Date">
@@ -335,7 +332,7 @@ const CohortEdit = ({ match, history }) => {
                   <Form.Label>End Date</Form.Label>
                   <Form.Control
                     required
-                                          type="date"
+                    type="date"
                     min={startDate}
                     value={endDate.split("T")[0]}
                     onChange={(e) =>

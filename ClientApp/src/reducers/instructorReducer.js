@@ -323,6 +323,19 @@ export const editHomeworkInstructorStateReducer = (state = {}, action) => {
   }
 };
 
+export const archiveHomeworkInstructorStateReducer = (state = {}, action) => {
+  switch (action.type) {
+    case "HOMEWORK_INSTRUCTOR_ARCHIVE_REQUEST":
+      return { loading: true };
+    case "HOMEWORK_INSTRUCTOR_ARCHIVE_SUCCESS":
+      return { loading: false, success: true, homework: action.payload };
+    case "HOMEWORK_INSTRUCTOR_ARCHIVE_FAIL":
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
 export const userRegisterStateReducer = (state = {}, action) => {
   switch (action.type) {
     case "REGISTER_USER_REQUEST":

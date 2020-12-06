@@ -36,7 +36,7 @@ export const homeworkSummaryStudent = () => {
         data,
       } = await axios.get(
         "https://localhost:5001/application/homeworksummary",
-        { params: { courseId: "1", cohortId: "1" } }
+        { params: { courseId: "1", cohortId: "3" } }
       );
       dispatch({
         type: "HOMEWORK_SUMMARY_STUDENT_SUCCESS",
