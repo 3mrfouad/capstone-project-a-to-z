@@ -30,6 +30,14 @@ const HomeworkSummaryInstructor = ({ match }) => {
   };
   const { loading, error, homeworkSummary } = homeworkSummaryInstructor;
   const { courses } = useSelector((state) => state.getCoursesByCohortId);
+  while (
+    homeworkSummary === undefined ||
+    loading === undefined ||
+    error === undefined ||
+    courses === undefined
+  ) {
+    return <h3>Loading ...</h3>;
+  }
   return (
     <React.Fragment>
       <Container>

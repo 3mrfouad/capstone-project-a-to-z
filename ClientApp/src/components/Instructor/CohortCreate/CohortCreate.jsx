@@ -220,7 +220,7 @@ const CohortCreate = ({ history }) => {
               {formSubmitted
                 ? validData
                   ? !loading && error
-                    ? "Unsuccessful attempt to create a cohort"
+                    ? `Unsuccessful attempt to create a cohort.\r\n${error.data}`
                     : !loading && !error && success
                     ? "Cohort was successfully created"
                     : ""
