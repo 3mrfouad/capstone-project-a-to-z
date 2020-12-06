@@ -76,9 +76,9 @@ const ManageCourseInstructor = ({ history }) => {
           <button type="button" className="btn btn-link" onClick={goBack}>
             Back
           </button>{" "}
-          <Button href="/coursecreate" className="float-right mr-3">
-            Create Course
-          </Button>
+          <Link to="/coursecreate">
+            <Button className="float-right mr-3">Create Course</Button>{" "}
+          </Link>
         </Container>
       )}
     </React.Fragment>

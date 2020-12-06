@@ -8,6 +8,8 @@ import {
 } from "../../../actions/instructorActions";
 import { Link } from "react-router-dom";
 import Loader from "../../shared/Loader/Loader";
+import { Navbar } from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
 
 const CohortSummaryInstructor = ({ history }) => {
   const dispatch = useDispatch();
@@ -95,15 +97,17 @@ const CohortSummaryInstructor = ({ history }) => {
             <button type="button" className="btn btn-link" onClick={goBack}>
               Back
             </button>{" "}
-            <Button href="/cohortcreate" className="float-right mr-3">
-              Create Cohort
-            </Button>
-            <Button href="/registeruser" className="float-right mr-3">
-              Register Users
-            </Button>{" "}
-            <Button href="/managecourse" className="float-right mr-3">
-              Manage Course
-            </Button>{" "}
+            <Link to="/cohortcreate">
+              <Button className="float-right mr-3">Create Cohort</Button>
+            </Link>
+            <Link to="/registeruser">
+              <Button className="float-right mr-3" type="button">
+                Register Users
+              </Button>
+            </Link>
+            <Link to="/managecourse">
+              <Button className="float-right mr-3">Manage Course</Button>{" "}
+            </Link>
           </Container>
         </React.Fragment>
       )}

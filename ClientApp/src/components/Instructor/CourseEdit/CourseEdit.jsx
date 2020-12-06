@@ -117,6 +117,11 @@ const CourseEdit = ({ match, history }) => {
     setFormSubmitted(formSubmitIndicator);
     // !
   };
+
+  const goBack = () => {
+    history.goBack();
+  };
+
   return (
     <React.Fragment>
       {loading ? (
@@ -192,7 +197,7 @@ const CourseEdit = ({ match, history }) => {
                   <Form.Control
                     as="textarea"
                     required
-                    maxlength="250"
+                    maxLength="250"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                   ></Form.Control>
@@ -200,7 +205,7 @@ const CourseEdit = ({ match, history }) => {
                     Please enter description for Course.
                   </Form.Control.Feedback>
                 </Form.Group>
-                <button type="button" className="btn btn-link">
+                <button type="button" className="btn btn-link" onClick={goBack}>
                   Back
                 </button>{" "}
                 <Button type="submit" className="float-right">

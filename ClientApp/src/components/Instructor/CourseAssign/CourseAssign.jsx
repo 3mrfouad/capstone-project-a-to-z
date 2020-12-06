@@ -313,7 +313,7 @@ const CourseAssign = ({ match }) => {
               <Form.Group controlId="link">
                 <Form.Label>Resource Link</Form.Label>
                 <Form.Control
-                  maxlength="250"
+                  maxLength="250"
                   type="url"
                   value={resourcesLink}
                   onChange={(e) => setResourcesLink(e.target.value)}
