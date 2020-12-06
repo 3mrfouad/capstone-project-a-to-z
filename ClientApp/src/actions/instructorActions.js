@@ -50,11 +50,11 @@ export const cohortGet = (id) => {
   };
 };
 
-export const getHomeworkSummaryInstructor = (courseId, cohortId) => {
+export const getHomeworkSummaryInstructor = (ids) => {
   return async (dispatch) => {
     try {
       dispatch({ type: "HOMEWORKSUMMARY_INSTRUCTOR_REQUEST" });
-      const params = { courseId, cohortId };
+      const params = { courseId : ids.courseId, cohortId: ids.cohortId };
       const { data } = await axios.request({
         url:
           "https://localhost:5001/application/homeworksummary?" +
