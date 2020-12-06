@@ -81,7 +81,7 @@ const CohortSummaryInstructor = ({ history }) => {
                             </Button>
                             <Button
                               variant="primary"
-                              onClick={() => onArchive()}
+                              onClick={() => onArchive(cohort.cohortId)}
                             >
                               Yes
                             </Button>
