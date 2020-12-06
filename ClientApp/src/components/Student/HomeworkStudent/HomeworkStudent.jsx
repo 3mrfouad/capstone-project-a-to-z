@@ -7,10 +7,17 @@ import {
   homeworkStudent,
   createTimeSheetStudent,
 } from "../../../actions/studentActions";
-
-const HomeworkStudent = () => {
+import {
+  getAllCourses,
+  getAllInstructors,
+} from "../../../actions/instructorActions";
+const HomeworkStudent = ({ match }) => {
+  const studentId = match.params.studentId;
+  const homeworkId = match.params.homeworkId;
   const [solvingHrs, setSolvingHrs] = useState("");
   const [studyHrs, setStudyHrs] = useState("");
+  const [courseId, setCourseId] = useState("");
+  const [instructorId, setInstructorId] = useState("");
   const dispatch = useDispatch();
 
   //(1) Add validation states
@@ -31,10 +38,12 @@ const HomeworkStudent = () => {
     timeSheet,
     error,
   } = useSelector((state) => state.createTimeSheetStudent);
+  const { courses } = useSelector((state) => state.getAllCourses);
+  const { instructors } = useSelector((state) => state.getAllInstructors);
   useEffect(() => {
-    dispatch(homeworkStudent());
-    setSolvingHrs(homework[0].timesheets[0]);
-    setStudyHrs(homework[0].timesheets[1]);
+    dispatch(homeworkStudent(homeworkId));
+    dispatch(getAllCourses());
+    dispatch(getAllInstructors());
   }, [dispatch]);
   console.log(homework);
 
@@ -77,7 +86,7 @@ const HomeworkStudent = () => {
       if (validFormData) {
         setValidData(validFormData);
         // ! -------------------------------------------------
-        dispatch(createTimeSheetStudent(solvingHrs, studyHrs));
+        dispatch(updateTimeSheetStudent(solvingHrs, studyHrs));
         console.log("create timesheet");
       } else {
         // ! (10.5) Anti-tamper validation - Alert message conditions
@@ -126,31 +135,41 @@ const HomeworkStudent = () => {
               <Form>
                 <Form.Group controlId="title">
                   <Form.Label>Title</Form.Label>
-                  <Form.Control
-                    disabled
-                    value={homework[0].courseId}
-                  ></Form.Control>
+                  <Form.Control disabled value={homework.Title}></Form.Control>
                 </Form.Group>
                 <Form.Group controlId="Course">
                   <Form.Label>Course</Form.Label>
-                  <Form.Control
-                    disabled
-                    value={homework[0].courseId}
-                  ></Form.Control>
+                  <Form.Control as="select" required value={courseId} disabled>
+                    <option value="">{homework.CourseName}</option>
+                    {courses.map((course, index) => (
+                      <option value={course.courseId} key={index}>
+                        {course.name}
+                      </option>
+                    ))}
+                  </Form.Control>
                 </Form.Group>
                 <Form.Group controlId="instructor">
                   <Form.Label>Instructor</Form.Label>
                   <Form.Control
                     disabled
-                    value={homework[0].instructorId}
-                  ></Form.Control>
+                    as="select"
+                    required
+                    value={instructorId}
+                  >
+                    <option value="">{homework.InstructorName}</option>
+                    {instructors.map((instructor, index) => (
+                      <option value={instructor.userId} key={index}>
+                        {instructor.name}
+                      </option>
+                    ))}
+                  </Form.Control>
                 </Form.Group>
 
                 <Form.Group controlId="Avg Completion Time">
                   <Form.Label>Avg Completion Time</Form.Label>
                   <Form.Control
                     disabled
-                    value={homework[0].avgCompletionTime}
+                    value={homework.AvgCompletionTime}
                   ></Form.Control>
                 </Form.Group>
 
@@ -158,7 +177,7 @@ const HomeworkStudent = () => {
                   <Form.Label>Due Date</Form.Label>
                   <Form.Control
                     disabled
-                    value={homework[0].dueDate}
+                    value={homework.DueDate}
                   ></Form.Control>
                 </Form.Group>
 
@@ -166,7 +185,7 @@ const HomeworkStudent = () => {
                   <Form.Label>Release Date</Form.Label>
                   <Form.Control
                     disabled
-                    value={homework[0].releaseDate}
+                    value={homework.ReleaseDate}
                   ></Form.Control>
                 </Form.Group>
 
@@ -174,14 +193,14 @@ const HomeworkStudent = () => {
                   <Form.Label>DocLink</Form.Label>
                   <Form.Control
                     disabled
-                    value={homework[0].documentLink}
+                    value={homework.DocumentLink}
                   ></Form.Control>
                 </Form.Group>
                 <Form.Group controlId="GitHubLink">
                   <Form.Label>GitHubLink</Form.Label>
                   <Form.Control
                     disabled
-                    value={homework[0].gitHubClassRoomLink}
+                    value={homework.GitHubClassRoomLink}
                   ></Form.Control>
                 </Form.Group>
               </Form>
@@ -195,7 +214,7 @@ const HomeworkStudent = () => {
                     min={0}
                     max={999.99}
                     step="0.25"
-                    value={solvingHrs? solvingHrs: 0}
+                    value={solvingHrs ? solvingHrs : 0}
                     onChange={(e) => setSolvingHrs(String(e.target.value))}
                   ></Form.Control>
                   <Form.Control.Feedback type="invalid">
@@ -210,7 +229,7 @@ const HomeworkStudent = () => {
                     min={0}
                     max={999.99}
                     step="0.25"
-                    value={studyHrs? studyHrs: 0 }
+                    value={studyHrs ? studyHrs : 0}
                     onChange={(e) => setStudyHrs(String(e.target.value))}
                   ></Form.Control>
                   <Form.Control.Feedback type="invalid">
@@ -223,7 +242,7 @@ const HomeworkStudent = () => {
                   <Form.Control
                     disabled
                     value={
-                      studyHrs + solvingHrs
+                      Number(studyHrs) + Number(solvingHrs)
                       // homework[0].timesheets[0] + homework[0].timesheets[1]
                     }
                   ></Form.Control>

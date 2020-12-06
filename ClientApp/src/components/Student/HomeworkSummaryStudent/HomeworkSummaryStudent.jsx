@@ -6,15 +6,18 @@ import {
   homeworkSummaryStudent,
   courseSummaryStudent,
 } from "../../../actions/studentActions";
+import { Link } from "react-router-dom";
 
-const HomeworkSummaryStudent = () => {
+const HomeworkSummaryStudent = ({ match }) => {
+  const studentId = match.params.studentId;
+  const courseId = match.params.courseId;
   const dispatch = useDispatch();
   const { homework, loading } = useSelector(
     (state) => state.homeworkSummaryStudent
   );
   const { courses } = useSelector((state) => state.courseSummaryStudent);
   useEffect(() => {
-    dispatch(homeworkSummaryStudent());
+    dispatch(homeworkSummaryStudent(courseId));
     dispatch(courseSummaryStudent());
   }, [dispatch]);
   return (
@@ -24,13 +27,14 @@ const HomeworkSummaryStudent = () => {
           <Col xs={2}>
             <Nav defaultActiveKey="/home" className="flex-column mt-5">
               {courses.map((course, index) => (
-                <Nav.Link key={index} eventKey="link-1">
+                <Nav.Link
+                  key={index}
+                  href={`/studenthomework/${studentId}/${course.item1.courseId}`}
+                >
                   {" "}
-                  {course.name}{" "}
+                  {course.item1.name}{" "}
                 </Nav.Link>
               ))}
-              {/* <Nav.Link href="/home">Course Name</Nav.Link>
-              <Nav.Link eventKey="link-1">Course Name</Nav.Link> */}
             </Nav>
           </Col>
           <Col xs={10}>
@@ -47,12 +51,17 @@ const HomeworkSummaryStudent = () => {
               <tbody>
                 {homework.map((item, index) => (
                   <tr key={index}>
-                    <td>{item.homeworkId}</td>
+                    <td>{item.title}</td>
                     <td>{item.dueDate}</td>
                     <td>{item.gitHubClassRoomLink}</td>
                     <td>category</td>
                     <td>
-                      <a href="#">View</a>|<a href="#">Grades</a>
+                      <Link
+                        to={`/homeworkcardstudent/${studentId}/${item.homeworkId}`}
+                      >
+                        View
+                      </Link>{" "}
+                      |<a href="#">Grades</a>
                     </td>
                   </tr>
                 ))}

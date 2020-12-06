@@ -3,8 +3,11 @@ import { Table, Container, Button } from "react-bootstrap";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { courseSummaryStudent } from "../../../actions/studentActions";
+import { Link } from "react-router-dom";
 
-const CourseSummaryStudent = () => {
+const CourseSummaryStudent = ({ match, history }) => {
+  const studentId = match.params.userId;
+  console.log(studentId);
   const dispatch = useDispatch();
   const { courses, loading } = useSelector(
     (state) => state.courseSummaryStudent
@@ -12,6 +15,9 @@ const CourseSummaryStudent = () => {
   useEffect(() => {
     dispatch(courseSummaryStudent());
   }, [dispatch]);
+  const goBack = () => {
+    history.goBack();
+  };
   return (
     <React.Fragment>
       <Container>
@@ -31,16 +37,20 @@ const CourseSummaryStudent = () => {
                 <td>{course.item1.name}</td>
                 <td>{course.item1.description}</td>
                 <td>{course.item1.durationHrs}</td>
-                <td>{}</td>
+                <td>{course.item2}</td>
                 <td>
                   {" "}
-                  <a href="#">Homework</a>
+                  <Link
+                    to={`/studenthomework/${studentId}/${course.item1.courseId}`}
+                  >
+                    Homework
+                  </Link>
                 </td>
               </tr>
             ))}
           </tbody>
         </Table>
-        <button type="button" className="btn btn-link">
+        <button type="button" className="btn btn-link" onClick={goBack}>
           Back
         </button>
       </Container>
