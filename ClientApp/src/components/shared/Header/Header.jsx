@@ -24,7 +24,7 @@ const Header = () => {
         <Navbar bg="light" expand="lg" collapseOnSelect>
           <Container>
             <LinkContainer to="/">
-              <Navbar.Brand>XXXXX SYSTEM</Navbar.Brand>
+              <Navbar.Brand>AZ Learn</Navbar.Brand>
             </LinkContainer>
             {user && user.isInstructor ? (
               <React.Fragment>

@@ -3,7 +3,7 @@ import { Form, Button, Row, Col, Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { createCourse } from "../../../actions/instructorActions";
 
-const CourseCreate = () => {
+const CourseCreate = ({ history }) => {
   const [courseName, setCourseName] = useState("");
   const [hours, setHours] = useState("");
   const [description, setDescription] = useState("");
@@ -28,36 +28,40 @@ const CourseCreate = () => {
   const { loading, error, course } = courseCreate;
 
   // ! (10.2) Anti-tamper validation - Validate (parameters)
-  function Validate(courseName,
-    hours,
-    description
-  ) {
-
+  function Validate(courseName, hours, description) {
     formSubmitIndicator = true;
 
     try {
-
       courseName = courseName.trim().toLowerCase();
       hours = hours.trim().toLowerCase();
       description = description.trim().toLowerCase();
 
-      if (!courseName) { validFormData = false; }
-      else if (courseName.Length > 50) { validFormData = false; }
-      else if (!hours) { validFormData = false; }
-      else if (parseFloat(hours) > 999.99 || parseFloat(hours) < 0) { validFormData = false; console.log("hours: ", parseFloat(hours)); }
-      else if (!description) { validFormData = false; console.log("description"); }
-      else if (description.Length > 250) { validFormData = false; console.log("description length"); }
-
-      else { validFormData = true; console.log("All good :", validFormData); }
-    }
-    catch (Exception) {
+      if (!courseName) {
+        validFormData = false;
+      } else if (courseName.Length > 50) {
+        validFormData = false;
+      } else if (!hours) {
+        validFormData = false;
+      } else if (parseFloat(hours) > 999.99 || parseFloat(hours) < 0) {
+        validFormData = false;
+        console.log("hours: ", parseFloat(hours));
+      } else if (!description) {
+        validFormData = false;
+        console.log("description");
+      } else if (description.Length > 250) {
+        validFormData = false;
+        console.log("description length");
+      } else {
+        validFormData = true;
+        console.log("All good :", validFormData);
+      }
+    } catch (Exception) {
       validFormData = false;
     }
-  };
+  }
   // ! ------------------------------------------------------
 
   const submitHandler = (e) => {
-
     //(2) Add form validation condition block if-else
     const form = e.currentTarget;
     if (form.checkValidity() === false) {
@@ -69,11 +73,8 @@ const CourseCreate = () => {
     //(3) Add business logic- No business Logic for now
     e.preventDefault();
 
-    // ! (10.4) Anti-tamper validation - calling Validate     
-    Validate(courseName,
-      hours,
-      description,
-    );
+    // ! (10.4) Anti-tamper validation - calling Validate
+    Validate(courseName, hours, description);
     if (validFormData) {
       setValidData(validFormData);
       // ! ------------------------------------------------------
@@ -86,16 +87,19 @@ const CourseCreate = () => {
           description,
         })
       );
-    }
-    else {
-      // ! (10.5) Anti-tamper validation - Alert message conditions  
+    } else {
+      // ! (10.5) Anti-tamper validation - Alert message conditions
       setValidData(validFormData);
     }
 
-    // ! (10.6) Anti-tamper validation - Alert message conditions  
+    // ! (10.6) Anti-tamper validation - Alert message conditions
     setFormSubmitted(formSubmitIndicator);
     // ! ------------------------------------------------------
   };
+  const goBack = () => {
+    history.goBack();
+  };
+
   return (
     <React.Fragment>
       <Container>
@@ -103,18 +107,29 @@ const CourseCreate = () => {
           <Col xs={12} md={6}>
             <h2>Course</h2>
             {/* (10.7) Anti-tamper validation - Alert message conditions   */}
-            <p className=
-              {
-                formSubmitted ? (validData ? ((!loading && error) ? "alert alert-danger" :
-                  ((!loading && !error) ? "alert alert-success" : "")) :
-                  "alert alert-danger") : ""
+            <p
+              className={
+                formSubmitted
+                  ? validData
+                    ? !loading && error
+                      ? "alert alert-danger"
+                      : !loading && !error
+                      ? "alert alert-success"
+                      : ""
+                    : "alert alert-danger"
+                  : ""
               }
-              role="alert">
-              {
-                formSubmitted ? (validData ? ((!loading && error) ? "Unsuccessful attempt to create a course" :
-                  ((!loading && !error) ? "Course was successfully created" : "")) :
-                  "Error: Form was submitted with invalid data fields") : ""
-              }
+              role="alert"
+            >
+              {formSubmitted
+                ? validData
+                  ? !loading && error
+                    ? "Unsuccessful attempt to create a course"
+                    : !loading && !error
+                    ? "Course was successfully created"
+                    : ""
+                  : "Error: Form was submitted with invalid data fields"
+                : ""}
             </p>
             {/* -----------------------------------------------  */}
             <Form noValidate validated={validated} onSubmit={submitHandler}>
@@ -141,8 +156,7 @@ const CourseCreate = () => {
                   min={0}
                   max={999.99}
                   step="0.25"
-                                  value={hours}
-
+                  value={hours}
                   onChange={(e) => setHours(String(e.target.value))}
                 ></Form.Control>
                 <Form.Control.Feedback type="invalid">
@@ -162,9 +176,8 @@ const CourseCreate = () => {
                 <Form.Control.Feedback type="invalid">
                   Please enter description for Course.
                 </Form.Control.Feedback>
-
               </Form.Group>
-              <button type="button" className="btn btn-link">
+              <button type="button" className="btn btn-link" onClick={goBack}>
                 Back
               </button>{" "}
               <Button type="submit" className="float-right">

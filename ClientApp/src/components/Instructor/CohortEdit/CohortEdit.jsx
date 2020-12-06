@@ -365,7 +365,9 @@ const CohortEdit = ({ match, history }) => {
                     Please choose a city.
                   </Form.Control.Feedback>
                 </Form.Group>
-                <Button onClick={goBack}>Back</Button>
+                <button type="button" className="btn btn-link" onClick={goBack}>
+                  Back
+                </button>{" "}
                 <Button type="submit" variant="primary" className="float-right">
                   {" "}
                   Save

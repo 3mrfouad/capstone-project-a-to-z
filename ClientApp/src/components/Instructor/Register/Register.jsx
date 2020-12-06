@@ -7,7 +7,7 @@ import { registerUser } from "../../../actions/instructorActions";
 let loading = false;
 let error = false;
 // let success = true;
-const Register = () => {
+const Register = ({ history }) => {
   const dispatch = useDispatch();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -149,13 +149,15 @@ const Register = () => {
     setFormSubmitted(formSubmitIndicator);
     // ! ------------------------------------------------------
   };
-
+  const goBack = () => {
+    history.goBack();
+  };
   return (
     <React.Fragment>
       <Container>
         <Row className="justify-content-md-center">
-                  <Col xs={12} md={6}>
-                      <h2>Register</h2>
+          <Col xs={12} md={6}>
+            <h2>Register</h2>
             {/* {error && <Message variant="danger">{error}</Message>}
             {loading && <Loader />} */}
             {/* ! (10.7) Anti-tamper validation - Alert message conditions   */}
@@ -203,9 +205,7 @@ const Register = () => {
                 <Form.Control
                   required
                   type="email"
-                                  maxLength="50"
-
-
+                  maxLength="50"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 ></Form.Control>
@@ -213,7 +213,6 @@ const Register = () => {
                   Please enter a valid email. e.g. youremailaddress@domain.com
                 </Form.Control.Feedback>
               </Form.Group>
-
               <Form.Group controlId="password">
                 <Form.Label>Password</Form.Label>
                 <Form.Control
@@ -225,7 +224,10 @@ const Register = () => {
                   onChange={(e) => setPassword(e.target.value)}
                 ></Form.Control>
                 <Form.Control.Feedback type="invalid">
-                                  Please enter a valid password.Password is in inappropriate format: Password must be: at least one upper case letter, at least one lower case letter, at least one digit , at least one special character, minimum 8 characters in length.
+                  Please enter a valid password.Password is in inappropriate
+                  format: Password must be: at least one upper case letter, at
+                  least one lower case letter, at least one digit , at least one
+                  special character, minimum 8 characters in length.
                 </Form.Control.Feedback>
               </Form.Group>
               <Form.Group controlId="cohort">
@@ -249,7 +251,10 @@ const Register = () => {
                   onChange={handleChange}
                 />
               </Form.Group>
-              <Button type="submit" variant="primary">
+              <button type="button" className="btn btn-link" onClick={goBack}>
+                Back
+              </button>{" "}
+              <Button className="float-right" type="submit" variant="primary">
                 {" "}
                 Register
               </Button>
