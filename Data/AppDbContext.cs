@@ -24,6 +24,7 @@ namespace AZLearn.Data
         public virtual DbSet<Notification> Notifications { get; set; }
         public virtual DbSet<User> Users { get; set; }
 
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -39,6 +40,7 @@ namespace AZLearn.Data
                 optionsBuilder.UseMySql(connection, x => x.ServerVersion(version));
             }
         }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

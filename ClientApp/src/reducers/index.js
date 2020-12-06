@@ -23,6 +23,8 @@ import {
   createHomeworkInstructorReducer,
   userRegisterStateReducer,
   userLoginStateReducer,
+  editHomeworkInstructorStateReducer,
+  archiveHomeworkInstructorStateReducer,
 } from "./instructorReducer";
 import {
   courseSummaryStudentReducer,
@@ -61,6 +63,8 @@ const rootReducers = combineReducers({
   createHomeworkInstructor: createHomeworkInstructorReducer,
   userRegisterState: userRegisterStateReducer,
   userLoginState: userLoginStateReducer,
+  editHomeworkInstructorState: editHomeworkInstructorStateReducer,
+  archiveHomeworkInstructorState: archiveHomeworkInstructorStateReducer,
 });
 
 export default rootReducers;

@@ -2,81 +2,81 @@ import React, { useEffect } from "react";
 import { Table, Container, Button, Nav, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { getGradeSummaryInstructor } from "../../../actions/instructorActions";
+import { getHomeworkSummaryInstructor } from "../../../actions/instructorActions";
+
 import { Link } from "react-router-dom";
 
 const GradingSummary = ({ match }) => {
   const cohortId = match.params.cohortId;
   const homeworkId = match.params.homeworkId;
+  const courseId = match.params.courseId;
+
   const dispatch = useDispatch();
   useEffect(() => {
     // get cohort by id
     // populate the cohort data in here
     dispatch(getGradeSummaryInstructor({ cohortId, homeworkId }));
-    // dispatch(getCoursesByCohortId(cohortId));
+    dispatch(getHomeworkSummaryInstructor({ courseId, cohortId }));
   }, [dispatch]);
-  const gradeSummaryInstructor = useSelector(
-    (state) => state.gradeSummaryInstructor
+
+  const { homeworkSummary } = useSelector((state) => state.homeworkSummaryInstructor);
+  const { loading, error, grade } = useSelector((state) => state.gradeSummaryInstructor
   );
-  const { loading, error, grade } = gradeSummaryInstructor;
-  // const { courses } = useSelector((state) => state.getCoursesByCohortId);
+  console.log("Loading: ", loading);
+  console.log("Grades: ", grade);
+  console.log("Loading: ", loading);
+  console.log("Homeworks: ", homeworkSummary);
+
+  while (homeworkSummary === undefined || loading === undefined || grade === undefined) {
+    return <h3>Loading ...</h3>;
+  }
+
   return (
+
     <React.Fragment>
-      {/* <Container>
-        <Row>
-          <Col xs={2}>
-            <Nav defaultActiveKey="/home" className="flex-column">
-              {courses.map((course, index) => (
-                <Nav.Link
-                  href={`/instructorhomework/${cohortId}/${course.item1.courseId}`}
-                  key={index}
-                >
-                  {course.item1.name}
-                </Nav.Link>
-              ))}
-            </Nav>
-          </Col>
-          <Col xs={10}>
-            <Table>
-              <thead>
-                <tr>
-                  <th>Homework Name</th>
-                  <th>Due Date</th>
-                  <th>Release Date</th>
-                  <th>GitHub</th>
-                  <th>Category</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
+      {loading ? <p></p> : (
+        <Container>
+          <Row>
+            {<Col xs={2}>
+              <Nav defaultActiveKey="/home" className="flex-column">
                 {homeworkSummary.map((homework, index) => (
-                  <tr key={index}>
-                    <td>{homework.title}</td>
-                    <td>{homework.dueDate}</td>
-                    <td>{homework.releaseDate}</td>
-                    <td>
-                      <a target="_blank" href={homework.documentLink}>
-                        GitHubLink
-                      </a>
-                    </td>
-                    <td>{homework.isAssignment ? "Assignment" : "Practice"}</td>
-                    <td>
-                      Grades |{" "}
-                      <Link
-                        to={`/homeworkviewinstructor/${homework.homeworkId}`}
-                      >
-                        Details
-                      </Link>{" "}
-                      | Edit | Archive
-                    </td>
-                  </tr>
+                  <Nav.Link
+                    href={`/gradingsummary/${cohortId}/${homework.homeworkId}/${courseId}`}
+                    key={index}
+                  >
+                    {homework.title}
+                  </Nav.Link>
                 ))}
-              </tbody>
-            </Table>
-            <Button>Back</Button>{" "}
-            <Button className="float-right">Create</Button>
-          </Col>
-        </Row>
-      </Container> */}
+              </Nav>
+            </Col>}
+            <Col xs={10}>
+              <Table>
+                <thead>
+                  <tr>
+                    <th>Student Name</th>
+                    <th>Requirements Marks</th>
+                    <th>Challenges Marks</th>
+                    <th>Total Marks</th>
+                    <th>Total Time</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {grade.map((Indvgrade, index) => (
+                    <tr key={index}>
+                      <td>{Indvgrade.studentName}</td>
+                      <td>{Indvgrade.marksInRequirement}</td>
+                      <td>{Indvgrade.marksInChallenge}</td>
+                      <td>{Indvgrade.totalMarks}</td>
+                      <td>{Indvgrade.totalTimeSpentOnHomework}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+              <Button>Back</Button>{" "}
+              <Button className="float-right">Create</Button>
+            </Col>
+          </Row>
+        </Container>)}
     </React.Fragment>
   );
 };
