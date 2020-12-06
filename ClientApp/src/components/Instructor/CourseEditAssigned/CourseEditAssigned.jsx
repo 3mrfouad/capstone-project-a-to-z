@@ -7,7 +7,7 @@ import {
   editAssignedCourse,
 } from "../../../actions/instructorActions";
 
-const CourseEditAssigned = ({ match }) => {
+const CourseEditAssigned = ({ match, history }) => {
   const cohortId = match.params.id;
   const courseId = match.params.courseId;
   const dispatch = useDispatch();
@@ -189,6 +189,9 @@ const CourseEditAssigned = ({ match }) => {
     setFormSubmitted(formSubmitIndicator);
     // ! ------------------------------------------------------
   };
+  const goBack = () => {
+    history.goBack();
+  };
   return (
     <React.Fragment>
       {loading ? (
@@ -234,7 +237,6 @@ const CourseEditAssigned = ({ match }) => {
                   ))} */}
                   </Form.Control>
                 </Form.Group>
-
                 <Form.Group controlId="instructor">
                   <Form.Label>Instructor</Form.Label>
                   <Form.Control
@@ -295,9 +297,9 @@ const CourseEditAssigned = ({ match }) => {
                     onChange={(e) => setResourcesLink(e.target.value)}
                   ></Form.Control>
                 </Form.Group>
-                <button type="button" className="btn btn-link">
+                <button type="button" className="btn btn-link" onClick={goBack}>
                   Back
-                </button>
+                </button>{" "}
                 <Button type="submit" variant="primary" className="float-right">
                   {" "}
                   Save
