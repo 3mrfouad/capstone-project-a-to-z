@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getHomeworkSummaryInstructor,
   getCoursesByCohortId,
+  archiveHomework,
 } from "../../../actions/instructorActions";
 import { Link } from "react-router-dom";
 
@@ -20,6 +21,13 @@ const HomeworkSummaryInstructor = ({ match }) => {
   const homeworkSummaryInstructor = useSelector(
     (state) => state.homeworkSummaryInstructor
   );
+  const archiveHomeworkInstructorState = useSelector(
+    (state) => state.archiveHomeworkInstructorState
+  );
+
+  const onArchive = (id) => {
+    // dispatch(archiveHomework({ id }));
+  };
   const { loading, error, homeworkSummary } = homeworkSummaryInstructor;
   const { courses } = useSelector((state) => state.getCoursesByCohortId);
   return (
@@ -51,32 +59,39 @@ const HomeworkSummaryInstructor = ({ match }) => {
                 </tr>
               </thead>
               <tbody>
-                {homeworkSummary.map((homework, index) => (
-                  <tr key={index}>
-                    <td>{homework.title}</td>
-                    <td>{homework.dueDate}</td>
-                    <td>{homework.releaseDate}</td>
-                    <td>
-                      <a target="_blank" href={homework.documentLink}>
-                        GitHubLink
-                      </a>
-                    </td>
-                    <td>{homework.isAssignment ? "Assignment" : "Practice"}</td>
-                    <td>
-                      <Link
-                        to={`/gradingsummary/${homework.cohortId}/${homework.homeworkId}`}
-                      >
-                        Grades |{" "}
-                      </Link>
-                      <Link
-                        to={`/homeworkviewinstructor/${homework.homeworkId}`}
-                      >
-                        Details
-                      </Link>{" "}
-                      | Edit | Archive
-                    </td>
-                  </tr>
-                ))}
+                {homeworkSummary
+                  .filter((homework) => homework.archive == false)
+                  .map((homework, index) => (
+                    <tr key={index}>
+                      <td>{homework.title}</td>
+                      <td>{homework.dueDate}</td>
+                      <td>{homework.releaseDate}</td>
+                      <td>
+                        <a target="_blank" href={homework.documentLink}>
+                          GitHubLink
+                        </a>
+                      </td>
+                      <td>
+                        {homework.isAssignment ? "Assignment" : "Practice"}
+                      </td>
+                      <td>
+                        <Link
+                          to={`/gradingsummary/${homework.cohortId}/${homework.homeworkId}`}
+                        >
+                          Grades |{" "}
+                        </Link>
+                        <Link
+                          to={`/homeworkviewinstructor/${homework.homeworkId}`}
+                        >
+                          Details
+                        </Link>{" "}
+                        | Edit |{" "}
+                        <Link to={"#"} onClick={onArchive(homework.homeworkId)}>
+                          Archive
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </Table>
             <Button>Back</Button>{" "}
