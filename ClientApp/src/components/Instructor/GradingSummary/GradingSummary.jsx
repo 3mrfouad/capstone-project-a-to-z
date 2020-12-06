@@ -54,9 +54,9 @@ const GradingSummary = ({ match }) => {
                 <thead>
                   <tr>
                     <th>Student Name</th>
-                    <th>Requirements</th>
-                    <th>Challenges</th>
-                    <th>Total Mark</th>
+                    <th>Requirements Marks</th>
+                    <th>Challenges Marks</th>
+                    <th>Total Marks</th>
                     <th>Total Time</th>
                   </tr>
                 </thead>
@@ -66,7 +66,7 @@ const GradingSummary = ({ match }) => {
                       <td>{Indvgrade.studentName}</td>
                       <td>{Indvgrade.marksInRequirement}</td>
                       <td>{Indvgrade.marksInChallenge}</td>
-                      <td>{Indvgrade.totalMark}</td>
+                      <td>{Indvgrade.totalMarks}</td>
                       <td>{Indvgrade.totalTimeSpentOnHomework}</td>
                     </tr>
                   ))}
