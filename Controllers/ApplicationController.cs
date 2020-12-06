@@ -321,7 +321,7 @@ namespace AZLearn.Controllers
         #region /application/GetAssignedCourse
         [HttpGet(nameof(GetAssignedCourse))]
 
-        public ActionResult<Tuple< string , string, string, string, string, string, string>> GetAssignedCourse([FromQuery] string courseId, [FromQuery] string cohortId)
+        public ActionResult<Tuple<string, string, string, string, string, string, string>> GetAssignedCourse([FromQuery] string courseId, [FromQuery] string cohortId)
 
         {
             ActionResult<Tuple<string, string, string, string, string, string, string>> result;
@@ -461,7 +461,7 @@ namespace AZLearn.Controllers
         #region /application/CreateHomework
 
         [HttpPost(nameof(CreateHomework))]
-        public ActionResult CreateHomework([FromQuery]string courseId, [FromQuery] string instructorId, [FromQuery] string cohortId,
+        public ActionResult CreateHomework([FromQuery] string courseId, [FromQuery] string instructorId, [FromQuery] string cohortId,
             [FromQuery] string isAssignment, [FromQuery] string title, [FromQuery] string avgCompletionTime, [FromQuery] string dueDate, [FromQuery] string releaseDate,
             [FromQuery] string documentLink, [FromQuery] string gitHubClassRoomLink)
         {
@@ -581,7 +581,7 @@ namespace AZLearn.Controllers
         #region /application/UpdateHomeworkRubrics
 
         [HttpPatch(nameof(UpdateHomework))]
-        public ActionResult UpdateHomeworkRubrics ([FromQuery] string homeworkId, [FromQuery] string courseId, [FromQuery] string instructorId, [FromQuery] string cohortId,
+        public ActionResult UpdateHomeworkRubrics([FromQuery] string homeworkId, [FromQuery] string courseId, [FromQuery] string instructorId, [FromQuery] string cohortId,
             [FromQuery] string isAssignment, [FromQuery] string title, [FromQuery] string avgCompletionTime, [FromQuery] string dueDate, [FromQuery] string releaseDate, [FromQuery]
             string documentLink, [FromQuery] string gitHubClassRoomLink, [FromBody] Dictionary<string, Tuple<string, string, string>> rubrics)
 
@@ -692,9 +692,9 @@ namespace AZLearn.Controllers
         /// <param name="homeworkId"></param>
         /// <returns>A homework ,instructor name and course name</returns>
         [HttpGet("GetHomework")]
-        public ActionResult<Tuple<Homework, string, string>> GetHomeworkForInstructor(string homeworkId)
+        public ActionResult<Dictionary<string, string>> GetHomeworkForInstructor(string homeworkId)
         {
-            ActionResult<Tuple<Homework, string, string>> result;
+            ActionResult<Dictionary<string, string>> result;
             try
             {
                 var homework = HomeworkController.GetHomeworkById(homeworkId);
@@ -703,7 +703,24 @@ namespace AZLearn.Controllers
                 var instructorId = homework.InstructorId.ToString();
                 var instructorName = UserController.GetUserById(instructorId).Name;
 
-                result = new Tuple<Homework, string, string>(homework, instructorName, courseName);
+                result = new Dictionary<string, string>
+                {
+
+                    {"CourseId", homework.CourseId.ToString() },
+                    {"InstructorId", homework.InstructorId.ToString()},
+                    {"CohortId", homework.CohortId.ToString()},
+                    {"IsAssignment", homework.IsAssignment.ToString()},
+                    {"Title",homework.Title},
+                    {"AvgCompletionTime", homework.AvgCompletionTime.ToString()},
+                    {"DueDate", homework.DueDate.ToString()},
+                    {"ReleaseDate", homework.ReleaseDate.ToString()},
+                    {"DocumentLink", homework.DocumentLink},
+                    {"GitHubClassRoomLink", homework.GitHubClassRoomLink},
+                    {"Archive", homework.Archive.ToString()},
+                    {"InstructorName", instructorName},
+                    {"CourseName", courseName},
+
+                };
             }
             catch (ValidationException e)
             {
@@ -802,7 +819,7 @@ namespace AZLearn.Controllers
 
         #endregion
 
-    
+
         #endregion
 
         #region GradeController
@@ -935,7 +952,7 @@ namespace AZLearn.Controllers
 
         #endregion
 
-          #region /application/InstructorGradeSummary
+        #region /application/InstructorGradeSummary
 
         /// <summary>
         ///     GetGradeSummaryForInstructor
@@ -946,7 +963,7 @@ namespace AZLearn.Controllers
         /// <param name="homeworkId"></param>
         /// <returns>custom object contains GradeSummery and Timesheet Summary for all students for a specified Homework</returns>
         [HttpGet("InstructorGradeSummary")]
-        public ActionResult<List<GradeSummaryTypeForInstructor>> GetGradeSummaryForInstructor([FromQuery]string cohortId,
+        public ActionResult<List<GradeSummaryTypeForInstructor>> GetGradeSummaryForInstructor([FromQuery] string cohortId,
             [FromQuery] string homeworkId)
         {
             ActionResult<List<GradeSummaryTypeForInstructor>> result;
@@ -1166,7 +1183,7 @@ namespace AZLearn.Controllers
         /// <param name="isInstructor"></param>
         /// <returns>Success/Error message</returns>
         [HttpPost(nameof(CreateUser))]
-        public ActionResult CreateUser([FromQuery]string cohortId, [FromQuery] string name, [FromQuery] string passwordHash, [FromQuery] string email, [FromQuery] string isInstructor)
+        public ActionResult CreateUser([FromQuery] string cohortId, [FromQuery] string name, [FromQuery] string passwordHash, [FromQuery] string email, [FromQuery] string isInstructor)
         {
             ActionResult result;
             try
@@ -1297,7 +1314,7 @@ namespace AZLearn.Controllers
         #region /application/ArchiveAssignedCourse
 
         [HttpPatch(nameof(ArchiveAssignedCourse))]
-        public ActionResult ArchiveAssignedCourse([FromQuery]string courseId, [FromQuery] string cohortId)
+        public ActionResult ArchiveAssignedCourse([FromQuery] string courseId, [FromQuery] string cohortId)
         {
             ActionResult result;
 
