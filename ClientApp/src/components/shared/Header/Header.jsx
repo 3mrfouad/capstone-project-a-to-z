@@ -31,7 +31,7 @@ const Header = () => {
                 <LinkContainer to="/cohortsummary">
                   <Navbar.Brand>Cohorts</Navbar.Brand>
                 </LinkContainer>
-                <LinkContainer to="/coursesummary/3">
+                <LinkContainer to={`/coursesummary/3`}>
                   <Navbar.Brand>Courses</Navbar.Brand>
                 </LinkContainer>
               </React.Fragment>
@@ -40,7 +40,7 @@ const Header = () => {
             )}
             {user && !user.isInstructor ? (
               <React.Fragment>
-                <LinkContainer to="/student">
+                <LinkContainer to={`/student/${user.userId}`}>
                   <Navbar.Brand>Courses</Navbar.Brand>
                 </LinkContainer>
               </React.Fragment>

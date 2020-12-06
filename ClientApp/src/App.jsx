@@ -28,14 +28,18 @@ const App = () => {
         <Header />
         <Switch>
           <Route path="/" exact component={Login} />
-          <Route path="/student" exact component={CourseSummaryStudent} />
+          <Route
+            path="/student/:userId"
+            exact
+            component={CourseSummaryStudent}
+          />
           <Route
             path="/coursesummary/:id"
             exact
             component={CourseSummaryInstructor}
           />
           <Route
-            path="/studenthomework"
+            path="/studenthomework/:studentId/:courseId"
             exact
             component={HomeworkSummaryStudent}
           />
@@ -50,7 +54,7 @@ const App = () => {
             component={HomeworkCreateInstructor}
           />
           <Route
-            path="/homeworkcardstudent"
+            path="/homeworkcardstudent/:studentId/:homeworkId"
             exact
             component={HomeworkStudent}
           />
