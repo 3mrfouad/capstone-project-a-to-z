@@ -19,36 +19,46 @@ const GradingSummary = ({ match }) => {
     dispatch(getHomeworkSummaryInstructor({ courseId, cohortId }));
   }, [dispatch]);
 
-  const { homeworkSummary } = useSelector((state) => state.homeworkSummaryInstructor);
-  const { loading, error, grade } = useSelector((state) => state.gradeSummaryInstructor
+  const { homeworkSummary } = useSelector(
+    (state) => state.homeworkSummaryInstructor
+  );
+  const { loading, error, grade } = useSelector(
+    (state) => state.gradeSummaryInstructor
   );
   console.log("Loading: ", loading);
   console.log("Grades: ", grade);
   console.log("Loading: ", loading);
   console.log("Homeworks: ", homeworkSummary);
 
-  while (homeworkSummary === undefined || loading === undefined || grade === undefined) {
+  while (
+    homeworkSummary === undefined ||
+    loading === undefined ||
+    grade === undefined
+  ) {
     return <h3>Loading ...</h3>;
   }
 
   return (
-
     <React.Fragment>
-      {loading ? <p></p> : (
+      {loading ? (
+        <p></p>
+      ) : (
         <Container>
           <Row>
-            {<Col xs={2}>
-              <Nav defaultActiveKey="/home" className="flex-column">
-                {homeworkSummary.map((homework, index) => (
-                  <Nav.Link
-                    href={`/gradingsummary/${cohortId}/${homework.homeworkId}/${courseId}`}
-                    key={index}
-                  >
-                    {homework.title}
-                  </Nav.Link>
-                ))}
-              </Nav>
-            </Col>}
+            {
+              <Col xs={2}>
+                <Nav defaultActiveKey="/home" className="flex-column">
+                  {homeworkSummary.map((homework, index) => (
+                    <Nav.Link
+                      href={`/gradingsummary/${cohortId}/${homework.homeworkId}/${courseId}`}
+                      key={index}
+                    >
+                      {homework.title}
+                    </Nav.Link>
+                  ))}
+                </Nav>
+              </Col>
+            }
             <Col xs={10}>
               <Table>
                 <thead>
@@ -76,7 +86,8 @@ const GradingSummary = ({ match }) => {
               <Button className="float-right">Create</Button>
             </Col>
           </Row>
-        </Container>)}
+        </Container>
+      )}
     </React.Fragment>
   );
 };

@@ -27,7 +27,7 @@ export const courseSummaryStudent = () => {
   };
 };
 
-export const homeworkSummaryStudent = () => {
+export const homeworkSummaryStudent = (id) => {
   return async (dispatch) => {
     try {
       dispatch({ type: "HOMEWORK_SUMMARY_STUDENT_REQUEST" });
@@ -36,7 +36,7 @@ export const homeworkSummaryStudent = () => {
         data,
       } = await axios.get(
         "https://localhost:5001/application/homeworksummary",
-        { params: { courseId: "1", cohortId: "3" } }
+        { params: { courseId: id, cohortId: "3" } }
       );
       dispatch({
         type: "HOMEWORK_SUMMARY_STUDENT_SUCCESS",
@@ -54,17 +54,16 @@ export const homeworkSummaryStudent = () => {
   };
 };
 
-export const homeworkStudent = () => {
+export const homeworkStudent = (id) => {
   return async (dispatch) => {
     try {
       dispatch({ type: "HOMEWORK_STUDENT_REQUEST" });
       // update the url later
       const {
         data,
-      } = await axios.get(
-        "https://localhost:5001/application/homeworksummary",
-        { params: { courseId: "1", cohortId: "1" } }
-      );
+      } = await axios.get("https://localhost:5001/application/gethomework", {
+        params: { homeworkId: id },
+      });
       dispatch({
         type: "HOMEWORK_STUDENT_SUCCESS",
         payload: data,

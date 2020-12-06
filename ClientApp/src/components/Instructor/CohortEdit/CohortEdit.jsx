@@ -81,9 +81,11 @@ const CohortEdit = ({ match, history }) => {
       console.log("enddate trim");
 
       if (!cohortId) {
-        validFormData = false; console.log("no cohortId");
+        validFormData = false;
+        console.log("no cohortId");
       } else if (cohortId < 0 || cohortId > 2147483647) {
-        validFormData = false; console.log("out of range cohort Id");
+        validFormData = false;
+        console.log("out of range cohort Id");
       } else if (!name) {
         validFormData = false;
         console.log("name validate");
@@ -103,12 +105,7 @@ const CohortEdit = ({ match, history }) => {
         !(city === "edmonton" || city === "calgary" || city === "other")
       ) {
         validFormData = false;
-        console.log(
-          "city value:",
-          city.toLowerCase(),
-          "original:",
-          city
-        );
+        console.log("city value:", city.toLowerCase(), "original:", city);
       } else if (!modeOfTeaching) {
         validFormData = false;
         console.log("modeOfTeaching");
@@ -248,136 +245,138 @@ const CohortEdit = ({ match, history }) => {
       {loading ? (
         <Loader />
       ) : (
-          <Container>
-            <Row className="justify-content-md-center">
-              {/* check the pagination */}
-              <Col xs={12} md={6}>
-                <h2>Cohort</h2>
-                {/* ! (10.7) Anti-tamper validation - Alert message conditions   */}
-                <p
-                  class={
-                    formSubmitted
-                      ? validData
-                        ? !loading && error
-                          ? "alert alert-danger"
-                          : !loading && !error && success
-                            ? "alert alert-success"
-                            : ""
-                        : "alert alert-danger"
-                      : ""
-                  }
-                  role="alert"
-                >
-                  {formSubmitted
+        <Container>
+          <Row className="justify-content-md-center">
+            {/* check the pagination */}
+            <Col xs={12} md={6}>
+              <h2>Cohort</h2>
+              {/* ! (10.7) Anti-tamper validation - Alert message conditions   */}
+              <p
+                class={
+                  formSubmitted
                     ? validData
                       ? !loading && error
-                        ? "Unsuccessful attempt to create a cohort"
+                        ? "alert alert-danger"
                         : !loading && !error && success
-                          ? "Cohort details were successfully updated"
-                          : ""
-                      : "Error: Form was submitted with invalid data fields"
-                    : ""}
-                </p>
-                {/* ! ------------------------------------------------------  */}
-                <Form noValidate validated={validated} onSubmit={submitHandler}>
-                  <Form.Group controlId="name">
-                    <Form.Label>Cohort Name</Form.Label>
-                    <Form.Control
-                      required
-                      type="text"
-                      maxlength="50"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                    ></Form.Control>
-                    <Form.Control.Feedback type="invalid">
-                      Please enter a cohort name.
+                        ? "alert alert-success"
+                        : ""
+                      : "alert alert-danger"
+                    : ""
+                }
+                role="alert"
+              >
+                {formSubmitted
+                  ? validData
+                    ? !loading && error
+                      ? "Unsuccessful attempt to create a cohort"
+                      : !loading && !error && success
+                      ? "Cohort details were successfully updated"
+                      : ""
+                    : "Error: Form was submitted with invalid data fields"
+                  : ""}
+              </p>
+              {/* ! ------------------------------------------------------  */}
+              <Form noValidate validated={validated} onSubmit={submitHandler}>
+                <Form.Group controlId="name">
+                  <Form.Label>Cohort Name</Form.Label>
+                  <Form.Control
+                    required
+                    type="text"
+                    maxlength="50"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  ></Form.Control>
+                  <Form.Control.Feedback type="invalid">
+                    Please enter a cohort name.
                   </Form.Control.Feedback>
-                  </Form.Group>
-                  <Form.Group controlId="Capacity">
-                    <Form.Label>Capacity</Form.Label>
-                    <Form.Control
-                      type="number"
-                      min={0}
-                      max={999}
-                      step="1"
-                      value={capacity ? capacity : 0}
-                      onChange={(e) => setCapacity(String(e.target.value))}
-                    ></Form.Control>
-                  </Form.Group>
-                  <Form.Group controlId="Mode of Teaching">
-                    <Form.Label>Mode of Teaching</Form.Label>
-                    <Form.Control
-                      as="select"
-                      required
-                      value={modeOfTeaching}
-                      onChange={(e) => setModeOfTeaching(String(e.target.value))}
-                    >
-                      <option></option>
-                      <option>Online</option>
-                      <option>In Person</option>
-                    </Form.Control>
-                  </Form.Group>
-                  <Form.Group controlId="Start Date">
-                    <Form.Label>Start Date</Form.Label>
-                    <Form.Control
-                      required
-                      type="date"
-                      value={startDate.split("T")[0]}
-                      onChange={(e) =>
-                        setStartDate(String(e.target.value).split("T")[0])
-                      }
-                    ></Form.Control>
-                    <Form.Control.Feedback type="invalid">
-                      Please choose a start date.
+                </Form.Group>
+                <Form.Group controlId="Capacity">
+                  <Form.Label>Capacity</Form.Label>
+                  <Form.Control
+                    type="number"
+                    min={0}
+                    max={999}
+                    step="1"
+                    value={capacity ? capacity : 0}
+                    onChange={(e) => setCapacity(String(e.target.value))}
+                  ></Form.Control>
+                </Form.Group>
+                <Form.Group controlId="Mode of Teaching">
+                  <Form.Label>Mode of Teaching</Form.Label>
+                  <Form.Control
+                    as="select"
+                    required
+                    value={modeOfTeaching}
+                    onChange={(e) => setModeOfTeaching(String(e.target.value))}
+                  >
+                    <option></option>
+                    <option>Online</option>
+                    <option>In Person</option>
+                  </Form.Control>
+                </Form.Group>
+                <Form.Group controlId="Start Date">
+                  <Form.Label>Start Date</Form.Label>
+                  <Form.Control
+                    required
+                    type="date"
+                    value={startDate.split("T")[0]}
+                    onChange={(e) =>
+                      setStartDate(String(e.target.value).split("T")[0])
+                    }
+                  ></Form.Control>
+                  <Form.Control.Feedback type="invalid">
+                    Please choose a start date.
                   </Form.Control.Feedback>
-                  </Form.Group>
-                  <Form.Group controlId="End Date">
-                    <Form.Label>End Date</Form.Label>
-                    <Form.Control
-                      required
-                      type="date"
-                      min={startDate}
-                      value={endDate.split("T")[0]}
-                      onChange={(e) =>
-                        setEndDate(String(e.target.value).split("T")[0])
-                      }
-                    ></Form.Control>
-                    <Form.Control.Feedback type="invalid">
-                      Please choose an end date.
+                </Form.Group>
+                <Form.Group controlId="End Date">
+                  <Form.Label>End Date</Form.Label>
+                  <Form.Control
+                    required
+                    type="date"
+                    min={startDate}
+                    value={endDate.split("T")[0]}
+                    onChange={(e) =>
+                      setEndDate(String(e.target.value).split("T")[0])
+                    }
+                  ></Form.Control>
+                  <Form.Control.Feedback type="invalid">
+                    Please choose an end date.
                   </Form.Control.Feedback>
-                    <p className="text-danger small">
-                      {invalidDatesBL
-                        ? "End date can't be before start date"
-                        : ""}
-                    </p>
-                  </Form.Group>
-                  <Form.Group controlId="City">
-                    <Form.Label>City</Form.Label>
-                    <Form.Control
-                      as="select"
-                      required
-                      value={city}
-                      onChange={(e) => setCity(e.target.value)}
-                    >
-                      <option></option>
-                      <option>Edmonton</option>
-                      <option>Calgary</option>
-                      <option>Other</option>
-                    </Form.Control>
-                    <Form.Control.Feedback type="invalid">
-                      Please choose a city.
+                  <p className="text-danger small">
+                    {invalidDatesBL
+                      ? "End date can't be before start date"
+                      : ""}
+                  </p>
+                </Form.Group>
+                <Form.Group controlId="City">
+                  <Form.Label>City</Form.Label>
+                  <Form.Control
+                    as="select"
+                    required
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                  >
+                    <option></option>
+                    <option>Edmonton</option>
+                    <option>Calgary</option>
+                    <option>Other</option>
+                  </Form.Control>
+                  <Form.Control.Feedback type="invalid">
+                    Please choose a city.
                   </Form.Control.Feedback>
-                  </Form.Group>
-                  <Button onClick={goBack}>Back</Button>
-                  <Button type="submit" variant="primary" className="float-right">
-                    {" "}
+                </Form.Group>
+                <button type="button" className="btn btn-link" onClick={goBack}>
+                  Back
+                </button>{" "}
+                <Button type="submit" variant="primary" className="float-right">
+                  {" "}
                   Save
                 </Button>
-                </Form>
-              </Col>
-            </Row>
-          </Container>
-        )}
+              </Form>
+            </Col>
+          </Row>
+        </Container>
+      )}
     </React.Fragment>
   );
 };

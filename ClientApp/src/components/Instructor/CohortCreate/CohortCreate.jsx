@@ -3,7 +3,7 @@ import { Form, Button, Row, Col, Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { createCohort } from "../../../actions/instructorActions";
 
-const CohortCreate = () => {
+const CohortCreate = ({ history }) => {
   const [name, setName] = useState("");
   const [capacity, setCapacity] = useState("");
   const [modeOfTeaching, setModeOfTeaching] = useState("");
@@ -192,6 +192,9 @@ const CohortCreate = () => {
     setFormSubmitted(formSubmitIndicator);
     // ! ------------------------------------------------------
   };
+  const goBack = () => {
+    history.goBack();
+  };
   return (
     <React.Fragment>
       <Container>
@@ -249,7 +252,6 @@ const CohortCreate = () => {
 
                 {/*---------------------------------------*/}
               </Form.Group>
-
               <Form.Group controlId="Capacity">
                 <Form.Label>Capacity</Form.Label>
                 <Form.Control
@@ -293,8 +295,8 @@ const CohortCreate = () => {
                 <Form.Label>End Date</Form.Label>
                 <Form.Control
                   required
-                                  type="date"
-                                  min={startDate}
+                  type="date"
+                  min={startDate}
                   value={endDate}
                   onChange={(e) => setEndDate(String(e.target.value))}
                 ></Form.Control>
@@ -324,7 +326,9 @@ const CohortCreate = () => {
                   Please choose a city.
                 </Form.Control.Feedback>
               </Form.Group>
-              <a href="">Back</a>
+              <button type="button" className="btn btn-link" onClick={goBack}>
+                Back
+              </button>{" "}
               <Button className="float-right" type="submit" variant="primary">
                 {" "}
                 Save
