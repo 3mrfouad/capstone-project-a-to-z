@@ -31,7 +31,7 @@ const CohortEdit = ({ match, history }) => {
   const { cohort, loading } = cohortGetState;
 
   useEffect(() => {
-    if (!cohort || !cohort.name) {
+    if (!cohort || !cohort.name || cohort.cohortId != cohortId) {
       dispatch(cohortGet(cohortId));
     } else {
       setName(cohort.name);
