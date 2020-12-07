@@ -15,6 +15,7 @@ const CourseEditAssigned = ({ match, history }) => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [resourcesLink, setResourcesLink] = useState("");
+
   //(1) Add validation states
   const [validated, setValidated] = useState(false);
   const [invalidDatesBL, setInvalidDatesBl] = useState(false);
@@ -27,6 +28,9 @@ const CourseEditAssigned = ({ match, history }) => {
   let validStartDate = false;
   let validEndDate = false;
   let formSubmitIndicator = false;
+  const [previousCourseId, setPreviousCourseId] = useState("");
+  const [previousCohortId, setPreviousCohortId] = useState("");
+
   // ! ------------------------------------------------------
   const { instructors } = useSelector((state) => state.getAllInstructors);
   const { loading, course, success, error } = useSelector(
@@ -34,9 +38,16 @@ const CourseEditAssigned = ({ match, history }) => {
   );
 
   useEffect(() => {
-    if (!success) {
+    if (
+      !success ||
+      courseId != previousCourseId ||
+      cohortId != previousCohortId
+    ) {
+      setPreviousCourseId(courseId);
+      setPreviousCohortId(cohortId);
       dispatch(getAssignedCourse(courseId, cohortId));
     }
+
     dispatch(getAllInstructors());
   }, [dispatch, courseId, cohortId, success]);
   // ! (10.2) Anti-tamper validation - Validate (parameters)
