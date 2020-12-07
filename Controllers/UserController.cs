@@ -157,12 +157,7 @@ namespace AZLearn.Controllers
 
             var passwordHashRegex = new Regex(@"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$");
 
-            if (string.IsNullOrWhiteSpace(cohortId))
-            {
-                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId),
-                    nameof(cohortId) + " is null."));
-            }
-            else
+            if (!string.IsNullOrWhiteSpace(cohortId))
             {
                 if (!int.TryParse(cohortId, out parsedCohortId))
                     exception.ValidationExceptions.Add(new Exception("Invalid value for cohortId"));
