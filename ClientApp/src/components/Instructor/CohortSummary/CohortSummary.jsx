@@ -16,6 +16,7 @@ const CohortSummaryInstructor = ({ history }) => {
   const { cohorts, loading } = useSelector(
     (state) => state.cohortSummaryInstructor
   );
+
   const { success } = useSelector((state) => state.cohortArchive);
   useEffect(() => {
     dispatch(cohortSummaryInstructor());

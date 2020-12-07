@@ -7,7 +7,7 @@ import {
   editAssignedCourse,
 } from "../../../actions/instructorActions";
 
-const CourseEditAssigned = ({ match }) => {
+const CourseEditAssigned = ({ match, history }) => {
   const cohortId = match.params.id;
   const courseId = match.params.courseId;
   const dispatch = useDispatch();
@@ -15,6 +15,7 @@ const CourseEditAssigned = ({ match }) => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [resourcesLink, setResourcesLink] = useState("");
+
   //(1) Add validation states
   const [validated, setValidated] = useState(false);
   const [invalidDatesBL, setInvalidDatesBl] = useState(false);
@@ -27,6 +28,9 @@ const CourseEditAssigned = ({ match }) => {
   let validStartDate = false;
   let validEndDate = false;
   let formSubmitIndicator = false;
+  const [previousCourseId, setPreviousCourseId] = useState("");
+  const [previousCohortId, setPreviousCohortId] = useState("");
+
   // ! ------------------------------------------------------
   const { instructors } = useSelector((state) => state.getAllInstructors);
   const { loading, course, success, error } = useSelector(
@@ -34,9 +38,16 @@ const CourseEditAssigned = ({ match }) => {
   );
 
   useEffect(() => {
-    if (!success) {
+    if (
+      !success ||
+      courseId != previousCourseId ||
+      cohortId != previousCohortId
+    ) {
+      setPreviousCourseId(courseId);
+      setPreviousCohortId(cohortId);
       dispatch(getAssignedCourse(courseId, cohortId));
     }
+
     dispatch(getAllInstructors());
   }, [dispatch, courseId, cohortId, success]);
   // ! (10.2) Anti-tamper validation - Validate (parameters)
@@ -189,6 +200,18 @@ const CourseEditAssigned = ({ match }) => {
     setFormSubmitted(formSubmitIndicator);
     // ! ------------------------------------------------------
   };
+  const goBack = () => {
+    history.goBack();
+  };
+  /* 
+  while (
+    instructors === undefined ||
+    loading === undefined ||
+    course === undefined
+  ) {
+    return <h3>Loading ...</h3>;
+  } */
+
   return (
     <React.Fragment>
       {loading ? (
@@ -234,7 +257,6 @@ const CourseEditAssigned = ({ match }) => {
                   ))} */}
                   </Form.Control>
                 </Form.Group>
-
                 <Form.Group controlId="instructor">
                   <Form.Label>Instructor</Form.Label>
                   <Form.Control
@@ -256,8 +278,10 @@ const CourseEditAssigned = ({ match }) => {
                   <Form.Control
                     required
                     type="date"
-                    value={startDate}
-                    onChange={(e) => setStartDate(String(e.target.value))}
+                    value={startDate.split(" ")[0]}
+                    onChange={(e) =>
+                      setStartDate(String(e.target.value).split(" ")[0])
+                    }
                   ></Form.Control>
                 </Form.Group>
                 <Form.Group controlId="enddate">
@@ -265,8 +289,10 @@ const CourseEditAssigned = ({ match }) => {
                   <Form.Control
                     required
                     type="date"
-                    value={endDate}
-                    onChange={(e) => setEndDate(String(e.target.value))}
+                    value={endDate.split(" ")[0]}
+                    onChange={(e) =>
+                      setEndDate(String(e.target.value).split(" ")[0])
+                    }
                   ></Form.Control>
                   <Form.Control.Feedback type="invalid">
                     Please choose an end date.
@@ -295,9 +321,9 @@ const CourseEditAssigned = ({ match }) => {
                     onChange={(e) => setResourcesLink(e.target.value)}
                   ></Form.Control>
                 </Form.Group>
-                <button type="button" className="btn btn-link">
+                <button type="button" className="btn btn-link" onClick={goBack}>
                   Back
-                </button>
+                </button>{" "}
                 <Button type="submit" variant="primary" className="float-right">
                   {" "}
                   Save

@@ -15,12 +15,11 @@ const Login = () => {
   const [validData, setValidData] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
 
-  const { user, success } = useSelector((state) => state.userLoginState);
+  const { user, success, loading, error } = useSelector(
+    (state) => state.userLoginState
+  );
   let validFormData = false;
   let formSubmitIndicator = false;
-  //! -------Created by Ayesha(For Store that needs to be created)---
-  //const { loading, error, user, success } = login;
-  //!-----------------------------------------
 
   // ! ------------------------------------------------------
   // ! (10.2) Anti-tamper validation - Validate (parameters)
@@ -29,20 +28,29 @@ const Login = () => {
 
     try {
       email = email.trim().toLowerCase();
+      console.log("try");
 
       if (!email) {
         validFormData = false;
       } else if (email.Length > 50) {
         validFormData = false;
+        console.log(email.length);
       } else if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+        console.log("email", email);
         validFormData = false;
       } else if (!password) {
+        console.log("PASSWORD NOT MATCH");
         validFormData = false;
       } else if (password.Length > 250) {
         validFormData = false;
+        console.log("password", password);
+      } else {
+        validFormData = true;
+        console.log("all good");
       }
     } catch (Exception) {
       validFormData = false;
+      console.log("Catch");
     }
   }
   const submitHandler = (e) => {
@@ -61,17 +69,17 @@ const Login = () => {
       })
     );
     // ! (10.4) Anti-tamper validation - calling Validate  -Created by ayesha need to uncomment it once store is created
-    // Validate(email,password);
-    //if (validFormData) {
-    //  setValidData(validFormData);
-    // ! ------------------------------------------------------
-    console.log("login");
-    // dispatch(login(email, password));
-    //}
-    //else {
-    // ! (10.5) Anti-tamper validation - Alert message conditions
-    //  setValidData(validFormData);
-    //}
+    Validate(email, password);
+    if (validFormData) {
+      setValidData(validFormData);
+      // ! ------------------------------------------------------
+      console.log("login");
+      // dispatch(login(email, password));
+    } else {
+      // ! (10.5) Anti-tamper validation - Alert message conditions
+      setValidData(validFormData);
+      console.log("antitamper");
+    }
 
     // ! (10.6) Anti-tamper validation - Alert message conditions
     setFormSubmitted(formSubmitIndicator);
@@ -84,7 +92,7 @@ const Login = () => {
           <Col xs={12} md={6}>
             <h1>Sign In</h1>
             {/* ! (10.7) Anti-tamper validation - Alert message conditions   */}
-            {/*  <p
+            <p
               class={
                 formSubmitted
                   ? validData
@@ -107,7 +115,7 @@ const Login = () => {
                     : ""
                   : "Error: Form was submitted with invalid data fields"
                 : ""}
-              </p>*/}
+            </p>
             {/* {error && <Message variant="danger">{error}</Message>}
             {loading && <Loader />} */}
             <Form noValidate validated={validated} onSubmit={submitHandler}>
@@ -134,10 +142,7 @@ const Login = () => {
                   value={password}
                   maxLength="250"
                   onChange={(e) => setPassword(e.target.value)}
-                              ></Form.Control>
-                  <Form.Control.Feedback type="invalid">
-                                  Please enter a valid password.Password is in inappropriate format: Password must be: at least one upper case letter, at least one lower case letter, at least one digit , at least one special character, minimum 8 characters in length.
-                  </Form.Control.Feedback>
+                ></Form.Control>
               </Form.Group>
               <Button type="submit" variant="primary">
                 {" "}

@@ -7,7 +7,7 @@ import {
   assignCourse,
 } from "../../../actions/instructorActions";
 
-const CourseAssign = ({ match }) => {
+const CourseAssign = ({ match, history }) => {
   const cohortId = match.params.id;
   const dispatch = useDispatch();
   const [courseId, setCourseId] = useState("");
@@ -198,6 +198,9 @@ const CourseAssign = ({ match }) => {
     setFormSubmitted(formSubmitIndicator);
     // ! ------------------------------------------------------
   };
+  const goBack = () => {
+    history.goBack();
+  };
   return (
     <React.Fragment>
       <Container>
@@ -246,12 +249,11 @@ const CourseAssign = ({ match }) => {
                       {course.name}
                     </option>
                   ))}
-                              </Form.Control>
-                  <Form.Control.Feedback type="invalid">
-                      Please select a course
-                  </Form.Control.Feedback>
+                </Form.Control>
+                <Form.Control.Feedback type="invalid">
+                  Please select a course
+                </Form.Control.Feedback>
               </Form.Group>
-
               <Form.Group controlId="instructor">
                 <Form.Label>Instructor</Form.Label>
                 <Form.Control
@@ -266,11 +268,10 @@ const CourseAssign = ({ match }) => {
                       {instructor.name}
                     </option>
                   ))}
-                              </Form.Control>
-                  <Form.Control.Feedback type="invalid">
-                      Please choose an instructor
-                  </Form.Control.Feedback>
-
+                </Form.Control>
+                <Form.Control.Feedback type="invalid">
+                  Please choose an instructor
+                </Form.Control.Feedback>
               </Form.Group>
               <Form.Group controlId="startdate">
                 <Form.Label>Start Date</Form.Label>
@@ -279,16 +280,16 @@ const CourseAssign = ({ match }) => {
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(String(e.target.value))}
-                              ></Form.Control>
-                  <Form.Control.Feedback type="invalid">
-                      Please choose a start date.
-                  </Form.Control.Feedback>
+                ></Form.Control>
+                <Form.Control.Feedback type="invalid">
+                  Please choose a start date.
+                </Form.Control.Feedback>
               </Form.Group>
               <Form.Group controlId="enddate">
                 <Form.Label>End Date</Form.Label>
                 <Form.Control
-                                  required
-                                  type="date"
+                  required
+                  type="date"
                   min={startDate}
                   value={endDate}
                   onChange={(e) => setEndDate(String(e.target.value))}
@@ -322,9 +323,9 @@ const CourseAssign = ({ match }) => {
                   Please enter a valid URL.
                 </Form.Control.Feedback>
               </Form.Group>
-              <button type="button" className="btn btn-link">
+              <button type="button" className="btn btn-link" onClick={goBack}>
                 Back
-              </button>
+              </button>{" "}
               <Button type="submit" variant="primary" className="float-right">
                 {" "}
                 Save
