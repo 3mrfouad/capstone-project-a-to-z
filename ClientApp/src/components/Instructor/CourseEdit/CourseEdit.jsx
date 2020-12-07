@@ -35,19 +35,24 @@ const CourseEdit = ({ match, history }) => {
     try {
       courseId = courseId.trim().toLowerCase();
       courseName = courseName.trim().toLowerCase();
-      hours = hours.trim().toLowerCase();
+      hours = String(hours).trim();
       description = description.trim().toLowerCase();
 
       if (!courseId) {
         validFormData = false;
+        console.log("courseId");
       } else if (courseId < 0 || courseId > 2147483647) {
         validFormData = false;
+        console.log("courseId, range");
       } else if (!courseName) {
         validFormData = false;
+        console.log("courseName");
       } else if (courseName.Length > 50) {
         validFormData = false;
+        console.log("courseName, Length");
       } else if (!hours) {
         validFormData = false;
+        console.log("hours");
       } else if (parseFloat(hours) > 999.99 || parseFloat(hours) < 0) {
         validFormData = false;
         console.log("hours: ", parseFloat(hours));
@@ -63,6 +68,7 @@ const CourseEdit = ({ match, history }) => {
       }
     } catch (Exception) {
       validFormData = false;
+      console.log("No good, Length");
     }
   }
   // ! ------------------------------------------------------
@@ -198,7 +204,7 @@ const CourseEdit = ({ match, history }) => {
                     step="0.25"
                     value={hours}
                     onChange={(e) => {
-                      setHours(e.target.value);
+                      setHours(String(e.target.value));
                       setFormDataChange(true);
                     }}
                   ></Form.Control>
