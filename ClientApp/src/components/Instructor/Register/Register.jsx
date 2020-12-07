@@ -27,7 +27,7 @@ const Register = ({ history }) => {
   useEffect(() => {
     dispatch(cohortSummaryInstructor());
   }, [dispatch]);
-  const { success } = useSelector((state) => state.userRegisterState);
+  const { success, error } = useSelector((state) => state.userRegisterState);
   const { cohorts, loading } = useSelector(
     (state) => state.cohortSummaryInstructor
   );
@@ -44,23 +44,25 @@ const Register = ({ history }) => {
   // ! ------------------------------------------------------
 
   // ! (10.2) Anti-tamper validation - Validate (parameters)
-  function Validate(name, email, password, cohort) {
+  function Validate(name, email, password, cohort, isInstructor) {
     formSubmitIndicator = true;
 
     try {
+      console.log("Before Trim");
       name = name.trim().toLowerCase();
       email = email.trim().toLowerCase();
-      password = password.trim().toLowerCase();
+      password = password.trim();
       cohort = cohort.trim().toLowerCase();
-      isInstructor = isInstructor.trim().toLowerCase();
-
+      console.log(isInstructor);
+      isInstructor = String(isInstructor).trim().toLowerCase();
+      console.log("After Trim");
       if (!name) {
         validFormData = false;
+        console.log("name: ");
       } else if (name.Length > 50) {
         validFormData = false;
-      }
-      // else if (!cohort) { validFormData = false; }
-      else if (parseInt(cohort) > 2147483647 || parseInt(cohort) < 1) {
+        console.log("name: Length");
+      } else if (parseInt(cohort) > 2147483647 || parseInt(cohort) < 1) {
         validFormData = false;
         console.log("cohort: ", parseInt(cohort));
       } else if (!isInstructor) {
@@ -68,6 +70,7 @@ const Register = ({ history }) => {
         console.log("isInstructor");
       } else if (!(isInstructor === "true" || isInstructor === "false")) {
         validFormData = false;
+        console.log("isInstructor", isInstructor);
       } else if (!email) {
         validFormData = false;
         console.log("email");
@@ -82,10 +85,9 @@ const Register = ({ history }) => {
         console.log("password length");
       } else {
         if (
-          !/(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])/.test(
-            password
-          )
-        ) {
+          !/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-.]).{8,}$/.test(
+            password)   
+          ) {
           validFormData = false;
           console.log("password does not match the pattern");
         } else if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
@@ -98,6 +100,7 @@ const Register = ({ history }) => {
       }
     } catch (Exception) {
       validFormData = false;
+      console.log("Not good :", validFormData)
     }
   }
   // ! ------------------------------------------------------
@@ -115,20 +118,35 @@ const Register = ({ history }) => {
 
     e.preventDefault();
     // dispatch(login(email, password));
-    if (isInstructor) {
-      handleShow();
+    // ! (10.4) Anti-tamper validation - calling Validate
+    Validate(name, email, password, cohort, isInstructor);
+    if (validFormData) {
+      setValidData(validFormData);
+      // ! ------------------------------------------------------
+      if (isInstructor) {
+        handleShow();
+      } else {
+        dispatch(
+          registerUser({
+            cohort,
+            name,
+            password,
+            email,
+            isInstructor,
+          })
+        );
+      }
+      // dispatch(login(email, password));
+      console.log("register");
     } else {
-      dispatch(
-        registerUser({
-          cohort,
-          name,
-          password,
-          email,
-          isInstructor,
-        })
-      );
+      // ! (10.5) Anti-tamper validation - Alert message conditions
+      setValidData(validFormData);
     }
+    // ! (10.6) Anti-tamper validation - Alert message conditions
+    setFormSubmitted(formSubmitIndicator);
+    // ! ------------------------------------------------------
   };
+ 
 
   const handleRegisterInstructor = () => {
     dispatch(
@@ -141,23 +159,8 @@ const Register = ({ history }) => {
       })
     );
     handleClose();
-
-    // ! (10.4) Anti-tamper validation - calling Validate
-    Validate(name, email, password, cohort);
-    if (validFormData) {
-      setValidData(validFormData);
-      // ! ------------------------------------------------------
-
-      // dispatch(login(email, password));
-      console.log("register");
-    } else {
-      // ! (10.5) Anti-tamper validation - Alert message conditions
-      setValidData(validFormData);
-    }
-    // ! (10.6) Anti-tamper validation - Alert message conditions
-    setFormSubmitted(formSubmitIndicator);
-    // ! ------------------------------------------------------
-  };
+    };
+    
   const goBack = () => {
     history.goBack();
   };
