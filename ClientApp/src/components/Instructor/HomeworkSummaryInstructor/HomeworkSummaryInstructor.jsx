@@ -8,8 +8,8 @@ import {
 } from "../../../actions/instructorActions";
 import { Link } from "react-router-dom";
 
-const HomeworkSummaryInstructor = ({ match }) => {
-  const cohortId = match.params.id;
+const HomeworkSummaryInstructor = ({ match, history }) => {
+  const cohortId = match.params.cohortId;
   const courseId = match.params.courseId;
   const dispatch = useDispatch();
   useEffect(() => {
@@ -38,6 +38,10 @@ const HomeworkSummaryInstructor = ({ match }) => {
   ) {
     return <h3>Loading ...</h3>;
   }
+  const goBack = () => {
+    history.goBack();
+  };
+
   return (
     <React.Fragment>
       <Container>
@@ -101,7 +105,9 @@ const HomeworkSummaryInstructor = ({ match }) => {
                   ))}
               </tbody>
             </Table>
-            <Button>Back</Button>{" "}
+            <button type="button" className="btn btn-link" onClick={goBack}>
+              Back
+            </button>{" "}
             <Button
               className="float-right"
               href={`/instructorcreatehomework/${cohortId}`}

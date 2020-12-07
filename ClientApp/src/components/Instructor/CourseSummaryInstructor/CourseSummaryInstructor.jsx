@@ -8,7 +8,7 @@ import {
   archiveAssignedCourse,
 } from "../../../actions/instructorActions";
 
-const CourseSummaryInstructor = ({ match }) => {
+const CourseSummaryInstructor = ({ match, history }) => {
   const cohortId = match.params.id;
   const dispatch = useDispatch();
   const onArchive = (courseId) => {
@@ -28,6 +28,9 @@ const CourseSummaryInstructor = ({ match }) => {
     return <h3>Loading ...</h3>;
   } */
 
+  const goBack = () => {
+    history.goBack();
+  };
   return (
     <React.Fragment>
       <Container>
@@ -76,9 +79,10 @@ const CourseSummaryInstructor = ({ match }) => {
           </tbody>
         </Table>
         <Link to="/cohortsummary">
-          <button type="button" className="btn btn-link">
+          <button type="button" className="btn btn-link" onClick={goBack}>
             Back
           </button>{" "}
+          }
         </Link>
         <Button href={`/courseassign/${cohortId}`} className="float-right mr-3">
           Add Course
