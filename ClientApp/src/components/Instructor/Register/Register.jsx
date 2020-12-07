@@ -27,7 +27,7 @@ const Register = ({ history }) => {
   useEffect(() => {
     dispatch(cohortSummaryInstructor());
   }, [dispatch]);
-  const { success } = useSelector((state) => state.userRegisterState);
+  const { success, error } = useSelector((state) => state.userRegisterState);
   const { cohorts, loading } = useSelector(
     (state) => state.cohortSummaryInstructor
   );
@@ -44,23 +44,25 @@ const Register = ({ history }) => {
   // ! ------------------------------------------------------
 
   // ! (10.2) Anti-tamper validation - Validate (parameters)
-  function Validate(name, email, password, cohort) {
+  function Validate(name, email, password, cohort, isInstructor) {
     formSubmitIndicator = true;
 
     try {
+      console.log("Before Trim");
       name = name.trim().toLowerCase();
       email = email.trim().toLowerCase();
-      password = password.trim().toLowerCase();
+      password = password.trim();
       cohort = cohort.trim().toLowerCase();
-      isInstructor = isInstructor.trim().toLowerCase();
-
+      console.log(isInstructor);
+      isInstructor = String(isInstructor).trim().toLowerCase();
+      console.log("After Trim");
       if (!name) {
         validFormData = false;
+        console.log("name: ");
       } else if (name.Length > 50) {
         validFormData = false;
-      }
-      // else if (!cohort) { validFormData = false; }
-      else if (parseInt(cohort) > 2147483647 || parseInt(cohort) < 1) {
+        console.log("name: Length");
+      } else if (parseInt(cohort) > 2147483647 || parseInt(cohort) < 1) {
         validFormData = false;
         console.log("cohort: ", parseInt(cohort));
       } else if (!isInstructor) {
@@ -83,10 +85,9 @@ const Register = ({ history }) => {
         console.log("password length");
       } else {
         if (
-          !/(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])/.test(
-            password
-          )
-        ) {
+          !/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-.]).{8,}$/.test(
+            password)   
+          ) {
           validFormData = false;
           console.log("password does not match the pattern");
         } else if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
@@ -99,6 +100,7 @@ const Register = ({ history }) => {
       }
     } catch (Exception) {
       validFormData = false;
+      console.log("Not good :", validFormData)
     }
   }
   // ! ------------------------------------------------------
@@ -117,7 +119,7 @@ const Register = ({ history }) => {
     e.preventDefault();
     // dispatch(login(email, password));
     // ! (10.4) Anti-tamper validation - calling Validate
-    Validate(name, email, password, cohort);
+    Validate(name, email, password, cohort, isInstructor);
     if (validFormData) {
       setValidData(validFormData);
       // ! ------------------------------------------------------
