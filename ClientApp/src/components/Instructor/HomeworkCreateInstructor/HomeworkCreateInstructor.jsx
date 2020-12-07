@@ -23,22 +23,109 @@ const HomeworkCreateInstructor = ({ match, history }) => {
   // const [criteria, setCriteria] = useState("");
   // const [weight, setWight] = useState("");
   const [gitHubClassRoomLink, setGitHubClassRoomLink] = useState("");
+
   //(1) Add validation states (@Atinder)
-   const [validated, setValidated] = useState(false);  
-   let temp = false; 
+   const [validated, setValidated] = useState(false); 
   //----------------------------
+
+ // ! (10.1) Anti-tamper validation - States and Variables
+ const [validData, setValidData] = useState(false);
+ const [formSubmitted, setFormSubmitted] = useState(false);
+ let validFormData = false;
+ let formSubmitIndicator = false;
+ // ! ------------------------------------------------------
+
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getAllCourses());
     dispatch(getAllInstructors());
   }, []);
-
   const { loading, courses } = useSelector((state) => state.getAllCourses);
   const { instructors } = useSelector((state) => state.getAllInstructors);
 
   const goBack = () => {
     history.goBack();
   };
+
+// ! (10.2) Anti-tamper validation - Validate (parameters)
+function Validate(title, courseId, instructorId,avgCompletionTime, dueDate, releaseDate, documentLink, gitHubClassRoomLink) {
+  let parsedDueDate = 0;
+  let parsedReleaseDate = 0;
+  formSubmitIndicator = true;
+
+  try {
+    title = title.trim().toLowerCase();
+    avgCompletionTime = avgCompletionTime.trim().toLowerCase();
+    dueDate = dueDate.trim().toLowerCase();
+    releaseDate = releaseDate.trim().toLowerCase();
+    documentLink = documentLink.trim().toLowerCase();
+    gitHubClassRoomLink = gitHubClassRoomLink.trim().toLowerCase();
+
+    if (!title) {
+      validFormData = false;
+    } else if (title.Length > 100) {
+      validFormData = false;
+    } else if (!courseId) {
+      validFormData = false;
+    } else if (parseInt(courseId) > 2,147,483,647 || parseFloat(courseId) < 1) {
+      validFormData = false;
+    } else if (!instructorId) {
+      validFormData = false;
+    } else if (parseInt(instructorId) > 2,147,483,647 || parseFloat(instructorId) < 1) {
+      validFormData = false;
+    } else if (parseFloat(avgCompletionTime) > 999.99 || parseFloat(avgCompletionTime) < 0) {
+      validFormData = false;
+      console.log("avgCompletionTime: ", parseFloat(avgCompletionTime));
+    } else if (!dueDate) {
+      validFormData = false;
+      console.log("dueDate");         
+    } else if (!releaseDate) {
+      validFormData = false;
+      console.log("releaseDate");    
+    } else if (documentLink.Length > 250) {
+      validFormData = false;
+      console.log("documentLink length");
+    } else if (gitHubClassRoomLink.Length > 250) {
+      validFormData = false;
+      console.log("gitHubClassRoomLink length");
+    } else if (documentLink &&
+        !/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(
+          documentLink)) {
+        validFormData = false;
+    } else if (gitHubClassRoomLink &&
+      !/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(
+        gitHubClassRoomLink)) {
+      validFormData = false;
+    } else {
+      try {
+        parsedReleaseDate = Date.parse(releaseDate);       
+        console.log("Release Date parse");
+      } catch (ParseException) {        
+        console.log("Release Date parse exception");
+        validFormData = false;
+      }
+      try {
+        parsedDueDate = Date.parse(dueDate);        
+        console.log("dueDate parse");
+      } catch (ParseException) {        
+        console.log("Due Date parse exception");
+        validFormData = false;
+      }
+      /* Dates business logic */      
+        if (parsedDueDate < parsedReleaseDate) {
+          validFormData = false;
+          console.log("parsedDueDate < parsedReleaseDate");
+        } else {
+          validFormData = true;
+          console.log("All good :", validFormData);
+        }
+      }    
+  } catch (Exception) {
+    validFormData = false;
+  }
+}
+// ! ------------------------------------------------------
+
   const handleSubmit = (e) => {
     //(2) Add form validation condition block if-else
     const form = e.currentTarget;
@@ -50,7 +137,19 @@ const HomeworkCreateInstructor = ({ match, history }) => {
     setValidated(true);
     //----------------------------
 
-    e.preventDefault();
+   // ! (10.3) Anti-tamper validation - Alert message conditions
+   validFormData = false;
+   formSubmitIndicator = true;
+   setValidData(validFormData);
+   // ! ------------------------------------------------------
+ 
+   e.preventDefault();
+
+   // ! (10.4) Anti-tamper validation - calling Validate
+   Validate(title, courseId, instructorId, avgCompletionTime, dueDate, releaseDate, documentLink, gitHubClassRoomLink);
+   if (validFormData) {
+     setValidData(validFormData);
+     // ! ------------------------------------------------------
     dispatch(
       createHomeworkInstructor({
         courseId,
@@ -65,7 +164,15 @@ const HomeworkCreateInstructor = ({ match, history }) => {
         gitHubClassRoomLink,
       })
     );
-  };
+  }else {
+    // ! (10.5) Anti-tamper validation - Alert message conditions
+    setValidData(validFormData);
+  
+}
+// ! (10.6) Anti-tamper validation - Alert message conditions
+setFormSubmitted(formSubmitIndicator);
+// ! ------------------------------------------------------
+};
 
   return (
     <React.Fragment>
@@ -76,6 +183,34 @@ const HomeworkCreateInstructor = ({ match, history }) => {
           <Row className="justify-content-md-center">
             <Col xs={12} md={6}>
               <h3>Homework</h3>
+
+            {/* ! (10.7) Anti-tamper validation - Alert message conditions   */}
+            {/* <p
+              class={
+                formSubmitted
+                  ? validData
+                    ? !loading && error
+                      ? "alert alert-danger"
+                      : !loading && !error && success
+                      ? "alert alert-success"
+                      : ""
+                    : "alert alert-danger"
+                  : ""
+              }
+              role="alert"
+            >
+              {formSubmitted
+                ? validData
+                  ? !loading && error
+                    ? "Unsuccessful attempt to create a cohort"
+                    : !loading && !error && success
+                    ? "Cohort was successfully created"
+                    : ""
+                  : "Error: Form was submitted with invalid data fields"
+                : ""}
+            </p> */}
+            {/* ! ------------------------------------------------------  */}
+
               <Form noValidate validated={validated} onSubmit={handleSubmit}>
                 <Form.Group controlId="title">
                   <Form.Label>Title</Form.Label>
@@ -90,8 +225,8 @@ const HomeworkCreateInstructor = ({ match, history }) => {
                 <Form.Control.Feedback type="invalid">
                   Please enter Title of Homework.(Max 100 characters allowed).
                 </Form.Control.Feedback>
-
                 {/*---------------------------------------*/}
+
                 </Form.Group>
                 <Form.Group controlId="Course">
                   <Form.Label>Course</Form.Label>
@@ -112,7 +247,6 @@ const HomeworkCreateInstructor = ({ match, history }) => {
                 <Form.Control.Feedback type="invalid">
                   Please select a course for this homework.
                 </Form.Control.Feedback>
-
                 {/*---------------------------------------*/}
                 </Form.Group>
 
@@ -135,8 +269,8 @@ const HomeworkCreateInstructor = ({ match, history }) => {
                 <Form.Control.Feedback type="invalid">
                   Please select an Instructor for this homework.
                 </Form.Control.Feedback>
-
                 {/*---------------------------------------*/}
+
                 </Form.Group>
 
                 <Form.Group controlId="Avg Completion Time">
@@ -152,14 +286,13 @@ const HomeworkCreateInstructor = ({ match, history }) => {
                     }
                   ></Form.Control>
                   {/*(8) Add Form control feedback.*/}
-                <Form.Control.Feedback type="invalid">
-                  Please enter average completion time between 0 and 999.99 inclusive
-                </Form.Control.Feedback>
+                  <Form.Control.Feedback type="invalid">
+                    Please enter average completion time between 0 and 999.99 inclusive
+                  </Form.Control.Feedback>
+                  {/*---------------------------------------*/}
 
-                {/*---------------------------------------*/}
-                </Form.Group>                
-
-                <Form.Group controlId="Release Date">
+                </Form.Group>
+                  <Form.Group controlId="Release Date">
                   <Form.Label>Release Date</Form.Label>
                   <Form.Control
                     type="date"
