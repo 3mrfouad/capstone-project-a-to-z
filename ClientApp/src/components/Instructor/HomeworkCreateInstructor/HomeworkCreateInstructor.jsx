@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Table, Container, Button, Form, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getAllCourses,
+  getCoursesByCohortId,
   getAllInstructors,
   createHomeworkInstructor,
 } from "../../../actions/instructorActions";
@@ -37,10 +37,10 @@ const HomeworkCreateInstructor = ({ match, history }) => {
 
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getAllCourses());
+    dispatch(getCoursesByCohortId(cohortId));
     dispatch(getAllInstructors());
   }, []);
-  const { loading,error,success, courses } = useSelector((state) => state.getAllCourses);
+  const { loading,error,success, courses } = useSelector((state) => state.getCoursesByCohortId);
   const { instructors } = useSelector((state) => state.getAllInstructors);
 
   const goBack = () => {
@@ -246,8 +246,8 @@ setFormSubmitted(formSubmitIndicator);
                   >
                     <option value="">select</option>
                     {courses.map((course, index) => (
-                      <option value={course.courseId} key={index}>
-                        {course.name}
+                      <option value={course.item1.courseId} key={index}>
+                        {course.item1.name}
                       </option>
                     ))}
                   </Form.Control>
