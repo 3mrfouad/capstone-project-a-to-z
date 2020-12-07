@@ -24,11 +24,8 @@ const HomeworkCreateInstructor = ({ match, history }) => {
   // const [weight, setWight] = useState("");
   const [gitHubClassRoomLink, setGitHubClassRoomLink] = useState("");
   //(1) Add validation states (@Atinder)
-  /*  const [validated, setValidated] = useState(false);
-   const [invalidDatesBL, setInvalidDatesBl] = useState(false); 
-   const [validStartDate,setValidStartDate]=useState(false);
-   const [validEndDate,setValidEndDate]=useState(false);
-   let temp = false; */
+   const [validated, setValidated] = useState(false);  
+   let temp = false; 
   //----------------------------
   const dispatch = useDispatch();
   useEffect(() => {
@@ -43,6 +40,16 @@ const HomeworkCreateInstructor = ({ match, history }) => {
     history.goBack();
   };
   const handleSubmit = (e) => {
+    //(2) Add form validation condition block if-else
+    const form = e.currentTarget;
+    if (form.checkValidity() === false) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    console.log("pass initial validation 100");
+    setValidated(true);
+    //----------------------------
+
     e.preventDefault();
     dispatch(
       createHomeworkInstructor({
@@ -69,7 +76,7 @@ const HomeworkCreateInstructor = ({ match, history }) => {
           <Row className="justify-content-md-center">
             <Col xs={12} md={6}>
               <h3>Homework</h3>
-              <Form onSubmit={handleSubmit}>
+              <Form noValidate validated={validated} onSubmit={handleSubmit}>
                 <Form.Group controlId="title">
                   <Form.Label>Title</Form.Label>
                   <Form.Control
@@ -79,6 +86,12 @@ const HomeworkCreateInstructor = ({ match, history }) => {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                   ></Form.Control>
+                  {/*(8) Add Form control feedback.*/}
+                <Form.Control.Feedback type="invalid">
+                  Please enter Title of Homework.(Max 100 characters allowed).
+                </Form.Control.Feedback>
+
+                {/*---------------------------------------*/}
                 </Form.Group>
                 <Form.Group controlId="Course">
                   <Form.Label>Course</Form.Label>
@@ -95,6 +108,12 @@ const HomeworkCreateInstructor = ({ match, history }) => {
                       </option>
                     ))}
                   </Form.Control>
+                  {/*(8) Add Form control feedback.*/}
+                <Form.Control.Feedback type="invalid">
+                  Please select a course for this homework.
+                </Form.Control.Feedback>
+
+                {/*---------------------------------------*/}
                 </Form.Group>
 
                 <Form.Group controlId="instructor">
@@ -112,6 +131,12 @@ const HomeworkCreateInstructor = ({ match, history }) => {
                       </option>
                     ))}
                   </Form.Control>
+                  {/*(8) Add Form control feedback.*/}
+                <Form.Control.Feedback type="invalid">
+                  Please select an Instructor for this homework.
+                </Form.Control.Feedback>
+
+                {/*---------------------------------------*/}
                 </Form.Group>
 
                 <Form.Group controlId="Avg Completion Time">
@@ -126,6 +151,27 @@ const HomeworkCreateInstructor = ({ match, history }) => {
                       setAvgCompletionTime(String(e.target.value))
                     }
                   ></Form.Control>
+                  {/*(8) Add Form control feedback.*/}
+                <Form.Control.Feedback type="invalid">
+                  Please enter average completion time between 0 and 999.99 inclusive
+                </Form.Control.Feedback>
+
+                {/*---------------------------------------*/}
+                </Form.Group>                
+
+                <Form.Group controlId="Release Date">
+                  <Form.Label>Release Date</Form.Label>
+                  <Form.Control
+                    type="date"
+                    value={releaseDate}
+                    onChange={(e) => setReleaseDate(String(e.target.value))}
+                  ></Form.Control>
+                  {/*(8) Add Form control feedback.*/}
+                <Form.Control.Feedback type="invalid">
+                  Please enter Date in format: yyyy/mm/dd. 
+                </Form.Control.Feedback>
+
+                {/*---------------------------------------*/}
                 </Form.Group>
 
                 <Form.Group controlId="Due Date">
@@ -136,15 +182,12 @@ const HomeworkCreateInstructor = ({ match, history }) => {
                     value={dueDate}
                     onChange={(e) => setDueDate(String(e.target.value))}
                   ></Form.Control>
-                </Form.Group>
+                  {/*(8) Add Form control feedback.*/}
+                <Form.Control.Feedback type="invalid">
+                  Please enter Date in format: yyyy/mm/dd. Due Date can not be set before Release Date.
+                </Form.Control.Feedback>
 
-                <Form.Group controlId="Release Date">
-                  <Form.Label>Release Date</Form.Label>
-                  <Form.Control
-                    type="date"
-                    value={releaseDate}
-                    onChange={(e) => setReleaseDate(String(e.target.value))}
-                  ></Form.Control>
+                {/*---------------------------------------*/}
                 </Form.Group>
 
                 <Form.Group controlId="DocLink">
@@ -156,6 +199,13 @@ const HomeworkCreateInstructor = ({ match, history }) => {
                     placeholder="example: https://www.google.com "
                     onChange={(e) => setDocumentLink(String(e.target.value))}
                   ></Form.Control>
+                  {/*(8) Add Form control feedback.*/}
+                <Form.Control.Feedback type="invalid">
+                  <p>Please enter Document Link in format: http|https://yourLink.</p>
+                  <p>Max 250 characters allowed.</p>
+                </Form.Control.Feedback>
+
+                {/*---------------------------------------*/}
                 </Form.Group>
                 <Form.Group controlId="GitHubLink">
                   <Form.Label>GitHubLink</Form.Label>
@@ -168,6 +218,13 @@ const HomeworkCreateInstructor = ({ match, history }) => {
                       setGitHubClassRoomLink(String(e.target.value))
                     }
                   ></Form.Control>
+                   {/*(8) Add Form control feedback.*/}
+                <Form.Control.Feedback type="invalid">
+                <p>Please enter Document Link in format: http|https://yourLink.</p>
+                  <p>Max 250 characters allowed.</p>
+                </Form.Control.Feedback>
+
+                {/*---------------------------------------*/}
                 </Form.Group>
 
                 {/* <h3>Rubric</h3>
