@@ -9,7 +9,7 @@ import {
 import { Link } from "react-router-dom";
 
 const HomeworkSummaryInstructor = ({ match, history }) => {
-  const cohortId = match.params.cohortId;
+  const cohortId = match.params.id;
   const courseId = match.params.courseId;
   const dispatch = useDispatch();
   useEffect(() => {
