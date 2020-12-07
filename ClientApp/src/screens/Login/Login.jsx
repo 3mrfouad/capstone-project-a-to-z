@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Form, Button, Row, Col, Container } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
@@ -14,6 +14,7 @@ const Login = () => {
   // ! (10.1) Anti-tamper validation - States and Variables
   const [validData, setValidData] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const history = useHistory();
 
   const { user, success, loading, error } = useSelector(
     (state) => state.userLoginState
@@ -53,6 +54,15 @@ const Login = () => {
       console.log("Catch");
     }
   }
+
+  useEffect(() => {
+    if (user && user.isInstructor) {
+      history.push("/cohortsummary");
+    }
+    if (user && !user.isInstructor) {
+      history.push(`/student/${user.userId}`);
+    }
+  }, [history, user]);
   const submitHandler = (e) => {
     //(2) Add form validation condition block if-else
     const form = e.currentTarget;
@@ -68,6 +78,12 @@ const Login = () => {
         password,
       })
     );
+    // if (user && user.isInstructor) {
+    //   history.push("/cohortsummary");
+    // }
+    // if (user && !user.isInstructor) {
+    //   history.push(`/student/${user.userId}`);
+    // }
     // ! (10.4) Anti-tamper validation - calling Validate  -Created by ayesha need to uncomment it once store is created
     Validate(email, password);
     if (validFormData) {

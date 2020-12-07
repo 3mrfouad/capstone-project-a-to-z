@@ -54,7 +54,7 @@ export const getHomeworkSummaryInstructor = (ids) => {
   return async (dispatch) => {
     try {
       dispatch({ type: "HOMEWORKSUMMARY_INSTRUCTOR_REQUEST" });
-      const params = { courseId : ids.courseId, cohortId: ids.cohortId };
+      const params = { courseId: ids.courseId, cohortId: ids.cohortId };
       const { data } = await axios.request({
         url:
           "https://localhost:5001/application/homeworksummary?" +
@@ -923,5 +923,13 @@ export const loginUser = (userInfo) => {
             : error.response,
       });
     }
+  };
+};
+
+export const logout = () => {
+  return (dispatch) => {
+    dispatch({
+      type: "LOGOUT_USER",
+    });
   };
 };

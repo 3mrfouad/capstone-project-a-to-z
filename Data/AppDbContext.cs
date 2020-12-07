@@ -25,6 +25,7 @@ namespace AZLearn.Data
         public virtual DbSet<User> Users { get; set; }
 
 
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -33,11 +34,12 @@ namespace AZLearn.Data
                     "server=localhost;" +
                     "port = 3306;" +
                     "user = root;" +
+                    "password=123456;" +
                     "database = AZLearnDb;";
 
-                string version = "10.4.14-MariaDB";
+                //string version = "10.4.14-MariaDB";
 
-                optionsBuilder.UseMySql(connection, x => x.ServerVersion(version));
+                optionsBuilder.UseMySql(connection);
             }
         }
 
