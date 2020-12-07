@@ -43,7 +43,7 @@ const CourseSummaryInstructor = ({ match, history }) => {
         <Loader />
       ) : (
         <Container>
-          <h2>{cohort.name}</h2>
+          {/* <h2>{cohort.name}</h2> */}
           <Table>
             <thead>
               <tr>
