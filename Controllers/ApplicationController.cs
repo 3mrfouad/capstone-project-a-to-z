@@ -542,9 +542,9 @@ namespace AZLearn.Controllers
         #region /application/UpdateHomework
 
         [HttpPatch(nameof(UpdateHomework))]
-        public ActionResult UpdateHomework(string homeworkId, string courseId, string instructorId, string cohortId,
-            string isAssignment, string title, string avgCompletionTime, string dueDate, string releaseDate,
-            string documentLink, string gitHubClassRoomLink)
+        public ActionResult UpdateHomework([FromQuery] string homeworkId, [FromQuery] string courseId, [FromQuery] string instructorId, [FromQuery] string cohortId,
+            [FromQuery] string isAssignment, [FromQuery] string title, [FromQuery] string avgCompletionTime, [FromQuery] string dueDate, [FromQuery] string releaseDate,
+            [FromQuery] string documentLink, [FromQuery] string gitHubClassRoomLink)
 
         {
             ActionResult result;
@@ -580,7 +580,7 @@ namespace AZLearn.Controllers
 
         #region /application/UpdateHomeworkRubrics
 
-        [HttpPatch(nameof(UpdateHomework))]
+        [HttpPatch(nameof(UpdateHomeworkRubrics))]
         public ActionResult UpdateHomeworkRubrics([FromQuery] string homeworkId, [FromQuery] string courseId, [FromQuery] string instructorId, [FromQuery] string cohortId,
             [FromQuery] string isAssignment, [FromQuery] string title, [FromQuery] string avgCompletionTime, [FromQuery] string dueDate, [FromQuery] string releaseDate, [FromQuery]
             string documentLink, [FromQuery] string gitHubClassRoomLink, [FromBody] Dictionary<string, Tuple<string, string, string>> rubrics)
