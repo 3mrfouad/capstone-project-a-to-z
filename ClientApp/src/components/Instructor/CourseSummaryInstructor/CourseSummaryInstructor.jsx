@@ -82,7 +82,6 @@ const CourseSummaryInstructor = ({ match, history }) => {
           <button type="button" className="btn btn-link" onClick={goBack}>
             Back
           </button>{" "}
-          }
         </Link>
         <Button href={`/courseassign/${cohortId}`} className="float-right mr-3">
           Add Course
