@@ -288,7 +288,7 @@ setFormSubmitted(formSubmitIndicator);
                     min={0}
                     max={999.99}
                     step="0.25"
-                    value={avgCompletionTime ? avgCompletionTime : 0}
+                    value={avgCompletionTime}
                     onChange={(e) =>
                       setAvgCompletionTime(String(e.target.value))
                     }

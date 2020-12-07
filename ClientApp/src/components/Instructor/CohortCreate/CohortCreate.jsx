@@ -259,7 +259,7 @@ const CohortCreate = ({ history }) => {
                   min={0}
                   max={999}
                   step="1"
-                  value={capacity ? capacity : 0}
+                  value={capacity}
                   onChange={(e) => setCapacity(String(e.target.value))}
                 ></Form.Control>
               </Form.Group>

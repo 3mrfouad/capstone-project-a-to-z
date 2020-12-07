@@ -46,7 +46,7 @@ const HomeworkEditInstructor = () => {
                   min={0}
                   max={999.99}
                   step="0.1"
-                  value={avgCompletionTime ? avgCompletionTime : 0}
+                  value={avgCompletionTime}
                 ></Form.Control>
               </Form.Group>
 
