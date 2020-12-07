@@ -1,5 +1,5 @@
 import React from "react";
-import { Table, Container, Button, Modal } from "react-bootstrap";
+import { Table, Container, Button, Modal, Row, Col } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -95,20 +95,26 @@ const CohortSummaryInstructor = ({ history }) => {
                   ))}
               </tbody>
             </Table>
-            <button type="button" className="btn btn-link" onClick={goBack}>
-              Back
-            </button>{" "}
-            <Link to="/cohortcreate">
-              <Button className="float-right mr-3">Create Cohort</Button>
-            </Link>
-            <Link to="/registeruser">
-              <Button className="float-right mr-3" type="button">
-                Register Users
-              </Button>
-            </Link>
-            <Link to="/managecourse">
-              <Button className="float-right mr-3">Manage Course</Button>{" "}
-            </Link>
+            <Row>
+              <Col>
+                <button type="button" className="btn btn-link" onClick={goBack}>
+                  Back
+                </button>{" "}
+              </Col>
+              <Col>
+                <Link to="/cohortcreate">
+                  <Button className="float-right mr-3">Create Cohort</Button>
+                </Link>
+                <Link to="/registeruser">
+                  <Button className="float-right mr-3" type="button">
+                    Register Users
+                  </Button>
+                </Link>
+                <Link to="/managecourse">
+                  <Button className="float-right mr-3">Manage Course</Button>{" "}
+                </Link>
+              </Col>
+            </Row>
           </Container>
         </React.Fragment>
       )}

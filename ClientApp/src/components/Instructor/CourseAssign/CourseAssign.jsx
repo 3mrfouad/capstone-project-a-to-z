@@ -5,6 +5,7 @@ import {
   getAllCourses,
   getAllInstructors,
   assignCourse,
+  getCourse,
 } from "../../../actions/instructorActions";
 
 const CourseAssign = ({ match, history }) => {
@@ -18,6 +19,7 @@ const CourseAssign = ({ match, history }) => {
   const { loading, courses } = useSelector((state) => state.getAllCourses);
   const { instructors } = useSelector((state) => state.getAllInstructors);
   const { success, error } = useSelector((state) => state.courseAssign);
+  const { course } = useSelector((state) => state.getCourse);
   //(1) Add validation states
   const [validated, setValidated] = useState(false);
   const [invalidDatesBL, setInvalidDatesBl] = useState(false);
@@ -36,7 +38,13 @@ const CourseAssign = ({ match, history }) => {
   useEffect(() => {
     dispatch(getAllCourses());
     dispatch(getAllInstructors());
-  }, []);
+  }, [dispatch]);
+
+  // useEffect(() => {
+  //   if (courseId) {
+  //     dispatch(getCourse(courseId));
+  //   }
+  // }, [courseId]);
 
   // ! (10.2) Anti-tamper validation - Validate (parameters)
   function Validate(
