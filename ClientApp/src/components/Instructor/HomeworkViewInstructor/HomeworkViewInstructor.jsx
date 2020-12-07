@@ -59,21 +59,15 @@ function Validate(title, courseId, instructorId, avgCompletionTime, dueDate, rel
       validFormData = false;
     } else if (!courseId) {
       validFormData = false;
-    } else if (parseInt(courseId) > 2,147,483,647 || parseFloat(courseId) < 1) {
+    } else if (parseInt(courseId) > 2147483647 || parseFloat(courseId) < 1) {
       validFormData = false;
     } else if (!instructorId) {
       validFormData = false;
-    } else if (parseInt(instructorId) > 2,147,483,647 || parseFloat(instructorId) < 1) {
+    } else if (parseInt(instructorId) > 2147483647 || parseFloat(instructorId) < 1) {
       validFormData = false;   
     } else if (parseFloat(avgCompletionTime) > 999.99 || parseFloat(avgCompletionTime) < 0) {
       validFormData = false;
-      console.log("avgCompletionTime: ", parseFloat(avgCompletionTime));
-    } else if (!dueDate) {
-      validFormData = false;
-      console.log("dueDate");         
-    } else if (!releaseDate) {
-      validFormData = false;
-      console.log("releaseDate");    
+      console.log("avgCompletionTime: ", parseFloat(avgCompletionTime));      
     } else if (documentLink.Length > 250) {
       validFormData = false;
       console.log("documentLink length");
@@ -87,31 +81,35 @@ function Validate(title, courseId, instructorId, avgCompletionTime, dueDate, rel
     } else if (gitHubClassRoomLink &&
       !/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(
         gitHubClassRoomLink)) {
-      validFormData = false;
-    } else {
-      try {
-        parsedReleaseDate = Date.parse(releaseDate);       
-        console.log("Release Date parse");
-      } catch (ParseException) {        
-        console.log("Release Date parse exception");
-        validFormData = false;
-      }
-      try {
-        parsedDueDate = Date.parse(dueDate);        
-        console.log("dueDate parse");
-      } catch (ParseException) {        
-        console.log("Due Date parse exception");
-        validFormData = false;
-      }
-      /* Dates business logic */      
-        if (parsedDueDate < parsedReleaseDate) {
+      validFormData = false;    
+    } else if (dueDate || releaseDate) {      
+        try {
+          parsedReleaseDate = Date.parse(releaseDate);       
+          console.log("Release Date parse");
+        } catch (ParseException) {        
+          console.log("Release Date parse exception");
           validFormData = false;
-          console.log("parsedDueDate < parsedReleaseDate");
-        } else {
+        }
+        try {
+          parsedDueDate = Date.parse(dueDate);        
+          console.log("dueDate parse");
+        } catch (ParseException) {        
+          console.log("Due Date parse exception");
+          validFormData = false;
+        }
+        /* Dates business logic */      
+          if (parsedDueDate && parsedReleaseDate && parsedDueDate < parsedReleaseDate) {
+            validFormData = false;
+            console.log("parsedDueDate < parsedReleaseDate");
+          }else if ((dueDate && parsedDueDate) || (releaseDate && parsedReleaseDate) || (parsedDueDate > parsedReleaseDate) ){
+            validFormData = true;
+            console.log("All good :", validFormData);
+          }
+        }else {
           validFormData = true;
           console.log("All good :", validFormData);
-        }
-      }    
+        } 
+         
   } catch (Exception) {
     validFormData = false;
   }
@@ -169,11 +167,12 @@ setFormSubmitted(formSubmitIndicator);
   const goBack = () => {
     history.goBack();
   };
-  const { loading, homework } = useSelector(
+ 
+  const { loading,error, homework } = useSelector(
     (state) => state.homeworkDetailInstructor
   );
   const { success } = useSelector((state) => state.editHomeworkInstructorState);
-
+  
   const { courses } = useSelector((state) => state.getAllCourses);
   const { instructors } = useSelector((state) => state.getAllInstructors);
   return (
@@ -187,7 +186,7 @@ setFormSubmitted(formSubmitIndicator);
               <h3>Homework</h3>
 
 {/* ! (10.7) Anti-tamper validation - Alert message conditions   */}
-            {/* <p
+            <p
               class={
                 formSubmitted
                   ? validData
@@ -210,7 +209,7 @@ setFormSubmitted(formSubmitIndicator);
                     : ""
                   : "Error: Form was submitted with invalid data fields"
                 : ""}
-            </p> */}
+            </p>
             {/* ! ------------------------------------------------------  */}
 
               <Form noValidate validated={validated} onSubmit={submitHandler}>
@@ -356,7 +355,9 @@ setFormSubmitted(formSubmitIndicator);
 
                 {/*---------------------------------------*/}
                 </Form.Group>
-                <Link onClick={goBack}>Back</Link>
+                <button type="button" className="btn btn-link" onClick={goBack}>
+              Back
+            </button>{" "}
 
                 <Button type="submit" variant="primary" className="float-right">
                   Save
