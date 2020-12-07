@@ -40,7 +40,7 @@ const HomeworkCreateInstructor = ({ match, history }) => {
     dispatch(getAllCourses());
     dispatch(getAllInstructors());
   }, []);
-  const { loading, courses } = useSelector((state) => state.getAllCourses);
+  const { loading,error,success, courses } = useSelector((state) => state.getAllCourses);
   const { instructors } = useSelector((state) => state.getAllInstructors);
 
   const goBack = () => {
@@ -63,16 +63,22 @@ function Validate(title, courseId, instructorId,avgCompletionTime, dueDate, rele
 
     if (!title) {
       validFormData = false;
+      console.log("title");
     } else if (title.Length > 100) {
       validFormData = false;
+      console.log("title.length");
     } else if (!courseId) {
       validFormData = false;
-    } else if (parseInt(courseId) > 2,147,483,647 || parseFloat(courseId) < 1) {
+      console.log("courseId");
+    } else if (parseInt(courseId) > 2147483647 || parseFloat(courseId) < 1) {
       validFormData = false;
+      console.log("courseId range,", courseId);
     } else if (!instructorId) {
       validFormData = false;
-    } else if (parseInt(instructorId) > 2,147,483,647 || parseFloat(instructorId) < 1) {
+      console.log("instructorId");
+    } else if (parseInt(instructorId) > 2147483647 || parseFloat(instructorId) < 1) {
       validFormData = false;
+      console.log("instructorId range");
     } else if (parseFloat(avgCompletionTime) > 999.99 || parseFloat(avgCompletionTime) < 0) {
       validFormData = false;
       console.log("avgCompletionTime: ", parseFloat(avgCompletionTime));
@@ -92,10 +98,12 @@ function Validate(title, courseId, instructorId,avgCompletionTime, dueDate, rele
         !/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(
           documentLink)) {
         validFormData = false;
+        console.log("documentLink Format");
     } else if (gitHubClassRoomLink &&
       !/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(
         gitHubClassRoomLink)) {
       validFormData = false;
+      console.log("gitHubClassRoomLink Format");
     } else {
       try {
         parsedReleaseDate = Date.parse(releaseDate);       
@@ -185,7 +193,7 @@ setFormSubmitted(formSubmitIndicator);
               <h3>Homework</h3>
 
             {/* ! (10.7) Anti-tamper validation - Alert message conditions   */}
-            {/* <p
+            <p
               class={
                 formSubmitted
                   ? validData
@@ -204,11 +212,11 @@ setFormSubmitted(formSubmitIndicator);
                   ? !loading && error
                     ? "Unsuccessful attempt to create a cohort"
                     : !loading && !error && success
-                    ? "Cohort was successfully created"
+                    ? "Homework was successfully created"
                     : ""
                   : "Error: Form was submitted with invalid data fields"
                 : ""}
-            </p> */}
+            </p>
             {/* ! ------------------------------------------------------  */}
 
               <Form noValidate validated={validated} onSubmit={handleSubmit}>
