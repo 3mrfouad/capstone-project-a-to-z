@@ -23,6 +23,11 @@ const CourseSummaryInstructor = ({ match }) => {
   useEffect(() => {
     dispatch(getCoursesByCohortId(cohortId));
   }, [dispatch, success]);
+
+  /*  while (loading === undefined || courses === undefined) {
+    return <h3>Loading ...</h3>;
+  } */
+
   return (
     <React.Fragment>
       <Container>

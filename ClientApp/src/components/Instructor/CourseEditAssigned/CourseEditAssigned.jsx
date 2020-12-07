@@ -203,6 +203,15 @@ const CourseEditAssigned = ({ match, history }) => {
   const goBack = () => {
     history.goBack();
   };
+  /* 
+  while (
+    instructors === undefined ||
+    loading === undefined ||
+    course === undefined
+  ) {
+    return <h3>Loading ...</h3>;
+  } */
+
   return (
     <React.Fragment>
       {loading ? (
@@ -269,8 +278,10 @@ const CourseEditAssigned = ({ match, history }) => {
                   <Form.Control
                     required
                     type="date"
-                    value={startDate}
-                    onChange={(e) => setStartDate(String(e.target.value))}
+                    value={startDate.split(" ")[0]}
+                    onChange={(e) =>
+                      setStartDate(String(e.target.value).split(" ")[0])
+                    }
                   ></Form.Control>
                 </Form.Group>
                 <Form.Group controlId="enddate">
@@ -278,8 +289,10 @@ const CourseEditAssigned = ({ match, history }) => {
                   <Form.Control
                     required
                     type="date"
-                    value={endDate}
-                    onChange={(e) => setEndDate(String(e.target.value))}
+                    value={endDate.split(" ")[0]}
+                    onChange={(e) =>
+                      setEndDate(String(e.target.value).split(" ")[0])
+                    }
                   ></Form.Control>
                   <Form.Control.Feedback type="invalid">
                     Please choose an end date.
