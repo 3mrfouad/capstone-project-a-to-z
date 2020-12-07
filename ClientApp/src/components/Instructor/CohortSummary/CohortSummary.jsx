@@ -1,5 +1,13 @@
 import React from "react";
-import { Table, Container, Button, Modal, Row, Col } from "react-bootstrap";
+import {
+  Table,
+  Container,
+  Button,
+  Modal,
+  Row,
+  Col,
+  ButtonGroup,
+} from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -102,17 +110,21 @@ const CohortSummaryInstructor = ({ history }) => {
                 </button>{" "}
               </Col>
               <Col>
-                <Link to="/cohortcreate">
-                  <Button className="float-right mr-3">Create Cohort</Button>
-                </Link>
-                <Link to="/registeruser">
-                  <Button className="float-right mr-3" type="button">
+                <ButtonGroup className="float-right">
+                  <Button className="float-right mr-3" href="/cohortcreate">
+                    Create Cohort
+                  </Button>
+                  <Button
+                    className="float-right mr-3"
+                    type="button"
+                    href="/registeruser"
+                  >
                     Register Users
                   </Button>
-                </Link>
-                <Link to="/managecourse">
-                  <Button className="float-right mr-3">Manage Course</Button>{" "}
-                </Link>
+                  <Button className="float-right mr-3" href="/managecourse">
+                    Manage Course
+                  </Button>{" "}
+                </ButtonGroup>
               </Col>
             </Row>
           </Container>

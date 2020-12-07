@@ -1,7 +1,7 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Table, Container, Button, Modal } from "react-bootstrap";
+import { Table, Container, Button, Modal, ButtonGroup } from "react-bootstrap";
 import {
   manageCourseInstructor,
   archiveCourse,
@@ -50,10 +50,19 @@ const ManageCourseInstructor = ({ history }) => {
                     <td>{course.description}</td>
                     <td>{course.durationHrs}</td>
                     <td>
-                      <Link to={`/courseedit/${course.courseId}`}>Edit</Link> |{" "}
-                      <Link to="#" onClick={handleShow}>
-                        Archive
-                      </Link>{" "}
+                      <ButtonGroup className="float-left">
+                        <Button
+                          variant="link"
+                          href={`/courseedit/${course.courseId}`}
+                          className="float-left"
+                        >
+                          Edit
+                        </Button>{" "}
+                        <Button variant="link" onClick={handleShow}>
+                          Archive
+                        </Button>
+                      </ButtonGroup>
+
                       <Modal show={show} onHide={handleClose}>
                         <Modal.Body>Retire: Are you sure?</Modal.Body>
                         <Modal.Footer>
