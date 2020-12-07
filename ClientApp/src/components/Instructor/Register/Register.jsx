@@ -3,8 +3,12 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Form, Button, Row, Col, Container, Modal } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
-import { registerUser } from "../../../actions/instructorActions";
-let loading = false;
+import {
+  registerUser,
+  cohortSummaryInstructor,
+} from "../../../actions/instructorActions";
+import Loader from "../../shared/Loader/Loader";
+// let loading = false;
 let error = false;
 // let success = true;
 const Register = ({ history }) => {
@@ -20,8 +24,13 @@ const Register = ({ history }) => {
   const handleChange = () => {
     setIsInstructor(!isInstructor);
   };
+  useEffect(() => {
+    dispatch(cohortSummaryInstructor());
+  }, [dispatch]);
   const { success } = useSelector((state) => state.userRegisterState);
-
+  const { cohorts, loading } = useSelector(
+    (state) => state.cohortSummaryInstructor
+  );
   //(1) Add validation states
   const [validated, setValidated] = useState(false);
 
@@ -154,119 +163,125 @@ const Register = ({ history }) => {
   };
   return (
     <React.Fragment>
-      <Container>
-        <Row className="justify-content-md-center">
-          <Col xs={12} md={6}>
-            <h2>Register</h2>
-            {/* {error && <Message variant="danger">{error}</Message>}
+      {loading ? (
+        <Loader />
+      ) : (
+        <Container>
+          <Row className="justify-content-md-center">
+            <Col xs={12} md={6}>
+              <h2>Register</h2>
+              {/* {error && <Message variant="danger">{error}</Message>}
             {loading && <Loader />} */}
-            {/* ! (10.7) Anti-tamper validation - Alert message conditions   */}
-            <p
-              className={
-                formSubmitted
+              {/* ! (10.7) Anti-tamper validation - Alert message conditions   */}
+              <p
+                className={
+                  formSubmitted
+                    ? validData
+                      ? !loading && error
+                        ? "alert alert-danger"
+                        : !loading && !error && success
+                        ? "alert alert-success"
+                        : ""
+                      : "alert alert-danger"
+                    : ""
+                }
+                role="alert"
+              >
+                {formSubmitted
                   ? validData
                     ? !loading && error
-                      ? "alert alert-danger"
+                      ? "Unsuccessful attempt to register the user"
                       : !loading && !error && success
-                      ? "alert alert-success"
+                      ? "Successfully registered the user"
                       : ""
-                    : "alert alert-danger"
-                  : ""
-              }
-              role="alert"
-            >
-              {formSubmitted
-                ? validData
-                  ? !loading && error
-                    ? "Unsuccessful attempt to register the user"
-                    : !loading && !error && success
-                    ? "Successfully registered the user"
-                    : ""
-                  : "Error: Form was submitted with invalid data fields"
-                : ""}
-            </p>
-            {/* ! ------------------------------------------------------  */}
-            <Form noValidate validated={validated} onSubmit={submitHandler}>
-              <Form.Group controlId="name">
-                <Form.Label>Name</Form.Label>
-                <Form.Control
-                  required
-                  type="text"
-                  maxLength="50"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                ></Form.Control>
-                <Form.Control.Feedback type="invalid">
-                  Please enter a name.
-                </Form.Control.Feedback>
-              </Form.Group>
-              <Form.Group controlId="email">
-                <Form.Label>Email Address</Form.Label>
-                <Form.Control
-                  required
-                  type="email"
-                  maxLength="50"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                ></Form.Control>
-                <Form.Control.Feedback type="invalid">
-                  Please enter a valid email. e.g. youremailaddress@domain.com
-                </Form.Control.Feedback>
-              </Form.Group>
-              <Form.Group controlId="password">
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                  required
-                  type="password"
-                  minLength="8"
-                  pattern="(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                ></Form.Control>
-                <Form.Control.Feedback type="invalid">
-                  Please enter a valid password.Password is in inappropriate
-                  format: Password must be: at least one upper case letter, at
-                  least one lower case letter, at least one digit , at least one
-                  special character, minimum 8 characters in length.
-                </Form.Control.Feedback>
-              </Form.Group>
-              <Form.Group controlId="cohort">
-                <Form.Label>Cohort</Form.Label>
-                <Form.Control
-                  as="select"
-                  value={cohort}
-                  onChange={(e) => setCohort(e.target.value)}
-                >
-                  <option value="">Select</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                </Form.Control>
-              </Form.Group>
-              <Form.Group controlId="isInstructor">
-                <Form.Check
-                  type="checkbox"
-                  label="Instructor"
-                  value={isInstructor}
-                  onChange={handleChange}
-                />
-              </Form.Group>
-              <button type="button" className="btn btn-link" onClick={goBack}>
-                Back
-              </button>{" "}
-              <Button className="float-right" type="submit" variant="primary">
-                {" "}
-                Register
-              </Button>
-            </Form>
-          </Col>
-        </Row>
-        {/* <Row className="py-3">
+                    : "Error: Form was submitted with invalid data fields"
+                  : ""}
+              </p>
+              {/* ! ------------------------------------------------------  */}
+              <Form noValidate validated={validated} onSubmit={submitHandler}>
+                <Form.Group controlId="name">
+                  <Form.Label>Name</Form.Label>
+                  <Form.Control
+                    required
+                    type="text"
+                    maxLength="50"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  ></Form.Control>
+                  <Form.Control.Feedback type="invalid">
+                    Please enter a name.
+                  </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group controlId="email">
+                  <Form.Label>Email Address</Form.Label>
+                  <Form.Control
+                    required
+                    type="email"
+                    maxLength="50"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  ></Form.Control>
+                  <Form.Control.Feedback type="invalid">
+                    Please enter a valid email. e.g. youremailaddress@domain.com
+                  </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group controlId="password">
+                  <Form.Label>Password</Form.Label>
+                  <Form.Control
+                    required
+                    type="password"
+                    minLength="8"
+                    pattern="(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  ></Form.Control>
+                  <Form.Control.Feedback type="invalid">
+                    Please enter a valid password.Password is in inappropriate
+                    format: Password must be: at least one upper case letter, at
+                    least one lower case letter, at least one digit , at least
+                    one special character, minimum 8 characters in length.
+                  </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group controlId="cohort">
+                  <Form.Label>Cohort</Form.Label>
+                  <Form.Control
+                    as="select"
+                    value={cohort}
+                    onChange={(e) => setCohort(e.target.value)}
+                  >
+                    {cohorts.map((item, index) => (
+                      <option key={index} value={item.cohortId}>
+                        {item.name}
+                      </option>
+                    ))}
+                  </Form.Control>
+                </Form.Group>
+                <Form.Group controlId="isInstructor">
+                  <Form.Check
+                    type="checkbox"
+                    label="Instructor"
+                    value={isInstructor}
+                    onChange={handleChange}
+                  />
+                </Form.Group>
+                <button type="button" className="btn btn-link" onClick={goBack}>
+                  Back
+                </button>{" "}
+                <Button className="float-right" type="submit" variant="primary">
+                  {" "}
+                  Register
+                </Button>
+              </Form>
+            </Col>
+          </Row>
+          {/* <Row className="py-3">
           <Col>
             New Customer? <Link to="/register">Register</Link>
           </Col>
         </Row> */}
-      </Container>
+        </Container>
+      )}
+
       <Modal show={show} onHide={handleClose}>
         <Modal.Body>
           You are giving this user instructor(Write/Edit) privileges.Are you
