@@ -18,6 +18,7 @@ const CourseEdit = ({ match, history }) => {
   // ! (10.1) Anti-tamper validation - States and Variables
   const [validData, setValidData] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [formDataChange, setFormDataChange] = useState(false);
   let validFormData = false;
   let formSubmitIndicator = false;
   // ! ------------------------------------------------------
@@ -72,8 +73,16 @@ const CourseEdit = ({ match, history }) => {
         type: "COURSE_EDIT_RESET",
       });
     } else {
-      if (!course || !course.name) {
-        dispatch(getCourse(courseId));
+      if (
+        !course ||
+        !course.name ||
+        course.courseId != courseId ||
+        formDataChange
+      ) {
+        {
+          dispatch(getCourse(courseId));
+          setFormDataChange(false);
+        }
       } else {
         setCourseName(course.name);
         setDescription(course.description);
@@ -169,7 +178,10 @@ const CourseEdit = ({ match, history }) => {
                     type="text"
                     maxLength="50"
                     value={courseName}
-                    onChange={(e) => setCourseName(e.target.value)}
+                    onChange={(e) => {
+                      setCourseName(e.target.value);
+                      setFormDataChange(true);
+                    }}
                   ></Form.Control>
                   <Form.Control.Feedback type="invalid">
                     Please enter a course name.
@@ -185,7 +197,10 @@ const CourseEdit = ({ match, history }) => {
                     max={999.99}
                     step="0.25"
                     value={hours}
-                    onChange={(e) => setHours(e.target.value)}
+                    onChange={(e) => {
+                      setHours(e.target.value);
+                      setFormDataChange(true);
+                    }}
                   ></Form.Control>
                   <Form.Control.Feedback type="invalid">
                     Please fill in the Hours field.
@@ -199,7 +214,10 @@ const CourseEdit = ({ match, history }) => {
                     required
                     maxLength="250"
                     value={description}
-                    onChange={(e) => setDescription(e.target.value)}
+                    onChange={(e) => {
+                      setDescription(e.target.value);
+                      setFormDataChange(true);
+                    }}
                   ></Form.Control>
                   <Form.Control.Feedback type="invalid">
                     Please enter description for Course.

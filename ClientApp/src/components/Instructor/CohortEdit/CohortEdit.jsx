@@ -19,6 +19,8 @@ const CohortEdit = ({ match, history }) => {
   // ! (10.1) Anti-tamper validation - States and Variables
   const [validData, setValidData] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [formDataChange, setFormDataChange] = useState(false);
+
   let validFormData = false;
   let validStartDate = false;
   let validEndDate = false;
@@ -31,8 +33,14 @@ const CohortEdit = ({ match, history }) => {
   const { cohort, loading } = cohortGetState;
 
   useEffect(() => {
-    if (!cohort || !cohort.name || cohort.cohortId != cohortId) {
+    if (
+      !cohort ||
+      !cohort.name ||
+      cohort.cohortId != cohortId ||
+      formDataChange
+    ) {
       dispatch(cohortGet(cohortId));
+      setFormDataChange(false);
     } else {
       setName(cohort.name);
       setCapacity(cohort.capacity);
@@ -284,7 +292,12 @@ const CohortEdit = ({ match, history }) => {
                     type="text"
                     maxlength="50"
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => {
+                      setName(e.target.value);
+                      setFormDataChange(true);
+                    }}
+
+                    // define a flag called formDataChange //setformDataChange //every onchange in form set flag to true ;initial set to false
                   ></Form.Control>
                   <Form.Control.Feedback type="invalid">
                     Please enter a cohort name.
@@ -298,7 +311,10 @@ const CohortEdit = ({ match, history }) => {
                     max={999}
                     step="1"
                     value={capacity ? capacity : 0}
-                    onChange={(e) => setCapacity(String(e.target.value))}
+                    onChange={(e) => {
+                      setCapacity(String(e.target.value));
+                      setFormDataChange(true);
+                    }}
                   ></Form.Control>
                 </Form.Group>
                 <Form.Group controlId="Mode of Teaching">
@@ -307,7 +323,10 @@ const CohortEdit = ({ match, history }) => {
                     as="select"
                     required
                     value={modeOfTeaching}
-                    onChange={(e) => setModeOfTeaching(String(e.target.value))}
+                    onChange={(e) => {
+                      setModeOfTeaching(String(e.target.value));
+                      setFormDataChange(true);
+                    }}
                   >
                     <option></option>
                     <option>Online</option>
@@ -320,9 +339,10 @@ const CohortEdit = ({ match, history }) => {
                     required
                     type="date"
                     value={startDate.split("T")[0]}
-                    onChange={(e) =>
-                      setStartDate(String(e.target.value).split("T")[0])
-                    }
+                    onChange={(e) => {
+                      setStartDate(String(e.target.value).split("T")[0]);
+                      setFormDataChange(true);
+                    }}
                   ></Form.Control>
                   <Form.Control.Feedback type="invalid">
                     Please choose a start date.
@@ -335,9 +355,10 @@ const CohortEdit = ({ match, history }) => {
                     type="date"
                     min={startDate}
                     value={endDate.split("T")[0]}
-                    onChange={(e) =>
-                      setEndDate(String(e.target.value).split("T")[0])
-                    }
+                    onChange={(e) => {
+                      setEndDate(String(e.target.value).split("T")[0]);
+                      setFormDataChange(true);
+                    }}
                   ></Form.Control>
                   <Form.Control.Feedback type="invalid">
                     Please choose an end date.
@@ -354,7 +375,10 @@ const CohortEdit = ({ match, history }) => {
                     as="select"
                     required
                     value={city}
-                    onChange={(e) => setCity(e.target.value)}
+                    onChange={(e) => {
+                      setCity(e.target.value);
+                      setFormDataChange(true);
+                    }}
                   >
                     <option></option>
                     <option>Edmonton</option>

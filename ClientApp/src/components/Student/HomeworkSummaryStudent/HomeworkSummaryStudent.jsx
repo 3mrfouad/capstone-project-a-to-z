@@ -54,14 +54,14 @@ const HomeworkSummaryStudent = ({ match }) => {
                     <td>{item.title}</td>
                     <td>{item.dueDate}</td>
                     <td>{item.gitHubClassRoomLink}</td>
-                    <td>category</td>
+                    <td>Category</td>
                     <td>
                       <Link
                         to={`/homeworkcardstudent/${studentId}/${item.homeworkId}`}
                       >
                         View
                       </Link>{" "}
-                      |<a href="#">Grades</a>
+                      {/*  |<a href="#">Grades</a> */}
                     </td>
                   </tr>
                 ))}
