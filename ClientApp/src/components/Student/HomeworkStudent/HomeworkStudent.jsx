@@ -11,7 +11,7 @@ import {
   getAllCourses,
   getAllInstructors,
 } from "../../../actions/instructorActions";
-const HomeworkStudent = ({ match }) => {
+const HomeworkStudent = ({ match, history }) => {
   const studentId = match.params.studentId;
   const homeworkId = match.params.homeworkId;
   const [solvingHrs, setSolvingHrs] = useState("");
@@ -97,6 +97,11 @@ const HomeworkStudent = ({ match }) => {
     setFormSubmitted(formSubmitIndicator);
     // ! ------------------------------------------------------
   };
+
+  const goBack = () => {
+    history.goBack();
+  };
+
   return (
     <React.Fragment>
       {homework.length < 1 ? (
@@ -248,7 +253,9 @@ const HomeworkStudent = ({ match }) => {
                   ></Form.Control>
                 </Form.Group>
 
-                <a href="">Back</a>
+                <button type="button" className="btn btn-link" onClick={goBack}>
+              Back
+            </button>{" "}
 
                 <Button type="submit" variant="primary" className="float-right">
                   Save
