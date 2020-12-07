@@ -804,6 +804,7 @@ export const editHomeworkInstructor = (homework) => {
       //   },
       // };
       const params = {
+        homeworkId: homework.homeworkId,
         courseId: homework.courseId,
         instructorId: homework.instructorId,
         cohortId: homework.cohortId,

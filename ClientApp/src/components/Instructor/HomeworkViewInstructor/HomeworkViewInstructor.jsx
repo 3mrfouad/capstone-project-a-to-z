@@ -25,15 +25,19 @@ const HomeworkViewInstructor = ({ match, history }) => {
     dispatch(getHomeworkDetailInstructor(homeworkId));
     dispatch(getAllCourses());
     dispatch(getAllInstructors());
+    if (homework) {
+      setTitle(homework.Title);
+    }
   }, [dispatch]);
 
   const submitHandler = (e) => {
     e.preventDefault();
     dispatch(
       editHomeworkInstructor({
+        homeworkId,
         courseId,
         instructorId,
-        cohortId: homework.cohortId,
+        cohortId: homework.CohortId,
         // isAssignment: "true",
         title,
         avgCompletionTime,
@@ -69,7 +73,7 @@ const HomeworkViewInstructor = ({ match, history }) => {
                   <Form.Label>Title</Form.Label>
                   <Form.Control
                     type="text"
-                    value={homework.Title}
+                    value={title}
                     onChange={(e) => setTitle(e.target.value)}
                   ></Form.Control>
                 </Form.Group>
@@ -81,7 +85,9 @@ const HomeworkViewInstructor = ({ match, history }) => {
                     value={courseId}
                     onChange={(e) => setCourseId(e.target.value)}
                   >
-                    <option value="">{homework.CourseName}</option>
+                    <option value={homework.CourseName}>
+                      {homework.CourseName}
+                    </option>
                     {courses.map((course, index) => (
                       <option value={course.courseId} key={index}>
                         {course.name}
