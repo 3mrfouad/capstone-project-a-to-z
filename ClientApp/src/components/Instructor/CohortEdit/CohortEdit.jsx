@@ -328,9 +328,9 @@ const CohortEdit = ({ match, history }) => {
                       setFormDataChange(true);
                     }}
                   >
-                    <option></option>
-                    <option>Online</option>
-                    <option>In Person</option>
+                    {/* <option>{}</option> */}
+                    <option value="Remote">Online</option>
+                    <option value="In-person">In Person</option>
                   </Form.Control>
                 </Form.Group>
                 <Form.Group controlId="Start Date">
@@ -380,10 +380,9 @@ const CohortEdit = ({ match, history }) => {
                       setFormDataChange(true);
                     }}
                   >
-                    <option></option>
-                    <option>Edmonton</option>
-                    <option>Calgary</option>
-                    <option>Other</option>
+                    <option value="Edmonton">Edmonton</option>
+                    <option value="Calgary">Calgary</option>
+                    <option value="Other">Other</option>
                   </Form.Control>
                   <Form.Control.Feedback type="invalid">
                     Please choose a city.
