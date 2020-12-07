@@ -59,6 +59,7 @@ const Register = ({ history }) => {
         console.log("isInstructor");
       } else if (!(isInstructor === "true" || isInstructor === "false")) {
         validFormData = false;
+        console.log("isInstructor", isInstructor);
       } else if (!email) {
         validFormData = false;
         console.log("email");
@@ -106,20 +107,35 @@ const Register = ({ history }) => {
 
     e.preventDefault();
     // dispatch(login(email, password));
-    if (isInstructor) {
-      handleShow();
+    // ! (10.4) Anti-tamper validation - calling Validate
+    Validate(name, email, password, cohort);
+    if (validFormData) {
+      setValidData(validFormData);
+      // ! ------------------------------------------------------
+      if (isInstructor) {
+        handleShow();
+      } else {
+        dispatch(
+          registerUser({
+            cohort,
+            name,
+            password,
+            email,
+            isInstructor,
+          })
+        );
+      }
+      // dispatch(login(email, password));
+      console.log("register");
     } else {
-      dispatch(
-        registerUser({
-          cohort,
-          name,
-          password,
-          email,
-          isInstructor,
-        })
-      );
+      // ! (10.5) Anti-tamper validation - Alert message conditions
+      setValidData(validFormData);
     }
+    // ! (10.6) Anti-tamper validation - Alert message conditions
+    setFormSubmitted(formSubmitIndicator);
+    // ! ------------------------------------------------------
   };
+ 
 
   const handleRegisterInstructor = () => {
     dispatch(
@@ -132,23 +148,8 @@ const Register = ({ history }) => {
       })
     );
     handleClose();
-
-    // ! (10.4) Anti-tamper validation - calling Validate
-    Validate(name, email, password, cohort);
-    if (validFormData) {
-      setValidData(validFormData);
-      // ! ------------------------------------------------------
-
-      // dispatch(login(email, password));
-      console.log("register");
-    } else {
-      // ! (10.5) Anti-tamper validation - Alert message conditions
-      setValidData(validFormData);
-    }
-    // ! (10.6) Anti-tamper validation - Alert message conditions
-    setFormSubmitted(formSubmitIndicator);
-    // ! ------------------------------------------------------
-  };
+    };
+    
   const goBack = () => {
     history.goBack();
   };
