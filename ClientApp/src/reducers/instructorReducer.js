@@ -162,7 +162,7 @@ export const getAllCoursesReducer = (state = { courses: [] }, action) => {
     case "GET_ALL_COURSES_REQUEST":
       return { loading: true, courses: [] };
     case "GET_ALL_COURSES_SUCCESS":
-      return { loading: false, courses: action.payload };
+      return { loading: false, success: true, courses: action.payload };
 
     case "GET_ALL_COURSES_FAIL":
       return { loading: false, error: action.payload };
