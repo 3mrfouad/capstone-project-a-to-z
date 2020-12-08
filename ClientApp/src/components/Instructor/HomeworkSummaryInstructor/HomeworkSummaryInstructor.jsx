@@ -95,7 +95,8 @@ const HomeworkSummaryInstructor = ({ match, history }) => {
                         <td>
                           <Link
                             to={`/gradingsummary/${homework.cohortId}/${homework.homeworkId}/${homework.courseId}`}
-                            Grades |{" "}
+                          >
+                            Grades{" "}
                           </Link>
                           <Link
                             to={`/homeworkviewinstructor/${homework.homeworkId}`}
