@@ -213,6 +213,7 @@ const Register = ({ history }) => {
                   ></Form.Control>
                   <Form.Control.Feedback type="invalid">
                     Please enter a name.
+                    <p>Max. 50 characers allowed</p>
                   </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="email">
@@ -225,7 +226,8 @@ const Register = ({ history }) => {
                     onChange={(e) => setEmail(e.target.value)}
                   ></Form.Control>
                   <Form.Control.Feedback type="invalid">
-                    Please enter a valid email. e.g. youremailaddress@domain.com
+                    Please enter a valid email. 
+                    <p>e.g. youremailaddress@domain.com </p>
                   </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="password">
@@ -239,10 +241,9 @@ const Register = ({ history }) => {
                     onChange={(e) => setPassword(e.target.value)}
                   ></Form.Control>
                   <Form.Control.Feedback type="invalid">
-                    Please enter a valid password.Password is in inappropriate
-                    format: Password must be: at least one upper case letter, at
-                    least one lower case letter, at least one digit , at least
-                    one special character, minimum 8 characters in length.
+                    Please enter a valid password.
+                    <p>Password must have at least: one upper case letter,one lower case letter, one digit ,
+                    one special character, minimum 8 characters in length.</p>
                   </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="cohort">
