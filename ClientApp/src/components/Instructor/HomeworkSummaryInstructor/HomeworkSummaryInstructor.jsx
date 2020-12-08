@@ -101,7 +101,7 @@ const HomeworkSummaryInstructor = ({ match, history }) => {
                           <Link
                             to={`/homeworkviewinstructor/${homework.homeworkId}`}
                           >
-                            Details&&Edit
+                            Details/Edit
                           </Link>{" "}
                           <Link
                             to={"#"}

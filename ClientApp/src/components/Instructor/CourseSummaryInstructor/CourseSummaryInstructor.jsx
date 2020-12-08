@@ -81,7 +81,7 @@ const CourseSummaryInstructor = ({ match, history }) => {
                       </Link>{" "}
                       |{" "}
                       <Link onClick={() => onArchive(course.item1.courseId)}>
-                        Remove
+                        Archive
                       </Link>{" "}
                     </td>
                   </tr>

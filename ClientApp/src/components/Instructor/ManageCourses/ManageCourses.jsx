@@ -64,7 +64,7 @@ const ManageCourseInstructor = ({ history }) => {
                       </ButtonGroup>
 
                       <Modal show={show} onHide={handleClose}>
-                        <Modal.Body>Retire: Are you sure?</Modal.Body>
+                        <Modal.Body>Archive: Are you sure?</Modal.Body>
                         <Modal.Footer>
                           <Button variant="secondary" onClick={handleClose}>
                             No
