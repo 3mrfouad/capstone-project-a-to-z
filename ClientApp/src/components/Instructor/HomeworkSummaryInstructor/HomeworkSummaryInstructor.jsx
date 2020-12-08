@@ -19,7 +19,7 @@ const HomeworkSummaryInstructor = ({ match, history }) => {
     // populate the cohort data in here
     dispatch(getHomeworkSummaryInstructor({ courseId, cohortId }));
     dispatch(getCoursesByCohortId(cohortId));
-  }, [dispatch]);
+  }, [dispatch, courseId]);
   // const { homeworkSummary } = useSelector(
   //   (state) => state.homeworkSummaryInstructor
   // );
@@ -54,14 +54,19 @@ const HomeworkSummaryInstructor = ({ match, history }) => {
         <Container>
           <Row>
             <Col xs={2}>
-              <Nav defaultActiveKey="/home" className="flex-column">
+              <Nav className="flex-column">
                 {courses.map((course, index) => (
-                  <Nav.Link
-                    href={`/instructorhomework/${cohortId}/${course.item1.courseId}`}
+                  <LinkContainer
                     key={index}
+                    to={`/instructorhomework/${cohortId}/${course.item1.courseId}`}
                   >
-                    {course.item1.name}
-                  </Nav.Link>
+                    <Nav.Link
+                      // href={}
+                      key={index}
+                    >
+                      {course.item1.name}
+                    </Nav.Link>
+                  </LinkContainer>
                 ))}
               </Nav>
             </Col>

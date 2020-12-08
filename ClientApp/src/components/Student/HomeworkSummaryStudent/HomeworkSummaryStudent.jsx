@@ -7,6 +7,7 @@ import {
   courseSummaryStudent,
 } from "../../../actions/studentActions";
 import { Link } from "react-router-dom";
+import { LinkContainer } from "react-router-bootstrap";
 
 const HomeworkSummaryStudent = ({ match }) => {
   const studentId = match.params.studentId;
@@ -19,7 +20,7 @@ const HomeworkSummaryStudent = ({ match }) => {
   useEffect(() => {
     dispatch(homeworkSummaryStudent(courseId));
     dispatch(courseSummaryStudent());
-  }, [dispatch]);
+  }, [dispatch, courseId]);
   return (
     <React.Fragment>
       <Container>
@@ -27,13 +28,18 @@ const HomeworkSummaryStudent = ({ match }) => {
           <Col xs={2}>
             <Nav defaultActiveKey="/home" className="flex-column mt-5">
               {courses.map((course, index) => (
-                <Nav.Link
+                <LinkContainer
                   key={index}
-                  href={`/studenthomework/${studentId}/${course.item1.courseId}`}
+                  to={`/studenthomework/${studentId}/${course.item1.courseId}`}
                 >
-                  {" "}
-                  {course.item1.name}{" "}
-                </Nav.Link>
+                  <Nav.Link
+                    key={index}
+                    // href={}
+                  >
+                    {" "}
+                    {course.item1.name}{" "}
+                  </Nav.Link>
+                </LinkContainer>
               ))}
             </Nav>
           </Col>
