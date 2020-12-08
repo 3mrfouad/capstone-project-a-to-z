@@ -160,7 +160,7 @@ const HomeworkStudent = ({ match, history }) => {
                   ? validData
                     ? !loading && error
                       ? `Unsuccessful attempt to update Timesheet. ${error.data}`
-                      : !loading && !error && successCreate
+                      : !loading && !error && successUpdate
                       ? "Timesheet was successfully updated"
                       : ""
                     : "Error: Form was submitted with invalid data fields"
