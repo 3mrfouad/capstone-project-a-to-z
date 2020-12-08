@@ -160,15 +160,16 @@ const CourseCreate = ({ history }) => {
                   onChange={(e) => setHours(String(e.target.value))}
                 ></Form.Control>
                 <Form.Control.Feedback type="invalid">
-                  Please fill in the Hours field.
+                  Please fill in the valid value for Hours.
+                  <p>Range: 0 to 999.99</p>
                 </Form.Control.Feedback>
               </Form.Group>
               <Form.Group controlId="Description">
                 <Form.Label>Description</Form.Label>
 
                 <Form.Control
+                  as="textarea"
                   required
-                  type="text"
                   maxLength="250"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
