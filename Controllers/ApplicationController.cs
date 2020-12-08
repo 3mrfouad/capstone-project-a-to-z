@@ -705,7 +705,7 @@ namespace AZLearn.Controllers
 
                 result = new Dictionary<string, string>
                 {
-
+                    {"HomeworkId",homework.HomeworkId.ToString()},
                     {"CourseId", homework.CourseId.ToString() },
                     {"InstructorId", homework.InstructorId.ToString()},
                     {"CohortId", homework.CohortId.ToString()},
