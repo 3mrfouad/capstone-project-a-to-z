@@ -21,12 +21,18 @@ const HomeworkViewInstructor = ({ match, history }) => {
   const [gitHubClassRoomLink, setGitHubClassRoomLink] = useState("");
   const [isAssignment, setIsAssignment] = useState("");
   const dispatch = useDispatch();
+  const { loading, homework } = useSelector(
+    (state) => state.homeworkDetailInstructor
+  );
   useEffect(() => {
     dispatch(getHomeworkDetailInstructor(homeworkId));
     dispatch(getAllCourses());
     dispatch(getAllInstructors());
     if (homework) {
       setTitle(homework.Title);
+      setAvgCompletionTime(homework.AvgCompletionTime);
+      setDocumentLink(homework.DocumentLink);
+      setGitHubClassRoomLink(homework.GitHubClassRoomLink);
     }
   }, [dispatch]);
 
@@ -52,9 +58,7 @@ const HomeworkViewInstructor = ({ match, history }) => {
   const goBack = () => {
     history.goBack();
   };
-  const { loading, homework } = useSelector(
-    (state) => state.homeworkDetailInstructor
-  );
+
   const { success } = useSelector((state) => state.editHomeworkInstructorState);
 
   const { courses } = useSelector((state) => state.getAllCourses);
@@ -116,7 +120,7 @@ const HomeworkViewInstructor = ({ match, history }) => {
                   <Form.Label>Avg Completion Time</Form.Label>
                   <Form.Control
                     type="text"
-                    value={homework.AvgCompletionTime}
+                    value={avgCompletionTime}
                     onChange={(e) => setAvgCompletionTime(e.target.value)}
                   ></Form.Control>
                 </Form.Group>
@@ -143,7 +147,7 @@ const HomeworkViewInstructor = ({ match, history }) => {
                   <Form.Label>DocLink</Form.Label>
                   <Form.Control
                     type="text"
-                    value={homework.DocumentLink}
+                    value={documentLink}
                     onChange={(e) => setDocumentLink(e.target.value)}
                   ></Form.Control>
                 </Form.Group>
@@ -152,7 +156,7 @@ const HomeworkViewInstructor = ({ match, history }) => {
                   <Form.Control
                     type="text"
                     //   placeholder="Enter Description"
-                    value={homework.GitHubClassRoomLink}
+                    value={gitHubClassRoomLink}
                     onChange={(e) => setGitHubClassRoomLink(e.target.value)}
                   ></Form.Control>
                 </Form.Group>
