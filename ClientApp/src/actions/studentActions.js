@@ -159,7 +159,7 @@ export const createTimeSheetStudent = (solvingHrs, studyHrs) => {
   };
 };
 
-export const updateTimeSheetStudent = (solvingHrs, studyHrs) => {
+export const updateTimeSheetStudent = (timesheetId, solvingHrs, studyHrs) => {
   return async (dispatch, getState) => {
     try {
       dispatch({
@@ -174,7 +174,7 @@ export const updateTimeSheetStudent = (solvingHrs, studyHrs) => {
       //     },
       //   };
       const params = {
-        timesheetId: "1",
+        timesheetId: timesheetId,
         solvingTime: solvingHrs,
         studyTime: studyHrs,
       };

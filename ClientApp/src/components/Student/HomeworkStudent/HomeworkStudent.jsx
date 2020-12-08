@@ -34,41 +34,29 @@ const HomeworkStudent = ({ match, history }) => {
   let formSubmitIndicator = false;
   // ! ------------------------------------------------------
   const { homework, loading } = useSelector((state) => state.homeworkStudent);
-  const { loading: loadingCreate, success: successCreate, error } = useSelector(
-    (state) => state.createTimeSheetStudent
+  const { loading: loadingUpdate, success: successUpdate, error } = useSelector(
+    (state) => state.updateTimeSheetStudent
   );
   const { courses } = useSelector((state) => state.getAllCourses);
   const { instructors } = useSelector((state) => state.getAllInstructors);
   const { timeSheet } = useSelector((state) => state.getTimeSheetStudent);
 
-  const useFirstRender = () => {
-    const firstRender = useRef(true);
-
-    useEffect(() => {
-      firstRender.current = false;
-    }, []);
-
-    return firstRender.current;
-  };
-  const firstRender = useFirstRender();
   useEffect(() => {
+    dispatch(homeworkStudent(homeworkId));
+    dispatch(getAllCourses());
+    dispatch(getAllInstructors());
     if (
-      firstRender ||
       !timeSheet ||
       !timeSheet.item2 ||
       timeSheet.item1.homeworkId != homeworkId
     ) {
       dispatch(getHomeworkTimesheetStudent({ homeworkId, studentId }));
+      setSolvingHrs(timeSheet.item2.solvingTime);
+      setStudyHrs(timeSheet.item2.studyTime);
+    } else {
+      setSolvingHrs(timeSheet.item2.solvingTime);
+      setStudyHrs(timeSheet.item2.studyTime);
     }
-  }, [firstRender]);
-
-  useEffect(() => {
-    dispatch(homeworkStudent(homeworkId));
-    dispatch(getAllCourses());
-    dispatch(getAllInstructors());
-
-    setSolvingHrs(timeSheet.item2.solvingTime);
-    setStudyHrs(timeSheet.item2.studyTime);
   }, [dispatch]);
   console.log(homework);
 
@@ -98,29 +86,39 @@ const HomeworkStudent = ({ match, history }) => {
   // ! ------------------------------------------------------
 
   const summitHandler = (e) => {
-    //(2) Add form validation condition block if-else
-    const form = e.currentTarget;
-    if (form.checkValidity() === false) {
-      e.preventDefault();
-      e.stopPropagation();
-    } else {
-      setValidated(true);
-      e.preventDefault();
-      // ! (10.4) Anti-tamper validation - calling Validate
-      Validate(solvingHrs, studyHrs);
-      if (validFormData) {
-        setValidData(validFormData);
-        // ! -------------------------------------------------
-        dispatch(updateTimeSheetStudent(solvingHrs, studyHrs));
-        console.log("create timesheet");
-      } else {
-        // ! (10.5) Anti-tamper validation - Alert message conditions
-        setValidData(validFormData);
-      }
-    }
-    // ! (10.6) Anti-tamper validation - Alert message conditions
-    setFormSubmitted(formSubmitIndicator);
-    // ! ------------------------------------------------------
+    // //(2) Add form validation condition block if-else
+    // const form = e.currentTarget;
+    // if (form.checkValidity() === false) {
+    //   e.preventDefault();
+    //   e.stopPropagation();
+    // } else {
+    //   setValidated(true);
+    //   e.preventDefault();
+    //   // ! (10.4) Anti-tamper validation - calling Validate
+    //   Validate(solvingHrs, studyHrs);
+    //   if (validFormData) {
+    //     setValidData(validFormData);
+    //     // ! -------------------------------------------------
+    //     dispatch(
+    //       updateTimeSheetStudent(
+    //         timeSheet.item2.timesheetId,
+    //         solvingHrs,
+    //         studyHrs
+    //       )
+    //     );
+    //     console.log("create timesheet");
+    //   } else {
+    //     // ! (10.5) Anti-tamper validation - Alert message conditions
+    //     setValidData(validFormData);
+    //   }
+    // }
+    // // ! (10.6) Anti-tamper validation - Alert message conditions
+    // setFormSubmitted(formSubmitIndicator);
+    // // ! ------------------------------------------------------
+    e.preventDefault();
+    dispatch(
+      updateTimeSheetStudent(timeSheet.item2.timesheetId, solvingHrs, studyHrs)
+    );
   };
 
   const goBack = () => {
@@ -143,7 +141,7 @@ const HomeworkStudent = ({ match, history }) => {
                     ? validData
                       ? !loading && error
                         ? "alert alert-danger"
-                        : !loading && !error && successCreate
+                        : !loading && !error && successUpdate
                         ? "alert alert-success"
                         : ""
                       : "alert alert-danger"
@@ -155,7 +153,7 @@ const HomeworkStudent = ({ match, history }) => {
                   ? validData
                     ? !loading && error
                       ? "Unsuccessful attempt to update Timesheet"
-                      : !loading && !error && successCreate
+                      : !loading && !error && successUpdate
                       ? "Timesheet was successfully updated"
                       : ""
                     : "Error: Form was submitted with invalid data fields"
