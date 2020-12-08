@@ -268,12 +268,14 @@ const CourseEditAssigned = ({ match, history }) => {
                     value={instructorId}
                     onChange={(e) => setInstructorId(e.target.value)}
                   >
-                    <option value="">{course.item2}</option>
-                    {instructors.map((instructor, index) => (
-                      <option value={instructor.userId} key={index}>
-                        {instructor.name}
-                      </option>
-                    ))}
+                    {/* <option value="">{course.item2}</option> */}
+                    {instructors
+                      .filter((item) => item.archive == false)
+                      .map((instructor, index) => (
+                        <option value={instructor.userId} key={index}>
+                          {instructor.name}
+                        </option>
+                      ))}
                   </Form.Control>
                 </Form.Group>
                 <Form.Group controlId="startdate">
