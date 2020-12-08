@@ -75,7 +75,7 @@ const CohortSummaryInstructor = ({ history }) => {
                       <td>{cohort.city}</td>
                       <td>
                         <Link to={`/cohortedit/${cohort.cohortId}`}>Edit</Link>{" "}
-                        |{" "}
+                        |
                         <Link to="#" onClick={handleShow}>
                           {" "}
                           Archive{" "}
@@ -121,9 +121,9 @@ const CohortSummaryInstructor = ({ history }) => {
                   >
                     Register Users
                   </Button>
-                  <Button className="float-right mr-3" href="/managecourse">
-                    Manage Course
-                  </Button>{" "}
+                  <LinkContainer to={`/managecourse`}>
+                    <Button className="float-right mr-3">Manage Course</Button>
+                  </LinkContainer>
                 </ButtonGroup>
               </Col>
             </Row>

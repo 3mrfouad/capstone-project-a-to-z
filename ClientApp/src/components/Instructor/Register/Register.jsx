@@ -86,8 +86,9 @@ const Register = ({ history }) => {
       } else {
         if (
           !/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-.]).{8,}$/.test(
-            password)   
-          ) {
+            password
+          )
+        ) {
           validFormData = false;
           console.log("password does not match the pattern");
         } else if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
@@ -100,7 +101,7 @@ const Register = ({ history }) => {
       }
     } catch (Exception) {
       validFormData = false;
-      console.log("Not good :", validFormData)
+      console.log("Not good :", validFormData);
     }
   }
   // ! ------------------------------------------------------
@@ -126,6 +127,7 @@ const Register = ({ history }) => {
       if (isInstructor) {
         handleShow();
       } else {
+        e.preventDefault();
         dispatch(
           registerUser({
             cohort,
@@ -146,7 +148,6 @@ const Register = ({ history }) => {
     setFormSubmitted(formSubmitIndicator);
     // ! ------------------------------------------------------
   };
- 
 
   const handleRegisterInstructor = () => {
     dispatch(
@@ -159,8 +160,8 @@ const Register = ({ history }) => {
       })
     );
     handleClose();
-    };
-    
+  };
+
   const goBack = () => {
     history.goBack();
   };

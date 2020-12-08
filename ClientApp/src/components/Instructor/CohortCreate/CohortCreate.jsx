@@ -173,6 +173,7 @@ const CohortCreate = ({ history }) => {
         setValidData(validFormData);
         // ! ------------------------------------------------------
         console.log("create cohort");
+        e.preventDefault();
         dispatch(
           createCohort({
             name,
