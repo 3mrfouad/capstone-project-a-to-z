@@ -55,10 +55,10 @@ const HomeworkStudent = ({ match, history }) => {
       setSolvingHrs(timeSheet.item2.solvingTime);
       setStudyHrs(timeSheet.item2.studyTime);
     }
-    setTimeout(() => {
-      setSolvingHrs(timeSheet.item2.solvingTime);
-      setStudyHrs(timeSheet.item2.studyTime);
-    }, 500);
+    // setTimeout(() => {
+    //   setSolvingHrs(timeSheet.item2.solvingTime);
+    //   setStudyHrs(timeSheet.item2.studyTime);
+    // }, 500);
   }, [dispatch]);
   console.log(homework);
 
