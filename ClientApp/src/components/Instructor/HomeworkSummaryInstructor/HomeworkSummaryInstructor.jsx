@@ -8,6 +8,7 @@ import {
 } from "../../../actions/instructorActions";
 import { Link } from "react-router-dom";
 import Loader from "../../shared/Loader/Loader";
+import { LinkContainer } from "react-router-bootstrap";
 
 const HomeworkSummaryInstructor = ({ match, history }) => {
   const cohortId = match.params.id;
@@ -117,12 +118,9 @@ const HomeworkSummaryInstructor = ({ match, history }) => {
               <button type="button" className="btn btn-link" onClick={goBack}>
                 Back
               </button>{" "}
-              <Button
-                className="float-right"
-                href={`/instructorcreatehomework/${cohortId}`}
-              >
-                Create
-              </Button>
+              <LinkContainer to={`/instructorcreatehomework/${cohortId}`}>
+                <Button className="float-right">Create</Button>
+              </LinkContainer>
             </Col>
           </Row>
         </Container>

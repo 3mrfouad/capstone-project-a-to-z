@@ -111,16 +111,14 @@ const CohortSummaryInstructor = ({ history }) => {
               </Col>
               <Col>
                 <ButtonGroup className="float-right">
-                  <Button className="float-right mr-3" href="/cohortcreate">
-                    Create Cohort
-                  </Button>
-                  <Button
-                    className="float-right mr-3"
-                    type="button"
-                    href="/registeruser"
-                  >
-                    Register Users
-                  </Button>
+                  <LinkContainer to={`/cohortcreate`}>
+                    <Button className="float-right mr-3">Create Cohort</Button>
+                  </LinkContainer>
+                  <LinkContainer to={`/registeruser`}>
+                    <Button className="float-right mr-3" type="button">
+                      Register Users
+                    </Button>
+                  </LinkContainer>
                   <LinkContainer to={`/managecourse`}>
                     <Button className="float-right mr-3">Manage Course</Button>
                   </LinkContainer>
