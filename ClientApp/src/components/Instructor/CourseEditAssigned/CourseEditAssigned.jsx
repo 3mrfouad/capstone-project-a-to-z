@@ -37,7 +37,7 @@ const CourseEditAssigned = ({ match, history }) => {
   const { loading, course, success, error } = useSelector(
     (state) => state.getAssignedCourse
   );
-  const { courses } = useSelector((state) => state.getCoursesByCohortId);
+  // const { courses } = useSelector((state) => state.getCoursesByCohortId);
 
   useEffect(() => {
     if (
@@ -51,7 +51,7 @@ const CourseEditAssigned = ({ match, history }) => {
     }
 
     dispatch(getAllInstructors());
-    dispatch(getCoursesByCohortId(cohortId));
+    // dispatch(getCoursesByCohortId(cohortId));
   }, [dispatch, courseId, cohortId, success]);
   // ! (10.2) Anti-tamper validation - Validate (parameters)
   function Validate(
@@ -253,11 +253,11 @@ const CourseEditAssigned = ({ match, history }) => {
                 <Form.Group controlId="course name">
                   <Form.Label>Course Name</Form.Label>
                   <Form.Control value={course.item1}>
-                    {courses.map((course, index) => (
+                    {/* {courses.map((course, index) => (
                       <option value={course.courseId} key={index}>
                         {course.name}
                       </option>
-                    ))}
+                    ))} */}
                   </Form.Control>
                 </Form.Group>
                 <Form.Group controlId="instructor">
