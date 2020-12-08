@@ -1,4 +1,5 @@
 import axios from "axios";
+import querystring from "querystring";
 
 export const courseSummaryStudent = () => {
   return async (dispatch) => {
@@ -59,11 +60,13 @@ export const homeworkStudent = (id) => {
     try {
       dispatch({ type: "HOMEWORK_STUDENT_REQUEST" });
       // update the url later
-      const {
-        data,
-      } = await axios.get("https://localhost:5001/application/gethomework", {
-        params: { homeworkId: id },
-      });
+      const { data } = await axios.get(
+        "https://localhost:5001/application/gethomework",
+        {
+          params: { homeworkId: id },
+        }
+      );
+
       dispatch({
         type: "HOMEWORK_STUDENT_SUCCESS",
         payload: data,
@@ -71,6 +74,34 @@ export const homeworkStudent = (id) => {
     } catch (error) {
       dispatch({
         type: "HOMEWORK_STUDENT_FAIL",
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.response,
+      });
+    }
+  };
+};
+
+export const getHomeworkTimesheetStudent = (ids) => {
+  return async (dispatch) => {
+    try {
+      dispatch({ type: "HOMEWORK_TIMESHEET_STUDNET_REQUEST" });
+      const params = { homeworkId: ids.homeworkId, studentId: ids.studentId };
+      const { data } = await axios.request({
+        url:
+          "https://localhost:5001/application/homeworktimesheet?" +
+          querystring.stringify(params),
+        method: "get",
+        data: params,
+      });
+      dispatch({
+        type: "HOMEWORK_TIMESHEET_STUDNET_SUCCESS",
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: "HOMEWORK_TIMESHEET_STUDNET_FAIL",
         payload:
           error.response && error.response.data.message
             ? error.response.data.message
@@ -142,16 +173,18 @@ export const updateTimeSheetStudent = (solvingHrs, studyHrs) => {
       //       Authorization: `Bearer ${userInfo.token}`,
       //     },
       //   };
-      const { data } = await axios.patch(
-        "https://localhost:5001/application/updatetimesheet",
-        {
-          params: {
-            timesheetId: "1",
-            solvingTime: solvingHrs,
-            studyTime: studyHrs,
-          },
-        }
-      );
+      const params = {
+        timesheetId: "1",
+        solvingTime: solvingHrs,
+        studyTime: studyHrs,
+      };
+      const { data } = await axios.request({
+        url:
+          "https://localhost:5001/application/updatetimesheet?" +
+          querystring.stringify(params),
+        method: "patch",
+        data: params,
+      });
 
       dispatch({
         type: "UPDATE_TIME_SHEET_STUDENT_SUCCESS",

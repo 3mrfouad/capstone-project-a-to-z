@@ -6,6 +6,7 @@ import {
   updateTimeSheetStudent,
   homeworkStudent,
   createTimeSheetStudent,
+  getHomeworkTimesheetStudent,
 } from "../../../actions/studentActions";
 import {
   getAllCourses,
@@ -18,6 +19,7 @@ const HomeworkStudent = ({ match, history }) => {
   const [studyHrs, setStudyHrs] = useState("");
   const [courseId, setCourseId] = useState("");
   const [instructorId, setInstructorId] = useState("");
+  // const [listenHomeworkId,setListenHomeworkId]=useState(homeworkId)
   const dispatch = useDispatch();
 
   //(1) Add validation states
@@ -32,18 +34,28 @@ const HomeworkStudent = ({ match, history }) => {
   let formSubmitIndicator = false;
   // ! ------------------------------------------------------
   const { homework, loading } = useSelector((state) => state.homeworkStudent);
-  const {
-    loading: loadingCreate,
-    success: successCreate,
-    timeSheet,
-    error,
-  } = useSelector((state) => state.createTimeSheetStudent);
+  const { loading: loadingCreate, success: successCreate, error } = useSelector(
+    (state) => state.createTimeSheetStudent
+  );
   const { courses } = useSelector((state) => state.getAllCourses);
   const { instructors } = useSelector((state) => state.getAllInstructors);
+  const { timeSheet } = useSelector((state) => state.getTimeSheetStudent);
   useEffect(() => {
     dispatch(homeworkStudent(homeworkId));
     dispatch(getAllCourses());
     dispatch(getAllInstructors());
+    if (
+      !timeSheet ||
+      !timeSheet.item2 ||
+      timeSheet.item1.homeworkId != homeworkId
+    ) {
+      dispatch(getHomeworkTimesheetStudent({ homeworkId, studentId }));
+      setSolvingHrs(timeSheet.item2.solvingTime);
+      setStudyHrs(timeSheet.item2.studyTime);
+    } else {
+      setSolvingHrs(timeSheet.item2.solvingTime);
+      setStudyHrs(timeSheet.item2.studyTime);
+    }
   }, [dispatch]);
   console.log(homework);
 
@@ -104,7 +116,7 @@ const HomeworkStudent = ({ match, history }) => {
 
   return (
     <React.Fragment>
-      {homework.length < 1 ? (
+      {homework.length < 1 && timeSheet ? (
         <h2>Loading</h2>
       ) : (
         <Container>
@@ -252,11 +264,9 @@ const HomeworkStudent = ({ match, history }) => {
                     }
                   ></Form.Control>
                 </Form.Group>
-
                 <button type="button" className="btn btn-link" onClick={goBack}>
-              Back
-            </button>{" "}
-
+                  Back
+                </button>{" "}
                 <Button type="submit" variant="primary" className="float-right">
                   Save
                 </Button>

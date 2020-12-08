@@ -49,6 +49,19 @@ export const homeworkStudentReducer = (state = { homework: [] }, action) => {
   }
 };
 
+export const getTimeSheetStudentReducer = (state = {}, action) => {
+  switch (action.type) {
+    case "HOMEWORK_TIMESHEET_STUDNET_REQUEST":
+      return { loading: true };
+    case "HOMEWORK_TIMESHEET_STUDNET_SUCCESS":
+      return { loading: false, success: true, timeSheet: action.payload };
+    case "HOMEWORK_TIMESHEET_STUDNET_FAIL":
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
 export const createTimeSheetStudentReducer = (state = {}, action) => {
   switch (action.type) {
     case "CREATE_TIME_SHEET_STUDENT_REQUEST":

@@ -32,6 +32,7 @@ import {
   homeworkStudentReducer,
   createTimeSheetStudentReducer,
   updateTimeSheetStudentReducer,
+  getTimeSheetStudentReducer,
 } from "./studentReducer";
 
 const rootReducers = combineReducers({
@@ -65,6 +66,7 @@ const rootReducers = combineReducers({
   userLoginState: userLoginStateReducer,
   editHomeworkInstructorState: editHomeworkInstructorStateReducer,
   archiveHomeworkInstructorState: archiveHomeworkInstructorStateReducer,
+  getTimeSheetStudent: getTimeSheetStudentReducer,
 });
 
 export default rootReducers;
