@@ -51,12 +51,14 @@ const HomeworkStudent = ({ match, history }) => {
       timeSheet.item1.homeworkId != homeworkId
     ) {
       dispatch(getHomeworkTimesheetStudent({ homeworkId, studentId }));
-      setSolvingHrs(timeSheet.item2.solvingTime);
-      setStudyHrs(timeSheet.item2.studyTime);
     } else {
       setSolvingHrs(timeSheet.item2.solvingTime);
       setStudyHrs(timeSheet.item2.studyTime);
     }
+    setTimeout(() => {
+      setSolvingHrs(timeSheet.item2.solvingTime);
+      setStudyHrs(timeSheet.item2.studyTime);
+    }, 500);
   }, [dispatch]);
   console.log(homework);
 
