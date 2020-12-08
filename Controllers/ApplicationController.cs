@@ -1049,7 +1049,7 @@ namespace AZLearn.Controllers
         /// <param name="studyTime"></param>
         /// <returns>The End Point returns Success Message and Updates the Timesheet according to parameters specified </returns>
         [HttpPatch("UpdateTimesheet")]
-        public ActionResult UpdateTimesheetById(string timesheetId, string solvingTime, string studyTime)
+        public ActionResult UpdateTimesheetById([FromQuery] string timesheetId, [FromQuery] string solvingTime, [FromQuery] string studyTime)
         {
             ActionResult result;
             try
