@@ -114,7 +114,8 @@ namespace AZLearn.Controllers
         public static List<User> GetInstructors()
         {
             using var context = new AppDbContext();
-            var instructors = context.Users.Where(key => key.IsInstructor).ToList();
+            //To avoid complexity at the Frontend, We are filtering the Archived Instructors -inconsistent with rest of the end points.
+            var instructors = context.Users.Where(key => key.IsInstructor && key.Archive == false).ToList();
             return instructors;
         }
 

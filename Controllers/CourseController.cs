@@ -248,8 +248,8 @@ namespace AZLearn.Controllers
             var coursesListByCohortId =
                 context.Courses.Include(key => key.CohortCourses)
                     .Where(key => key.CohortCourses
-                        .Any(subKey => subKey.CohortId == parsedCohortId)).ToList();
-
+                        .Any(subKey => subKey.CohortId == parsedCohortId && subKey.Archive == false)).ToList();
+            //To avoid complexity at the Frontend, We are filtering the Archived Courses for a cohort- inconsistent with rest of the end points.
             foreach (var course in coursesListByCohortId)
             {
                 int id = course.CourseId;
