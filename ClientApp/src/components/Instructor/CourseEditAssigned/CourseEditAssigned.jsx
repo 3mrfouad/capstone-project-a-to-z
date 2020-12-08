@@ -239,7 +239,7 @@ const CourseEditAssigned = ({ match, history }) => {
                 {formSubmitted
                   ? validData
                     ? !loading && error
-                      ? "Unsuccessful attempt to assign a course"
+                      ? `Unsuccessful attempt to update course assignment. ${error.data}`
                       : !loading && !error && success
                       ? "Assigned Cohort was successfully updated"
                       : ""

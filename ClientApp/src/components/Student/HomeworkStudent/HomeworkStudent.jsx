@@ -66,8 +66,8 @@ const HomeworkStudent = ({ match, history }) => {
   function Validate(solvingHrs, studyHrs) {
     formSubmitIndicator = true;
     try {
-      solvingHrs = solvingHrs.trim().toLowerCase();
-      studyHrs = studyHrs.trim().toLowerCase();
+      solvingHrs = String(solvingHrs).trim();
+      studyHrs = String(studyHrs).trim();
 
       if (!solvingHrs) {
         validFormData = false;
@@ -80,9 +80,14 @@ const HomeworkStudent = ({ match, history }) => {
       } else if (parseFloat(studyHrs) > 999.99 || parseFloat(studyHrs) < 0) {
         validFormData = false;
         console.log("studyHrs: ", parseFloat(studyHrs));
+      } else{
+        validFormData = true;
+        console.log("All good");
       }
+
     } catch (Exception) {
       validFormData = false;
+      console.log("No godd: ");
     }
   }
   // ! ------------------------------------------------------
@@ -154,8 +159,8 @@ const HomeworkStudent = ({ match, history }) => {
                 {formSubmitted
                   ? validData
                     ? !loading && error
-                      ? "Unsuccessful attempt to update Timesheet"
-                      : !loading && !error && successUpdate
+                      ? `Unsuccessful attempt to update Timesheet. ${error.data}`
+                      : !loading && !error && successCreate
                       ? "Timesheet was successfully updated"
                       : ""
                     : "Error: Form was submitted with invalid data fields"

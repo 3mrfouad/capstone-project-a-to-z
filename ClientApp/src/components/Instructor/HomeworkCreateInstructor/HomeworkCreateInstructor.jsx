@@ -210,7 +210,7 @@ setFormSubmitted(formSubmitIndicator);
               {formSubmitted
                 ? validData
                   ? !loading && error
-                    ? "Unsuccessful attempt to create a cohort"
+                    ? `Unsuccessful attempt to create Homework. ${error.data}`
                     : !loading && !error && success
                     ? "Homework was successfully created"
                     : ""

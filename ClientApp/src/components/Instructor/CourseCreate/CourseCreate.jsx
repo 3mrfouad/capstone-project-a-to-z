@@ -107,7 +107,7 @@ const CourseCreate = ({ history }) => {
           <Col xs={12} md={6}>
             <h2>Course</h2>
             {/* (10.7) Anti-tamper validation - Alert message conditions   */}
-            <p
+            <p 
               className={
                 formSubmitted
                   ? validData
@@ -124,7 +124,7 @@ const CourseCreate = ({ history }) => {
               {formSubmitted
                 ? validData
                   ? !loading && error
-                    ? "Unsuccessful attempt to create a course"
+                    ? `Unsuccessful attempt to create course.\n ${error.data}`
                     : !loading && !error
                     ? "Course was successfully created"
                     : ""
@@ -160,15 +160,16 @@ const CourseCreate = ({ history }) => {
                   onChange={(e) => setHours(String(e.target.value))}
                 ></Form.Control>
                 <Form.Control.Feedback type="invalid">
-                  Please fill in the Hours field.
+                  Please fill in the valid value for Hours.
+                  <p>Range: 0 to 999.99</p>
                 </Form.Control.Feedback>
               </Form.Group>
               <Form.Group controlId="Description">
                 <Form.Label>Description</Form.Label>
 
                 <Form.Control
+                  as="textarea"
                   required
-                  type="text"
                   maxLength="250"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}

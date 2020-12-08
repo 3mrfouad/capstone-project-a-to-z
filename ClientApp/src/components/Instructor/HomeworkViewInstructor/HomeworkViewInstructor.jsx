@@ -160,8 +160,9 @@ const HomeworkViewInstructor = ({ match, history }) => {
                     onChange={(e) => setGitHubClassRoomLink(e.target.value)}
                   ></Form.Control>
                 </Form.Group>
-                <Link onClick={goBack}>Back</Link>
-
+                <button type="button" className="btn btn-link" onClick={goBack}>
+              Back
+            </button>{" "}
                 <Button type="submit" variant="primary" className="float-right">
                   Save
                 </Button>
