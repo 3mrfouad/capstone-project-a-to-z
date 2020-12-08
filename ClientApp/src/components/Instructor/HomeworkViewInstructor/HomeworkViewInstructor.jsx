@@ -43,6 +43,8 @@ const HomeworkViewInstructor = ({ match, history }) => {
         setAvgCompletionTime(homework.AvgCompletionTime);
         setDocumentLink(homework.DocumentLink);
         setGitHubClassRoomLink(homework.GitHubClassRoomLink);
+        setInstructorId(homework.InstructorId);
+        setCourseId(homework.CourseId);
       }
 
       // setTimeout(() => {
@@ -107,9 +109,9 @@ const HomeworkViewInstructor = ({ match, history }) => {
                     value={courseId}
                     onChange={(e) => setCourseId(e.target.value)}
                   >
-                    <option value={homework.CourseId}>
+                    {/* <option value={homework.CourseId}>
                       {homework.CourseName}
-                    </option>
+                    </option> */}
                     {courses.map((course, index) => (
                       <option value={course.courseId} key={index}>
                         {course.name}
@@ -125,7 +127,9 @@ const HomeworkViewInstructor = ({ match, history }) => {
                     value={instructorId}
                     onChange={(e) => setInstructorId(e.target.value)}
                   >
-                    <option value="">{homework.InstructorName}</option>
+                    {/* <option value={homework.InstructorId}>
+                      {homework.InstructorName}
+                    </option> */}
                     {instructors
                       .filter((item) => item.archive == false)
                       .map((instructor, index) => (
