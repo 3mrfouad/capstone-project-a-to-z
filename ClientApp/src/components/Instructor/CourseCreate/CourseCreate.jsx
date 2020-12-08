@@ -107,7 +107,7 @@ const CourseCreate = ({ history }) => {
           <Col xs={12} md={6}>
             <h2>Course</h2>
             {/* (10.7) Anti-tamper validation - Alert message conditions   */}
-            <p
+            <p 
               className={
                 formSubmitted
                   ? validData
@@ -124,7 +124,7 @@ const CourseCreate = ({ history }) => {
               {formSubmitted
                 ? validData
                   ? !loading && error
-                    ? "Unsuccessful attempt to create a course"
+                    ? `Unsuccessful attempt to create course.\n ${error.data}`
                     : !loading && !error
                     ? "Course was successfully created"
                     : ""

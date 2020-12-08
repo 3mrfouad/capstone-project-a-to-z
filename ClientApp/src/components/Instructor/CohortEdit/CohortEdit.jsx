@@ -276,7 +276,7 @@ const CohortEdit = ({ match, history }) => {
                 {formSubmitted
                   ? validData
                     ? !loading && error
-                      ? "Unsuccessful attempt to create a cohort"
+                      ? `Unsuccessful attempt to create a cohort. ${error.data}`
                       : !loading && !error && success
                       ? "Cohort details were successfully updated"
                       : ""

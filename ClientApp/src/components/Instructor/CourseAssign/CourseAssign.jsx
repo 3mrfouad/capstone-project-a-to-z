@@ -233,7 +233,7 @@ const CourseAssign = ({ match, history }) => {
               {formSubmitted
                 ? validData
                   ? !loading && error
-                    ? "Unsuccessful attempt to assign a course"
+                    ? `Unsuccessful attempt to assign course. ${error.data}`
                     : !loading && !error && success
                     ? "Course was successfully assigned"
                     : ""

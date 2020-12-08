@@ -193,7 +193,7 @@ const Register = ({ history }) => {
                 {formSubmitted
                   ? validData
                     ? !loading && error
-                      ? "Unsuccessful attempt to register the user"
+                      ? `Unsuccessful attempt to register user. ${error.data}`
                       : !loading && !error && success
                       ? "Successfully registered the user"
                       : ""

@@ -135,7 +135,7 @@ const HomeworkStudent = ({ match, history }) => {
                 {formSubmitted
                   ? validData
                     ? !loading && error
-                      ? "Unsuccessful attempt to update Timesheet"
+                      ? `Unsuccessful attempt to update Timesheet. ${error.data}`
                       : !loading && !error && successCreate
                       ? "Timesheet was successfully updated"
                       : ""

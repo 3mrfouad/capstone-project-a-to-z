@@ -125,7 +125,7 @@ const Login = () => {
               {formSubmitted
                 ? validData
                   ? !loading && error
-                    ? "Unsuccessful attempt to Login"
+                    ? `Unsuccessful attempt to login. ${error.data}`
                     : !loading && !error && success
                     ? "Successful Login"
                     : ""

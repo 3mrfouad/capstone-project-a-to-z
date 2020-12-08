@@ -167,7 +167,7 @@ const CourseEdit = ({ match, history }) => {
                 {formSubmitted
                   ? validData
                     ? !loading && error
-                      ? "Unsuccessful attempt to update a course"
+                      ? `Unsuccessful attempt to update course. ${error.data}`
                       : !loading && !error
                       ? "Course was successfully updated"
                       : ""
