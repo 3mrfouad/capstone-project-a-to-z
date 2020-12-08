@@ -27,8 +27,9 @@ const CourseSummaryInstructor = ({ match, history }) => {
 
   useEffect(() => {
     dispatch(cohortGet(cohortId));
+
     dispatch(getCoursesByCohortId(cohortId));
-  }, [dispatch, success]);
+  }, [dispatch, success, cohortId]);
 
   /*  while (loading === undefined || courses === undefined) {
     return <h3>Loading ...</h3>;
@@ -39,11 +40,11 @@ const CourseSummaryInstructor = ({ match, history }) => {
   };
   return (
     <React.Fragment>
-      {loadingCohort ? (
+      {!cohort ? (
         <Loader />
       ) : (
         <Container>
-          {/* <h2>{cohort.name}</h2> */}
+          <h2>{cohort.name}</h2>
           <Table>
             <thead>
               <tr>
