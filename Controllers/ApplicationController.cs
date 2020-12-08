@@ -12,7 +12,7 @@ namespace AZLearn.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class ApplicationController : Controller
+    public class ApplicationController: Controller
     {
         #region CohortController
 

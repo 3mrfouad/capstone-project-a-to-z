@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Table, Container, Button, Form, Row, Col } from "react-bootstrap";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   updateTimeSheetStudent,
@@ -40,22 +40,35 @@ const HomeworkStudent = ({ match, history }) => {
   const { courses } = useSelector((state) => state.getAllCourses);
   const { instructors } = useSelector((state) => state.getAllInstructors);
   const { timeSheet } = useSelector((state) => state.getTimeSheetStudent);
+
+  const useFirstRender = () => {
+    const firstRender = useRef(true);
+
+    useEffect(() => {
+      firstRender.current = false;
+    }, []);
+
+    return firstRender.current;
+  };
+  const firstRender = useFirstRender();
   useEffect(() => {
-    dispatch(homeworkStudent(homeworkId));
-    dispatch(getAllCourses());
-    dispatch(getAllInstructors());
     if (
+      firstRender ||
       !timeSheet ||
       !timeSheet.item2 ||
       timeSheet.item1.homeworkId != homeworkId
     ) {
       dispatch(getHomeworkTimesheetStudent({ homeworkId, studentId }));
-      setSolvingHrs(timeSheet.item2.solvingTime);
-      setStudyHrs(timeSheet.item2.studyTime);
-    } else {
-      setSolvingHrs(timeSheet.item2.solvingTime);
-      setStudyHrs(timeSheet.item2.studyTime);
     }
+  }, [firstRender]);
+
+  useEffect(() => {
+    dispatch(homeworkStudent(homeworkId));
+    dispatch(getAllCourses());
+    dispatch(getAllInstructors());
+
+    setSolvingHrs(timeSheet.item2.solvingTime);
+    setStudyHrs(timeSheet.item2.studyTime);
   }, [dispatch]);
   console.log(homework);
 
