@@ -25,6 +25,15 @@ const HomeworkViewInstructor = ({ match, history }) => {
   const [validated, setValidated] = useState(false);
   //----------------------------
 
+   // ! (10.1) Anti-tamper validation - States and Variables
+   const [validData, setValidData] = useState(false);
+   const [formSubmitted, setFormSubmitted] = useState(false);
+   let validFormData = false;
+   let formSubmitIndicator = false;
+   let validDueDate = false;
+   let validReleaseDate = false;
+   // ! ------------------------------------------------------
+
   const dispatch = useDispatch();
   const { loading, homework } = useSelector(
     (state) => state.homeworkDetailInstructor
@@ -48,6 +57,107 @@ const HomeworkViewInstructor = ({ match, history }) => {
     }
   }, [dispatch, loading]);
 
+  // ! (10.2) Anti-tamper validation - Validate (parameters)
+  function Validate(
+    title,
+    courseId,
+    instructorId,
+    avgCompletionTime,
+    dueDate,
+    releaseDate,
+    documentLink,
+    gitHubClassRoomLink
+  ) {
+    let parsedDueDate = 0;
+    let parsedReleaseDate = 0;
+    formSubmitIndicator = true;
+    console.log("Entering Trim")
+    try {
+      title = title.trim().toLowerCase();
+      console.log("title trim");
+      avgCompletionTime = String(avgCompletionTime).trim();
+      console.log("avgCompletionTime trim");
+      dueDate = dueDate.trim();
+      console.log("dueDate trim");
+      releaseDate = releaseDate.trim();
+      console.log("releaseDate trim");
+      documentLink = documentLink.trim().toLowerCase();
+      console.log("documentLink trim");
+      gitHubClassRoomLink = gitHubClassRoomLink.trim().toLowerCase();
+      console.log("gitHubClassRoomLink trim");
+      if (!title) {
+        validFormData = false;
+      } else if (title.Length > 100) {
+        validFormData = false;
+      } else if (!courseId) {
+        validFormData = false;
+      } else if (parseInt(courseId) > 2147483647 || parseFloat(courseId) < 1) {
+        validFormData = false;
+      } else if (!instructorId) {
+        validFormData = false;
+      } else if (
+        parseInt(instructorId) > 2147483647 ||
+        parseFloat(instructorId) < 1
+      ) {
+        validFormData = false;
+      } else if (avgCompletionTime && (parseFloat(avgCompletionTime) > 999.99 ||
+        parseFloat(avgCompletionTime) < 0)) {
+        validFormData = false;
+      } else if (documentLink && documentLink.Length > 250) {
+        validFormData = false;
+      } else if (gitHubClassRoomLink && gitHubClassRoomLink.Length > 250) {
+        validFormData = false;
+      } else if (
+        documentLink &&
+        !/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(
+          documentLink
+        )
+      ) {
+        validFormData = false;
+      } else if (
+        gitHubClassRoomLink &&
+        !/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(
+          gitHubClassRoomLink
+        )
+      ) {
+        validFormData = false;
+      }
+      else if (releaseDate || dueDate) {
+        if (releaseDate) {
+          try {
+            parsedReleaseDate = Date.parse(releaseDate);
+            validReleaseDate = true;
+          } catch (ParseException) {
+            validFormData = false;
+            validReleaseDate = false;
+          }
+        }
+        if (dueDate) {
+          try {
+            parsedDueDate = Date.parse(dueDate);
+            validDueDate = true;
+          } catch (ParseException) {
+            validFormData = false;
+            validDueDate = false;
+          }
+        }
+        if (validReleaseDate && validDueDate) {
+          if (parsedDueDate < parsedReleaseDate) { validFormData = false; }
+          else { validFormData = true; }
+        }
+        else if (dueDate && !validDueDate) { validFormData = false; }
+        else if (releaseDate && !validReleaseDate) { validFormData = false; }
+        else { validFormData = true; }
+      }
+      else {
+        validFormData = true;
+      }
+    } catch (Exception) {
+      validFormData = false;
+    }
+  }
+  // ! ------------------------------------------------------
+
   const submitHandler = (e) => {
 
   //(2) Add form validation condition block if-else
@@ -59,6 +169,28 @@ const HomeworkViewInstructor = ({ match, history }) => {
   setValidated(true);
   //----------------------------
 
+  // ! (10.3) Anti-tamper validation - Alert message conditions
+  validFormData = false;
+  formSubmitIndicator = true;
+  setValidData(validFormData);
+  // ! ------------------------------------------------------
+
+    e.preventDefault();
+
+    // ! (10.4) Anti-tamper validation - calling Validate
+    Validate(
+      title,
+      courseId,
+      instructorId,
+      avgCompletionTime,
+      dueDate,
+      releaseDate,
+      documentLink,
+      gitHubClassRoomLink
+    );
+    if (validFormData) {
+      setValidData(validFormData);
+      // ! ------------------------------------------------------
     e.preventDefault();
     dispatch(
       editHomeworkInstructor({
@@ -74,13 +206,21 @@ const HomeworkViewInstructor = ({ match, history }) => {
         gitHubClassRoomLink,
       })
     );
-  };
+  } else {
+    // ! (10.5) Anti-tamper validation - Alert message conditions
+    setValidData(validFormData);
+  }
+  // ! (10.6) Anti-tamper validation - Alert message conditions
+  setFormSubmitted(formSubmitIndicator);
+  // ! ------------------------------------------------------
+};
+
 
   const goBack = () => {
     history.goBack();
   };
 
-  const { success } = useSelector((state) => state.editHomeworkInstructorState);
+  const { error, success } = useSelector((state) => state.editHomeworkInstructorState);
 
   const { courses } = useSelector((state) => state.getAllCourses);
   const { instructors } = useSelector((state) => state.getAllInstructors);
@@ -93,6 +233,35 @@ const HomeworkViewInstructor = ({ match, history }) => {
           <Row className="justify-content-md-center">
             <Col xs={12} md={6}>
               <h3>Homework</h3>
+
+              {/* ! (10.7) Anti-tamper validation - Alert message conditions   */}
+              <p
+              className={
+                formSubmitted
+                  ? validData
+                    ? !loading && error
+                      ? "alert alert-danger"
+                      : !loading && !error && success
+                      ? "alert alert-success"
+                      : ""
+                    : "alert alert-danger"
+                  : ""
+              }
+              role="alert"
+            >
+              {formSubmitted
+                ? validData
+                  ? !loading && error
+                    ? `Unsuccessful attempt to update homework.\n ${error.data}`
+                    : !loading && !error && success
+                    ? "Homework was successfully updated"
+                    
+                        : ""
+                    : "Error: Form was submitted with invalid data fields"
+                  : ""}
+              </p>
+              {/* ! ------------------------------------------------------  */}
+
               <Form noValidate validated={validated} onSubmit={submitHandler}>
                 <Form.Group controlId="title">
                   <Form.Label>Title</Form.Label>
