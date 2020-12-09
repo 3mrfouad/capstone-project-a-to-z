@@ -28,7 +28,7 @@ namespace AZLearn.Data
 
                 var version = "10.4.14-MariaDB";
 
-                optionsBuilder.UseMySql(connection, x => x.ServerVersion(version));
+                optionsBuilder.UseMySql(connection);
             }
         }
 
@@ -73,7 +73,7 @@ namespace AZLearn.Data
             modelBuilder.Entity<CohortCourse>(entity =>
             {
                 /* Creating Composite Key with CohortId, CourseId  */
-                entity.HasKey(e => new {e.CohortId, e.CourseId});
+                entity.HasKey(e => new { e.CohortId, e.CourseId });
 
                 entity.Property(e => e.ResourcesLink)
                     .HasCharSet("utf8mb4")
@@ -162,7 +162,7 @@ namespace AZLearn.Data
             modelBuilder.Entity<Grade>(entity =>
             {
                 /* Creating Composite key with RubricId, StudentId */
-                entity.HasKey(e => new {e.RubricId, e.StudentId});
+                entity.HasKey(e => new { e.RubricId, e.StudentId });
 
                 entity.Property(e => e.InstructorComment)
                     .HasCharSet("utf8mb4")

@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getHomeworkSummaryInstructor,
   getCoursesByCohortId,
-  archiveHomework,
 } from "../../../actions/instructorActions";
 import { Link } from "react-router-dom";
 import Loader from "../../shared/Loader/Loader";
@@ -15,33 +14,15 @@ const HomeworkSummaryInstructor = ({ match, history }) => {
   const courseId = match.params.courseId;
   const dispatch = useDispatch();
   useEffect(() => {
-    // get cohort by id
-    // populate the cohort data in here
     dispatch(getHomeworkSummaryInstructor({ courseId, cohortId }));
     dispatch(getCoursesByCohortId(cohortId));
   }, [dispatch, courseId]);
-  // const { homeworkSummary } = useSelector(
-  //   (state) => state.homeworkSummaryInstructor
-  // );
-  // const { success } = useSelector(
-  //   (state) => state.archiveHomeworkInstructorState
-  // );
 
-  const onArchive = (id) => {
-    // dispatch(archiveHomework({ id }));
-  };
   const { loading, error, homeworkSummary } = useSelector(
     (state) => state.homeworkSummaryInstructor
   );
   const { courses } = useSelector((state) => state.getCoursesByCohortId);
-  // while (
-  //   homeworkSummary === undefined ||
-  //   loading === undefined ||
-  //   error === undefined ||
-  //   courses === undefined
-  // ) {
-  //   return <h3>Loading ...</h3>;
-  // }
+
   const goBack = () => {
     history.goBack();
   };
@@ -88,8 +69,8 @@ const HomeworkSummaryInstructor = ({ match, history }) => {
                     .map((homework, index) => (
                       <tr key={index}>
                         <td>{homework.title}</td>
-                        <td>{homework.dueDate}</td>
-                        <td>{homework.releaseDate}</td>
+                        <td>{homework.dueDate.split("T")[0]}</td>
+                        <td>{homework.releaseDate.split("T")[0]}</td>
                         <td>
                           <a target="_blank" href={homework.documentLink}>
                             GitHubLink
@@ -100,20 +81,15 @@ const HomeworkSummaryInstructor = ({ match, history }) => {
                         </td>
                         <td>
                           <Link
-                            to={`/gradingsummary/${homework.cohortId}/${homework.homeworkId}/${homework.courseId}`}>
-                            Grades {" "}
+                            to={`/gradingsummary/${homework.cohortId}/${homework.homeworkId}/${homework.courseId}`}
+                          >
+                            Grades{" "}
                           </Link>
                           <Link
                             to={`/homeworkviewinstructor/${homework.homeworkId}`}
                           >
                             Details/Edit
                           </Link>{" "}
-                          <Link
-                            to={"#"}
-                            onClick={onArchive(homework.homeworkId)}
-                          >
-                            Archive
-                          </Link>
                         </td>
                       </tr>
                     ))}

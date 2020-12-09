@@ -29,29 +29,22 @@ const Login = () => {
 
     try {
       email = email.trim().toLowerCase();
-      console.log("try");
 
       if (!email) {
         validFormData = false;
       } else if (email.Length > 50) {
         validFormData = false;
-        console.log(email.length);
       } else if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
-        console.log("email", email);
         validFormData = false;
       } else if (!password) {
-        console.log("PASSWORD NOT MATCH");
         validFormData = false;
       } else if (password.Length > 250) {
         validFormData = false;
-        console.log("password", password);
       } else {
         validFormData = true;
-        console.log("all good");
       }
     } catch (Exception) {
       validFormData = false;
-      console.log("Catch");
     }
   }
 
@@ -78,23 +71,14 @@ const Login = () => {
         password,
       })
     );
-    // if (user && user.isInstructor) {
-    //   history.push("/cohortsummary");
-    // }
-    // if (user && !user.isInstructor) {
-    //   history.push(`/student/${user.userId}`);
-    // }
-    // ! (10.4) Anti-tamper validation - calling Validate  -Created by ayesha need to uncomment it once store is created
     Validate(email, password);
     if (validFormData) {
       setValidData(validFormData);
       // ! ------------------------------------------------------
-      console.log("login");
       // dispatch(login(email, password));
     } else {
       // ! (10.5) Anti-tamper validation - Alert message conditions
       setValidData(validFormData);
-      console.log("antitamper");
     }
 
     // ! (10.6) Anti-tamper validation - Alert message conditions
@@ -132,8 +116,6 @@ const Login = () => {
                   : "Error: Form was submitted with invalid data fields"
                 : ""}
             </p>
-            {/* {error && <Message variant="danger">{error}</Message>}
-            {loading && <Loader />} */}
             <Form noValidate validated={validated} onSubmit={submitHandler}>
               <Form.Group controlId="email">
                 <Form.Label>Email Address</Form.Label>

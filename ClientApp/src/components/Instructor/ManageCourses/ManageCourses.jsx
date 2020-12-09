@@ -51,16 +51,16 @@ const ManageCourseInstructor = ({ history }) => {
                     <td>{course.durationHrs}</td>
                     <td>
                       <ButtonGroup className="float-left">
-                        <Button
-                          variant="link"
-                          href={`/courseedit/${course.courseId}`}
-                          className="float-left"
-                        >
-                          Edit
-                        </Button>{" "}
-                        <Button variant="link" onClick={handleShow}>
-                          Archive
-                        </Button>
+                        <Link to={`/courseedit/${course.courseId}`}>
+                          <Button variant="link" className="float-left">
+                            Edit
+                          </Button>{" "}
+                        </Link>
+                        <Link>
+                          <Button variant="link" onClick={handleShow}>
+                            Archive
+                          </Button>
+                        </Link>
                       </ButtonGroup>
 
                       <Modal show={show} onHide={handleClose}>

@@ -1,13 +1,5 @@
-import React, { useState } from "react";
-import {
-  Navbar,
-  Nav,
-  NavDropdown,
-  Form,
-  FormControl,
-  Button,
-  Container,
-} from "react-bootstrap";
+import React from "react";
+import { Navbar, Nav, Container } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../Loader/Loader";
@@ -20,7 +12,6 @@ const Header = () => {
   );
 
   const logoutHandler = () => {
-    console.log("logout");
     dispatch(logout());
   };
   return (
@@ -28,34 +19,35 @@ const Header = () => {
       {loading ? (
         <Loader />
       ) : (
-        <Navbar bg="light" expand="lg" collapseOnSelect>
+        <Navbar bg="primary" expand="lg" collapseOnSelect>
           <Container>
             <LinkContainer to="/">
               <Navbar.Brand>AZ Learn</Navbar.Brand>
             </LinkContainer>
             {user && user.isInstructor ? (
               <React.Fragment>
-                <LinkContainer to="/cohortsummary">
-                  <Navbar.Brand>Cohorts</Navbar.Brand>
-                </LinkContainer>
-                {/* <LinkContainer to={`/coursesummary/3`}>
-                  <Navbar.Brand>Course Summary</Navbar.Brand>
-                </LinkContainer> */}
-                <LinkContainer to={`/registeruser`}>
-                  <Navbar.Brand>Register Users</Navbar.Brand>
-                </LinkContainer>
-                <LinkContainer to={`/managecourse`}>
-                  <Navbar.Brand>Manage Course</Navbar.Brand>
-                </LinkContainer>
+                <Nav>
+                  <LinkContainer to={"/cohortsummary"}>
+                    <Nav.Link>Cohorts</Nav.Link>
+                  </LinkContainer>
+                  <LinkContainer to={`/registeruser`}>
+                    <Nav.Link>Register Users</Nav.Link>
+                  </LinkContainer>
+                  <LinkContainer to={`/managecourse`}>
+                    <Nav.Link>Manage Course</Nav.Link>
+                  </LinkContainer>
+                </Nav>
               </React.Fragment>
             ) : (
               ""
             )}
             {user && !user.isInstructor ? (
               <React.Fragment>
-                <LinkContainer to={`/student/${user.userId}`}>
-                  <Navbar.Brand>Courses</Navbar.Brand>
-                </LinkContainer>
+                <Nav>
+                  <LinkContainer to={`/student/${user.userId}`}>
+                    <Nav.Link>Courses</Nav.Link>
+                  </LinkContainer>
+                </Nav>
               </React.Fragment>
             ) : (
               ""
@@ -80,39 +72,6 @@ const Header = () => {
                 ) : (
                   ""
                 )}
-
-                {/* {userInfo ? (
-                <NavDropdown title={userInfo.name} id="username">
-                  <LinkContainer to="/profile">
-                    <NavDropdown.Item>Profile</NavDropdown.Item>
-                  </LinkContainer>
-                  <NavDropdown.Item onClick={logoutHandler}>
-                    Logout
-                  </NavDropdown.Item>
-                </NavDropdown>
-              ) : (
-                <LinkContainer to="/login">
-                  <Nav.Link>
-                    {" "}
-                    <i className="fas fa-user"></i> <strong>Sign In</strong>{" "}
-                  </Nav.Link>
-                </LinkContainer>
-              )} */}
-                {/* {
-                userInfo && userInfo.isAdmin && (
-                  <NavDropdown title='Admin' id="adminmenu">
-                  <LinkContainer to="/admin/userlist">
-                    <NavDropdown.Item>Users</NavDropdown.Item>
-                  </LinkContainer>
-                  <LinkContainer to="/admin/productlist">
-                    <NavDropdown.Item>Products</NavDropdown.Item>
-                  </LinkContainer>
-                  <LinkContainer to="/admin/orderlist">
-                    <NavDropdown.Item>Orders</NavDropdown.Item>
-                  </LinkContainer>
-                </NavDropdown>
-                )
-              } */}
               </Nav>
             </Navbar.Collapse>
           </Container>

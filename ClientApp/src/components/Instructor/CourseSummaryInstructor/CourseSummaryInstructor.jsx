@@ -1,7 +1,7 @@
 import React from "react";
 import { Table, Container, Button, Modal, ButtonGroup } from "react-bootstrap";
-import { Link, NavLink } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getCoursesByCohortId,
@@ -31,10 +31,6 @@ const CourseSummaryInstructor = ({ match, history }) => {
 
     dispatch(getCoursesByCohortId(cohortId));
   }, [dispatch, success, cohortId]);
-
-  /*  while (loading === undefined || courses === undefined) {
-    return <h3>Loading ...</h3>;
-  } */
 
   const goBack = () => {
     history.goBack();

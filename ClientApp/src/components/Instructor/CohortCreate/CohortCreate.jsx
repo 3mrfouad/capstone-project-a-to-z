@@ -10,25 +10,15 @@ const CohortCreate = ({ history }) => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [city, setCity] = useState("");
-
-  //(1) Add validation states and variables
   const [validated, setValidated] = useState(false);
   const [invalidDatesBL, setInvalidDatesBl] = useState(false);
-  // ------------------------------------------------------
-
-  // ! (10.1) Anti-tamper validation - States and Variables
   const [validData, setValidData] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   let validFormData = false;
   let validStartDate = false;
   let validEndDate = false;
   let formSubmitIndicator = false;
-  // ! ------------------------------------------------------
 
-  useEffect(() => {
-    // get cohort by id
-    // populate the cohort data in here
-  }, []);
   const cohortCreate = useSelector((state) => state.cohortCreate);
   const { loading, error, cohort, success } = cohortCreate;
 
@@ -54,77 +44,46 @@ const CohortCreate = ({ history }) => {
         validFormData = false;
       } else if (parseInt(capacity) > 999 || parseInt(capacity) < 0) {
         validFormData = false;
-        console.log("capacity: ", parseInt(capacity));
       } else if (!city) {
         validFormData = false;
-        console.log("city");
       } else if (city.Length > 50) {
         validFormData = false;
-        console.log("city length");
       } else if (
         !(city === "edmonton" || city === "calgary" || city === "other")
       ) {
         validFormData = false;
-        console.log(
-          "modeOfTeaching value:",
-          modeOfTeaching.toLowerCase(),
-          "original:",
-          modeOfTeaching
-        );
       } else if (!modeOfTeaching) {
         validFormData = false;
-        console.log("modeOfTeaching");
       } else if (modeOfTeaching.Length > 50) {
         validFormData = false;
-        console.log("modeOfTeaching length");
       } else if (
         !(modeOfTeaching === "online" || modeOfTeaching === "in person")
       ) {
         validFormData = false;
-        console.log(
-          "modeOfTeaching value:",
-          modeOfTeaching.toLowerCase(),
-          "original:",
-          modeOfTeaching
-        );
       } else if (!startDate || !endDate) {
         validFormData = false;
-        console.log("startDate/endDate");
       } else {
         try {
           parsedStartDate = Date.parse(startDate);
           validStartDate = true;
-          console.log("startDate parse");
         } catch (ParseException) {
           validStartDate = false;
-          console.log("startDate parse exception");
           validFormData = false;
         }
         try {
           parsedEndDate = Date.parse(startDate);
           validEndDate = true;
-          console.log("endDate purse");
         } catch (ParseException) {
           validEndDate = false;
-          console.log("endDate parse exception");
           validFormData = false;
         }
         /* Dates business logic */
 
-        console.log(
-          "parsed start date validation: ",
-          validStartDate,
-          "parsed end date validation: ",
-          validEndDate
-        );
         if (validStartDate && validEndDate) {
-          console.log("Dates are both pursed ok");
           if (parsedEndDate < parsedStartDate) {
             validFormData = false;
-            console.log("parsedEndDate < parsedStartDate");
           } else {
             validFormData = true;
-            console.log("All good :", validFormData);
           }
         }
       }
@@ -141,7 +100,6 @@ const CohortCreate = ({ history }) => {
       e.preventDefault();
       e.stopPropagation();
     }
-    console.log("pass initial validation 100");
     setValidated(true);
 
     //(3) Add business logic
@@ -155,7 +113,6 @@ const CohortCreate = ({ history }) => {
         ? setInvalidDatesBl(true)
         : setInvalidDatesBl(false);
       setEndDate("");
-      console.log("pass initial validation 100", validFormData);
 
       // ! (10.3) Anti-tamper validation - Alert message conditions
       validFormData = false;
@@ -172,7 +129,6 @@ const CohortCreate = ({ history }) => {
       if (validFormData) {
         setValidData(validFormData);
         // ! ------------------------------------------------------
-        console.log("create cohort");
         e.preventDefault();
         dispatch(
           createCohort({
@@ -228,17 +184,9 @@ const CohortCreate = ({ history }) => {
                   : "Error: Form was submitted with invalid data fields"
                 : ""}
             </p>
-            {/* ! ------------------------------------------------------  */}
             <Form noValidate validated={validated} onSubmit={submitHandler}>
               <Form.Group controlId="name">
                 <Form.Label>Name</Form.Label>
-                {/*
-                 * (4) Add required to all required input fields
-                 * (5) For type = "text", use maxlength ={50} i.e., according to the actual length from ERD
-                 * (5) If type is not "text", add String(e.target.value) to the onchange
-                 * (6) If type is "number", add min={0}, and max={999} i.e., according to actual range from ERD
-                 * (7) For dropdown menu, use as="select", and add one empty option above other options <option></option>
-                 */}
                 <Form.Control
                   required
                   type="text"
@@ -246,12 +194,9 @@ const CohortCreate = ({ history }) => {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 ></Form.Control>
-                {/*(8) Add Form control feedback.*/}
                 <Form.Control.Feedback type="invalid">
                   Please enter a cohort name.
                 </Form.Control.Feedback>
-
-                {/*---------------------------------------*/}
               </Form.Group>
               <Form.Group controlId="Capacity">
                 <Form.Label>Capacity</Form.Label>
@@ -304,11 +249,9 @@ const CohortCreate = ({ history }) => {
                 <Form.Control.Feedback type="invalid">
                   Please choose an end date.
                 </Form.Control.Feedback>
-                {/* (9) Add business logic validation message. */}
                 <p className="text-danger small">
                   {invalidDatesBL ? "End date can't be before start date" : ""}
                 </p>
-                {/*---------------------------------------*/}
               </Form.Group>
               <Form.Group controlId="City">
                 <Form.Label>City</Form.Label>
@@ -319,9 +262,9 @@ const CohortCreate = ({ history }) => {
                   onChange={(e) => setCity(e.target.value)}
                 >
                   <option value="">Select</option>
-                  <option>Edmonton</option>
-                  <option>Calgary</option>
-                  <option>Other</option>
+                  <option value="Edmonton">Edmonton</option>
+                  <option value="Calgary">Calgary</option>
+                  <option value="Other">Other</option>
                 </Form.Control>
                 <Form.Control.Feedback type="invalid">
                   Please choose a city.

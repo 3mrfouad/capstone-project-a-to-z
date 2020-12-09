@@ -7,7 +7,6 @@ import { Link } from "react-router-dom";
 
 const CourseSummaryStudent = ({ match, history }) => {
   const studentId = match.params.userId;
-  console.log(studentId);
   const dispatch = useDispatch();
   const { courses, loading } = useSelector(
     (state) => state.courseSummaryStudent
@@ -50,9 +49,6 @@ const CourseSummaryStudent = ({ match, history }) => {
             ))}
           </tbody>
         </Table>
-        <button type="button" className="btn btn-link" onClick={goBack}>
-          Back
-        </button>
       </Container>
     </React.Fragment>
   );
