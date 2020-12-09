@@ -20,10 +20,6 @@ const CourseCreate = ({ history }) => {
   let formSubmitIndicator = false;
   // ! ------------------------------------------------------
 
-  useEffect(() => {
-    // get course by id
-    // populate the cohort data in here
-  }, []);
   const courseCreate = useSelector((state) => state.courseCreate);
   const { loading, error, course } = courseCreate;
 
@@ -44,16 +40,12 @@ const CourseCreate = ({ history }) => {
         validFormData = false;
       } else if (parseFloat(hours) > 999.99 || parseFloat(hours) < 0) {
         validFormData = false;
-        console.log("hours: ", parseFloat(hours));
       } else if (!description) {
         validFormData = false;
-        console.log("description");
       } else if (description.Length > 250) {
         validFormData = false;
-        console.log("description length");
       } else {
         validFormData = true;
-        console.log("All good :", validFormData);
       }
     } catch (Exception) {
       validFormData = false;
@@ -68,7 +60,6 @@ const CourseCreate = ({ history }) => {
       e.preventDefault();
       e.stopPropagation();
     }
-    console.log("pass initial validation 100");
     setValidated(true);
     //(3) Add business logic- No business Logic for now
     e.preventDefault();
@@ -79,7 +70,6 @@ const CourseCreate = ({ history }) => {
       setValidData(validFormData);
       // ! ------------------------------------------------------
 
-      console.log("create course");
       dispatch(
         createCourse({
           courseName,
@@ -107,7 +97,7 @@ const CourseCreate = ({ history }) => {
           <Col xs={12} md={6}>
             <h2>Course</h2>
             {/* (10.7) Anti-tamper validation - Alert message conditions   */}
-            <p 
+            <p
               className={
                 formSubmitted
                   ? validData

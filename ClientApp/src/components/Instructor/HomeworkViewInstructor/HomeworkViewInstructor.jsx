@@ -7,7 +7,7 @@ import {
   getAllCourses,
   getAllInstructors,
 } from "../../../actions/instructorActions";
-import { Link } from "react-router-dom";
+import Loader from "../../shared/Loader/Loader";
 
 const HomeworkViewInstructor = ({ match, history }) => {
   const homeworkId = match.params.id;
@@ -32,12 +32,6 @@ const HomeworkViewInstructor = ({ match, history }) => {
     } else {
       if (!homework.HomeworkId || homework.HomeworkId != homeworkId) {
         dispatch(getHomeworkDetailInstructor(homeworkId));
-        // setTimeout(() => {
-        //   setTitle(homework.Title);
-        //   setAvgCompletionTime(homework.AvgCompletionTime);
-        //   setDocumentLink(homework.DocumentLink);
-        //   setGitHubClassRoomLink(homework.GitHubClassRoomLink);
-        // }, 1000);
       } else {
         setTitle(homework.Title);
         setAvgCompletionTime(homework.AvgCompletionTime);
@@ -46,13 +40,6 @@ const HomeworkViewInstructor = ({ match, history }) => {
         setInstructorId(homework.InstructorId);
         setCourseId(homework.CourseId);
       }
-
-      // setTimeout(() => {
-      //   setTitle(homework.Title);
-      //   setAvgCompletionTime(homework.AvgCompletionTime);
-      //   setDocumentLink(homework.DocumentLink);
-      //   setGitHubClassRoomLink(homework.GitHubClassRoomLink);
-      // }, 500);
     }
   }, [dispatch, loading]);
 
@@ -64,7 +51,6 @@ const HomeworkViewInstructor = ({ match, history }) => {
         courseId,
         instructorId,
         cohortId: homework.CohortId,
-        // isAssignment: "true",
         title,
         avgCompletionTime,
         dueDate,
@@ -86,7 +72,7 @@ const HomeworkViewInstructor = ({ match, history }) => {
   return (
     <React.Fragment>
       {loading ? (
-        <h2>Loading</h2>
+        <Loader />
       ) : (
         <Container>
           <Row className="justify-content-md-center">
@@ -109,9 +95,6 @@ const HomeworkViewInstructor = ({ match, history }) => {
                     value={courseId}
                     onChange={(e) => setCourseId(e.target.value)}
                   >
-                    {/* <option value={homework.CourseId}>
-                      {homework.CourseName}
-                    </option> */}
                     {courses.map((course, index) => (
                       <option value={course.courseId} key={index}>
                         {course.name}
@@ -127,9 +110,6 @@ const HomeworkViewInstructor = ({ match, history }) => {
                     value={instructorId}
                     onChange={(e) => setInstructorId(e.target.value)}
                   >
-                    {/* <option value={homework.InstructorId}>
-                      {homework.InstructorName}
-                    </option> */}
                     {instructors
                       .filter((item) => item.archive == false)
                       .map((instructor, index) => (
@@ -139,7 +119,6 @@ const HomeworkViewInstructor = ({ match, history }) => {
                       ))}
                   </Form.Control>
                 </Form.Group>
-
                 <Form.Group controlId="Avg Completion Time">
                   <Form.Label>Avg Completion Time</Form.Label>
                   <Form.Control
@@ -148,7 +127,6 @@ const HomeworkViewInstructor = ({ match, history }) => {
                     onChange={(e) => setAvgCompletionTime(e.target.value)}
                   ></Form.Control>
                 </Form.Group>
-
                 <Form.Group controlId="Due Date">
                   <Form.Label>Due Date</Form.Label>
                   <Form.Control
@@ -157,7 +135,6 @@ const HomeworkViewInstructor = ({ match, history }) => {
                     onChange={(e) => setDueDate(e.target.value)}
                   ></Form.Control>
                 </Form.Group>
-
                 <Form.Group controlId="Release Date">
                   <Form.Label>Release Date</Form.Label>
                   <Form.Control
@@ -166,7 +143,6 @@ const HomeworkViewInstructor = ({ match, history }) => {
                     onChange={(e) => setReleaseDate(e.target.value)}
                   ></Form.Control>
                 </Form.Group>
-
                 <Form.Group controlId="DocLink">
                   <Form.Label>DocLink</Form.Label>
                   <Form.Control
@@ -179,14 +155,13 @@ const HomeworkViewInstructor = ({ match, history }) => {
                   <Form.Label>GitHubLink</Form.Label>
                   <Form.Control
                     type="text"
-                    //   placeholder="Enter Description"
                     value={gitHubClassRoomLink}
                     onChange={(e) => setGitHubClassRoomLink(e.target.value)}
                   ></Form.Control>
                 </Form.Group>
                 <button type="button" className="btn btn-link" onClick={goBack}>
-              Back
-            </button>{" "}
+                  Back
+                </button>{" "}
                 <Button type="submit" variant="primary" className="float-right">
                   Save
                 </Button>

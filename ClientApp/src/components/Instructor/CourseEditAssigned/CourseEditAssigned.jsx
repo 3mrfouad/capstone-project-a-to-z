@@ -7,6 +7,7 @@ import {
   editAssignedCourse,
   getCoursesByCohortId,
 } from "../../../actions/instructorActions";
+import Loader from "../../shared/Loader/Loader";
 
 const CourseEditAssigned = ({ match, history }) => {
   const cohortId = match.params.id;
@@ -16,13 +17,8 @@ const CourseEditAssigned = ({ match, history }) => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [resourcesLink, setResourcesLink] = useState("");
-
-  //(1) Add validation states
   const [validated, setValidated] = useState(false);
   const [invalidDatesBL, setInvalidDatesBl] = useState(false);
-  // ! (10.1) Anti-tamper validation - States and Variables
-  //const [courseName, setCourseName] = useState(""); //Added by Ayesha for validation
-  //const [instructor, setInstructor] = useState(""); //Added by Ayesha for validation
   const [validData, setValidData] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   let validFormData = false;
@@ -37,8 +33,6 @@ const CourseEditAssigned = ({ match, history }) => {
   const { loading, course, success, error } = useSelector(
     (state) => state.getAssignedCourse
   );
-  // const { courses } = useSelector((state) => state.getCoursesByCohortId);
-
   useEffect(() => {
     if (
       !success ||
@@ -51,9 +45,7 @@ const CourseEditAssigned = ({ match, history }) => {
     }
 
     dispatch(getAllInstructors());
-    // dispatch(getCoursesByCohortId(cohortId));
   }, [dispatch, courseId, cohortId, success]);
-  // ! (10.2) Anti-tamper validation - Validate (parameters)
   function Validate(
     cohortId,
     courseId,
@@ -62,7 +54,6 @@ const CourseEditAssigned = ({ match, history }) => {
     startDate,
     endDate
   ) {
-    console.log("function");
     let parsedEndDate = 0;
     let parsedStartDate = 0;
     formSubmitIndicator = true;
@@ -86,7 +77,6 @@ const CourseEditAssigned = ({ match, history }) => {
         validFormData = false;
       } else if (instructorId < 0 || instructorId > 2147483647) {
         validFormData = false;
-        console.log("instructor out of range", instructorId);
       } else if (resourcesLink > 250) {
         validFormData = false;
       }
@@ -100,42 +90,28 @@ const CourseEditAssigned = ({ match, history }) => {
         validFormData = false;
       } else if (!startDate || !endDate) {
         validFormData = false;
-        console.log("startDate/endDate");
       } else {
         try {
           parsedStartDate = Date.parse(startDate);
           validStartDate = true;
-          console.log("startDate parse");
         } catch (ParseException) {
           validStartDate = false;
-          console.log("startDate parse exception");
           validFormData = false;
         }
         try {
           parsedEndDate = Date.parse(startDate);
           validEndDate = true;
-          console.log("endDate purse");
         } catch (ParseException) {
           validEndDate = false;
-          console.log("endDate parse exception");
           validFormData = false;
         }
         /* Dates business logic */
 
-        console.log(
-          "parsed start date validation: ",
-          validStartDate,
-          "parsed end date validation: ",
-          validEndDate
-        );
         if (validStartDate && validEndDate) {
-          console.log("Dates are both pursed ok");
           if (parsedEndDate < parsedStartDate) {
             validFormData = false;
-            console.log("parsedEndDate < parsedStartDate");
           } else {
             validFormData = true;
-            console.log("All good :", validFormData);
           }
         }
       }
@@ -181,7 +157,6 @@ const CourseEditAssigned = ({ match, history }) => {
         endDate
       );
       if (validFormData) {
-        console.log("pass validate form data");
         setValidData(validFormData);
         // ! ------------------------------------------------------
         dispatch(
@@ -206,19 +181,10 @@ const CourseEditAssigned = ({ match, history }) => {
   const goBack = () => {
     history.goBack();
   };
-  /* 
-  while (
-    instructors === undefined ||
-    loading === undefined ||
-    course === undefined
-  ) {
-    return <h3>Loading ...</h3>;
-  } */
-
   return (
     <React.Fragment>
       {loading ? (
-        <h2>loading</h2>
+        <Loader />
       ) : (
         <Container>
           <Row className="justify-content-md-center">
@@ -252,13 +218,7 @@ const CourseEditAssigned = ({ match, history }) => {
               <Form noValidate validated={validated} onSubmit={submitHandler}>
                 <Form.Group controlId="course name">
                   <Form.Label>Course Name</Form.Label>
-                  <Form.Control value={course.item1}>
-                    {/* {courses.map((course, index) => (
-                      <option value={course.courseId} key={index}>
-                        {course.name}
-                      </option>
-                    ))} */}
-                  </Form.Control>
+                  <Form.Control value={course.item1} disabled></Form.Control>
                 </Form.Group>
                 <Form.Group controlId="instructor">
                   <Form.Label>Instructor</Form.Label>
@@ -268,9 +228,18 @@ const CourseEditAssigned = ({ match, history }) => {
                     value={instructorId}
                     onChange={(e) => setInstructorId(e.target.value)}
                   >
-                    {/* <option value="">{course.item2}</option> */}
                     {instructors
-                      .filter((item) => item.archive == false)
+                      .filter((item) => item.name == course.item2)
+                      .map((instructor, index) => (
+                        <option value={instructor.userId} key={index}>
+                          {instructor.name}
+                        </option>
+                      ))}
+                    {instructors
+                      .filter(
+                        (item) =>
+                          item.archive == false && item.name != course.item2
+                      )
                       .map((instructor, index) => (
                         <option value={instructor.userId} key={index}>
                           {instructor.name}
@@ -294,6 +263,7 @@ const CourseEditAssigned = ({ match, history }) => {
                   <Form.Control
                     required
                     type="date"
+                    min={startDate}
                     value={endDate.split(" ")[0]}
                     onChange={(e) =>
                       setEndDate(String(e.target.value).split(" ")[0])
@@ -323,6 +293,7 @@ const CourseEditAssigned = ({ match, history }) => {
                     maxlength="250"
                     type="url"
                     value={course.item7}
+                    disabled
                     onChange={(e) => setResourcesLink(e.target.value)}
                   ></Form.Control>
                 </Form.Group>

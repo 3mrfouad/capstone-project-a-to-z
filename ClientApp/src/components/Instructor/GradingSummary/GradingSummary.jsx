@@ -3,32 +3,29 @@ import { Table, Container, Button, Nav, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { getGradeSummaryInstructor } from "../../../actions/instructorActions";
 import { getHomeworkSummaryInstructor } from "../../../actions/instructorActions";
+import { LinkContainer } from "react-router-bootstrap";
 
-import { Link } from "react-router-dom";
+import Loader from "../../shared/Loader/Loader";
 
-const GradingSummary = ({ match }) => {
+const GradingSummary = ({ match, history }) => {
   const cohortId = match.params.cohortId;
   const homeworkId = match.params.homeworkId;
   const courseId = match.params.courseId;
 
   const dispatch = useDispatch();
   useEffect(() => {
-    // get cohort by id
-    // populate the cohort data in here
     dispatch(getGradeSummaryInstructor({ cohortId, homeworkId }));
     dispatch(getHomeworkSummaryInstructor({ courseId, cohortId }));
-  }, [dispatch]);
-
+  }, [dispatch, homeworkId]);
+  const goBack = () => {
+    history.goBack();
+  };
   const { homeworkSummary } = useSelector(
     (state) => state.homeworkSummaryInstructor
   );
   const { loading, error, grade } = useSelector(
     (state) => state.gradeSummaryInstructor
   );
-  console.log("Loading: ", loading);
-  console.log("Grades: ", grade);
-  console.log("Loading: ", loading);
-  console.log("Homeworks: ", homeworkSummary);
 
   while (
     homeworkSummary === undefined ||
@@ -41,20 +38,19 @@ const GradingSummary = ({ match }) => {
   return (
     <React.Fragment>
       {loading ? (
-        <p></p>
+        <Loader />
       ) : (
         <Container>
           <Row>
             {
               <Col xs={2}>
-                <Nav defaultActiveKey="/home" className="flex-column">
+                <Nav className="flex-column">
                   {homeworkSummary.map((homework, index) => (
-                    <Nav.Link
-                      href={`/gradingsummary/${cohortId}/${homework.homeworkId}/${courseId}`}
-                      key={index}
+                    <LinkContainer
+                      to={`/gradingsummary/${cohortId}/${homework.homeworkId}/${courseId}`}
                     >
-                      {homework.title}
-                    </Nav.Link>
+                      <Nav.Link key={index}>{homework.title}</Nav.Link>
+                    </LinkContainer>
                   ))}
                 </Nav>
               </Col>
@@ -82,8 +78,9 @@ const GradingSummary = ({ match }) => {
                   ))}
                 </tbody>
               </Table>
-              <Button>Back</Button>{" "}
-              <Button className="float-right">Create</Button>
+              <button type="button" className="btn btn-link" onClick={goBack}>
+                Back
+              </button>
             </Col>
           </Row>
         </Container>

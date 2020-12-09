@@ -2,15 +2,12 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Form, Button, Row, Col, Container, Modal } from "react-bootstrap";
-import { Link, useHistory } from "react-router-dom";
 import {
   registerUser,
   cohortSummaryInstructor,
 } from "../../../actions/instructorActions";
 import Loader from "../../shared/Loader/Loader";
-// let loading = false;
-let error = false;
-// let success = true;
+
 const Register = ({ history }) => {
   const dispatch = useDispatch();
   const [name, setName] = useState("");
@@ -48,41 +45,29 @@ const Register = ({ history }) => {
     formSubmitIndicator = true;
 
     try {
-      console.log("Before Trim");
       name = name.trim().toLowerCase();
       email = email.trim().toLowerCase();
       password = password.trim();
       cohort = cohort.trim().toLowerCase();
-      console.log(isInstructor);
       isInstructor = String(isInstructor).trim().toLowerCase();
-      console.log("After Trim");
       if (!name) {
         validFormData = false;
-        console.log("name: ");
       } else if (name.Length > 50) {
         validFormData = false;
-        console.log("name: Length");
       } else if (parseInt(cohort) > 2147483647 || parseInt(cohort) < 1) {
         validFormData = false;
-        console.log("cohort: ", parseInt(cohort));
       } else if (!isInstructor) {
         validFormData = false;
-        console.log("isInstructor");
       } else if (!(isInstructor === "true" || isInstructor === "false")) {
         validFormData = false;
-        console.log("isInstructor", isInstructor);
       } else if (!email) {
         validFormData = false;
-        console.log("email");
       } else if (email.Length > 50) {
         validFormData = false;
-        console.log("email length");
       } else if (!password) {
         validFormData = false;
-        console.log("password");
       } else if (password.Length < 8 || password.Length > 250) {
         validFormData = false;
-        console.log("password length");
       } else {
         if (
           !/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-.]).{8,}$/.test(
@@ -90,18 +75,14 @@ const Register = ({ history }) => {
           )
         ) {
           validFormData = false;
-          console.log("password does not match the pattern");
         } else if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
           validFormData = false;
-          console.log("email does not match the email format");
         } else {
           validFormData = true;
-          console.log("All good :", validFormData);
         }
       }
     } catch (Exception) {
       validFormData = false;
-      console.log("Not good :", validFormData);
     }
   }
   // ! ------------------------------------------------------
@@ -113,12 +94,10 @@ const Register = ({ history }) => {
       e.preventDefault();
       e.stopPropagation();
     }
-    console.log("pass initial validation 100");
     setValidated(true);
     //(3) Add business logic- no bl for now
 
     e.preventDefault();
-    // dispatch(login(email, password));
     // ! (10.4) Anti-tamper validation - calling Validate
     Validate(name, email, password, cohort, isInstructor);
     if (validFormData) {
@@ -138,8 +117,6 @@ const Register = ({ history }) => {
           })
         );
       }
-      // dispatch(login(email, password));
-      console.log("register");
     } else {
       // ! (10.5) Anti-tamper validation - Alert message conditions
       setValidData(validFormData);
@@ -174,9 +151,6 @@ const Register = ({ history }) => {
           <Row className="justify-content-md-center">
             <Col xs={12} md={6}>
               <h2>Register</h2>
-              {/* {error && <Message variant="danger">{error}</Message>}
-            {loading && <Loader />} */}
-              {/* ! (10.7) Anti-tamper validation - Alert message conditions   */}
               <p
                 className={
                   formSubmitted
@@ -227,7 +201,7 @@ const Register = ({ history }) => {
                     onChange={(e) => setEmail(e.target.value)}
                   ></Form.Control>
                   <Form.Control.Feedback type="invalid">
-                    Please enter a valid email. 
+                    Please enter a valid email.
                     <p>e.g. youremailaddress@domain.com </p>
                   </Form.Control.Feedback>
                 </Form.Group>
@@ -243,8 +217,11 @@ const Register = ({ history }) => {
                   ></Form.Control>
                   <Form.Control.Feedback type="invalid">
                     Please enter a valid password.
-                    <p>Password must have at least: one upper case letter,one lower case letter, one digit ,
-                    one special character, minimum 8 characters in length.</p>
+                    <p>
+                      Password must have at least: one upper case letter,one
+                      lower case letter, one digit , one special character,
+                      minimum 8 characters in length.
+                    </p>
                   </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="cohort">

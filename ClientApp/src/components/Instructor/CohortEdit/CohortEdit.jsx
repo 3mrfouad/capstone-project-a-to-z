@@ -6,7 +6,6 @@ import Loader from "../../shared/Loader/Loader";
 
 const CohortEdit = ({ match, history }) => {
   const cohortId = match.params.id;
-  console.log("cohort edit", cohortId);
   const [name, setName] = useState("");
   const [capacity, setCapacity] = useState("");
   const [modeOfTeaching, setModeOfTeaching] = useState("");
@@ -66,108 +65,69 @@ const CohortEdit = ({ match, history }) => {
     formSubmitIndicator = true;
 
     try {
-      console.log("try");
       cohortId = cohortId.trim().toLowerCase();
-      console.log("cohortID: ", cohortId);
 
       name = name.trim().toLowerCase();
-      console.log("name trim : ", name);
 
       capacity = capacity.trim().toLowerCase();
-      console.log("cap trim");
 
       city = city.trim().toLowerCase();
-      console.log("city trim");
 
       modeOfTeaching = modeOfTeaching.trim().toLowerCase();
-      console.log("mode trim");
 
       startDate = startDate.trim().toLowerCase();
-      console.log("start trim");
 
       endDate = endDate.trim().toLowerCase();
-      console.log("enddate trim");
 
       if (!cohortId) {
         validFormData = false;
-        console.log("no cohortId");
       } else if (cohortId < 0 || cohortId > 2147483647) {
         validFormData = false;
-        console.log("out of range cohort Id");
       } else if (!name) {
         validFormData = false;
-        console.log("name validate");
       } else if (name.Length > 50) {
         validFormData = false;
-        console.log("namelength");
       } else if (parseInt(capacity) > 999 || parseInt(capacity) < 0) {
         validFormData = false;
-        console.log("capacity: ", parseInt(capacity));
       } else if (!city) {
         validFormData = false;
-        console.log("city");
       } else if (city.Length > 50) {
         validFormData = false;
-        console.log("city length");
       } else if (
         !(city === "edmonton" || city === "calgary" || city === "other")
       ) {
         validFormData = false;
-        console.log("city value:", city.toLowerCase(), "original:", city);
       } else if (!modeOfTeaching) {
         validFormData = false;
-        console.log("modeOfTeaching");
       } else if (modeOfTeaching.Length > 50) {
         validFormData = false;
-        console.log("modeOfTeaching length");
       } else if (
         !(modeOfTeaching === "online" || modeOfTeaching === "in person")
       ) {
         validFormData = false;
-        console.log(
-          "modeOfTeaching value:",
-          modeOfTeaching.toLowerCase(),
-          "original:",
-          modeOfTeaching
-        );
       } else if (!startDate || !endDate) {
         validFormData = false;
-        console.log("startDate/endDate");
       } else {
         try {
           parsedStartDate = Date.parse(startDate);
           validStartDate = true;
-          console.log("startDate parse");
         } catch (ParseException) {
           validStartDate = false;
-          console.log("startDate parse exception");
           validFormData = false;
         }
         try {
           parsedEndDate = Date.parse(startDate);
           validEndDate = true;
-          console.log("endDate purse");
         } catch (ParseException) {
           validEndDate = false;
-          console.log("endDate parse exception");
           validFormData = false;
         }
         /* Dates business logic */
-
-        console.log(
-          "parsed start date validation: ",
-          validStartDate,
-          "parsed end date validation: ",
-          validEndDate
-        );
         if (validStartDate && validEndDate) {
-          console.log("Dates are both pursed ok");
           if (parsedEndDate < parsedStartDate) {
             validFormData = false;
-            console.log("parsedEndDate < parsedStartDate");
           } else {
             validFormData = true;
-            console.log("All good :", validFormData);
           }
         }
       }
@@ -182,9 +142,6 @@ const CohortEdit = ({ match, history }) => {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    // this is where we handle the user inputs
-    // this is where we need validation
-    // the dispatch call will be conditioned  if else statement or equivalent
 
     const form = e.currentTarget;
     if (form.checkValidity() === false) {
@@ -204,7 +161,6 @@ const CohortEdit = ({ match, history }) => {
         ? setInvalidDatesBl(true)
         : setInvalidDatesBl(false);
       setEndDate("");
-      console.log("pass initial validation 100", validFormData);
       // ! (10.3) Anti-tamper validation - Alert message conditions
       validFormData = false;
       formSubmitIndicator = true;
@@ -226,8 +182,6 @@ const CohortEdit = ({ match, history }) => {
       if (validFormData) {
         setValidData(validFormData);
         // ! ------------------------------------------------------
-        console.log("update cohort");
-        console.log(startDate);
         dispatch(
           editCohort({
             cohortId,
@@ -296,8 +250,6 @@ const CohortEdit = ({ match, history }) => {
                       setName(e.target.value);
                       setFormDataChange(true);
                     }}
-
-                    // define a flag called formDataChange //setformDataChange //every onchange in form set flag to true ;initial set to false
                   ></Form.Control>
                   <Form.Control.Feedback type="invalid">
                     Please enter a cohort name.
@@ -329,8 +281,8 @@ const CohortEdit = ({ match, history }) => {
                     }}
                   >
                     {/* <option>{}</option> */}
-                    <option value="Remote">Online</option>
-                    <option value="In-person">In Person</option>
+                    <option value="Online">Online</option>
+                    <option value="In person">In Person</option>
                   </Form.Control>
                 </Form.Group>
                 <Form.Group controlId="Start Date">

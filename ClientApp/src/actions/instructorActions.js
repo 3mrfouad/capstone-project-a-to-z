@@ -84,15 +84,6 @@ export const createCohort = (cohort) => {
       dispatch({
         type: "COHORT_CREATE_REQUEST",
       });
-      // const {
-      //   userLogin: { userInfo },
-      // } = getState();
-      // const config = {
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      // };
-      console.log(cohort);
       const params = {
         name: cohort.name,
         capacity: cohort.capacity,
@@ -131,14 +122,7 @@ export const editCohort = (cohort) => {
       dispatch({
         type: "COHORT_EDIT_REQUEST",
       });
-      // const {
-      //   userLogin: { userInfo },
-      // } = getState();
-      // const config = {
-      //   headers: {
-      //     Authorization: `Bearer ${userInfo.token}`,
-      //   },
-      // };
+
       const params = {
         cohortId: cohort.cohortId,
         name: cohort.name,
@@ -178,14 +162,7 @@ export const archiveCohort = (id) => {
       dispatch({
         type: "COHORT_ARCHIVE_REQUEST",
       });
-      // const {
-      //   userLogin: { userInfo },
-      // } = getState();
-      // const config = {
-      //   headers: {
-      //     Authorization: `Bearer ${userInfo.token}`,
-      //   },
-      // };
+
       const params = {
         cohortId: id,
       };
@@ -219,14 +196,7 @@ export const createCourse = (course) => {
       dispatch({
         type: "COURSE_CREATE_REQUEST",
       });
-      // const {
-      //   userLogin: { userInfo },
-      // } = getState();
-      // const config = {
-      //   headers: {
-      //     Authorization: `Bearer ${userInfo.token}`,
-      //   },
-      // };
+
       const params = {
         name: course.courseName,
         description: course.description,
@@ -334,14 +304,7 @@ export const editCourse = (course) => {
       dispatch({
         type: "COURSE_EDIT_REQUEST",
       });
-      // const {
-      //   userLogin: { userInfo },
-      // } = getState();
-      // const config = {
-      //   headers: {
-      //     Authorization: `Bearer ${userInfo.token}`,
-      //   },
-      // };
+
       const params = {
         courseId: course.courseId,
         name: course.name,
@@ -378,14 +341,7 @@ export const archiveCourse = (id) => {
       dispatch({
         type: "COURSE_ARCHIVE_REQUEST",
       });
-      // const {
-      //   userLogin: { userInfo },
-      // } = getState();
-      // const config = {
-      //   headers: {
-      //     Authorization: `Bearer ${userInfo.token}`,
-      //   },
-      // };
+
       const params = {
         courseId: id,
       };
@@ -443,7 +399,6 @@ export const manageCourseInstructor = () => {
   return async (dispatch) => {
     try {
       dispatch({ type: "MANAGE_COURSE_REQUEST" });
-      // update the url later
       const { data } = await axios.get(
         "https://localhost:5001/application/getcourses"
       );
@@ -469,14 +424,7 @@ export const assignCourse = (course) => {
       dispatch({
         type: "COURSE_ASSIGN_REQUEST",
       });
-      // const {
-      //   userLogin: { userInfo },
-      // } = getState();
-      // const config = {
-      //   headers: {
-      //     Authorization: `Bearer ${userInfo.token}`,
-      //   },
-      // };
+
       const params = {
         cohortId: course.cohortId,
         courseId: course.courseId,
@@ -543,14 +491,6 @@ export const editAssignedCourse = (course) => {
       dispatch({
         type: "EDIT_ASSIGNED_COURSE_REQUEST",
       });
-      // const {
-      //   userLogin: { userInfo },
-      // } = getState();
-      // const config = {
-      //   headers: {
-      //     Authorization: `Bearer ${userInfo.token}`,
-      //   },
-      // };
       const params = {
         cohortId: course.cohortId,
         courseId: course.courseId,
@@ -589,14 +529,6 @@ export const archiveAssignedCourse = (ids) => {
       dispatch({
         type: "ASSIGNED_COURSE_ARCHIVE_REQUEST",
       });
-      // const {
-      //   userLogin: { userInfo },
-      // } = getState();
-      // const config = {
-      //   headers: {
-      //     Authorization: `Bearer ${userInfo.token}`,
-      //   },
-      // };
       const params = {
         courseId: ids.courseId,
         cohortId: ids.cohortId,
@@ -659,14 +591,6 @@ export const archiveHomework = (id) => {
       dispatch({
         type: "HOMEWORK_ARCHIVE_REQUEST",
       });
-      // const {
-      //   userLogin: { userInfo },
-      // } = getState();
-      // const config = {
-      //   headers: {
-      //     Authorization: `Bearer ${userInfo.token}`,
-      //   },
-      // };
       const params = {
         homeworkId: id.id,
       };
@@ -731,14 +655,7 @@ export const createHomeworkInstructor = (homework) => {
       dispatch({
         type: "HOMEWORK_INSTRUCTOR_CREATE_REQUEST",
       });
-      // const {
-      //   userLogin: { userInfo },
-      // } = getState();
-      // const config = {
-      //   headers: {
-      //     Authorization: `Bearer ${userInfo.token}`,
-      //   },
-      // };
+
       const params = {
         courseId: homework.courseId,
         instructorId: homework.instructorId,
@@ -795,14 +712,7 @@ export const editHomeworkInstructor = (homework) => {
       dispatch({
         type: "HOMEWORK_INSTRUCTOR_EDIT_REQUEST",
       });
-      // const {
-      //   userLogin: { userInfo },
-      // } = getState();
-      // const config = {
-      //   headers: {
-      //     Authorization: `Bearer ${userInfo.token}`,
-      //   },
-      // };
+
       const params = {
         homeworkId: homework.homeworkId,
         courseId: homework.courseId,
@@ -846,14 +756,7 @@ export const registerUser = (userInfo) => {
       dispatch({
         type: "REGISTER_USER_REQUEST",
       });
-      // const {
-      //   userLogin: { userInfo },
-      // } = getState();
-      // const config = {
-      //   headers: {
-      //     Authorization: `Bearer ${userInfo.token}`,
-      //   },
-      // };
+
       const params = {
         cohortId: userInfo.cohort,
         name: userInfo.name,
@@ -891,14 +794,7 @@ export const loginUser = (userInfo) => {
       dispatch({
         type: "LOGIN_USER_REQUEST",
       });
-      // const {
-      //   userLogin: { userInfo },
-      // } = getState();
-      // const config = {
-      //   headers: {
-      //     Authorization: `Bearer ${userInfo.token}`,
-      //   },
-      // };
+
       const params = {
         passwordHash: userInfo.password,
         email: userInfo.email,

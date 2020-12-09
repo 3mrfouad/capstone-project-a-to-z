@@ -271,7 +271,7 @@ namespace AZLearn.Controllers
         /// <param name="cohortId"></param>
         /// <returns></returns>
         /// return Tuple.Create(courseByCohortId.Name, instructorId, instructorName, cohortCourse.StartDate, cohortCourse.EndDate, courseByCohortId.DurationHrs, courseByCohortId.Description, cohortCourse.ResourcesLink, instructorsList);
-        public static Tuple<string, string, string, string, string, string, string > GetCourseByCohortId(string courseId, string cohortId)
+        public static Tuple<string, string, string, string, string, string,string> GetCourseByCohortId(string courseId, string cohortId)
         {
             int parsedCohortId = 0;
             int parsedCourseId = 0;
@@ -330,7 +330,7 @@ namespace AZLearn.Controllers
                 key.CourseId == parsedCourseId && key.CohortId == parsedCohortId);
             var instructorName = context.Users.Where(key => key.UserId == instructorId).Select(key => key.Name).Single();
             
-            return Tuple.Create( courseByCohortId.Name, instructorName, cohortCourse.StartDate.ToString(), cohortCourse.EndDate.ToString(), courseByCohortId.DurationHrs.ToString(), courseByCohortId.Description, cohortCourse.ResourcesLink);
+            return Tuple.Create(courseByCohortId.Name, instructorName, cohortCourse.StartDate.ToString(), cohortCourse.EndDate.ToString(), courseByCohortId.DurationHrs.ToString(), courseByCohortId.Description, cohortCourse.ResourcesLink);
         }
      
 

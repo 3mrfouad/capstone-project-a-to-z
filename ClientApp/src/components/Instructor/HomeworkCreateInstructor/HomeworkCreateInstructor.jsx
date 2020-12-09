@@ -6,11 +6,10 @@ import {
   getAllInstructors,
   createHomeworkInstructor,
 } from "../../../actions/instructorActions";
+import Loader from "../../shared/Loader/Loader";
 
 const HomeworkCreateInstructor = ({ match, history }) => {
   const cohortId = match.params.id;
-  // const courseId = match.params.courseId;
-
   const [courseId, setCourseId] = useState("");
   const [instructorId, setInstructorId] = useState("");
   const [isAssignment, setIsAssignment] = useState("");
@@ -19,9 +18,6 @@ const HomeworkCreateInstructor = ({ match, history }) => {
   const [dueDate, setDueDate] = useState("");
   const [releaseDate, setReleaseDate] = useState("");
   const [documentLink, setDocumentLink] = useState("");
-  // const [isChallenge, setIsChallenge] = useState(false);
-  // const [criteria, setCriteria] = useState("");
-  // const [weight, setWight] = useState("");
   const [gitHubClassRoomLink, setGitHubClassRoomLink] = useState("");
 
   //(1) Add validation states (@Atinder)
@@ -74,43 +70,32 @@ const HomeworkCreateInstructor = ({ match, history }) => {
 
       if (!title) {
         validFormData = false;
-        console.log("title");
       } else if (title.Length > 100) {
         validFormData = false;
-        console.log("title.length");
       } else if (!courseId) {
         validFormData = false;
-        console.log("courseId");
       } else if (parseInt(courseId) > 2147483647 || parseFloat(courseId) < 1) {
         validFormData = false;
-        console.log("courseId range,", courseId);
       } else if (!instructorId) {
         validFormData = false;
-        console.log("instructorId");
       } else if (
         parseInt(instructorId) > 2147483647 ||
         parseFloat(instructorId) < 1
       ) {
         validFormData = false;
-        console.log("instructorId range");
       } else if (
         parseFloat(avgCompletionTime) > 999.99 ||
         parseFloat(avgCompletionTime) < 0
       ) {
         validFormData = false;
-        console.log("avgCompletionTime: ", parseFloat(avgCompletionTime));
       } else if (!dueDate) {
         validFormData = false;
-        console.log("dueDate");
       } else if (!releaseDate) {
         validFormData = false;
-        console.log("releaseDate");
       } else if (documentLink.Length > 250) {
         validFormData = false;
-        console.log("documentLink length");
       } else if (gitHubClassRoomLink.Length > 250) {
         validFormData = false;
-        console.log("gitHubClassRoomLink length");
       } else if (
         documentLink &&
         !/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(
@@ -118,7 +103,6 @@ const HomeworkCreateInstructor = ({ match, history }) => {
         )
       ) {
         validFormData = false;
-        console.log("documentLink Format");
       } else if (
         gitHubClassRoomLink &&
         !/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/.test(
@@ -126,29 +110,22 @@ const HomeworkCreateInstructor = ({ match, history }) => {
         )
       ) {
         validFormData = false;
-        console.log("gitHubClassRoomLink Format");
       } else {
         try {
           parsedReleaseDate = Date.parse(releaseDate);
-          console.log("Release Date parse");
         } catch (ParseException) {
-          console.log("Release Date parse exception");
           validFormData = false;
         }
         try {
           parsedDueDate = Date.parse(dueDate);
-          console.log("dueDate parse");
         } catch (ParseException) {
-          console.log("Due Date parse exception");
           validFormData = false;
         }
         /* Dates business logic */
         if (parsedDueDate < parsedReleaseDate) {
           validFormData = false;
-          console.log("parsedDueDate < parsedReleaseDate");
         } else {
           validFormData = true;
-          console.log("All good :", validFormData);
         }
       }
     } catch (Exception) {
@@ -164,7 +141,6 @@ const HomeworkCreateInstructor = ({ match, history }) => {
       e.preventDefault();
       e.stopPropagation();
     }
-    console.log("pass initial validation 100");
     setValidated(true);
     //----------------------------
 
@@ -217,7 +193,7 @@ const HomeworkCreateInstructor = ({ match, history }) => {
   return (
     <React.Fragment>
       {loading ? (
-        <h2>Loading</h2>
+        <Loader />
       ) : (
         <Container>
           <Row className="justify-content-md-center">
@@ -226,30 +202,30 @@ const HomeworkCreateInstructor = ({ match, history }) => {
 
               {/* ! (10.7) Anti-tamper validation - Alert message conditions   */}
               <p
-                   class={
-                    formSubmitted
-                      ? validData
-                        ? !loading && error
-                          ? "alert alert-danger"
-                          : !loading && !error && success
-                          ? "alert alert-success"
-                          : ""
-                        : "alert alert-danger"
-                     : ""
-                  }
-              role="alert"
-            >
-              {formSubmitted
-                ? validData
-                  ? !loading && error
-                    ? `Unsuccessful attempt to create Homework. ${error.data}`
-                    : !loading && !error && success
-                    ? "Homework was successfully created"
+                class={
+                  formSubmitted
+                    ? validData
+                      ? !loading && error
+                        ? "alert alert-danger"
+                        : !loading && !error && success
+                        ? "alert alert-success"
+                        : ""
+                      : "alert alert-danger"
                     : ""
-                  : "Error: Form was submitted with invalid data fields"
-                : ""}
-            </p>
-            {/* ! ------------------------------------------------------  */}
+                }
+                role="alert"
+              >
+                {formSubmitted
+                  ? validData
+                    ? !loading && error
+                      ? `Unsuccessful attempt to create Homework. ${error.data}`
+                      : !loading && !error && success
+                      ? "Homework was successfully created"
+                      : ""
+                    : "Error: Form was submitted with invalid data fields"
+                  : ""}
+              </p>
+              {/* ! ------------------------------------------------------  */}
 
               <Form noValidate validated={validated} onSubmit={handleSubmit}>
                 <Form.Group controlId="title">
@@ -406,37 +382,6 @@ const HomeworkCreateInstructor = ({ match, history }) => {
 
                   {/*---------------------------------------*/}
                 </Form.Group>
-
-                {/* <h3>Rubric</h3>
-                <Form.Group controlId="Challenge">
-                  <Form.Label>Challenge</Form.Label>
-                  <Form.Control
-                    type="checkbox"
-                    label="Challenge"
-                    value={isChallenge}
-                    onChange={(e) => setIsChallenge(e.target.value)}
-                  ></Form.Control>
-                </Form.Group>
-                <Form.Group controlId="Criteria">
-                  <Form.Label>Criteria</Form.Label>
-                  <Form.Control
-                    type="text"
-                    value={criteria}
-                    onChange={(e) => setCriteria(e.target.value)}
-                  ></Form.Control>
-                </Form.Group>
-                <Form.Group controlId="Weight">
-                  <Form.Label>Weight</Form.Label>
-                  <Form.Control
-                    type="number"
-                    min={0}
-                    max={999}
-                    step="1"
-                    //   placeholder="Enter Description"
-                    value={weight}
-                    onChange={(e) => setWight(e.target.value)} //use String() - this is number
-                  ></Form.Control>
-                </Form.Group> */}
                 <Button variant="primary" onClick={goBack}>
                   Back
                 </Button>

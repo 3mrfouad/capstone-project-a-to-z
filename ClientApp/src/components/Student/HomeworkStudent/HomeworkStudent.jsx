@@ -12,6 +12,8 @@ import {
   getAllCourses,
   getAllInstructors,
 } from "../../../actions/instructorActions";
+import Loader from "../../shared/Loader/Loader";
+
 const HomeworkStudent = ({ match, history }) => {
   const studentId = match.params.studentId;
   const homeworkId = match.params.homeworkId;
@@ -19,7 +21,6 @@ const HomeworkStudent = ({ match, history }) => {
   const [studyHrs, setStudyHrs] = useState("");
   const [courseId, setCourseId] = useState("");
   const [instructorId, setInstructorId] = useState("");
-  // const [listenHomeworkId,setListenHomeworkId]=useState(homeworkId)
   const dispatch = useDispatch();
 
   //(1) Add validation states
@@ -29,8 +30,6 @@ const HomeworkStudent = ({ match, history }) => {
   const [validData, setValidData] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   let validFormData = false;
-  //let validStartDate = false;
-  // let validEndDate = false;
   let formSubmitIndicator = false;
   // ! ------------------------------------------------------
   const { homework, loading } = useSelector((state) => state.homeworkStudent);
@@ -39,7 +38,9 @@ const HomeworkStudent = ({ match, history }) => {
   );
   const { courses } = useSelector((state) => state.getAllCourses);
   const { instructors } = useSelector((state) => state.getAllInstructors);
-  const { timeSheet } = useSelector((state) => state.getTimeSheetStudent);
+  const { timeSheet, loading: loadingTimesheet } = useSelector(
+    (state) => state.getTimeSheetStudent
+  );
 
   useEffect(() => {
     dispatch(homeworkStudent(homeworkId));
@@ -55,12 +56,7 @@ const HomeworkStudent = ({ match, history }) => {
       setSolvingHrs(timeSheet.item2.solvingTime);
       setStudyHrs(timeSheet.item2.studyTime);
     }
-    // setTimeout(() => {
-    //   setSolvingHrs(timeSheet.item2.solvingTime);
-    //   setStudyHrs(timeSheet.item2.studyTime);
-    // }, 500);
-  }, [dispatch]);
-  console.log(homework);
+  }, [dispatch, homeworkId, loadingTimesheet]);
 
   // ! (10.2) Anti-tamper validation - Validate (parameters)
   function Validate(solvingHrs, studyHrs) {
@@ -76,52 +72,18 @@ const HomeworkStudent = ({ match, history }) => {
         parseFloat(solvingHrs) < 0
       ) {
         validFormData = false;
-        console.log("solvingHrs: ", parseFloat(solvingHrs));
       } else if (parseFloat(studyHrs) > 999.99 || parseFloat(studyHrs) < 0) {
         validFormData = false;
-        console.log("studyHrs: ", parseFloat(studyHrs));
-      } else{
+      } else {
         validFormData = true;
-        console.log("All good");
       }
-
     } catch (Exception) {
       validFormData = false;
-      console.log("No godd: ");
     }
   }
   // ! ------------------------------------------------------
 
   const summitHandler = (e) => {
-    // //(2) Add form validation condition block if-else
-    // const form = e.currentTarget;
-    // if (form.checkValidity() === false) {
-    //   e.preventDefault();
-    //   e.stopPropagation();
-    // } else {
-    //   setValidated(true);
-    //   e.preventDefault();
-    //   // ! (10.4) Anti-tamper validation - calling Validate
-    //   Validate(solvingHrs, studyHrs);
-    //   if (validFormData) {
-    //     setValidData(validFormData);
-    //     // ! -------------------------------------------------
-    //     dispatch(
-    //       updateTimeSheetStudent(
-    //         timeSheet.item2.timesheetId,
-    //         solvingHrs,
-    //         studyHrs
-    //       )
-    //     );
-    //     console.log("create timesheet");
-    //   } else {
-    //     // ! (10.5) Anti-tamper validation - Alert message conditions
-    //     setValidData(validFormData);
-    //   }
-    // }
-    // // ! (10.6) Anti-tamper validation - Alert message conditions
-    // setFormSubmitted(formSubmitIndicator);
-    // // ! ------------------------------------------------------
     e.preventDefault();
     dispatch(
       updateTimeSheetStudent(timeSheet.item2.timesheetId, solvingHrs, studyHrs)
@@ -135,7 +97,7 @@ const HomeworkStudent = ({ match, history }) => {
   return (
     <React.Fragment>
       {homework.length < 1 && timeSheet ? (
-        <h2>Loading</h2>
+        <Loader />
       ) : (
         <Container>
           <Row className="justify-content-md-center">
@@ -276,10 +238,7 @@ const HomeworkStudent = ({ match, history }) => {
                   <Form.Label>Total</Form.Label>
                   <Form.Control
                     disabled
-                    value={
-                      Number(studyHrs) + Number(solvingHrs)
-                      // homework[0].timesheets[0] + homework[0].timesheets[1]
-                    }
+                    value={Number(studyHrs) + Number(solvingHrs)}
                   ></Form.Control>
                 </Form.Group>
                 <button type="button" className="btn btn-link" onClick={goBack}>
