@@ -29,6 +29,8 @@ const HomeworkCreateInstructor = ({ match, history }) => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   let validFormData = false;
   let formSubmitIndicator = false;
+  let validDueDate = false;
+  let validReleaseDate = false;
   // ! ------------------------------------------------------
 
   const dispatch = useDispatch();
@@ -36,10 +38,12 @@ const HomeworkCreateInstructor = ({ match, history }) => {
     dispatch(getCoursesByCohortId(cohortId));
     dispatch(getAllInstructors());
   }, []);
-  const { loading, error, success, courses } = useSelector(
+  const { loading, courses } = useSelector(
     (state) => state.getCoursesByCohortId
   );
   const { instructors } = useSelector((state) => state.getAllInstructors);
+  const homeworkCreate = useSelector((state) => state.createHomeworkInstructor);
+  const { loading: loadingHW, error, success } = homeworkCreate;
 
   const goBack = () => {
     history.goBack();
@@ -59,15 +63,20 @@ const HomeworkCreateInstructor = ({ match, history }) => {
     let parsedDueDate = 0;
     let parsedReleaseDate = 0;
     formSubmitIndicator = true;
-
+    console.log("Entering Trim")
     try {
       title = title.trim().toLowerCase();
-      avgCompletionTime = avgCompletionTime.trim().toLowerCase();
-      dueDate = dueDate.trim().toLowerCase();
-      releaseDate = releaseDate.trim().toLowerCase();
+      console.log("title trim");
+      avgCompletionTime = String(avgCompletionTime).trim();
+      console.log("avgCompletionTime trim");
+      dueDate = dueDate.trim();
+      console.log("dueDate trim");
+      releaseDate = releaseDate.trim();
+      console.log("releaseDate trim");
       documentLink = documentLink.trim().toLowerCase();
+      console.log("documentLink trim");
       gitHubClassRoomLink = gitHubClassRoomLink.trim().toLowerCase();
-
+      console.log("gitHubClassRoomLink trim");
       if (!title) {
         validFormData = false;
       } else if (title.Length > 100) {
@@ -83,18 +92,12 @@ const HomeworkCreateInstructor = ({ match, history }) => {
         parseFloat(instructorId) < 1
       ) {
         validFormData = false;
-      } else if (
-        parseFloat(avgCompletionTime) > 999.99 ||
-        parseFloat(avgCompletionTime) < 0
-      ) {
+      } else if (avgCompletionTime && (parseFloat(avgCompletionTime) > 999.99 ||
+        parseFloat(avgCompletionTime) < 0)) {
         validFormData = false;
-      } else if (!dueDate) {
+      } else if (documentLink && documentLink.Length > 250) {
         validFormData = false;
-      } else if (!releaseDate) {
-        validFormData = false;
-      } else if (documentLink.Length > 250) {
-        validFormData = false;
-      } else if (gitHubClassRoomLink.Length > 250) {
+      } else if (gitHubClassRoomLink && gitHubClassRoomLink.Length > 250) {
         validFormData = false;
       } else if (
         documentLink &&
@@ -110,23 +113,36 @@ const HomeworkCreateInstructor = ({ match, history }) => {
         )
       ) {
         validFormData = false;
-      } else {
-        try {
-          parsedReleaseDate = Date.parse(releaseDate);
-        } catch (ParseException) {
-          validFormData = false;
+      }
+      else if (releaseDate || dueDate) {
+        if (releaseDate) {
+          try {
+            parsedReleaseDate = Date.parse(releaseDate);
+            validReleaseDate = true;
+          } catch (ParseException) {
+            validFormData = false;
+            validReleaseDate = false;
+          }
         }
-        try {
-          parsedDueDate = Date.parse(dueDate);
-        } catch (ParseException) {
-          validFormData = false;
+        if (dueDate) {
+          try {
+            parsedDueDate = Date.parse(dueDate);
+            validDueDate = true;
+          } catch (ParseException) {
+            validFormData = false;
+            validDueDate = false;
+          }
         }
-        /* Dates business logic */
-        if (parsedDueDate < parsedReleaseDate) {
-          validFormData = false;
-        } else {
-          validFormData = true;
+        if (validReleaseDate && validDueDate) {
+          if (parsedDueDate < parsedReleaseDate) { validFormData = false; }
+          else { validFormData = true; }
         }
+        else if (dueDate && !validDueDate) { validFormData = false; }
+        else if (releaseDate && !validReleaseDate) { validFormData = false; }
+        else { validFormData = true; }
+      }
+      else {
+        validFormData = true;
       }
     } catch (Exception) {
       validFormData = false;
@@ -195,33 +211,34 @@ const HomeworkCreateInstructor = ({ match, history }) => {
       {loading ? (
         <Loader />
       ) : (
-        <Container>
-          <Row className="justify-content-md-center">
-            <Col xs={12} md={6}>
-              <h3>Homework</h3>
+          <Container>
+            <Row className="justify-content-md-center">
+              <Col xs={12} md={6}>
+                <h3>Homework</h3>
 
-              {/* ! (10.7) Anti-tamper validation - Alert message conditions   */}
+                {/* ! (10.7) Anti-tamper validation - Alert message conditions   */}
               <p
-                class={
-                  formSubmitted
-                    ? validData
-                      ? !loading && error
-                        ? "alert alert-danger"
-                        : !loading && !error && success
-                        ? "alert alert-success"
-                        : ""
-                      : "alert alert-danger"
-                    : ""
-                }
-                role="alert"
-              >
-                {formSubmitted
+              className={
+                formSubmitted
                   ? validData
-                    ? !loading && error
-                      ? `Unsuccessful attempt to create Homework. ${error.data}`
-                      : !loading && !error && success
-                      ? "Homework was successfully created"
+                    ? !loadingHW && error
+                      ? "alert alert-danger"
+                      : !loadingHW && !error && success
+                      ? "alert alert-success"
                       : ""
+                    : "alert alert-danger"
+                  : ""
+              }
+              role="alert"
+            >
+              {formSubmitted
+                ? validData
+                  ? !loadingHW && error
+                    ? `Unsuccessful attempt to create homework.\n ${error.data}`
+                    : !loadingHW && !error && success
+                    ? "Homework was successfully created"
+                    
+                        : ""
                     : "Error: Form was submitted with invalid data fields"
                   : ""}
               </p>
@@ -392,8 +409,9 @@ const HomeworkCreateInstructor = ({ match, history }) => {
             </Col>
           </Row>
         </Container>
-      )}
-    </React.Fragment>
+  )
+}
+    </React.Fragment >
   );
 };
 

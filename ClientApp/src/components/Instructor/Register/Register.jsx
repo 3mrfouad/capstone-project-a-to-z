@@ -230,8 +230,8 @@ const Register = ({ history }) => {
                     as="select"
                     value={cohort}
                     onChange={(e) => setCohort(e.target.value)}
-                  >
-                    {cohorts.map((item, index) => (
+                  >                                     
+                    {cohorts.filter((item) => item.archive == false).map((item, index) => (
                       <option key={index} value={item.cohortId}>
                         {item.name}
                       </option>
@@ -266,8 +266,8 @@ const Register = ({ history }) => {
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Body>
-          You are giving this user instructor(Write/Edit) privileges.Are you
-          sure?
+          You are giving this user, instructor (Create/Edit/Archive) privileges. 
+          <p>Are you sure?</p>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleRegisterInstructor}>
