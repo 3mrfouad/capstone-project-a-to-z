@@ -329,8 +329,8 @@ const CohortEdit = ({ match, history }) => {
                     }}
                   >
                     {/* <option>{}</option> */}
-                    <option value="Remote">Online</option>
-                    <option value="In-person">In Person</option>
+                    <option value="Online">Online</option>
+                    <option value="In Person">In Person</option>
                   </Form.Control>
                 </Form.Group>
                 <Form.Group controlId="Start Date">
