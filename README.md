@@ -18,8 +18,10 @@
 
 - Having one-Stop-Shop for course and assignment management
 
-Trello board : https://trello.com/b/peOWTJee
-GitHub Repo: https://github.com/TECHCareers-by-Manpower/capstone-project-a-to-z
+# Project Management and Repo
+
+- Trello board : https://trello.com/b/peOWTJee
+- GitHub Repo: https://github.com/TECHCareers-by-Manpower/capstone-project-a-to-z
 
 # Project Documentation :
 
