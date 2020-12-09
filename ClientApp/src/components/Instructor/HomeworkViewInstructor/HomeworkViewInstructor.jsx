@@ -21,19 +21,18 @@ const HomeworkViewInstructor = ({ match, history }) => {
   const [gitHubClassRoomLink, setGitHubClassRoomLink] = useState("");
   const [isAssignment, setIsAssignment] = useState("");
 
-  //(1) Add validation states (@Atinder)
+  /*Add validation states*/
   const [validated, setValidated] = useState(false);
   //----------------------------
 
-   // ! (10.1) Anti-tamper validation - States and Variables
+   /*Anti-tamper validation - States and Variables*/
    const [validData, setValidData] = useState(false);
    const [formSubmitted, setFormSubmitted] = useState(false);
    let validFormData = false;
    let formSubmitIndicator = false;
    let validDueDate = false;
    let validReleaseDate = false;
-   // ! ------------------------------------------------------
-
+   
   const dispatch = useDispatch();
   const { loading, homework } = useSelector(
     (state) => state.homeworkDetailInstructor
@@ -57,7 +56,7 @@ const HomeworkViewInstructor = ({ match, history }) => {
     }
   }, [dispatch, loading]);
 
-  // ! (10.2) Anti-tamper validation - Validate (parameters)
+  /*Anti-tamper validation - Validate (parameters)*/
   function Validate(
     title,
     courseId,
@@ -156,28 +155,27 @@ const HomeworkViewInstructor = ({ match, history }) => {
       validFormData = false;
     }
   }
-  // ! ------------------------------------------------------
+
 
   const submitHandler = (e) => {
 
-  //(2) Add form validation condition block if-else
+  /*Add form validation condition block if-else*/
   const form = e.currentTarget;
   if (form.checkValidity() === false) {
     e.preventDefault();
     e.stopPropagation();
   }
   setValidated(true);
-  //----------------------------
 
-  // ! (10.3) Anti-tamper validation - Alert message conditions
+  /* Anti-tamper validation - Alert message conditions*/
   validFormData = false;
   formSubmitIndicator = true;
   setValidData(validFormData);
-  // ! ------------------------------------------------------
+  
 
     e.preventDefault();
 
-    // ! (10.4) Anti-tamper validation - calling Validate
+    /*Anti-tamper validation - calling Validate*/
     Validate(
       title,
       courseId,
@@ -190,7 +188,7 @@ const HomeworkViewInstructor = ({ match, history }) => {
     );
     if (validFormData) {
       setValidData(validFormData);
-      // ! ------------------------------------------------------
+    
     e.preventDefault();
     dispatch(
       editHomeworkInstructor({
@@ -207,12 +205,12 @@ const HomeworkViewInstructor = ({ match, history }) => {
       })
     );
   } else {
-    // ! (10.5) Anti-tamper validation - Alert message conditions
+   /*Anti-tamper validation - Alert message conditions*/
     setValidData(validFormData);
   }
-  // ! (10.6) Anti-tamper validation - Alert message conditions
+  /*Anti-tamper validation - Alert message conditions*/
   setFormSubmitted(formSubmitIndicator);
-  // ! ------------------------------------------------------
+  
 };
 
 
@@ -232,7 +230,7 @@ const HomeworkViewInstructor = ({ match, history }) => {
         <Container>
           <Row className="justify-content-md-center">
             <Col xs={12} md={6}>
-              <h3>Homework</h3>
+              <h3>Homework Edit</h3>
 
               {/* ! (10.7) Anti-tamper validation - Alert message conditions   */}
               <p
@@ -260,7 +258,7 @@ const HomeworkViewInstructor = ({ match, history }) => {
                     : "Error: Form was submitted with invalid data fields"
                   : ""}
               </p>
-              {/* ! ------------------------------------------------------  */}
+           
 
               <Form noValidate validated={validated} onSubmit={submitHandler}>
                 <Form.Group controlId="title">
@@ -272,12 +270,12 @@ const HomeworkViewInstructor = ({ match, history }) => {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                   ></Form.Control>
-                  {/*(8) Add Form control feedback.*/}
+                  {/*Add Form control feedback.*/}
                   <Form.Control.Feedback type="invalid">
                   Please enter Title of Homework.
                     <p>Max 100 characters allowed.</p>
                   </Form.Control.Feedback>
-                  {/*---------------------------------------*/}
+             
                 </Form.Group>
                 <Form.Group controlId="Course">
                   <Form.Label>Course</Form.Label>
@@ -293,11 +291,11 @@ const HomeworkViewInstructor = ({ match, history }) => {
                       </option>
                     ))}
                   </Form.Control>
-                  {/*(8) Add Form control feedback.*/}
+                  {/*Add Form control feedback.*/}
                   <Form.Control.Feedback type="invalid">
                     Please select a course for this homework.
                   </Form.Control.Feedback>
-                  {/*---------------------------------------*/}
+                 
                 </Form.Group>
                 <Form.Group controlId="instructor">
                   <Form.Label>Instructor</Form.Label>
@@ -315,14 +313,14 @@ const HomeworkViewInstructor = ({ match, history }) => {
                         </option>
                       ))}
                   </Form.Control>
-                   {/*(8) Add Form control feedback.*/}
+                   {/*Add Form control feedback.*/}
                    <Form.Control.Feedback type="invalid">
                     Please select an Instructor for this homework.
                   </Form.Control.Feedback>
-                  {/*---------------------------------------*/}
+                  
                 </Form.Group>
                 <Form.Group controlId="Avg Completion Time">
-                  <Form.Label>Avg Completion Time</Form.Label>
+                  <Form.Label>Avg Completion Time(Hours)</Form.Label>
                   <Form.Control
                    type="number"
                    min={0}
@@ -331,12 +329,12 @@ const HomeworkViewInstructor = ({ match, history }) => {
                     value={avgCompletionTime}
                     onChange={(e) => setAvgCompletionTime(String(e.target.value))}
                   ></Form.Control>
-                  {/*(8) Add Form control feedback.*/}
+                  {/*Add Form control feedback.*/}
                   <Form.Control.Feedback type="invalid">
                     Please enter average completion time between 0 and 999.99
                     inclusive
                   </Form.Control.Feedback>
-                  {/*---------------------------------------*/}
+                
                 </Form.Group>               
                 <Form.Group controlId="Release Date">
                   <Form.Label>Release Date</Form.Label>
@@ -345,12 +343,11 @@ const HomeworkViewInstructor = ({ match, history }) => {
                     value={releaseDate}
                     onChange={(e) => setReleaseDate(String(e.target.value))}
                   ></Form.Control>
-                   {/*(8) Add Form control feedback.*/}
+                   {/*Add Form control feedback.*/}
                    <Form.Control.Feedback type="invalid">
                     Please enter Date in format: yyyy/mm/dd.
                   </Form.Control.Feedback>
 
-                  {/*---------------------------------------*/}
                 </Form.Group>
                 <Form.Group controlId="Due Date">
                   <Form.Label>Due Date</Form.Label>
@@ -360,12 +357,12 @@ const HomeworkViewInstructor = ({ match, history }) => {
                     value={dueDate}
                     onChange={(e) => setDueDate(String(e.target.value))}
                   ></Form.Control>
-                  {/*(8) Add Form control feedback.*/}
+                  {/*Add Form control feedback.*/}
                   <Form.Control.Feedback type="invalid">
                     Please enter Date in format: yyyy/mm/dd. 
                     <p>Due Date can not be set before Release Date.</p>
                   </Form.Control.Feedback>
-                  {/*---------------------------------------*/}
+                
                 </Form.Group>
                 <Form.Group controlId="DocLink">
                   <Form.Label>DocLink</Form.Label>
@@ -375,7 +372,7 @@ const HomeworkViewInstructor = ({ match, history }) => {
                     value={documentLink}
                     onChange={(e) => setDocumentLink(String(e.target.value))}
                   ></Form.Control>
-                   {/*(8) Add Form control feedback.*/}
+                   {/* Add Form control feedback.*/}
                    <Form.Control.Feedback type="invalid">
                     <p>
                       Please enter Document Link in format:
@@ -384,7 +381,6 @@ const HomeworkViewInstructor = ({ match, history }) => {
                     <p>Max 250 characters allowed.</p>
                   </Form.Control.Feedback>
 
-                  {/*---------------------------------------*/}
                 </Form.Group>
                 <Form.Group controlId="GitHubLink">
                   <Form.Label>GitHubLink</Form.Label>
@@ -394,7 +390,7 @@ const HomeworkViewInstructor = ({ match, history }) => {
                     value={gitHubClassRoomLink}
                     onChange={(e) => setGitHubClassRoomLink(e.target.value)}
                   ></Form.Control>
-                  {/*(8) Add Form control feedback.*/}
+                  {/*Add Form control feedback.*/}
                   <Form.Control.Feedback type="invalid">
                     <p>
                       Please enter Document Link in format:
@@ -403,7 +399,6 @@ const HomeworkViewInstructor = ({ match, history }) => {
                     <p>Max 250 characters allowed.</p>
                   </Form.Control.Feedback>
 
-                  {/*---------------------------------------*/}
                 </Form.Group>
                 <button type="button" className="btn btn-link" onClick={goBack}>
                   Back
