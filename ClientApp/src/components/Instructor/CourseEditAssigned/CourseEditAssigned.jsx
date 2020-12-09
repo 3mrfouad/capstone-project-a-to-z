@@ -238,13 +238,7 @@ const CourseEditAssigned = ({ match, history }) => {
               <Form noValidate validated={validated} onSubmit={submitHandler}>
                 <Form.Group controlId="course name">
                   <Form.Label>Course Name</Form.Label>
-                  <Form.Control value={course.item1}>
-                    {/* {courses.map((course, index) => (
-                      <option value={course.courseId} key={index}>
-                        {course.name}
-                      </option>
-                    ))} */}
-                  </Form.Control>
+                  <Form.Control value={course.item1} disabled></Form.Control>
                 </Form.Group>
                 <Form.Group controlId="instructor">
                   <Form.Label>Instructor</Form.Label>
@@ -309,6 +303,7 @@ const CourseEditAssigned = ({ match, history }) => {
                     maxlength="250"
                     type="url"
                     value={course.item7}
+                    disabled
                     onChange={(e) => setResourcesLink(e.target.value)}
                   ></Form.Control>
                 </Form.Group>
