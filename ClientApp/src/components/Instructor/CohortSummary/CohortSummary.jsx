@@ -1,18 +1,18 @@
 import React from "react";
 import {
-  Table,
-  Container,
-  Button,
-  Modal,
-  Row,
-  Col,
-  ButtonGroup,
+    Table,
+    Container,
+    Button,
+    Modal,
+    Row,
+    Col,
+    ButtonGroup,
 } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  cohortSummaryInstructor,
-  archiveCohort,
+    cohortSummaryInstructor,
+    archiveCohort,
 } from "../../../actions/instructorActions";
 import { Link } from "react-router-dom";
 import Loader from "../../shared/Loader/Loader";
@@ -20,49 +20,52 @@ import { Navbar } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 
 const CohortSummaryInstructor = ({ history }) => {
-  const dispatch = useDispatch();
-  const { cohorts, loading } = useSelector(
-    (state) => state.cohortSummaryInstructor
-  );
+    const dispatch = useDispatch();
+    const { cohorts, loading } = useSelector(
+        (state) => state.cohortSummaryInstructor
+    );
 
-  const { success } = useSelector((state) => state.cohortArchive);
-  useEffect(() => {
-    dispatch(cohortSummaryInstructor());
-  }, [dispatch, success]);
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-  const onArchive = (id) => {
-    setShow(false);
-    dispatch(archiveCohort(id));
-  };
-  const goBack = () => {
-    history.goBack();
-  };
-  return (
-    <React.Fragment>
-      {loading ? (
-        <Loader />
-      ) : (
+    const { success } = useSelector((state) => state.cohortArchive);
+    useEffect(() => {
+            dispatch(cohortSummaryInstructor());
+        },
+        [dispatch, success]);
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+    const onArchive = (id) => {
+        setShow(false);
+        dispatch(archiveCohort(id));
+    };
+    const goBack = () => {
+        history.goBack();
+    };
+    return (
         <React.Fragment>
-          <Container>
-            <Table>
-              <thead>
-                <tr>
-                  <th>Cohort Name</th>
-                  <th>Capacity</th>
-                  <th>Mode</th>
-                  <th>Start Date</th>
-                  <th>End Date</th>
-                  <th>City</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {cohorts
-                  .filter((cohort) => cohort.archive == false)
-                  .map((cohort, index) => (
-                    <tr key={index}>
+            {loading
+                ? (
+                    <Loader/>
+                )
+                : (
+                    <React.Fragment>
+                        <Container>
+                            <Table>
+                                <thead>
+                                <tr>
+                                    <th>Cohort Name</th>
+                                    <th>Capacity</th>
+                                    <th>Mode</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>City</th>
+                                    <th>Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {cohorts
+                    .filter((cohort) => cohort.archive == false)
+                    .map((cohort, index) => (
+                        <tr key={index}>
                       <td>
                         <Link to={`/coursesummary/${cohort.cohortId}`}>
                           {cohort.name}
@@ -100,36 +103,36 @@ const CohortSummaryInstructor = ({ history }) => {
                         </Modal>
                       </td>
                     </tr>
-                  ))}
-              </tbody>
-            </Table>
-            <Row>
-              <Col>
-                <button type="button" className="btn btn-link" onClick={goBack}>
-                  Back
-                </button>{" "}
-              </Col>
-              <Col>
-                <ButtonGroup className="float-right">
-                  <LinkContainer to={`/cohortcreate`}>
-                    <Button className="float-right mr-3">Create Cohort</Button>
-                  </LinkContainer>
-                  <LinkContainer to={`/registeruser`}>
-                    <Button className="float-right mr-3" type="button">
-                      Register Users
-                    </Button>
-                  </LinkContainer>
-                  <LinkContainer to={`/managecourse`}>
-                    <Button className="float-right mr-3">Manage Course</Button>
-                  </LinkContainer>
-                </ButtonGroup>
-              </Col>
-            </Row>
-          </Container>
+                    ))}
+                                </tbody>
+                            </Table>
+                            <Row>
+                                {/*<Col>
+                                    <button type="button" className="btn btn-link" onClick={goBack}>
+                                        Back
+                                    </button>{" "}
+                                </Col> */}
+                                <Col>
+                                    <ButtonGroup className="float-right">
+                                        <LinkContainer to={`/cohortcreate`}>
+                                            <Button className="float-right mr-3">Create Cohort</Button>
+                                        </LinkContainer>
+                                        <LinkContainer to={`/registeruser`}>
+                                            <Button className="float-right mr-3" type="button">
+                                                Register Users
+                                            </Button>
+                                        </LinkContainer>
+                                        <LinkContainer to={`/managecourse`}>
+                                            <Button className="float-right mr-3">Manage Course</Button>
+                                        </LinkContainer>
+                                    </ButtonGroup>
+                                </Col>
+                            </Row>
+                        </Container>
+                    </React.Fragment>
+                )}
         </React.Fragment>
-      )}
-    </React.Fragment>
-  );
+    );
 };
 
 export default CohortSummaryInstructor;
