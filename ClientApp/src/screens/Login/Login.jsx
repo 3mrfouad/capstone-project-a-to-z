@@ -93,7 +93,7 @@ const Login = () => {
             <h1>Sign In</h1>
             {/* ! (10.7) Anti-tamper validation - Alert message conditions   */}
             <p
-              class={
+              className={
                 formSubmitted
                   ? validData
                     ? !loading && error

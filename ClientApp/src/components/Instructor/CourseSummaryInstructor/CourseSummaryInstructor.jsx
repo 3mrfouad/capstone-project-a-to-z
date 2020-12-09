@@ -56,8 +56,8 @@ const CourseSummaryInstructor = ({ match, history }) => {
             <tbody>
               {courses
                 .filter((course) => course.item1.archive == false)
-                .map((course) => (
-                  <tr>
+                .map((course, index) => (
+                  <tr key={index}>
                     <td>{course.item1.name}</td>
                     <td>{course.item1.description}</td>
                     <td>{course.item1.durationHrs}</td>
