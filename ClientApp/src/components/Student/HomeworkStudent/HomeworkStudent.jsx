@@ -23,15 +23,15 @@ const HomeworkStudent = ({ match, history }) => {
   const [instructorId, setInstructorId] = useState("");
   const dispatch = useDispatch();
 
-  //(1) Add validation states
+  /*Add validation states*/
   const [validated, setValidated] = useState(false);
   //----------------------------
-  // ! (10.1) Anti-tamper validation - States and Variables
+  /*Anti-tamper validation - States and Variables*/
   const [validData, setValidData] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   let validFormData = false;
   let formSubmitIndicator = false;
-  // ! ------------------------------------------------------
+  
   const { homework, loading } = useSelector((state) => state.homeworkStudent);
   const { loading: loadingUpdate, success: successUpdate, error } = useSelector(
     (state) => state.updateTimeSheetStudent
@@ -58,7 +58,7 @@ const HomeworkStudent = ({ match, history }) => {
     }
   }, [dispatch, homeworkId, loadingTimesheet]);
 
-  // ! (10.2) Anti-tamper validation - Validate (parameters)
+  /*Anti-tamper validation - Validate (parameters)*/
   function Validate(solvingHrs, studyHrs) {
     formSubmitIndicator = true;
     try {
@@ -81,42 +81,41 @@ const HomeworkStudent = ({ match, history }) => {
       validFormData = false;
     }
   }
-  // ! ------------------------------------------------------
+ 
 
   const summitHandler = (e) => {
-    //(2) Add form validation condition block if-else
+   /*Add form validation condition block if-else*/
     const form = e.currentTarget;
     if (form.checkValidity() === false) {
       e.preventDefault();
       e.stopPropagation();
     }
     setValidated(true);
-    //----------------------------
+    
 
-    // ! (10.3) Anti-tamper validation - Alert message conditions
+    /*Anti-tamper validation - Alert message conditions*/
     validFormData = false;
     formSubmitIndicator = true;
     setValidData(validFormData);
-    // ! -----------------------------------------------------
-
+    
     e.preventDefault();
 
-     // ! (10.4) Anti-tamper validation - calling Validate
+     /*Anti-tamper validation - calling Validate*/
      Validate(solvingHrs, studyHrs);
     if (validFormData) {
       setValidData(validFormData);
-      // ! ------------------------------------------------------
+    
       e.preventDefault();
     dispatch(
       updateTimeSheetStudent(timeSheet.item2.timesheetId, solvingHrs, studyHrs)
     );
   } else {
-    // ! (10.5) Anti-tamper validation - Alert message conditions
+    /*Anti-tamper validation - Alert message conditions*/
     setValidData(validFormData);
   }
-  // ! (10.6) Anti-tamper validation - Alert message conditions
+  /*Anti-tamper validation - Alert message conditions*/
   setFormSubmitted(formSubmitIndicator);
-  // ! ------------------------------------------------------
+  
 };
 
   const goBack = () => {
@@ -132,7 +131,7 @@ const HomeworkStudent = ({ match, history }) => {
           <Row className="justify-content-md-center">
             <Col xs={12} md={6}>
               <h3>Homework</h3>
-              {/* ! (10.7) Anti-tamper validation - Alert message conditions   */}
+              {/* Anti-tamper validation - Alert message conditions   */}
               <p
                 class={
                   formSubmitted
@@ -157,7 +156,7 @@ const HomeworkStudent = ({ match, history }) => {
                     : "Error: Form was submitted with invalid data fields"
                   : ""}
               </p>
-              {/* ! ------------------------------------------------------  */}
+              
               <Form>
                 <Form.Group controlId="title">
                   <Form.Label>Title</Form.Label>
