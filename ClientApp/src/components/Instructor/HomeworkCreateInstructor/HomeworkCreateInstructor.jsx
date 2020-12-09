@@ -256,7 +256,8 @@ const HomeworkCreateInstructor = ({ match, history }) => {
                   ></Form.Control>
                   {/*(8) Add Form control feedback.*/}
                   <Form.Control.Feedback type="invalid">
-                    Please enter Title of Homework.(Max 100 characters allowed).
+                    Please enter Title of Homework.
+                    <p>Max 100 characters allowed.</p>
                   </Form.Control.Feedback>
                   {/*---------------------------------------*/}
                 </Form.Group>
@@ -349,11 +350,11 @@ const HomeworkCreateInstructor = ({ match, history }) => {
                     onChange={(e) => setDueDate(String(e.target.value))}
                   ></Form.Control>
                   {/*(8) Add Form control feedback.*/}
+                  {/*(8) Add Form control feedback.*/}
                   <Form.Control.Feedback type="invalid">
-                    Please enter Date in format: yyyy/mm/dd. Due Date can not be
-                    set before Release Date.
+                    Please enter Date in format: yyyy/mm/dd. 
+                    <p>Due Date can not be set before Release Date.</p>
                   </Form.Control.Feedback>
-
                   {/*---------------------------------------*/}
                 </Form.Group>
 
