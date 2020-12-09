@@ -23,7 +23,7 @@ namespace AZLearn.Controllers
         /// </param>
         public static void CreateGradingByStudentId(string studentId,
                 Dictionary<string, Tuple<string, string>> gradings)
-        /*Dictionary<rubricId,Tuple<mark ,instructorComment>>*/
+            /*Dictionary<rubricId,Tuple<mark ,instructorComment>>*/
         {
             using var context = new AppDbContext();
             var parsedRubricId = 0;
@@ -460,7 +460,7 @@ namespace AZLearn.Controllers
         /// </summary>
         /// <param name="cohortId">Cohort Id</param>
         /// <param name="homeworkId">Homework Id</param>
-        /// <returns></returns>
+        /// <returns>list of grades for a particular homework for all students</returns>
         public static List<GradeSummaryTypeForInstructor> GetGradeSummaryForInstructor(string cohortId,
             string homeworkId)
         {
@@ -509,7 +509,7 @@ namespace AZLearn.Controllers
                         new Exception("homeworkId value should be between 1 & 2147483647 inclusive"));
                 else if (!context.Homeworks.Any(key => key.HomeworkId == parsedHomeworkId))
                     exception.ValidationExceptions.Add(new Exception("homeworkId does not exist"));
-                else if ((!string.IsNullOrWhiteSpace(cohortId)) && int.TryParse(cohortId, out parsedCohortId))
+                else if (!string.IsNullOrWhiteSpace(cohortId) && int.TryParse(cohortId, out parsedCohortId))
                     if (!context.Homeworks.Any(key =>
                         key.HomeworkId == parsedHomeworkId && key.CohortId == parsedCohortId))
                         exception.ValidationExceptions.Add(new Exception("Homework does not exist for this cohort."));
@@ -530,7 +530,7 @@ namespace AZLearn.Controllers
                 /*If there are no challenges, then weight of challenge = 0 to avoid NullValueException*/
 
                 if (rubricWeightByGroup.Length == 1)
-                    rubricWeightByGroup = rubricWeightByGroup.Concat(new[] { 0 }).ToArray();
+                    rubricWeightByGroup = rubricWeightByGroup.Concat(new[] {0}).ToArray();
 
                 /*Loop to get GradeSummary for all students in a Cohort*/
 
@@ -566,11 +566,8 @@ namespace AZLearn.Controllers
 
                         /*In case there are no challenges, we will show 0/0 for challenges' marks*/
 
-                        if (marksByGroup.Length == 1)
-                        {
-                            marksByGroup = marksByGroup.Concat(new[] { 0 }).ToArray();
-                        }
-                            
+                        if (marksByGroup.Length == 1) marksByGroup = marksByGroup.Concat(new[] {0}).ToArray();
+
 
                         gradeSummary = new GradeSummaryTypeForInstructor($"{total}",
                             $"{marksByGroup[0]}/{rubricWeightByGroup[0]}",
@@ -590,10 +587,8 @@ namespace AZLearn.Controllers
                 gradeSummaries.Add(gradeSummary);
             }
 
-
             return gradeSummaries;
         }
-
 
         /// <summary>
         ///     ArchiveGradingByStudentId

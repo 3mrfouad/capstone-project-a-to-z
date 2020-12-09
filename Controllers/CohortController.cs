@@ -363,7 +363,7 @@ namespace AZLearn.Controllers
             }
 
             if (exception.ValidationExceptions.Count > 0) throw exception;
-            
+
             #endregion
 
             var assignedCourses = context.CohortCourses.Where(key => key.CohortId == parsedCohortId).ToList();

@@ -22,5 +22,11 @@ Instruction for application test cases: Can be found in the GitHub Repo main bra
 Citation:
 
 - General_Citation: Coding practices in the backend were inline with the TechCareer classroom practices.
-- Filename_Citaion:
+- Filename_Citaion: Cohort Course Controller and Homework Controller
+ 1. To validate the incoming Resources Link (URL) before saving to DB.
+ https://stackoverflow.com/questions/161738/what-is-the-best-regular-expression-to-check-if-a-string-is-a-valid-url
 
+ 2.User control:
+ Email Regex: https://stackoverflow.com/questions/16167983/best-regular-expression-for-email-validation-in-c-sharp/16168118
+ Password Regex : https://stackoverflow.com/questions/5859632/regular-expression-for-password-validation
+                     

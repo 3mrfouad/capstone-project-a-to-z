@@ -193,7 +193,7 @@ namespace AZLearn.Controllers
         ///     Get Courses
         ///     Description: Controller action that returns list of existing courses
         /// </summary>
-        /// <returns>List  of Courses</returns>
+        /// <returns>List of Courses</returns>
         public static List<Course> GetCourses()
         {
             using var context = new AppDbContext();
@@ -210,37 +210,32 @@ namespace AZLearn.Controllers
         /// <returns>List of Courses by Cohort Id</returns>
         public static List<Tuple<Course, string>> GetCoursesByCohortId(string cohortId)
         {
-            int parsedCohortId = 0;
-            List<Tuple<Course, string>> coursesSummary = new List<Tuple<Course, string>>();
+            var parsedCohortId = 0;
+            var coursesSummary = new List<Tuple<Course, string>>();
             Tuple<Course, string> courseWithInstructorName;
+
             #region Validation
 
             using var context = new AppDbContext();
-            ValidationException exception = new ValidationException();
+            var exception = new ValidationException();
 
             if (string.IsNullOrWhiteSpace(cohortId))
             {
-                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId), nameof(cohortId) + " is null."));
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId),
+                    nameof(cohortId) + " is null."));
             }
             else
             {
                 if (!int.TryParse(cohortId, out parsedCohortId))
-                {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
-                }
                 if (parsedCohortId > 2147483647 || parsedCohortId < 1)
-                {
-                    exception.ValidationExceptions.Add(new Exception("Cohort Id value should be between 1 & 2147483647 inclusive"));
-                }
+                    exception.ValidationExceptions.Add(
+                        new Exception("Cohort Id value should be between 1 & 2147483647 inclusive"));
                 else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
-                {
                     exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
-                }
             }
-            if (exception.ValidationExceptions.Count > 0)
-            {
-                throw exception;
-            }
+
+            if (exception.ValidationExceptions.Count > 0) throw exception;
 
             #endregion
 
@@ -249,12 +244,15 @@ namespace AZLearn.Controllers
                 context.Courses.Include(key => key.CohortCourses)
                     .Where(key => key.CohortCourses
                         .Any(subKey => subKey.CohortId == parsedCohortId && subKey.Archive == false)).ToList();
-            //To avoid complexity at the Frontend, We are filtering the Archived Courses for a cohort- inconsistent with rest of the end points.
+            /*To avoid complexity at the Frontend, We are filtering the Archived Courses for a cohort- inconsistent with rest of the end points.*/
             foreach (var course in coursesListByCohortId)
             {
-                int id = course.CourseId;
-                var instructorId = course.CohortCourses.SingleOrDefault(key => key.CourseId == course.CourseId && key.CohortId == parsedCohortId).InstructorId;
-                var instructorName = context.Users.Where(key => key.UserId == instructorId).Select(key => key.Name).Single();
+                var id = course.CourseId;
+                var instructorId = course.CohortCourses
+                    .SingleOrDefault(key => key.CourseId == course.CourseId && key.CohortId == parsedCohortId)
+                    .InstructorId;
+                var instructorName = context.Users.Where(key => key.UserId == instructorId).Select(key => key.Name)
+                    .Single();
                 courseWithInstructorName = Tuple.Create(course, instructorName);
                 coursesSummary.Add(courseWithInstructorName);
             }
@@ -271,68 +269,68 @@ namespace AZLearn.Controllers
         /// <param name="cohortId"></param>
         /// <returns></returns>
         /// return Tuple.Create(courseByCohortId.Name, instructorId, instructorName, cohortCourse.StartDate, cohortCourse.EndDate, courseByCohortId.DurationHrs, courseByCohortId.Description, cohortCourse.ResourcesLink, instructorsList);
-        public static Tuple<string, string, string, string, string, string, string > GetCourseByCohortId(string courseId, string cohortId)
+        public static Tuple<string, string, string, string, string, string, string> GetCourseByCohortId(string courseId,
+            string cohortId)
         {
-            int parsedCohortId = 0;
-            int parsedCourseId = 0;
+            var parsedCohortId = 0;
+            var parsedCourseId = 0;
+
             #region Validation
+
             using var context = new AppDbContext();
-            ValidationException exception = new ValidationException();
+            var exception = new ValidationException();
             if (string.IsNullOrWhiteSpace(cohortId))
             {
-                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId), nameof(cohortId) + " is null."));
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(cohortId),
+                    nameof(cohortId) + " is null."));
             }
             else
             {
                 if (!int.TryParse(cohortId, out parsedCohortId))
-                {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Cohort Id"));
-                }
                 if (parsedCohortId > 2147483647 || parsedCohortId < 1)
-                {
-                    exception.ValidationExceptions.Add(new Exception("Cohort Id value should be between 1 & 2147483647 inclusive"));
-                }
+                    exception.ValidationExceptions.Add(
+                        new Exception("Cohort Id value should be between 1 & 2147483647 inclusive"));
                 else if (!context.Cohorts.Any(key => key.CohortId == parsedCohortId))
-                {
                     exception.ValidationExceptions.Add(new Exception("Cohort Id does not exist"));
-                }
             }
+
             if (string.IsNullOrWhiteSpace(courseId))
             {
-                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(courseId), nameof(courseId) + " is null."));
+                exception.ValidationExceptions.Add(new ArgumentNullException(nameof(courseId),
+                    nameof(courseId) + " is null."));
             }
             else
             {
                 if (!int.TryParse(courseId, out parsedCourseId))
-                {
                     exception.ValidationExceptions.Add(new Exception("Invalid value for Course Id"));
-                }
                 if (parsedCourseId > 2147483647 || parsedCourseId < 1)
-                {
-                    exception.ValidationExceptions.Add(new Exception("Course Id value should be between 1 & 2147483647 inclusive"));
-                }
+                    exception.ValidationExceptions.Add(
+                        new Exception("Course Id value should be between 1 & 2147483647 inclusive"));
                 else if (!context.Courses.Any(key => key.CourseId == parsedCourseId))
-                {
                     exception.ValidationExceptions.Add(new Exception("Course Id does not exist"));
-                }
             }
-            if (exception.ValidationExceptions.Count > 0)
-            {
-                throw exception;
-            }
+
+            if (exception.ValidationExceptions.Count > 0) throw exception;
+
             #endregion
 
             var courseByCohortId =
-                context.Courses.Include(key => key.CohortCourses).SingleOrDefault(key => key.CohortCourses.Any(subKey => subKey.CohortId == parsedCohortId && subKey.CourseId == parsedCourseId));
+                context.Courses.Include(key => key.CohortCourses).SingleOrDefault(key =>
+                    key.CohortCourses.Any(subKey =>
+                        subKey.CohortId == parsedCohortId && subKey.CourseId == parsedCourseId));
 
-            var instructorId = courseByCohortId.CohortCourses.SingleOrDefault(key => key.CourseId == parsedCourseId && key.CohortId == parsedCohortId).InstructorId;
+            var instructorId = courseByCohortId.CohortCourses
+                .SingleOrDefault(key => key.CourseId == parsedCourseId && key.CohortId == parsedCohortId).InstructorId;
             var cohortCourse = courseByCohortId.CohortCourses.SingleOrDefault(key =>
                 key.CourseId == parsedCourseId && key.CohortId == parsedCohortId);
-            var instructorName = context.Users.Where(key => key.UserId == instructorId).Select(key => key.Name).Single();
-            
-            return Tuple.Create( courseByCohortId.Name, instructorName, cohortCourse.StartDate.ToString(), cohortCourse.EndDate.ToString(), courseByCohortId.DurationHrs.ToString(), courseByCohortId.Description, cohortCourse.ResourcesLink);
+            var instructorName =
+                context.Users.Where(key => key.UserId == instructorId).Select(key => key.Name).Single();
+
+            return Tuple.Create(courseByCohortId.Name, instructorName, cohortCourse.StartDate.ToString(),
+                cohortCourse.EndDate.ToString(), courseByCohortId.DurationHrs.ToString(), courseByCohortId.Description,
+                cohortCourse.ResourcesLink);
         }
-     
 
         /// <summary>
         ///     This Action takes in CourseId and returns respective Course record
