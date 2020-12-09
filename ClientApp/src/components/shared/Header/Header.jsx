@@ -4,6 +4,7 @@ import { LinkContainer } from "react-router-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../Loader/Loader";
 import { logout } from "../../../actions/instructorActions";
+import styles from "./Header.module.css";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -19,7 +20,7 @@ const Header = () => {
       {loading ? (
         <Loader />
       ) : (
-        <Navbar bg="primary" expand="lg" collapseOnSelect>
+        <Navbar bg="primary" expand="lg" collapseOnSelect className="mb-5">
           <Container>
             <LinkContainer to="/">
               <Navbar.Brand>AZ Learn</Navbar.Brand>
@@ -28,13 +29,26 @@ const Header = () => {
               <React.Fragment>
                 <Nav>
                   <LinkContainer to={"/cohortsummary"}>
-                    <Nav.Link>Cohorts</Nav.Link>
+                    <Nav.Link>
+                      {" "}
+                      <span className={styles.fontNavLink}>Cohorts</span>{" "}
+                    </Nav.Link>
                   </LinkContainer>
                   <LinkContainer to={`/registeruser`}>
-                    <Nav.Link>Register Users</Nav.Link>
+                    <Nav.Link>
+                      {" "}
+                      <span className={styles.fontNavLink}>
+                        Register Users
+                      </span>{" "}
+                    </Nav.Link>
                   </LinkContainer>
                   <LinkContainer to={`/managecourse`}>
-                    <Nav.Link>Manage Course</Nav.Link>
+                    <Nav.Link>
+                      {" "}
+                      <span className={styles.fontNavLink}>
+                        Manage Course
+                      </span>{" "}
+                    </Nav.Link>
                   </LinkContainer>
                 </Nav>
               </React.Fragment>
@@ -45,7 +59,10 @@ const Header = () => {
               <React.Fragment>
                 <Nav>
                   <LinkContainer to={`/student/${user.userId}`}>
-                    <Nav.Link>Courses</Nav.Link>
+                    <Nav.Link>
+                      {" "}
+                      <span className={styles.fontNavLink}>Courses</span>{" "}
+                    </Nav.Link>
                   </LinkContainer>
                 </Nav>
               </React.Fragment>
