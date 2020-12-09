@@ -72,7 +72,7 @@ const HomeworkStudent = ({ match, history }) => {
         parseFloat(solvingHrs) < 0
       ) {
         validFormData = false;
-      } else if (parseFloat(studyHrs) > 999.99 || parseFloat(studyHrs) < 0) {
+      } else if ( studyHrs && (parseFloat(studyHrs) > 999.99 || parseFloat(studyHrs) < 0)) {
         validFormData = false;
       } else {
         validFormData = true;
@@ -93,11 +93,31 @@ const HomeworkStudent = ({ match, history }) => {
     setValidated(true);
     //----------------------------
 
+    // ! (10.3) Anti-tamper validation - Alert message conditions
+    validFormData = false;
+    formSubmitIndicator = true;
+    setValidData(validFormData);
+    // ! -----------------------------------------------------
+
     e.preventDefault();
+
+     // ! (10.4) Anti-tamper validation - calling Validate
+     Validate(solvingHrs, studyHrs);
+    if (validFormData) {
+      setValidData(validFormData);
+      // ! ------------------------------------------------------
+      e.preventDefault();
     dispatch(
       updateTimeSheetStudent(timeSheet.item2.timesheetId, solvingHrs, studyHrs)
     );
-  };
+  } else {
+    // ! (10.5) Anti-tamper validation - Alert message conditions
+    setValidData(validFormData);
+  }
+  // ! (10.6) Anti-tamper validation - Alert message conditions
+  setFormSubmitted(formSubmitIndicator);
+  // ! ------------------------------------------------------
+};
 
   const goBack = () => {
     history.goBack();
