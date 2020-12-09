@@ -1,6 +1,6 @@
 import React from "react";
-import { Table, Container, Button, Modal } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Table, Container, Button, Modal, ButtonGroup } from "react-bootstrap";
+import { Link, NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -9,6 +9,7 @@ import {
   cohortGet,
 } from "../../../actions/instructorActions";
 import Loader from "../../shared/Loader/Loader";
+import { LinkContainer } from "react-router-bootstrap";
 
 const CourseSummaryInstructor = ({ match, history }) => {
   const cohortId = match.params.id;
@@ -73,7 +74,6 @@ const CourseSummaryInstructor = ({ match, history }) => {
                       </Link>
                     </td>
                     <td>
-                      {" "}
                       <Link
                         to={`/courseeditassigned/${cohortId}/${course.item1.courseId}`}
                       >
@@ -93,12 +93,9 @@ const CourseSummaryInstructor = ({ match, history }) => {
               Back
             </button>{" "}
           </Link>
-          <Button
-            href={`/courseassign/${cohortId}`}
-            className="float-right mr-3"
-          >
-            Add Course
-          </Button>
+          <LinkContainer to={`/courseassign/${cohortId}`}>
+            <Button className="float-right mr-3">Add Course</Button>
+          </LinkContainer>
         </Container>
       )}
     </React.Fragment>

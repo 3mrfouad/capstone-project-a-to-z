@@ -8,6 +8,7 @@ import {
 } from "../../../actions/instructorActions";
 import { Link } from "react-router-dom";
 import Loader from "../../shared/Loader/Loader";
+import { LinkContainer } from "react-router-bootstrap";
 
 const HomeworkSummaryInstructor = ({ match, history }) => {
   const cohortId = match.params.id;
@@ -18,7 +19,7 @@ const HomeworkSummaryInstructor = ({ match, history }) => {
     // populate the cohort data in here
     dispatch(getHomeworkSummaryInstructor({ courseId, cohortId }));
     dispatch(getCoursesByCohortId(cohortId));
-  }, [dispatch]);
+  }, [dispatch, courseId]);
   // const { homeworkSummary } = useSelector(
   //   (state) => state.homeworkSummaryInstructor
   // );
@@ -53,14 +54,19 @@ const HomeworkSummaryInstructor = ({ match, history }) => {
         <Container>
           <Row>
             <Col xs={2}>
-              <Nav defaultActiveKey="/home" className="flex-column">
+              <Nav className="flex-column">
                 {courses.map((course, index) => (
-                  <Nav.Link
-                    href={`/instructorhomework/${cohortId}/${course.item1.courseId}`}
+                  <LinkContainer
                     key={index}
+                    to={`/instructorhomework/${cohortId}/${course.item1.courseId}`}
                   >
-                    {course.item1.name}
-                  </Nav.Link>
+                    <Nav.Link
+                      // href={}
+                      key={index}
+                    >
+                      {course.item1.name}
+                    </Nav.Link>
+                  </LinkContainer>
                 ))}
               </Nav>
             </Col>
@@ -116,12 +122,9 @@ const HomeworkSummaryInstructor = ({ match, history }) => {
               <button type="button" className="btn btn-link" onClick={goBack}>
                 Back
               </button>{" "}
-              <Button
-                className="float-right"
-                href={`/instructorcreatehomework/${cohortId}`}
-              >
-                Create
-              </Button>
+              <LinkContainer to={`/instructorcreatehomework/${cohortId}`}>
+                <Button className="float-right">Create</Button>
+              </LinkContainer>
             </Col>
           </Row>
         </Container>

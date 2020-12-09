@@ -25,16 +25,36 @@ const HomeworkViewInstructor = ({ match, history }) => {
     (state) => state.homeworkDetailInstructor
   );
   useEffect(() => {
-    dispatch(getHomeworkDetailInstructor(homeworkId));
-    dispatch(getAllCourses());
-    dispatch(getAllInstructors());
-    if (homework) {
-      setTitle(homework.Title);
-      setAvgCompletionTime(homework.AvgCompletionTime);
-      setDocumentLink(homework.DocumentLink);
-      setGitHubClassRoomLink(homework.GitHubClassRoomLink);
+    if (!homework) {
+      dispatch(getHomeworkDetailInstructor(homeworkId));
+      dispatch(getAllCourses());
+      dispatch(getAllInstructors());
+    } else {
+      if (!homework.HomeworkId || homework.HomeworkId != homeworkId) {
+        dispatch(getHomeworkDetailInstructor(homeworkId));
+        // setTimeout(() => {
+        //   setTitle(homework.Title);
+        //   setAvgCompletionTime(homework.AvgCompletionTime);
+        //   setDocumentLink(homework.DocumentLink);
+        //   setGitHubClassRoomLink(homework.GitHubClassRoomLink);
+        // }, 1000);
+      } else {
+        setTitle(homework.Title);
+        setAvgCompletionTime(homework.AvgCompletionTime);
+        setDocumentLink(homework.DocumentLink);
+        setGitHubClassRoomLink(homework.GitHubClassRoomLink);
+        setInstructorId(homework.InstructorId);
+        setCourseId(homework.CourseId);
+      }
+
+      // setTimeout(() => {
+      //   setTitle(homework.Title);
+      //   setAvgCompletionTime(homework.AvgCompletionTime);
+      //   setDocumentLink(homework.DocumentLink);
+      //   setGitHubClassRoomLink(homework.GitHubClassRoomLink);
+      // }, 500);
     }
-  }, [dispatch]);
+  }, [dispatch, loading]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -89,9 +109,9 @@ const HomeworkViewInstructor = ({ match, history }) => {
                     value={courseId}
                     onChange={(e) => setCourseId(e.target.value)}
                   >
-                    <option value={homework.CourseName}>
+                    {/* <option value={homework.CourseId}>
                       {homework.CourseName}
-                    </option>
+                    </option> */}
                     {courses.map((course, index) => (
                       <option value={course.courseId} key={index}>
                         {course.name}
@@ -107,12 +127,16 @@ const HomeworkViewInstructor = ({ match, history }) => {
                     value={instructorId}
                     onChange={(e) => setInstructorId(e.target.value)}
                   >
-                    <option value="">{homework.InstructorName}</option>
-                    {instructors.map((instructor, index) => (
-                      <option value={instructor.userId} key={index}>
-                        {instructor.name}
-                      </option>
-                    ))}
+                    {/* <option value={homework.InstructorId}>
+                      {homework.InstructorName}
+                    </option> */}
+                    {instructors
+                      .filter((item) => item.archive == false)
+                      .map((instructor, index) => (
+                        <option value={instructor.userId} key={index}>
+                          {instructor.name}
+                        </option>
+                      ))}
                   </Form.Control>
                 </Form.Group>
 
