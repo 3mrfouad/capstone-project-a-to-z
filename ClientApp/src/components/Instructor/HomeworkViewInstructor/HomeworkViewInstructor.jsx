@@ -70,20 +70,20 @@ const HomeworkViewInstructor = ({ match, history }) => {
     let parsedDueDate = 0;
     let parsedReleaseDate = 0;
     formSubmitIndicator = true;
-    console.log("Entering Trim")
+   
     try {
       title = title.trim().toLowerCase();
-      console.log("title trim");
+     
       avgCompletionTime = String(avgCompletionTime).trim();
-      console.log("avgCompletionTime trim");
+      
       dueDate = dueDate.trim();
-      console.log("dueDate trim");
+     
       releaseDate = releaseDate.trim();
-      console.log("releaseDate trim");
+      
       documentLink = documentLink.trim().toLowerCase();
-      console.log("documentLink trim");
+     
       gitHubClassRoomLink = gitHubClassRoomLink.trim().toLowerCase();
-      console.log("gitHubClassRoomLink trim");
+     
       if (!title) {
         validFormData = false;
       } else if (title.Length > 100) {
