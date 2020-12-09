@@ -294,6 +294,7 @@ const CourseEditAssigned = ({ match, history }) => {
                   <Form.Control
                     required
                     type="date"
+                    min={startDate}
                     value={endDate.split(" ")[0]}
                     onChange={(e) =>
                       setEndDate(String(e.target.value).split(" ")[0])
