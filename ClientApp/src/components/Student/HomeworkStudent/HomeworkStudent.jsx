@@ -84,6 +84,15 @@ const HomeworkStudent = ({ match, history }) => {
   // ! ------------------------------------------------------
 
   const summitHandler = (e) => {
+    //(2) Add form validation condition block if-else
+    const form = e.currentTarget;
+    if (form.checkValidity() === false) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    setValidated(true);
+    //----------------------------
+
     e.preventDefault();
     dispatch(
       updateTimeSheetStudent(timeSheet.item2.timesheetId, solvingHrs, studyHrs)
@@ -215,8 +224,8 @@ const HomeworkStudent = ({ match, history }) => {
                     onChange={(e) => setSolvingHrs(String(e.target.value))}
                   ></Form.Control>
                   <Form.Control.Feedback type="invalid">
-                    Please fill in Solving/Troubleshooting Hours. It can be a
-                    number or a decimal(upto 2 decimal places)
+                    Please fill in Solving/Troubleshooting Hours. 
+                    <p>Range: 0 - 999.99 inclusive</p>                    
                   </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="Study/Research">
@@ -230,8 +239,8 @@ const HomeworkStudent = ({ match, history }) => {
                     onChange={(e) => setStudyHrs(String(e.target.value))}
                   ></Form.Control>
                   <Form.Control.Feedback type="invalid">
-                    Please fill Study/Research Hours in a valid format. It can
-                    be a number or a decimal(upto 2 decimal places).
+                    Please fill Study/Research Hours in a valid format.
+                    <p>Range: 0 - 999.99 inclusive</p>
                   </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group controlId="Total">
