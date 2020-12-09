@@ -22,9 +22,7 @@ namespace AZLearn.Models
 
         [Key]
         [Column(TypeName = "int(10)")]
-
         /*Auto generates unique id number*/
-
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int UserId { get; set; }
 

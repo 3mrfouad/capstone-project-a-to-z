@@ -421,7 +421,7 @@ namespace AZLearn.Controllers
 
             #region Validation
 
-            cohortId= string.IsNullOrEmpty(cohortId) || string.IsNullOrWhiteSpace(cohortId) ? null : cohortId.Trim();
+            cohortId = string.IsNullOrEmpty(cohortId) || string.IsNullOrWhiteSpace(cohortId) ? null : cohortId.Trim();
 
             if (cohortId == null)
             {

@@ -89,12 +89,8 @@ namespace AZLearn.Controllers
                         new Exception("userId value should be between 1 & 2147483647 inclusive"));
                 else if (!context.Users.Any(key => key.UserId == parsedUserId))
                     exception.ValidationExceptions.Add(new Exception("userId does not exist"));
-
-                //*****************This validation to be decided after Login**********************************************
                 else if (!context.Users.Any(key => key.UserId == parsedUserId && key.Archive == false))
                     exception.ValidationExceptions.Add(new Exception("Selected userId is Archived"));
-
-                //*****************************************************
             }
 
             if (exception.ValidationExceptions.Count > 0) throw exception;
@@ -114,7 +110,8 @@ namespace AZLearn.Controllers
         public static List<User> GetInstructors()
         {
             using var context = new AppDbContext();
-            //To avoid complexity at the Frontend, We are filtering the Archived Instructors -inconsistent with rest of the end points.
+            /*To avoid complexity at the Frontend, We are filtering the Archived Instructors -inconsistent with rest of the end points.*/
+
             var instructors = context.Users.Where(key => key.IsInstructor && key.Archive == false).ToList();
             return instructors;
         }
@@ -136,7 +133,7 @@ namespace AZLearn.Controllers
             var parsedIsInstructor = false;
             var exception = new ValidationException();
             using var context = new AppDbContext();
-            
+
             #region Validation
 
             cohortId = string.IsNullOrEmpty(cohortId) || string.IsNullOrWhiteSpace(cohortId) ? null : cohortId.Trim();
@@ -254,21 +251,24 @@ namespace AZLearn.Controllers
         }
 
         /// <summary>
-        /// GetUserOnLogin
-        /// Description:This action takes below parameters and retrieves the user information if input fields are correct otherwise displays error
+        ///     GetUserOnLogin
+        ///     Description:This action takes below parameters and retrieves the user information if input fields are correct
+        ///     otherwise displays error
         /// </summary>
         /// <param name="userEmail"></param>
         /// <param name="password"></param>
         /// <returns>Sucess/Error message</returns>
         public static User GetUserOnLogin(string userEmail, string password)
         {
-            ValidationException exception = new ValidationException();
+            var exception = new ValidationException();
             using var context = new AppDbContext();
 
             #region Validation
 
-            userEmail = (string.IsNullOrEmpty(userEmail) || string.IsNullOrWhiteSpace(userEmail)) ? null : userEmail.Trim().ToLower();
-            password = (string.IsNullOrEmpty(password) || string.IsNullOrWhiteSpace(password)) ? null : password.Trim();
+            userEmail = string.IsNullOrEmpty(userEmail) || string.IsNullOrWhiteSpace(userEmail)
+                ? null
+                : userEmail.Trim().ToLower();
+            password = string.IsNullOrEmpty(password) || string.IsNullOrWhiteSpace(password) ? null : password.Trim();
 
             if (string.IsNullOrWhiteSpace(userEmail))
             {
@@ -284,7 +284,8 @@ namespace AZLearn.Controllers
 
                 else if (!context.Users.Any(key => key.Email == userEmail && key.Archive == false))
                 {
-                    exception.ValidationExceptions.Add(new Exception("This user account has been archived in the system."));
+                    exception.ValidationExceptions.Add(
+                        new Exception("This user account has been archived in the system."));
                 }
                 else
                 {
@@ -296,25 +297,19 @@ namespace AZLearn.Controllers
                     else
                     {
                         if (!context.Users.Any(key => key.PasswordHash == password && key.Email == userEmail))
-                        {
                             exception.ValidationExceptions.Add(new Exception("Invalid Password for this account."));
-                        }
                     }
                 }
-
             }
 
-            if (exception.ValidationExceptions.Count > 0)
-            {
-                throw exception;
-            }
+            if (exception.ValidationExceptions.Count > 0) throw exception;
 
             #endregion
 
-            var userInfo = context.Users.Single(key => key.PasswordHash == password && key.Email == userEmail && key.Archive == false);
+            var userInfo = context.Users.Single(key =>
+                key.PasswordHash == password && key.Email == userEmail && key.Archive == false);
 
             return userInfo;
         }
-
     }
 }

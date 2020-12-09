@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AZLearn.Models;
+﻿using AZLearn.Models;
 using Microsoft.EntityFrameworkCore;
 
-/*To Do: Seed Data to the User Table in order to run it successfully
-         Need to seed Data in Homework table
- 
- */
 namespace AZLearn.Data
 {
     public class AppDbContext : DbContext
@@ -24,8 +16,6 @@ namespace AZLearn.Data
         public virtual DbSet<Notification> Notifications { get; set; }
         public virtual DbSet<User> Users { get; set; }
 
-
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -34,16 +24,13 @@ namespace AZLearn.Data
                     "server=localhost;" +
                     "port = 3306;" +
                     "user = root;" +
-                    "password=123456;" +
                     "database = AZLearnDb;";
 
-                //string version = "10.4.14-MariaDB";
+                string version = "10.4.14-MariaDB";
 
-                optionsBuilder.UseMySql(connection);
+                optionsBuilder.UseMySql(connection, x => x.ServerVersion(version));
             }
         }
-
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -66,6 +53,8 @@ namespace AZLearn.Data
 
             #endregion
 
+            #region Course Table
+
             modelBuilder.Entity<Course>(entity =>
             {
                 entity.Property(e => e.Name)
@@ -75,8 +64,11 @@ namespace AZLearn.Data
                 entity.Property(e => e.Description)
                     .HasCharSet("utf8mb4")
                     .HasCollation("utf8mb4_general_ci");
-
             });
+
+            #endregion
+
+            #region CohortCourse Table
 
             modelBuilder.Entity<CohortCourse>(entity =>
             {
@@ -95,8 +87,11 @@ namespace AZLearn.Data
                     .HasForeignKey(thisEntity => thisEntity.InstructorId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_CohortCourse_Instructor");
-
             });
+
+            #endregion
+
+            #region Homework Table
 
             modelBuilder.Entity<Homework>(entity =>
             {
@@ -140,6 +135,10 @@ namespace AZLearn.Data
                     .HasConstraintName("FK_Homework_Cohort");
             });
 
+            #endregion
+
+            #region Rubric Table
+
             modelBuilder.Entity<Rubric>(entity =>
             {
                 entity.Property(e => e.Criteria)
@@ -156,6 +155,10 @@ namespace AZLearn.Data
                     .HasConstraintName("FK_Rubric_Homework");
             });
 
+            #endregion
+
+            #region Grade Table
+
             modelBuilder.Entity<Grade>(entity =>
             {
                 /* Creating Composite key with RubricId, StudentId */
@@ -169,6 +172,10 @@ namespace AZLearn.Data
                     .HasCharSet("utf8mb4")
                     .HasCollation("utf8mb4_general_ci");
             });
+
+            #endregion
+
+            #region User Table
 
             modelBuilder.Entity<User>(entity =>
             {
@@ -185,7 +192,7 @@ namespace AZLearn.Data
                     .HasCollation("utf8mb4_general_ci");
 
                 entity.HasIndex(e => e.CohortId)
-                    .HasName("FK_User_Cohort"); // User here can be either Student or Instructor, CohortId is 0 for Instructor
+                    .HasName("FK_User_Cohort"); /* User here can be either Student or Instructor, CohortId is 0 for Instructor*/
 
                 entity.HasOne(thisEntity => thisEntity.Cohort)
                     .WithMany(parent => parent.Users)
@@ -193,6 +200,10 @@ namespace AZLearn.Data
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_User_Cohort");
             });
+
+            #endregion
+
+            #region Timesheet Table
 
             modelBuilder.Entity<Timesheet>(entity =>
             {
@@ -214,6 +225,10 @@ namespace AZLearn.Data
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_Timesheet_Student");
             });
+
+            #endregion
+
+            #region Shoutout Table
 
             modelBuilder.Entity<ShoutOut>(entity =>
             {
@@ -251,8 +266,11 @@ namespace AZLearn.Data
                     .HasForeignKey(thisEntity => thisEntity.HomeworkId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_ShoutOut_Homework");
-
             });
+
+            #endregion
+
+            #region Notification Table
 
             modelBuilder.Entity<Notification>(entity =>
             {
@@ -269,6 +287,8 @@ namespace AZLearn.Data
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("FK_Notification_Student");
             });
+
+            #endregion
         }
     }
 }
