@@ -33,6 +33,8 @@ const HomeworkCreateInstructor = ({ match, history }) => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   let validFormData = false;
   let formSubmitIndicator = false;
+  let validDueDate = false;
+  let validReleaseDate = false;
   // ! ------------------------------------------------------
 
   const dispatch = useDispatch();
@@ -40,10 +42,12 @@ const HomeworkCreateInstructor = ({ match, history }) => {
     dispatch(getCoursesByCohortId(cohortId));
     dispatch(getAllInstructors());
   }, []);
-  const { loading, error, success, courses } = useSelector(
+  const { loading, courses } = useSelector(
     (state) => state.getCoursesByCohortId
   );
   const { instructors } = useSelector((state) => state.getAllInstructors);
+  const homeworkCreate = useSelector((state) => state.createHomeworkInstructor);
+  const { loading: loadingHW, error, success } = homeworkCreate;
 
   const goBack = () => {
     history.goBack();
@@ -63,15 +67,20 @@ const HomeworkCreateInstructor = ({ match, history }) => {
     let parsedDueDate = 0;
     let parsedReleaseDate = 0;
     formSubmitIndicator = true;
-
+    console.log("Entering Trim")
     try {
       title = title.trim().toLowerCase();
-      avgCompletionTime = avgCompletionTime.trim().toLowerCase();
-      dueDate = dueDate.trim().toLowerCase();
-      releaseDate = releaseDate.trim().toLowerCase();
+      console.log("title trim");
+      avgCompletionTime = String(avgCompletionTime).trim();
+      console.log("avgCompletionTime trim");
+      dueDate = dueDate.trim();
+      console.log("dueDate trim");
+      releaseDate = releaseDate.trim();
+      console.log("releaseDate trim");
       documentLink = documentLink.trim().toLowerCase();
+      console.log("documentLink trim");
       gitHubClassRoomLink = gitHubClassRoomLink.trim().toLowerCase();
-
+      console.log("gitHubClassRoomLink trim");
       if (!title) {
         validFormData = false;
         console.log("title");
@@ -80,7 +89,7 @@ const HomeworkCreateInstructor = ({ match, history }) => {
         console.log("title.length");
       } else if (!courseId) {
         validFormData = false;
-        console.log("courseId");
+        console.log("courseId",courseId);
       } else if (parseInt(courseId) > 2147483647 || parseFloat(courseId) < 1) {
         validFormData = false;
         console.log("courseId range,", courseId);
@@ -93,22 +102,14 @@ const HomeworkCreateInstructor = ({ match, history }) => {
       ) {
         validFormData = false;
         console.log("instructorId range");
-      } else if (
-        parseFloat(avgCompletionTime) > 999.99 ||
-        parseFloat(avgCompletionTime) < 0
-      ) {
-        validFormData = false;
-        console.log("avgCompletionTime: ", parseFloat(avgCompletionTime));
-      } else if (!dueDate) {
-        validFormData = false;
-        console.log("dueDate");
-      } else if (!releaseDate) {
-        validFormData = false;
-        console.log("releaseDate");
-      } else if (documentLink.Length > 250) {
+      } else if (avgCompletionTime && (parseFloat(avgCompletionTime) > 999.99 ||
+      parseFloat(avgCompletionTime) < 0)) {
+          validFormData = false;
+          console.log("avgCompletionTime: ", parseFloat(avgCompletionTime));
+      } else if (documentLink && documentLink.Length > 250) {
         validFormData = false;
         console.log("documentLink length");
-      } else if (gitHubClassRoomLink.Length > 250) {
+      } else if (gitHubClassRoomLink && gitHubClassRoomLink.Length > 250) {
         validFormData = false;
         console.log("gitHubClassRoomLink length");
       } else if (
@@ -126,34 +127,52 @@ const HomeworkCreateInstructor = ({ match, history }) => {
         )
       ) {
         validFormData = false;
-        console.log("gitHubClassRoomLink Format");
-      } else {
-        try {
-          parsedReleaseDate = Date.parse(releaseDate);
-          console.log("Release Date parse");
-        } catch (ParseException) {
-          console.log("Release Date parse exception");
-          validFormData = false;
-        }
-        try {
-          parsedDueDate = Date.parse(dueDate);
-          console.log("dueDate parse");
-        } catch (ParseException) {
-          console.log("Due Date parse exception");
-          validFormData = false;
-        }
-        /* Dates business logic */
-        if (parsedDueDate < parsedReleaseDate) {
-          validFormData = false;
-          console.log("parsedDueDate < parsedReleaseDate");
-        } else {
-          validFormData = true;
-          console.log("All good :", validFormData);
-        }
+        console.log("gitHubClassRoomLink Format", gitHubClassRoomLink);
       }
-    } catch (Exception) {
-      validFormData = false;
+      else if (releaseDate || dueDate) {
+        console.log("if any of dates exist", releaseDate, dueDate);
+        if (releaseDate) {
+          try {
+            console.log("Release Date try");
+            parsedReleaseDate = Date.parse(releaseDate);
+            console.log("Release Date parse");
+            validReleaseDate = true;
+          } catch (ParseException) {
+            console.log("Release Date parse exception");
+            validFormData = false;
+            validReleaseDate = false;
+          }
+        }
+        if (dueDate) {
+          try {
+            console.log("dueDate try");
+            parsedDueDate = Date.parse(dueDate);
+            console.log("dueDate parse");
+            validDueDate = true;
+          } catch (ParseException) {
+            console.log("Due Date parse exception");
+            validFormData = false;
+            validDueDate = false;
+          }
+        }
+        console.log("Due", dueDate, validDueDate, "Release", releaseDate, validReleaseDate);
+        if (validReleaseDate && validDueDate) {
+          if (parsedDueDate < parsedReleaseDate) { validFormData = false; console.log("no :", validFormData); }
+          else { validFormData = true; console.log("All good :", validFormData); }
+        }
+        else if (dueDate && !validDueDate) { validFormData = false; console.log("no good :", validFormData); }
+        else if (releaseDate && !validReleaseDate) { validFormData = false; console.log("no good :", validFormData); } 
+        else { validFormData = true; console.log("All good :", validFormData); }
     }
+      else {
+  validFormData = true;
+  console.log("All good :", validFormData);
+}
+console.log("end of try", validFormData, releaseDate, dueDate)
+    } catch (Exception) {
+  validFormData = false;
+  console.log("final catch");
+}
   }
   // ! ------------------------------------------------------
 
@@ -225,25 +244,25 @@ const HomeworkCreateInstructor = ({ match, history }) => {
               <h3>Homework</h3>
 
               {/* ! (10.7) Anti-tamper validation - Alert message conditions   */}
-              <p
-                   class={
-                    formSubmitted
-                      ? validData
-                        ? !loading && error
-                          ? "alert alert-danger"
-                          : !loading && !error && success
-                          ? "alert alert-success"
-                          : ""
-                        : "alert alert-danger"
-                     : ""
-                  }
+              <p 
+              className={
+                formSubmitted
+                  ? validData
+                    ? !loadingHW && error
+                      ? "alert alert-danger"
+                      : !loadingHW && !error && success
+                      ? "alert alert-success"
+                      : ""
+                    : "alert alert-danger"
+                  : ""
+              }
               role="alert"
             >
               {formSubmitted
                 ? validData
-                  ? !loading && error
-                    ? `Unsuccessful attempt to create Homework. ${error.data}`
-                    : !loading && !error && success
+                  ? !loadingHW && error
+                    ? `Unsuccessful attempt to create homework.\n ${error.data}`
+                    : !loadingHW && !error && success
                     ? "Homework was successfully created"
                     : ""
                   : "Error: Form was submitted with invalid data fields"
