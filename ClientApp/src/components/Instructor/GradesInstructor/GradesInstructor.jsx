@@ -1,10 +1,7 @@
 import React from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import cellEditFactory from "react-bootstrap-table2-editor";
-//this is for test
 
-// https://localhost:5001/application/studentgradessummary?studentId=7&homeworkId=1
-// sample data
 const dummyData = [
   {
     rubricId: 115,

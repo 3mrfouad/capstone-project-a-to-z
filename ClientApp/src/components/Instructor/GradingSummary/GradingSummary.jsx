@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getGradeSummaryInstructor } from "../../../actions/instructorActions";
 import { getHomeworkSummaryInstructor } from "../../../actions/instructorActions";
 import { LinkContainer } from "react-router-bootstrap";
-import { Link } from "react-router-dom";
+
 import Loader from "../../shared/Loader/Loader";
 
 const GradingSummary = ({ match, history }) => {
@@ -14,8 +14,6 @@ const GradingSummary = ({ match, history }) => {
 
   const dispatch = useDispatch();
   useEffect(() => {
-    // get cohort by id
-    // populate the cohort data in here
     dispatch(getGradeSummaryInstructor({ cohortId, homeworkId }));
     dispatch(getHomeworkSummaryInstructor({ courseId, cohortId }));
   }, [dispatch, homeworkId]);
@@ -28,10 +26,6 @@ const GradingSummary = ({ match, history }) => {
   const { loading, error, grade } = useSelector(
     (state) => state.gradeSummaryInstructor
   );
-  console.log("Loading: ", loading);
-  console.log("Grades: ", grade);
-  console.log("Loading: ", loading);
-  console.log("Homeworks: ", homeworkSummary);
 
   while (
     homeworkSummary === undefined ||

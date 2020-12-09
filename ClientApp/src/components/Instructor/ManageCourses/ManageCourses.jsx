@@ -8,7 +8,6 @@ import {
 } from "../../../actions/instructorActions";
 import Loader from "../../shared/Loader/Loader";
 import { Link } from "react-router-dom";
-import { LinkContainer } from "react-router-bootstrap";
 
 const ManageCourseInstructor = ({ history }) => {
   const dispatch = useDispatch();

@@ -33,8 +33,6 @@ const CourseEditAssigned = ({ match, history }) => {
   const { loading, course, success, error } = useSelector(
     (state) => state.getAssignedCourse
   );
-  // const { courses } = useSelector((state) => state.getCoursesByCohortId);
-
   useEffect(() => {
     if (
       !success ||
@@ -47,7 +45,6 @@ const CourseEditAssigned = ({ match, history }) => {
     }
 
     dispatch(getAllInstructors());
-    // dispatch(getCoursesByCohortId(cohortId));
   }, [dispatch, courseId, cohortId, success]);
   function Validate(
     cohortId,
@@ -57,7 +54,6 @@ const CourseEditAssigned = ({ match, history }) => {
     startDate,
     endDate
   ) {
-    console.log("function");
     let parsedEndDate = 0;
     let parsedStartDate = 0;
     formSubmitIndicator = true;
@@ -81,7 +77,6 @@ const CourseEditAssigned = ({ match, history }) => {
         validFormData = false;
       } else if (instructorId < 0 || instructorId > 2147483647) {
         validFormData = false;
-        console.log("instructor out of range", instructorId);
       } else if (resourcesLink > 250) {
         validFormData = false;
       }
@@ -95,42 +90,28 @@ const CourseEditAssigned = ({ match, history }) => {
         validFormData = false;
       } else if (!startDate || !endDate) {
         validFormData = false;
-        console.log("startDate/endDate");
       } else {
         try {
           parsedStartDate = Date.parse(startDate);
           validStartDate = true;
-          console.log("startDate parse");
         } catch (ParseException) {
           validStartDate = false;
-          console.log("startDate parse exception");
           validFormData = false;
         }
         try {
           parsedEndDate = Date.parse(startDate);
           validEndDate = true;
-          console.log("endDate purse");
         } catch (ParseException) {
           validEndDate = false;
-          console.log("endDate parse exception");
           validFormData = false;
         }
         /* Dates business logic */
 
-        console.log(
-          "parsed start date validation: ",
-          validStartDate,
-          "parsed end date validation: ",
-          validEndDate
-        );
         if (validStartDate && validEndDate) {
-          console.log("Dates are both pursed ok");
           if (parsedEndDate < parsedStartDate) {
             validFormData = false;
-            console.log("parsedEndDate < parsedStartDate");
           } else {
             validFormData = true;
-            console.log("All good :", validFormData);
           }
         }
       }
@@ -176,7 +157,6 @@ const CourseEditAssigned = ({ match, history }) => {
         endDate
       );
       if (validFormData) {
-        console.log("pass validate form data");
         setValidData(validFormData);
         // ! ------------------------------------------------------
         dispatch(
@@ -248,9 +228,18 @@ const CourseEditAssigned = ({ match, history }) => {
                     value={instructorId}
                     onChange={(e) => setInstructorId(e.target.value)}
                   >
-                    {/* <option value="">{course.item2}</option> */}
                     {instructors
-                      .filter((item) => item.archive == false)
+                      .filter((item) => item.name == course.item2)
+                      .map((instructor, index) => (
+                        <option value={instructor.userId} key={index}>
+                          {instructor.name}
+                        </option>
+                      ))}
+                    {instructors
+                      .filter(
+                        (item) =>
+                          item.archive == false && item.name != course.item2
+                      )
                       .map((instructor, index) => (
                         <option value={instructor.userId} key={index}>
                           {instructor.name}

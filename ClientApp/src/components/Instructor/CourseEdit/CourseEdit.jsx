@@ -40,35 +40,25 @@ const CourseEdit = ({ match, history }) => {
 
       if (!courseId) {
         validFormData = false;
-        console.log("courseId");
       } else if (courseId < 0 || courseId > 2147483647) {
         validFormData = false;
-        console.log("courseId, range");
       } else if (!courseName) {
         validFormData = false;
-        console.log("courseName");
       } else if (courseName.Length > 50) {
         validFormData = false;
-        console.log("courseName, Length");
       } else if (!hours) {
         validFormData = false;
-        console.log("hours");
       } else if (parseFloat(hours) > 999.99 || parseFloat(hours) < 0) {
         validFormData = false;
-        console.log("hours: ", parseFloat(hours));
       } else if (!description) {
         validFormData = false;
-        console.log("description");
       } else if (description.Length > 250) {
         validFormData = false;
-        console.log("description length");
       } else {
         validFormData = true;
-        console.log("All good :", validFormData);
       }
     } catch (Exception) {
       validFormData = false;
-      console.log("No good, Length");
     }
   }
   // ! ------------------------------------------------------
@@ -114,7 +104,6 @@ const CourseEdit = ({ match, history }) => {
       setValidData(validFormData);
       // ! ------------------------------------------------------
 
-      console.log("edit course");
       dispatch(
         editCourse({
           courseId,
@@ -130,7 +119,6 @@ const CourseEdit = ({ match, history }) => {
 
     // ! (10.6) Anti-tamper validation - Alert message conditions
     setFormSubmitted(formSubmitIndicator);
-    // !
   };
 
   const goBack = () => {

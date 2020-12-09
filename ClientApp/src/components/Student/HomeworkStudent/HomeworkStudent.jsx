@@ -55,7 +55,6 @@ const HomeworkStudent = ({ match, history }) => {
       setStudyHrs(timeSheet.item2.studyTime);
     }
   }, [dispatch, homeworkId, loadingTimesheet]);
-  console.log(homework);
 
   // ! (10.2) Anti-tamper validation - Validate (parameters)
   function Validate(solvingHrs, studyHrs) {
@@ -71,51 +70,18 @@ const HomeworkStudent = ({ match, history }) => {
         parseFloat(solvingHrs) < 0
       ) {
         validFormData = false;
-        console.log("solvingHrs: ", parseFloat(solvingHrs));
       } else if (parseFloat(studyHrs) > 999.99 || parseFloat(studyHrs) < 0) {
         validFormData = false;
-        console.log("studyHrs: ", parseFloat(studyHrs));
       } else {
         validFormData = true;
-        console.log("All good");
       }
     } catch (Exception) {
       validFormData = false;
-      console.log("No godd: ");
     }
   }
   // ! ------------------------------------------------------
 
   const summitHandler = (e) => {
-    // //(2) Add form validation condition block if-else
-    // const form = e.currentTarget;
-    // if (form.checkValidity() === false) {
-    //   e.preventDefault();
-    //   e.stopPropagation();
-    // } else {
-    //   setValidated(true);
-    //   e.preventDefault();
-    //   // ! (10.4) Anti-tamper validation - calling Validate
-    //   Validate(solvingHrs, studyHrs);
-    //   if (validFormData) {
-    //     setValidData(validFormData);
-    //     // ! -------------------------------------------------
-    //     dispatch(
-    //       updateTimeSheetStudent(
-    //         timeSheet.item2.timesheetId,
-    //         solvingHrs,
-    //         studyHrs
-    //       )
-    //     );
-    //     console.log("create timesheet");
-    //   } else {
-    //     // ! (10.5) Anti-tamper validation - Alert message conditions
-    //     setValidData(validFormData);
-    //   }
-    // }
-    // // ! (10.6) Anti-tamper validation - Alert message conditions
-    // setFormSubmitted(formSubmitIndicator);
-    // // ! ------------------------------------------------------
     e.preventDefault();
     dispatch(
       updateTimeSheetStudent(timeSheet.item2.timesheetId, solvingHrs, studyHrs)

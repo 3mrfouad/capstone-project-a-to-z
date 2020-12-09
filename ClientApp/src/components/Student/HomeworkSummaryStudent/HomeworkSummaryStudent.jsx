@@ -35,13 +35,7 @@ const HomeworkSummaryStudent = ({ match, history }) => {
                   key={index}
                   to={`/studenthomework/${studentId}/${course.item1.courseId}`}
                 >
-                  <Nav.Link
-                    key={index}
-                    // href={}
-                  >
-                    {" "}
-                    {course.item1.name}{" "}
-                  </Nav.Link>
+                  <Nav.Link key={index}> {course.item1.name} </Nav.Link>
                 </LinkContainer>
               ))}
             </Nav>
@@ -70,7 +64,6 @@ const HomeworkSummaryStudent = ({ match, history }) => {
                       >
                         View
                       </Link>{" "}
-                      {/*  |<a href="#">Grades</a> */}
                     </td>
                   </tr>
                 ))}
