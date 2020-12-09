@@ -504,8 +504,9 @@ namespace AZLearn.Controllers
 
                             else
                             {
+                                
                                 if (context.Homeworks.Any(key =>
-                                    key.CohortId == parsedCohortId && key.CourseId == parsedCourseId &&
+                                    key.CohortId == parsedCohortId && key.CourseId == parsedCourseId && key.HomeworkId != parsedHomeworkId &&
                                     string.Equals(key.Title, title, StringComparison.CurrentCultureIgnoreCase)))
                                     exception.ValidationExceptions.Add(new Exception(
                                         "Homework Title with same name already exists under this course for this cohort."));
