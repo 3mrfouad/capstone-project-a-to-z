@@ -20,6 +20,11 @@ const HomeworkViewInstructor = ({ match, history }) => {
   const [documentLink, setDocumentLink] = useState("");
   const [gitHubClassRoomLink, setGitHubClassRoomLink] = useState("");
   const [isAssignment, setIsAssignment] = useState("");
+
+  //(1) Add validation states (@Atinder)
+  const [validated, setValidated] = useState(false);
+  //----------------------------
+
   const dispatch = useDispatch();
   const { loading, homework } = useSelector(
     (state) => state.homeworkDetailInstructor
@@ -44,6 +49,16 @@ const HomeworkViewInstructor = ({ match, history }) => {
   }, [dispatch, loading]);
 
   const submitHandler = (e) => {
+
+  //(2) Add form validation condition block if-else
+  const form = e.currentTarget;
+  if (form.checkValidity() === false) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  setValidated(true);
+  //----------------------------
+
     e.preventDefault();
     dispatch(
       editHomeworkInstructor({
@@ -78,14 +93,22 @@ const HomeworkViewInstructor = ({ match, history }) => {
           <Row className="justify-content-md-center">
             <Col xs={12} md={6}>
               <h3>Homework</h3>
-              <Form onSubmit={submitHandler}>
+              <Form noValidate validated={validated} onSubmit={submitHandler}>
                 <Form.Group controlId="title">
                   <Form.Label>Title</Form.Label>
                   <Form.Control
+                    required
                     type="text"
+                    maxLength="100"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                   ></Form.Control>
+                  {/*(8) Add Form control feedback.*/}
+                  <Form.Control.Feedback type="invalid">
+                  Please enter Title of Homework.
+                    <p>Max 100 characters allowed.</p>
+                  </Form.Control.Feedback>
+                  {/*---------------------------------------*/}
                 </Form.Group>
                 <Form.Group controlId="Course">
                   <Form.Label>Course</Form.Label>
@@ -101,6 +124,11 @@ const HomeworkViewInstructor = ({ match, history }) => {
                       </option>
                     ))}
                   </Form.Control>
+                  {/*(8) Add Form control feedback.*/}
+                  <Form.Control.Feedback type="invalid">
+                    Please select a course for this homework.
+                  </Form.Control.Feedback>
+                  {/*---------------------------------------*/}
                 </Form.Group>
                 <Form.Group controlId="instructor">
                   <Form.Label>Instructor</Form.Label>
@@ -118,46 +146,95 @@ const HomeworkViewInstructor = ({ match, history }) => {
                         </option>
                       ))}
                   </Form.Control>
+                   {/*(8) Add Form control feedback.*/}
+                   <Form.Control.Feedback type="invalid">
+                    Please select an Instructor for this homework.
+                  </Form.Control.Feedback>
+                  {/*---------------------------------------*/}
                 </Form.Group>
                 <Form.Group controlId="Avg Completion Time">
                   <Form.Label>Avg Completion Time</Form.Label>
                   <Form.Control
-                    type="text"
+                   type="number"
+                   min={0}
+                   max={999.99}
+                   step="0.25"
                     value={avgCompletionTime}
-                    onChange={(e) => setAvgCompletionTime(e.target.value)}
+                    onChange={(e) => setAvgCompletionTime(String(e.target.value))}
                   ></Form.Control>
-                </Form.Group>
-                <Form.Group controlId="Due Date">
-                  <Form.Label>Due Date</Form.Label>
-                  <Form.Control
-                    type="date"
-                    value={dueDate}
-                    onChange={(e) => setDueDate(e.target.value)}
-                  ></Form.Control>
-                </Form.Group>
+                  {/*(8) Add Form control feedback.*/}
+                  <Form.Control.Feedback type="invalid">
+                    Please enter average completion time between 0 and 999.99
+                    inclusive
+                  </Form.Control.Feedback>
+                  {/*---------------------------------------*/}
+                </Form.Group>               
                 <Form.Group controlId="Release Date">
                   <Form.Label>Release Date</Form.Label>
                   <Form.Control
                     type="date"
                     value={releaseDate}
-                    onChange={(e) => setReleaseDate(e.target.value)}
+                    onChange={(e) => setReleaseDate(String(e.target.value))}
                   ></Form.Control>
+                   {/*(8) Add Form control feedback.*/}
+                   <Form.Control.Feedback type="invalid">
+                    Please enter Date in format: yyyy/mm/dd.
+                  </Form.Control.Feedback>
+
+                  {/*---------------------------------------*/}
+                </Form.Group>
+                <Form.Group controlId="Due Date">
+                  <Form.Label>Due Date</Form.Label>
+                  <Form.Control
+                     type="date"
+                     min={releaseDate}
+                    value={dueDate}
+                    onChange={(e) => setDueDate(String(e.target.value))}
+                  ></Form.Control>
+                  {/*(8) Add Form control feedback.*/}
+                  <Form.Control.Feedback type="invalid">
+                    Please enter Date in format: yyyy/mm/dd. 
+                    <p>Due Date can not be set before Release Date.</p>
+                  </Form.Control.Feedback>
+                  {/*---------------------------------------*/}
                 </Form.Group>
                 <Form.Group controlId="DocLink">
                   <Form.Label>DocLink</Form.Label>
                   <Form.Control
-                    type="text"
+                    type="url"
+                    maxLength="250"
                     value={documentLink}
-                    onChange={(e) => setDocumentLink(e.target.value)}
+                    onChange={(e) => setDocumentLink(String(e.target.value))}
                   ></Form.Control>
+                   {/*(8) Add Form control feedback.*/}
+                   <Form.Control.Feedback type="invalid">
+                    <p>
+                      Please enter Document Link in format:
+                      http|https://yourLink.
+                    </p>
+                    <p>Max 250 characters allowed.</p>
+                  </Form.Control.Feedback>
+
+                  {/*---------------------------------------*/}
                 </Form.Group>
                 <Form.Group controlId="GitHubLink">
                   <Form.Label>GitHubLink</Form.Label>
                   <Form.Control
-                    type="text"
+                    type="url"
+                    maxLength="250"
                     value={gitHubClassRoomLink}
                     onChange={(e) => setGitHubClassRoomLink(e.target.value)}
                   ></Form.Control>
+                  {/*(8) Add Form control feedback.*/}
+                  <Form.Control.Feedback type="invalid">
+                    <p>
+                      Please enter Document Link in format:
+                      http|https://yourLink.
+                    </p>
+                    <p>Max 250 characters allowed.</p>
+                  </Form.Control.Feedback>
+
+                  {/*---------------------------------------*/}
                 </Form.Group>
                 <button type="button" className="btn btn-link" onClick={goBack}>
                   Back
