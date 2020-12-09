@@ -235,7 +235,7 @@ const HomeworkCreateInstructor = ({ match, history }) => {
                           ? "alert alert-success"
                           : ""
                         : "alert alert-danger"
-                      : ""
+                     : ""
                   }
               role="alert"
             >
