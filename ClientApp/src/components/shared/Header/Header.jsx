@@ -20,31 +20,35 @@ const Header = () => {
       {loading ? (
         <Loader />
       ) : (
-        <Navbar bg="light" expand="lg" collapseOnSelect>
+        <Navbar bg="primary" expand="lg" collapseOnSelect>
           <Container>
             <LinkContainer to="/">
               <Navbar.Brand>AZ Learn</Navbar.Brand>
             </LinkContainer>
             {user && user.isInstructor ? (
               <React.Fragment>
-                <LinkContainer to="/cohortsummary">
-                  <Navbar.Brand>Cohorts</Navbar.Brand>
-                </LinkContainer>
-                <LinkContainer to={`/registeruser`}>
-                  <Navbar.Brand>Register Users</Navbar.Brand>
-                </LinkContainer>
-                <LinkContainer to={`/managecourse`}>
-                  <Navbar.Brand>Manage Course</Navbar.Brand>
-                </LinkContainer>
+                <Nav>
+                  <LinkContainer to={"/cohortsummary"}>
+                    <Nav.Link>Cohorts</Nav.Link>
+                  </LinkContainer>
+                  <LinkContainer to={`/registeruser`}>
+                    <Nav.Link>Register Users</Nav.Link>
+                  </LinkContainer>
+                  <LinkContainer to={`/managecourse`}>
+                    <Nav.Link>Manage Course</Nav.Link>
+                  </LinkContainer>
+                </Nav>
               </React.Fragment>
             ) : (
               ""
             )}
             {user && !user.isInstructor ? (
               <React.Fragment>
-                <LinkContainer to={`/student/${user.userId}`}>
-                  <Navbar.Brand>Courses</Navbar.Brand>
-                </LinkContainer>
+                <Nav>
+                  <LinkContainer to={`/student/${user.userId}`}>
+                    <Nav.Link>Courses</Nav.Link>
+                  </LinkContainer>
+                </Nav>
               </React.Fragment>
             ) : (
               ""
