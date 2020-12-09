@@ -262,9 +262,9 @@ const CohortCreate = ({ history }) => {
                   onChange={(e) => setCity(e.target.value)}
                 >
                   <option value="">Select</option>
-                  <option>Edmonton</option>
-                  <option>Calgary</option>
-                  <option>Other</option>
+                  <option value="Edmonton">Edmonton</option>
+                  <option value="Calgary">Calgary</option>
+                  <option value="Other">Other</option>
                 </Form.Control>
                 <Form.Control.Feedback type="invalid">
                   Please choose a city.
