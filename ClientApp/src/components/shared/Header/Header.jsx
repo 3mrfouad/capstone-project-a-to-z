@@ -1,13 +1,5 @@
-import React, { useState } from "react";
-import {
-  Navbar,
-  Nav,
-  NavDropdown,
-  Form,
-  FormControl,
-  Button,
-  Container,
-} from "react-bootstrap";
+import React from "react";
+import { Navbar, Nav, Container } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../Loader/Loader";
@@ -38,9 +30,6 @@ const Header = () => {
                 <LinkContainer to="/cohortsummary">
                   <Navbar.Brand>Cohorts</Navbar.Brand>
                 </LinkContainer>
-                {/* <LinkContainer to={`/coursesummary/3`}>
-                  <Navbar.Brand>Course Summary</Navbar.Brand>
-                </LinkContainer> */}
                 <LinkContainer to={`/registeruser`}>
                   <Navbar.Brand>Register Users</Navbar.Brand>
                 </LinkContainer>
@@ -80,39 +69,6 @@ const Header = () => {
                 ) : (
                   ""
                 )}
-
-                {/* {userInfo ? (
-                <NavDropdown title={userInfo.name} id="username">
-                  <LinkContainer to="/profile">
-                    <NavDropdown.Item>Profile</NavDropdown.Item>
-                  </LinkContainer>
-                  <NavDropdown.Item onClick={logoutHandler}>
-                    Logout
-                  </NavDropdown.Item>
-                </NavDropdown>
-              ) : (
-                <LinkContainer to="/login">
-                  <Nav.Link>
-                    {" "}
-                    <i className="fas fa-user"></i> <strong>Sign In</strong>{" "}
-                  </Nav.Link>
-                </LinkContainer>
-              )} */}
-                {/* {
-                userInfo && userInfo.isAdmin && (
-                  <NavDropdown title='Admin' id="adminmenu">
-                  <LinkContainer to="/admin/userlist">
-                    <NavDropdown.Item>Users</NavDropdown.Item>
-                  </LinkContainer>
-                  <LinkContainer to="/admin/productlist">
-                    <NavDropdown.Item>Products</NavDropdown.Item>
-                  </LinkContainer>
-                  <LinkContainer to="/admin/orderlist">
-                    <NavDropdown.Item>Orders</NavDropdown.Item>
-                  </LinkContainer>
-                </NavDropdown>
-                )
-              } */}
               </Nav>
             </Navbar.Collapse>
           </Container>

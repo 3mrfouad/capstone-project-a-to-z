@@ -9,7 +9,7 @@ import {
 import { Link } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
 
-const HomeworkSummaryStudent = ({ match }) => {
+const HomeworkSummaryStudent = ({ match, history }) => {
   const studentId = match.params.studentId;
   const courseId = match.params.courseId;
   const dispatch = useDispatch();
@@ -17,6 +17,9 @@ const HomeworkSummaryStudent = ({ match }) => {
     (state) => state.homeworkSummaryStudent
   );
   const { courses } = useSelector((state) => state.courseSummaryStudent);
+  const goBack = () => {
+    history.goBack();
+  };
   useEffect(() => {
     dispatch(homeworkSummaryStudent(courseId));
     dispatch(courseSummaryStudent());
@@ -73,7 +76,7 @@ const HomeworkSummaryStudent = ({ match }) => {
                 ))}
               </tbody>
             </Table>
-            <button type="button" className="btn btn-link">
+            <button type="button" className="btn btn-link" onClick={goBack}>
               Back
             </button>
           </Col>

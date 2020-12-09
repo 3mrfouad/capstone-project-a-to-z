@@ -311,14 +311,14 @@ const CourseAssign = ({ match, history }) => {
                 </p>
                 {/*---------------------------------------*/}
               </Form.Group>
-              <Form.Group controlId="hours">
+              {/* <Form.Group controlId="hours">
                 <Form.Label>Hours</Form.Label>
                 <Form.Control disabled></Form.Control>
               </Form.Group>
               <Form.Group controlId="description">
                 <Form.Label>Description</Form.Label>
                 <Form.Control disabled></Form.Control>
-              </Form.Group>
+              </Form.Group> */}
               <Form.Group controlId="link">
                 <Form.Label>Resource Link</Form.Label>
                 <Form.Control

@@ -50,9 +50,6 @@ const CourseSummaryStudent = ({ match, history }) => {
             ))}
           </tbody>
         </Table>
-        <button type="button" className="btn btn-link" onClick={goBack}>
-          Back
-        </button>
       </Container>
     </React.Fragment>
   );

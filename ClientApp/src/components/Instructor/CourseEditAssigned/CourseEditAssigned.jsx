@@ -7,6 +7,7 @@ import {
   editAssignedCourse,
   getCoursesByCohortId,
 } from "../../../actions/instructorActions";
+import Loader from "../../shared/Loader/Loader";
 
 const CourseEditAssigned = ({ match, history }) => {
   const cohortId = match.params.id;
@@ -16,13 +17,8 @@ const CourseEditAssigned = ({ match, history }) => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [resourcesLink, setResourcesLink] = useState("");
-
-  //(1) Add validation states
   const [validated, setValidated] = useState(false);
   const [invalidDatesBL, setInvalidDatesBl] = useState(false);
-  // ! (10.1) Anti-tamper validation - States and Variables
-  //const [courseName, setCourseName] = useState(""); //Added by Ayesha for validation
-  //const [instructor, setInstructor] = useState(""); //Added by Ayesha for validation
   const [validData, setValidData] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   let validFormData = false;
@@ -53,7 +49,6 @@ const CourseEditAssigned = ({ match, history }) => {
     dispatch(getAllInstructors());
     // dispatch(getCoursesByCohortId(cohortId));
   }, [dispatch, courseId, cohortId, success]);
-  // ! (10.2) Anti-tamper validation - Validate (parameters)
   function Validate(
     cohortId,
     courseId,
@@ -206,19 +201,10 @@ const CourseEditAssigned = ({ match, history }) => {
   const goBack = () => {
     history.goBack();
   };
-  /* 
-  while (
-    instructors === undefined ||
-    loading === undefined ||
-    course === undefined
-  ) {
-    return <h3>Loading ...</h3>;
-  } */
-
   return (
     <React.Fragment>
       {loading ? (
-        <h2>loading</h2>
+        <Loader />
       ) : (
         <Container>
           <Row className="justify-content-md-center">
