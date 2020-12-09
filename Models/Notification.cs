@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,7 +9,6 @@ namespace AZLearn.Models
     {
         [Key]
         [Column(TypeName = "int(10)")]
-
         /*Auto generates unique id number*/
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int NotificationId { get; set; }
@@ -25,17 +23,14 @@ namespace AZLearn.Models
         [Column(TypeName = "varchar(250)")]
         public string Description { get; set; }
 
-        [Required]
-        [Column(TypeName = "date")]
-        public DateTime Date { get; set; }
+        [Required] [Column(TypeName = "date")] public DateTime Date { get; set; }
 
-        [Column(TypeName = "boolean")]
-        public bool Archive { get; set; } = false;
+        [Column(TypeName = "boolean")] public bool Archive { get; set; } = false;
 
         /*   Navigation property:*/
 
         [ForeignKey(nameof(StudentId))]
-        [InverseProperty(nameof(Models.User.Notifications))]
+        [InverseProperty(nameof(User.Notifications))]
         public virtual User Student { get; set; }
     }
 }
