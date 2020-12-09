@@ -6,6 +6,7 @@ import {
   getAllInstructors,
   assignCourse,
 } from "../../../actions/instructorActions";
+import Loader from "../../shared/Loader/Loader";
 
 const CourseAssign = ({ match, history }) => {
   const cohortId = match.params.id;
@@ -175,128 +176,134 @@ const CourseAssign = ({ match, history }) => {
   };
   return (
     <React.Fragment>
-      <Container>
-        <Row className="justify-content-md-center">
-          <Col xs={12} md={6}>
-            <h2>Course</h2>
-            {/* ! (10.7) Anti-tamper validation - Alert message conditions   */}
-            <p
-              class={
-                formSubmitted
+      {loading ? (
+        <Loader />
+      ) : (
+        <Container>
+          <Row className="justify-content-md-center">
+            <Col xs={12} md={6}>
+              <h2>Course</h2>
+              {/* ! (10.7) Anti-tamper validation - Alert message conditions   */}
+              <p
+                class={
+                  formSubmitted
+                    ? validData
+                      ? !loading && error
+                        ? "alert alert-danger"
+                        : !loading && !error && success
+                        ? "alert alert-success"
+                        : ""
+                      : "alert alert-danger"
+                    : ""
+                }
+                role="alert"
+              >
+                {formSubmitted
                   ? validData
                     ? !loading && error
-                      ? "alert alert-danger"
+                      ? `Unsuccessful attempt to assign course. ${error.data}`
                       : !loading && !error && success
-                      ? "alert alert-success"
+                      ? "Course was successfully assigned"
                       : ""
-                    : "alert alert-danger"
-                  : ""
-              }
-              role="alert"
-            >
-              {formSubmitted
-                ? validData
-                  ? !loading && error
-                    ? `Unsuccessful attempt to assign course. ${error.data}`
-                    : !loading && !error && success
-                    ? "Course was successfully assigned"
-                    : ""
-                  : "Error: Form was submitted with invalid data fields"
-                : ""}
-            </p>
-            {/* ! ------------------------------------------------------  */}
+                    : "Error: Form was submitted with invalid data fields"
+                  : ""}
+              </p>
+              {/* ! ------------------------------------------------------  */}
 
-            <Form noValidate validated={validated} onSubmit={submitHandler}>
-              <Form.Group controlId="name">
-                <Form.Label>Course Name</Form.Label>
-                <Form.Control
-                  as="Select"
-                  required
-                  value={courseId}
-                  onChange={(e) => setCourseId(e.target.value)}
-                >
-                  <option value="">Select</option>
-                  {courses.map((course, index) => (
-                    <option value={course.courseId} key={index}>
-                      {course.name}
-                    </option>
-                  ))}
-                </Form.Control>
-                <Form.Control.Feedback type="invalid">
-                  Please select a course
-                </Form.Control.Feedback>
-              </Form.Group>
-              <Form.Group controlId="instructor">
-                <Form.Label>Instructor</Form.Label>
-                <Form.Control
-                  as="select"
-                  required
-                  value={instructorId}
-                  onChange={(e) => setInstructorId(e.target.value)}
-                >
-                  <option value="">Select</option>
-                  {instructors.map((instructor, index) => (
-                    <option value={instructor.userId} key={index}>
-                      {instructor.name}
-                    </option>
-                  ))}
-                </Form.Control>
-                <Form.Control.Feedback type="invalid">
-                  Please choose an instructor
-                </Form.Control.Feedback>
-              </Form.Group>
-              <Form.Group controlId="startdate">
-                <Form.Label>Start Date</Form.Label>
-                <Form.Control
-                  required
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(String(e.target.value))}
-                ></Form.Control>
-                <Form.Control.Feedback type="invalid">
-                  Please choose a start date.
-                </Form.Control.Feedback>
-              </Form.Group>
-              <Form.Group controlId="enddate">
-                <Form.Label>End Date</Form.Label>
-                <Form.Control
-                  required
-                  type="date"
-                  min={startDate}
-                  value={endDate}
-                  onChange={(e) => setEndDate(String(e.target.value))}
-                ></Form.Control>
-                <Form.Control.Feedback type="invalid">
-                  Please choose an end date.
-                </Form.Control.Feedback>
-                {/* (9) Add business logic validation message. */}
-                <p className="text-danger small">
-                  {invalidDatesBL ? "End date can't be before start date" : ""}
-                </p>
-              </Form.Group>
-              <Form.Group controlId="link">
-                <Form.Label>Resource Link</Form.Label>
-                <Form.Control
-                  maxLength="250"
-                  type="url"
-                  value={resourcesLink}
-                  onChange={(e) => setResourcesLink(e.target.value)}
-                ></Form.Control>
-                <Form.Control.Feedback type="invalid">
-                  Please enter a valid URL.
-                </Form.Control.Feedback>
-              </Form.Group>
-              <button type="button" className="btn btn-link" onClick={goBack}>
-                Back
-              </button>{" "}
-              <Button type="submit" variant="primary" className="float-right">
-                {" "}
-                Save
-              </Button>
-            </Form>
-          </Col>
-        </Row>
-      </Container>
+              <Form noValidate validated={validated} onSubmit={submitHandler}>
+                <Form.Group controlId="name">
+                  <Form.Label>Course Name</Form.Label>
+                  <Form.Control
+                    as="Select"
+                    required
+                    value={courseId}
+                    onChange={(e) => setCourseId(e.target.value)}
+                  >
+                    <option value="">Select</option>
+                    {courses.map((course, index) => (
+                      <option value={course.courseId} key={index}>
+                        {course.name}
+                      </option>
+                    ))}
+                  </Form.Control>
+                  <Form.Control.Feedback type="invalid">
+                    Please select a course
+                  </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group controlId="instructor">
+                  <Form.Label>Instructor</Form.Label>
+                  <Form.Control
+                    as="select"
+                    required
+                    value={instructorId}
+                    onChange={(e) => setInstructorId(e.target.value)}
+                  >
+                    <option value="">Select</option>
+                    {instructors.map((instructor, index) => (
+                      <option value={instructor.userId} key={index}>
+                        {instructor.name}
+                      </option>
+                    ))}
+                  </Form.Control>
+                  <Form.Control.Feedback type="invalid">
+                    Please choose an instructor
+                  </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group controlId="startdate">
+                  <Form.Label>Start Date</Form.Label>
+                  <Form.Control
+                    required
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(String(e.target.value))}
+                  ></Form.Control>
+                  <Form.Control.Feedback type="invalid">
+                    Please choose a start date.
+                  </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group controlId="enddate">
+                  <Form.Label>End Date</Form.Label>
+                  <Form.Control
+                    required
+                    type="date"
+                    min={startDate}
+                    value={endDate}
+                    onChange={(e) => setEndDate(String(e.target.value))}
+                  ></Form.Control>
+                  <Form.Control.Feedback type="invalid">
+                    Please choose an end date.
+                  </Form.Control.Feedback>
+                  {/* (9) Add business logic validation message. */}
+                  <p className="text-danger small">
+                    {invalidDatesBL
+                      ? "End date can't be before start date"
+                      : ""}
+                  </p>
+                </Form.Group>
+                <Form.Group controlId="link">
+                  <Form.Label>Resource Link</Form.Label>
+                  <Form.Control
+                    maxLength="250"
+                    type="url"
+                    value={resourcesLink}
+                    onChange={(e) => setResourcesLink(e.target.value)}
+                  ></Form.Control>
+                  <Form.Control.Feedback type="invalid">
+                    Please enter a valid URL.
+                  </Form.Control.Feedback>
+                </Form.Group>
+                <button type="button" className="btn btn-link" onClick={goBack}>
+                  Back
+                </button>{" "}
+                <Button type="submit" variant="primary" className="float-right">
+                  {" "}
+                  Save
+                </Button>
+              </Form>
+            </Col>
+          </Row>
+        </Container>
+      )}
     </React.Fragment>
   );
 };

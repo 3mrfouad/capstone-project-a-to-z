@@ -7,6 +7,7 @@ import {
   getAllCourses,
   getAllInstructors,
 } from "../../../actions/instructorActions";
+import Loader from "../../shared/Loader/Loader";
 
 const HomeworkViewInstructor = ({ match, history }) => {
   const homeworkId = match.params.id;
@@ -71,7 +72,7 @@ const HomeworkViewInstructor = ({ match, history }) => {
   return (
     <React.Fragment>
       {loading ? (
-        <h2>Loading</h2>
+        <Loader />
       ) : (
         <Container>
           <Row className="justify-content-md-center">

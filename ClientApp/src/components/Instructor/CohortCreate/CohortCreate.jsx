@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Form, Button, Row, Col, Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { createCohort } from "../../../actions/instructorActions";
+import Loader from "../../shared/Loader/Loader";
 
 const CohortCreate = ({ history }) => {
   const [name, setName] = useState("");

@@ -12,6 +12,8 @@ import {
   getAllCourses,
   getAllInstructors,
 } from "../../../actions/instructorActions";
+import Loader from "../../shared/Loader/Loader";
+
 const HomeworkStudent = ({ match, history }) => {
   const studentId = match.params.studentId;
   const homeworkId = match.params.homeworkId;
@@ -95,7 +97,7 @@ const HomeworkStudent = ({ match, history }) => {
   return (
     <React.Fragment>
       {homework.length < 1 && timeSheet ? (
-        <h2>Loading</h2>
+        <Loader />
       ) : (
         <Container>
           <Row className="justify-content-md-center">

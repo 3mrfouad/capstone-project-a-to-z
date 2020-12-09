@@ -8,6 +8,7 @@ import {
 } from "../../../actions/studentActions";
 import { Link } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
+import Loader from "../../shared/Loader/Loader";
 
 const HomeworkSummaryStudent = ({ match, history }) => {
   const studentId = match.params.studentId;
@@ -26,55 +27,59 @@ const HomeworkSummaryStudent = ({ match, history }) => {
   }, [dispatch, courseId]);
   return (
     <React.Fragment>
-      <Container>
-        <Row>
-          <Col xs={2}>
-            <Nav defaultActiveKey="/home" className="flex-column mt-5">
-              {courses.map((course, index) => (
-                <LinkContainer
-                  key={index}
-                  to={`/studenthomework/${studentId}/${course.item1.courseId}`}
-                >
-                  <Nav.Link key={index}> {course.item1.name} </Nav.Link>
-                </LinkContainer>
-              ))}
-            </Nav>
-          </Col>
-          <Col xs={10}>
-            <Table>
-              <thead>
-                <tr>
-                  <th>Homework Name</th>
-                  <th>Due Date</th>
-                  <th>GitHub</th>
-                  <th>Category</th>
-                  <th>Details</th>
-                </tr>
-              </thead>
-              <tbody>
-                {homework.map((item, index) => (
-                  <tr key={index}>
-                    <td>{item.title}</td>
-                    <td>{item.dueDate}</td>
-                    <td>{item.gitHubClassRoomLink}</td>
-                    <td>{item.isAssignment ? "Assignment" : "Practice"}</td>
-                    <td>
-                      <Link
-                        to={`/homeworkcardstudent/${studentId}/${item.homeworkId}`}
-                      >
-                        View
-                      </Link>{" "}
-                    </td>
-                  </tr>
+      {loading ? (
+        <Loader />
+      ) : (
+        <Container>
+          <Row>
+            <Col xs={2}>
+              <Nav defaultActiveKey="/home" className="flex-column mt-5">
+                {courses.map((course, index) => (
+                  <LinkContainer
+                    key={index}
+                    to={`/studenthomework/${studentId}/${course.item1.courseId}`}
+                  >
+                    <Nav.Link key={index}> {course.item1.name} </Nav.Link>
+                  </LinkContainer>
                 ))}
-              </tbody>
-            </Table>
-            <button type="button" className="btn btn-link" onClick={goBack}>
-              Back
-            </button>
-          </Col>
-        </Row>
-      </Container>
+              </Nav>
+            </Col>
+            <Col xs={10}>
+              <Table>
+                <thead>
+                  <tr>
+                    <th>Homework Name</th>
+                    <th>Due Date</th>
+                    <th>GitHub</th>
+                    <th>Category</th>
+                    <th>Details</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {homework.map((item, index) => (
+                    <tr key={index}>
+                      <td>{item.title}</td>
+                      <td>{item.dueDate}</td>
+                      <td>{item.gitHubClassRoomLink}</td>
+                      <td>{item.isAssignment ? "Assignment" : "Practice"}</td>
+                      <td>
+                        <Link
+                          to={`/homeworkcardstudent/${studentId}/${item.homeworkId}`}
+                        >
+                          View
+                        </Link>{" "}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+              <button type="button" className="btn btn-link" onClick={goBack}>
+                Back
+              </button>
+            </Col>
+          </Row>
+        </Container>
+      )}
     </React.Fragment>
   );
 };

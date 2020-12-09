@@ -20,7 +20,12 @@ const Header = () => {
       {loading ? (
         <Loader />
       ) : (
-        <Navbar bg="primary" expand="lg" collapseOnSelect className="mb-5">
+        <Navbar
+          bg="primary"
+          expand="lg"
+          collapseOnSelect
+          className="mb-5 navbar navbar-dark"
+        >
           <Container>
             <LinkContainer to="/">
               <Navbar.Brand>AZ Learn</Navbar.Brand>
